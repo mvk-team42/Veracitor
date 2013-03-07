@@ -40,9 +40,12 @@ nosetests.xml
 
 # Misc
 *.py~
+<<<<<<< HEAD
 .DS_Store
 
 *~
 
 # Top secret settings... :)
 veracitor/settings.py
+=======
+>>>>>>> Added *.~ files to ignorelist
