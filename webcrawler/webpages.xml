@@ -2,38 +2,23 @@
 <webpages>
 	
 	<webpage url="dn.se">
-		<tag name="div">
-			<attributes id="article-content"/>
-			
-			<tag name="h1">
-				<TITLE/>
-			</tag>
-			
-			<tag name="p">
-				<attributes class="published"/>
-				<DATE/>
-			</tag>
-			
-			<tag name="div">
-				<attributes class="article-wrapper"/>
-				<tag name="div">
-					<attributes class="content-before"/>
-					<SUMMARY/>	
-				</tag>
-				<tag name="div">
-					<attributes class="content-body"/>
-					<CONTENT/>	
-				</tag>
-				<tag name="div">
-					<attributes class="reviewer vcard"/>
-					<REFERENCES/>	
-				</tag>
-			</tag>
-		</tag>
+
+		<article-qualification>
+			<xpath>div[@id="article"]</xpath>
+			<xpath>div/p[@class="header"]</xpath>
+		</article-qualification>
+		
+		<article-data>
+			<title>
+				<xpath>//div[@id="article-content"]/h1/text()</xpath>
+			</title>
+		
+			<summary>
+				<xpath>//div[@id="article-content"]/div[@class="article-wrapper"]/div[@class="content-before"]</xpath>
+			</summary>
+		</article-data>
+
 	</webpage>
 
 </webpages>
-
-
-
 
