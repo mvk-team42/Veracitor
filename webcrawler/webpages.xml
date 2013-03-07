@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<webpages>
+  <webpage url="dn.se">
+
+    <title>
+      <tag name = “p”>
+        <attribute name=”class” value = “info”/>
+      </tag>
+      <tag name = “div” direct-child sibling-num=3>
+        <attribute name=”id” value = “the-super-div”/>
+      </tag>
+    </title>
+
+    <author>
+    </author>
+
+    <date>
+    </date>
+
+    <text>
+    </text>
+
+  </webpage>
+</webpages>
