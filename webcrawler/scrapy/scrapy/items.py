@@ -5,7 +5,10 @@
 
 from scrapy.item import Item, Field
 
-class ScrapyItem(Item):
+class ArticleItem(Item):
     # define the fields for your item here like:
     # name = Field()
-    pass
+    title = Field()
+    author = Field()
+    date = Field()
+    summary = Field()
