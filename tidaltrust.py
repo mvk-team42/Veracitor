@@ -19,6 +19,7 @@ class TidalTrust:
     # OBS, meta-comment: TODO?
     cached_ratings = {}
     
+    @staticmethod
     def tidal_trust(source, sink, graph):
         """ Calculates a trust value between the source and the sink nodes in the given graph """
         queue.push(source)
