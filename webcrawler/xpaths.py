@@ -8,26 +8,21 @@ class Xpaths:
         tree = ET.parse(filepath)
         self.root = tree.getroot()
         
-    def _webpage(self, url):
-        return self.root.find("webpage[@url='"+url+"']")
-
-    def get_title(self, url):
-        webpage = self._webpage(url)
-        xpaths = webpage.findall("article-data/title/xpath")
+    def _xpaths(self, data):
+        webpage = self.root.find("webpage[@url='"+url+"']")
+        xpaths = webpage.findall("article-data/"+data+"/xpath")
         return [xpath.text for xpath in xpaths]
+
+    def get_title_xpaths(self, url):
+        return _xpaths("title")
         
-    def get_summary(self, url):
-        webpage = self._webpage(url)
-        xpaths = webpage.findall("article-data/summary/xpath")
-        return [xpath.text for xpath in xpaths]
+    def get_summary_xpaths(self, url):
+        return _xpaths("summary")
 
-    def get_author(self, url):
-        webpage = self._webpage(url)
-        xpaths = webpage.findall("article-data/author/xpath")
-        return [xpath.text for xpath in xpaths]
+    def get_author_xpaths(self, url):
+        return _xpaths("author")
 
-    def get_date(self, url):
-        webpage = self._webpage(url)
-        xpaths = webpage.findall("article-data/date/xpath")
-        return [xpath.text for xpath in xpaths]
+    def get_date_xpaths(self, url):
+        return _xpaths("date")
         
+
