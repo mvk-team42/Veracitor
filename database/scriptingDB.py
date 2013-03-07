@@ -26,3 +26,6 @@ tag2 = Tag(description="HurrrDiDurr")
 tag2.set_name("Gardening")
 tag2.parent.append(tag)
 tag2.save()
+
+for t in Tag.objects:
+    print t.get_name()
