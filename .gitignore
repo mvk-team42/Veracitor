@@ -38,4 +38,9 @@ nosetests.xml
 *.sublime-project
 *.sublime-workspace
 
+<<<<<<< HEAD
 *~
+=======
+# Misc
+*.py~
+>>>>>>> Added *.~ files to ignorelist
