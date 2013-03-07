@@ -10,3 +10,8 @@ class ArticleItem(Item):
     author = Field()
     date = Field()
     summary = Field()
+
+class DmozItem(Item):
+        title = Field()
+        link = Field()
+        desc = Field()

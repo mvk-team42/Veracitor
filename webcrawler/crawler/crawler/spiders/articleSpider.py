@@ -2,6 +2,8 @@
 
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
+import sys
+sys.path.append('../../../')
 from xpaths import Xpaths
 
 class ArticleSpider(BaseSpider):
