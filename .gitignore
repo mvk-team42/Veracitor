@@ -37,3 +37,5 @@ nosetests.xml
 # Editor specific
 *.sublime-project
 *.sublime-workspace
+
+*~
