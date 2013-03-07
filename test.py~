@@ -1,0 +1,7 @@
+import networkx as nx
+
+G = nx.Graph()
+
+G.addEdge(1,2)
+
+G.nodes()
