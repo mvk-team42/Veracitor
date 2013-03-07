@@ -1,9 +1,11 @@
 #!/usr/bin/env python2.7
 
-import xpaths
+from xpaths import Xpaths
+from pprint import pprint
 
-# initialize object
-x = xpaths.Xpaths('webpages.xml')
-
-#test title
-x.get_title('dn.se')
+xpaths = Xpaths('webpages.xml')
+url = "dn.se"
+pprint(xpaths.get_title(url))
+pprint(xpaths.get_summary(url))
+pprint(xpaths.get_author(url))
+pprint(xpaths.get_date(url))
