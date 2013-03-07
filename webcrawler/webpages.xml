@@ -3,11 +3,11 @@
   <webpage url="dn.se">
 
     <title>
-      <tag name = “p”>
-        <attribute name=”class” value = “info”/>
+      <tag name = "p">
+        <attribute name="class" value = "info"/>
       </tag>
-      <tag name = “div” direct-child sibling-num=3>
-        <attribute name=”id” value = “the-super-div”/>
+      <tag name = "div" direct-child="true" sibling-num="3">
+        <attribute name="id" value = "the-super-div"/>
       </tag>
     </title>
 
@@ -22,3 +22,5 @@
 
   </webpage>
 </webpages>
+
+
