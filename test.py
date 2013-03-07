@@ -24,7 +24,7 @@ print nx.to_dict_of_dicts(G)
 #nx.draw_circular(G)
 #nx.draw_spectral(G)
 
-shortest = nx.bfs_tree(G, source=1)
+shortest = nx.all_shortest_paths(G, source=1, target=7)
 print shortest
 print dir(shortest)
 plt.show()
