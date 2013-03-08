@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <webpages>
 
-    <webpage url="dn.se">
+    <webpage url="www.dn.se">
         <article-qualification>
             <xpath>div[@id="article"]</xpath>
             <xpath>div/p[@class="header"]</xpath>
@@ -30,7 +30,7 @@
     
     
     
-    <webpage url="guardian.co.uk">
+    <webpage url="www.guardian.co.uk">
         <article-qualification>
             <xpath>div[contains(@class,'article')]</xpath>
         </article-qualification>
@@ -46,7 +46,7 @@
             </summary>
 
             <author>
-                <xpath>//*[@id="content"]//a[contains(@class,"contributor")/text()</xpath>
+                <xpath>//*[@id="content"]//a[contains(@class,"contributor")]/text()</xpath>
             </author>
 
             <date>
@@ -58,7 +58,7 @@
     
     
     
-     <webpage url="svd.se">
+     <webpage url="www.svd.se">
         <article-qualification>
             <xpath>div[contains(@id,'article-content')]</xpath>
         </article-qualification>
@@ -86,7 +86,7 @@
     
     
     
-    <webpage url="nytimes.com">
+    <webpage url="www.nytimes.com">
         <article-qualification>
             <xpath>div[contains(@id,'article')]</xpath>
         </article-qualification>

@@ -4,6 +4,7 @@ from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from crawler.xpaths import Xpaths
 from crawler.items import ArticleItem
+from urlparse import urlparse
 
 
 
@@ -24,19 +25,19 @@ class ArticleSpider(BaseSpider):
         domain = urlparse(url)[1]
         
         for xpath in xpaths.get_title_xpaths(domain):
-            article["title"] = hxs.select(xpath)[0].extract()
+            article["title"] = hxs.select(xpath).extract()
             break
         
         for xpath in xpaths.get_author_xpaths(domain):
-            article["author"] = hxs.select(xpath)[0].extract()
+            article["author"] = hxs.select(xpath).extract()
             break
             
         for xpath in xpaths.get_date_xpaths(domain):
-            article["date"] = hxs.select(xpath)[0].extract()
+            article["date"] = hxs.select(xpath).extract()
             break
             
         for xpath in xpaths.get_summary_xpaths(domain):
-            article["summary"] = hxs.select(xpath)[0].extract()
+            article["summary"] = hxs.select(xpath).extract()
             break
             
         return article
