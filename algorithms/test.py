@@ -30,6 +30,19 @@ G2.add_weighted_edges_from([(1,2,5),
                             (6,7,5),
                             ])
 
+Gtags = nx.MultiDiGraph()
+
+Gtags.add_weighted_edges_from([(1,2,dict(
+                tag = dict(name = "cooking", description="baka kakor, bullar osv"),
+                rating = 4)),
+                               (1,2,dict(
+                tag = dict(name = "crime", description="Murder! Assault! Robbery!"),
+                rating = 10)),
+        ])
+
+print Gtags[1]
+print Gtags[2]
+
 #nx.draw(G)
 #nx.draw_circular(G2)
 nx.draw_spectral(G)

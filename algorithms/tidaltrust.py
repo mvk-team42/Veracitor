@@ -115,17 +115,20 @@ class TidalTrust:
         #plt.show()
 
     @staticmethod
-    def compute_trust(bayesianNetwork, source, sink, decision=None):
-        # Don't ignore any nodes
-        if decision == None:
-            print "decision==None"
-            return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink)
+    def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
         # Ignore nodes as specified by decision
-        else:
+        if decision != None:
             for node in decision:
                 bayesianNetwork.remove_node(node)
-            print bayesianNetwork.nodes()
-            return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink)
+        elif tag != None:
+            # TODO: remove edges with the wrong tag
+            pass
+
+        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink)
+
+        
+
+
 
 
 
