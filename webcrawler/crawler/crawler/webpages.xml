@@ -114,6 +114,60 @@
     
     
     
+    <webpage url="www.dailymail.co.uk">
+        <article-qualification>
+            <xpath>div[contains(@class,'articlePage')]</xpath>
+        </article-qualification>
+
+        <article-data>
+
+            <title>
+                <xpath>//*[contains(@class, "article-text")]/h1[1]/text()</xpath>
+            </title>
+
+            <summary>
+                <xpath>//*[contains(@class, "article-text")]//li[1]/font/text()</xpath>
+            </summary>
+
+            <author>
+                <xpath>//*[contains(@class, "author")]/text()</xpath>
+            </author>
+
+            <date>
+                <xpath>//*[contains(@class, "article-timestamp")][1]/text()</xpath>
+            </date>
+
+        </article-data>
+    </webpage>
+    
+    
+    
+    <webpage url="timesofindia.indiatimes.com">
+        <article-qualification>
+            <xpath>*[contains(@class,'article')]</xpath>
+        </article-qualification>
+
+        <article-data>
+
+            <title>
+                <xpath>//*[contains(@class, "arttle")]/h1/text()</xpath>
+            </title>
+
+            <summary>
+                <xpath>//*[contains(@class, "article-text")]//li[1]/font/text()</xpath>
+            </summary>
+
+            <author>
+                <xpath>//*[contains(@class, "author")]/text()</xpath>
+            </author>
+
+            <date>
+                <xpath>//*[contains(@class, "article-timestamp")][1]/text()</xpath>
+            </date>
+
+        </article-data>
+    </webpage>
+    
     
     
     
