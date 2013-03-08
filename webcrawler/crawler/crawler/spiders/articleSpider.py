@@ -10,12 +10,12 @@ from crawler.items import ArticleItem
 class ArticleSpider(BaseSpider):
     name = "article"
     allowed_domains = ["dn.se"]
-    start_urls = [
-        "http://www.dn.se/nyheter/sverige/abdullah-och-aqilah-fran-irak-lever-pa-en-tusenlapp-var",
-        "http://www.dn.se/nyheter/vetenskap/kristall-lik-solsten-funnen-pa-medeltida-skepp",
-        "http://www.dn.se/kultur-noje/dn-medarbetare-tar-plats-i-svenska-akademien",
-        "http://www.dn.se/kultur-noje/film-tv/harrison-ford-med-i-nya-anchorman"
-    ]
+
+    def __init__(self, *args, **kwargs):
+        super(ArticleSpider, self).__init__(*args, **kwargs)
+
+        self.start_urls = kwargs.get('start_urls').split(',')
+        print self.start_urls
 
     def parse(self, response):
         hxs = HtmlXPathSelector(response)
