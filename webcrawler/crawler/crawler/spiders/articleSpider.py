@@ -26,6 +26,8 @@ class ArticleSpider(BaseSpider):
 
     def parse(self, response):
     
+        
+    
         xpaths = Xpaths('crawler/webpages.xml')
         domain = urlparse(response.url)[1]
         loader = ArticleLoader(item=ArticleItem(), response=response)

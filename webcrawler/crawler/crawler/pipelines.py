@@ -5,4 +5,17 @@
 
 class CrawlerPipeline(object):
     def process_item(self, item, spider):
+    
+        fields = ["title", "author", "summary", "date"]
+        for field in fields:
+            if field in item:
+                item[field] = item[field].strip()
+            else:
+                item[field] = "unknown"
+        
+        print "ARTICLE:"
+        print "-------"
+        print item
+        print ""
+        
         return item

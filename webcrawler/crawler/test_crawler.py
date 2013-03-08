@@ -12,14 +12,14 @@ from scrapy.utils.project import get_project_settings
 
 import crawler.settings as default_settings
 
-def setup_crawler(domain):
+def setup_crawler(article_url):
 
     # connect signals from spiders to methods
     dispatcher.connect(_item_passed, signal=signals.item_scraped)
     dispatcher.connect(_spider_opened, signal=signals.spider_opened)
 
     # init spider
-    spider = ArticleSpider(start_urls=domain)
+    spider = ArticleSpider(start_urls=article_url)
 
     # get project settings and use to init crawler
     settings = get_project_settings()
@@ -36,11 +36,14 @@ def _item_passed(item, response, spider):
 
 def _spider_opened(spider):
     print "spider opened!"
-    
+ 
+ 
+   
 
 # insert test articles here
-for domain in ['http://www.dn.se/nyheter/varlden/nordkorea-upphaver-vapenvila-med-syd', 'http://www.nytimes.com/2013/03/08/world/europe/pope-wanted-must-possess-magnetic-charm-and-grit.html']:
-    setup_crawler(domain)
+urls = ['http://www.dn.se/nyheter/varlden/nordkorea-upphaver-vapenvila-med-syd', 'http://www.nytimes.com/2013/03/08/world/europe/pope-wanted-must-possess-magnetic-charm-and-grit.html']
+for url in urls:
+    setup_crawler(url)
 
 # stuff
 log.start()

@@ -8,12 +8,24 @@ from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst, Compose
 
 class ArticleItem(Item):
-    title = Field(default="Unknown")
-    author = Field(default="Unknown")
-    date = Field(default="Unknown")
-    summary = Field(default="Unknown")
+    title = Field()
+    author = Field()
+    date = Field()
+    summary = Field()
+    
+    def __str__(self):
+        return unicode(self).encode('utf-8')
+    
+    def __unicode__(self):
+        fields = ["title", "author", "date", "summary"]
+        for field in fields:
+            if not field in self:
+                # Needed when debugging tries to print item before all fields are set
+                return ""            
+        return (self["title"] + " (" + self["author"] + ", " + self["date"] + ")\nSUMMARY: " + self["summary"])
+
 
 
 class ArticleLoader(XPathItemLoader):
-    default_output_processor = TakeFirst() #Compose(lambda v: v[0], str.upper)
-
+    default_output_processor = TakeFirst()
+    

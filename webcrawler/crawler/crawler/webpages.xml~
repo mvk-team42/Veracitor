@@ -102,7 +102,7 @@
             </summary>
 
             <author>
-                <xpath>//*[contains(@itemprop,"author")]//*[contains(@itemprop, "name")]/text()</xpath>
+                <xpath>//*[contains(@class, "byline")]/*[contains(@itemprop,"author")]//*[@itemprop="name"]/text()</xpath>
             </author>
 
             <date>
