@@ -1,6 +1,6 @@
 from mongoengine import *
 
-connect('pentagon lol') # :D
+connect('mydb')
 
 class Group(Document):
     """Provides public fields mirroring
@@ -14,7 +14,7 @@ class Group(Document):
     owner = ReferenceField((Document), required=True)
     tags = ListField(ReferenceField(Document), required=True)
     producers = ListField(ReferenceField(Document), required=True)
-    time_created = IntField(required=True) # date?
+    time_created = DateTimeField(required=True)
     
     
     

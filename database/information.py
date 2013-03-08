@@ -1,5 +1,5 @@
 from mongoengine import *
-import Tag
+import tag
 
 class Information(Document):
     """Provides public fields mirroring
@@ -11,8 +11,8 @@ class Information(Document):
     name = StringField(required=True)
     description = StringField(required=True)
     url = StringField(required=True)
-    time_published = StringField(required=True)
-    tags = ListField(ReferenceField(Tag.Tag), required=True)
+    time_published = DateTimeField(required=True)
+    tags = ListField(ReferenceField(tag.Tag), required=True)
     publishers = ListField(ReferenceField(Document), required=True)
     references = ListField(ReferenceField('self'))
     

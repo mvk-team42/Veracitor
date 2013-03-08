@@ -1,8 +1,6 @@
 from mongoengine import * 
 
-
-
-connect('FOISERVER') # ej korrekt
+connect('mydb')
 
 class SourceRatings(EmbeddedDocument):
     """Defines public fields used by
@@ -11,15 +9,15 @@ class SourceRatings(EmbeddedDocument):
        
     """
     rating = IntField(required=True)
-    tag = ReferenceField(Document)
-    source = ReferenceField(Document)
+    tag = ReferenceField(Document, required=True)
+    source = ReferenceField(Document, required=True)
     
 class InformationRatings(EmbeddedDocument):
     """Defines public fields used by
-       Producer to store information ratings
+       Producer to store information ratings.
        
     """
-    information = ReferenceField(Document)
+    information = ReferenceField(Document, required=True)
     rating = IntField(required=True)
 
 class Producer(Document):
