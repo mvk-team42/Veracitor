@@ -5,6 +5,7 @@
 
 from scrapy.item import Item, Field
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
+from scrapy.contrib.loader.processor import TakeFirst
 
 class ArticleItem(Item):
     title = Field(default="Unknown")

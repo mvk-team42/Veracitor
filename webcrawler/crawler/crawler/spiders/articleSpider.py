@@ -33,6 +33,7 @@ class ArticleSpider(BaseSpider):
         for xpath in xpaths.get_title_xpaths(domain):
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             article["title"] = hxs.select(xpath).extract()
             break
         
@@ -51,6 +52,9 @@ class ArticleSpider(BaseSpider):
 =======
 >>>>>>> Fixed spider-loader bug?
             loader.add_xpath("name", xpath)
+=======
+            loader.add_xpath("title", xpath)
+>>>>>>> fixed bugs, added output testing
         
         for xpath in xpaths.get_author_xpaths(domain):
             loader.add_xpath("author", xpath)
@@ -66,7 +70,12 @@ class ArticleSpider(BaseSpider):
            
         for xpath in xpaths.get_summary_xpaths(domain):
             loader.add_xpath("summary", xpath)
+<<<<<<< HEAD
 >>>>>>> Fixed spider-loader bug?
+=======
+
+        open("output", 'wb').write(loader.get_output_value('title'))
+>>>>>>> fixed bugs, added output testing
             
         return loader.load_item()
         
