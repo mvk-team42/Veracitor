@@ -19,7 +19,7 @@ class ArticleSpider(BaseSpider):
 
     def parse(self, response):
         hxs = HtmlXPathSelector(response)
-        xpaths = Xpaths('/home/jonathan/Veracitor/webcrawler/crawler/crawler/webpages.xml')
+        xpaths = Xpaths('crawler/webpages.xml')
         article = ArticleItem()
         
         for xpath in xpaths.get_title_xpaths("dn.se"):
