@@ -2,7 +2,6 @@
 <webpages>
 
     <webpage url="dn.se">
-
         <article-qualification>
             <xpath>div[@id="article"]</xpath>
             <xpath>div/p[@class="header"]</xpath>
@@ -15,11 +14,11 @@
             </title>
 
             <summary>
-                <xpath>//*[@id="article-content"]/div[2]/div[1]/div/p/text()</xpath>
+                <xpath>//*[@id="article-content"]//*[@class="preamble"]//p/text()</xpath>
             </summary>
 
             <author>
-                <xpath>//*[@id="byline"]/div/p[1]/strong/text()</xpath>
+                <xpath>//*[@id="byline"]/div/p/strong/text()</xpath>
             </author>
 
             <date>
@@ -27,8 +26,70 @@
             </date>
 
         </article-data>
-
     </webpage>
+    
+    
+    
+    <webpage url="guardian.co.uk">
+        <article-qualification>
+            <xpath>div[contains(@class,'article')]</xpath>
+        </article-qualification>
+
+        <article-data>
+
+            <title>
+                <xpath>//*[@id="main-article-info"]/h1/text()</xpath>
+            </title>
+
+            <summary>
+                <xpath>//*[@id="main-article-info"]//p[@itemprop="description"]/text()</xpath>
+            </summary>
+
+            <author>
+                <xpath>//*[@id="content"]//a[contains(@class,"contributor")/text()</xpath>
+            </author>
+
+            <date>
+                <xpath>//*[contains(@class, "publication")]//time/text()</xpath>
+            </date>
+
+        </article-data>
+    </webpage>
+    
+    
+    
+     <webpage url="svd.se">
+        <article-qualification>
+            <xpath>div[contains(@class,'article')]</xpath>
+        </article-qualification>
+
+        <article-data>
+
+            <title>
+                <xpath>//*[@id="main-article-info"]/h1/text()</xpath>
+            </title>
+
+            <summary>
+                <xpath>//*[@id="main-article-info"]//p[@itemprop="description"]/text()</xpath>
+            </summary>
+
+            <author>
+                <xpath>//*[@id="content"]//a[contains(@class,"contributor")/text()</xpath>
+            </author>
+
+            <date>
+                <xpath>//*[contains(@class, "publication")]//time/text()</xpath>
+            </date>
+
+        </article-data>
+    </webpage>
+    
+    
+    
+    
+    
+    
+
 
 </webpages>
 
