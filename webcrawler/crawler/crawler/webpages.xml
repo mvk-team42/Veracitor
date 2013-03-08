@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<webpages>
+
+    <webpage url="dn.se">
+
+        <article-qualification>
+            <xpath>div[@id="article"]</xpath>
+            <xpath>div/p[@class="header"]</xpath>
+        </article-qualification>
+
+        <article-data>
+
+            <title>
+                <xpath>//*[@id="article-content"]/h1/text()</xpath>
+            </title>
+
+            <summary>
+                <xpath>//*[@id="article-content"]/div[2]/div[1]/div/p/text()</xpath>
+            </summary>
+
+            <author>
+                <xpath>//*[@id="byline"]/div/p[1]/strong/text()</xpath>
+            </author>
+
+            <date>
+                <xpath>//*[@id="article-content"]/p/text()</xpath>
+            </date>
+
+        </article-data>
+
+    </webpage>
+
+</webpages>
+
