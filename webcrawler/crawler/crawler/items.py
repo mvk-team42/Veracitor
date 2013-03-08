@@ -6,8 +6,8 @@
 from scrapy.item import Item, Field
 
 class ArticleItem(Item):
-    title = Field()
-    author = Field()
-    date = Field()
-    summary = Field()
+    title = Field(default="Unknown")
+    author = Field(default="Unknown")
+    date = Field(default="Unknown")
+    summary = Field(default="Unknown")
 
