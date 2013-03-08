@@ -7,33 +7,6 @@ import sys
 import networkx as nx
 import matplotlib.pyplot as plt
 
-
-G = nx.DiGraph()
-"""
-G.add_weighted_edges_from([(1,2,10),3
-                           (1,3,8),
-                           (1,4,9),
-                           (2,5,9),
-                           (3,5,10),
-                           (3,6,10),
-                           (4,5,8),
-                           (4,6,9),
-                           (5,7,8),
-                           (6,7,6),
-                           ])
-""" 
-
-"""
-G.add_weighted_edges_from([(1,2,10)])                     
-"""
-G.add_weighted_edges_from([(1,2,8),
-                           (1,3,5),
-                           (1,4,3),
-                           (2,4,4),
-                           (3,4,7),
-                           ])
-                                   
-
 class TidalTrust:
     
     @staticmethod
@@ -78,6 +51,12 @@ class TidalTrust:
             # multiplied by the child's cached trust rating of the sink sink.
             # Divide this by the sum of the childrens cached trust ratings of the sink.
 
+            # Note: If only one path exists from a node to the sink,
+            # its child's trust in the sink will be used. This may give a false
+            # impression of trust between the node and the sink since the trust
+            # between the parent and its child is not considered.
+            # (rating*cached_rating)/rating = cached_rating
+            # ???
             for s in children:
                 # Use edge if rating >= threshold and the successor has a cached trust to the sink.
                 if (graph[current_node][s]['weight'] >= threshold and (s, sink) in cached_trust):
@@ -92,6 +71,7 @@ class TidalTrust:
                 cached_trust[(current_node, sink)] = -1       
         
         if (source, sink) in cached_trust:
+            print cached_trust
             return cached_trust[(source, sink)]
         else:
             return None    # TODO: Raise exception here???
@@ -112,7 +92,8 @@ class TidalTrust:
             
             if min_path_weight > threshold:
                 threshold = min_path_weight  
-                           
+
+        print threshold
         return threshold
         
     # possible optimization?: use this
@@ -132,8 +113,25 @@ class TidalTrust:
         #nx.draw_circular(graph)
         #nx.draw_spectral(graph)
         #plt.show()
+
+    @staticmethod
+    def compute_trust(bayesianNetwork, source, sink, decision=None):
+        # Don't ignore any nodes
+        if decision == None:
+            print "decision==None"
+            return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink)
+        # Ignore nodes as specified by decision
+        else:
+            for node in decision:
+                bayesianNetwork.remove_node(node)
+            print bayesianNetwork.nodes()
+            return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink)
+
+
+
+
     
-    
+
 
      
 

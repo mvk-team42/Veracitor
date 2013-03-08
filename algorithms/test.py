@@ -16,10 +16,27 @@ G.add_weighted_edges_from([(1,2,10),
                            (6,7,6),
                            ])
 
-#nx.draw(G)
-nx.draw_circular(G)
-#nx.draw_spectral(G)
+G2 = nx.DiGraph()
 
-print tt.tidal_trust(graph=G, source=1, sink=7)
+G2.add_weighted_edges_from([(1,2,5),
+                            (1,3,4),
+                            (2,4,10),
+                            (2,5,10),
+                            (3,6,9),
+                            (4,7,2),
+                            (5,8,8),
+                            (6,8,3),
+                            (8,9,7),
+                            (6,7,5),
+                            ])
+
+#nx.draw(G)
+#nx.draw_circular(G2)
+nx.draw_spectral(G)
+
+#print tt.tidal_trust(graph=G, source=1, sink=7)
+
+print tt.compute_trust(bayesianNetwork=G2, source=1, sink=9, decision=None)
+
 
 plt.show()
