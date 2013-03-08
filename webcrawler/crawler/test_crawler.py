@@ -4,6 +4,7 @@ from scrapy.crawler import Crawler
 from scrapy.settings import Settings
 from scrapy import signals
 from scrapy import log
+from scrapy.xlib.pydispatch import dispatcher
 from crawler.spiders.articleSpider import ArticleSpider
 
 def setup_crawler(domain):
@@ -11,10 +12,10 @@ def setup_crawler(domain):
     crawler = Crawler(Settings())
     crawler.configure()
     crawler.crawl(spider)
-    crawler.signals.connect(output, signal=signals.item_scraped)
+    dispatcher.connect(_item_passed, signal=signals.item_scraped)
     crawler.start()
 
-def output(item, response, spider):
+def _item_passed(item, response, spider):
     print "here!"
     print item
     

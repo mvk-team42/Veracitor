@@ -82,8 +82,12 @@ class ArticleSpider(BaseSpider):
 >>>>>>> Fixed spider-loader bug?
 =======
 
+<<<<<<< HEAD
         open("output", 'wb').write(loader.get_output_value('title'))
 >>>>>>> fixed bugs, added output testing
+=======
+        open("output", "wb").write(loader.get_output_value("title").encode('utf8'))
+>>>>>>> stuff n stufff....
             
         return loader.load_item()
         

@@ -15,5 +15,5 @@ class ArticleItem(Item):
 
 
 class ArticleLoader(XPathItemLoader):
-    default_output_processor = Compose(lambda v: v[0], str.upper)
+    default_output_processor = TakeFirst() #Compose(lambda v: v[0], str.upper)
 
