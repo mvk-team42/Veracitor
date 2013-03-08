@@ -2,7 +2,7 @@
 from twisted.internet import reactor
 from scrapy.crawler import Crawler
 from scrapy.settings import Settings
-import scrapy.signals as signals 
+from scrapy import signals
 from scrapy import log
 from crawler.spiders.articleSpider import ArticleSpider
 
@@ -11,7 +11,7 @@ def setup_crawler(domain):
     crawler = Crawler(Settings())
     crawler.configure()
     crawler.crawl(spider)
-    crawler.signals.connect(output, signals.item_scraped)
+    crawler.signals.connect(output, signal=signals.item_scraped)
     crawler.start()
 
 def output(item, response, spider):
