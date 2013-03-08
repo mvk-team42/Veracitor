@@ -15,7 +15,3 @@ class ArticleItem(Item):
 
 
 class ArticleLoader(XPathItemLoader):
-    default_output_processor = Compose(lambda v: v[0], clean)
-    
-def clean(text):
-    return str.upper(text)
