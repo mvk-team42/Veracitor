@@ -1,11 +1,15 @@
-
-
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from crawler.xpaths import Xpaths
 from crawler.items import ArticleItem
+<<<<<<< HEAD
 from urlparse import urlparse
 
+=======
+from scrapy.contrib.loader import ItemLoader, XPathItemLoader
+from scrapy.contrib.loader.processor import TakeFirst
+from items import ArticleItem
+>>>>>>> itemloaders in spider
 
 
 class ArticleSpider(BaseSpider):
@@ -17,14 +21,14 @@ class ArticleSpider(BaseSpider):
         self.start_urls = kwargs.get('start_urls').split(',')
 
     def parse(self, response):
-        hxs = HtmlXPathSelector(response)
+   
         xpaths = Xpaths('crawler/webpages.xml')
-        article = ArticleItem()
-        
-        url = response.url
-        domain = urlparse(url)[1]
+        domain = urlparse(response.url)[1]
+        loader = XPathItemLoader(item=ArticleItem(), response=response)
+        loader.default_output_processor = TakeFirst()
         
         for xpath in xpaths.get_title_xpaths(domain):
+<<<<<<< HEAD
             article["title"] = hxs.select(xpath).extract()
             break
         
@@ -39,6 +43,24 @@ class ArticleSpider(BaseSpider):
         for xpath in xpaths.get_summary_xpaths(domain):
             article["summary"] = hxs.select(xpath).extract()
             break
+=======
+            loader.add_xpath("name", xpath)
+        
+        for xpath in xpaths.get_author_xpaths(domain):
+            loader.add_xpath("author", xpath)
             
-        return article
+        for xpath in xpaths.get_date_xpaths(domain):
+            loader.add_xpath("date", xpath)
+            
+        for xpath in xpaths.get_summary_xpaths(domain):
+            loader.add_xpath("summary", xpath)
+>>>>>>> itemloaders in spider
+            
+        return loader.load_item()
+        
+       
+    
+    
+    
+    
         
