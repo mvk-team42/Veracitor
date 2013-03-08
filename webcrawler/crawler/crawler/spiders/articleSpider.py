@@ -34,6 +34,7 @@ class ArticleSpider(BaseSpider):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             article["title"] = hxs.select(xpath).extract()
             break
         
@@ -51,15 +52,20 @@ class ArticleSpider(BaseSpider):
 =======
 =======
 >>>>>>> Fixed spider-loader bug?
+=======
+            xpath += "/normalize-space()"
+>>>>>>> clean text
             loader.add_xpath("name", xpath)
 =======
             loader.add_xpath("title", xpath)
 >>>>>>> fixed bugs, added output testing
         
         for xpath in xpaths.get_author_xpaths(domain):
+            xpath += "/normalize-space()"
             loader.add_xpath("author", xpath)
             
         for xpath in xpaths.get_date_xpaths(domain):
+            xpath += "/normalize-space()"
             loader.add_xpath("date", xpath)
 <<<<<<< HEAD
             
@@ -69,6 +75,7 @@ class ArticleSpider(BaseSpider):
 =======
            
         for xpath in xpaths.get_summary_xpaths(domain):
+            xpath += "/normalize-space()"
             loader.add_xpath("summary", xpath)
 <<<<<<< HEAD
 >>>>>>> Fixed spider-loader bug?
