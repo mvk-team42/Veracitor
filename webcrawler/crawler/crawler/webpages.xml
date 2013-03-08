@@ -60,25 +60,53 @@
     
      <webpage url="svd.se">
         <article-qualification>
-            <xpath>div[contains(@class,'article')]</xpath>
+            <xpath>div[contains(@id,'article-content')]</xpath>
         </article-qualification>
 
         <article-data>
 
             <title>
-                <xpath>//*[@id="main-article-info"]/h1/text()</xpath>
+                <xpath>//*[@id="article"]/h1/text()</xpath>
             </title>
 
             <summary>
-                <xpath>//*[@id="main-article-info"]//p[@itemprop="description"]/text()</xpath>
+                <xpath>//*[@id="article"]/*[contains(@class,"preamble")]/text()</xpath>
             </summary>
 
             <author>
-                <xpath>//*[@id="content"]//a[contains(@class,"contributor")/text()</xpath>
+                <xpath>//*[contains(@class, "author")]/text()</xpath>
             </author>
 
             <date>
-                <xpath>//*[contains(@class, "publication")]//time/text()</xpath>
+                <xpath>//*[contains(@class, "article-metadata")]//*[contains(@class, "publishdate")]/text()</xpath>
+            </date>
+
+        </article-data>
+    </webpage>
+    
+    
+    
+    <webpage url="nytimes.com">
+        <article-qualification>
+            <xpath>div[contains(@id,'article')]</xpath>
+        </article-qualification>
+
+        <article-data>
+
+            <title>
+                <xpath>//h1[contains(@class,"articleHeadline")]/nyt_headline/text()</xpath>
+            </title>
+
+            <summary>
+                <xpath>//nyt_text/*[@itemprop="articleBody"][1]/text()</xpath>
+            </summary>
+
+            <author>
+                <xpath>//*[contains(@class, "byline")]/*[@itemprop="author"]//*[@itemprop="name"]/text()</xpath>
+            </author>
+
+            <date>
+                <xpath>//*[contains(@class, "dateline")]/text()</xpath>
             </date>
 
         </article-data>
