@@ -13,29 +13,30 @@ class ArticleSpider(BaseSpider):
 
     def __init__(self, *args, **kwargs):
         super(ArticleSpider, self).__init__(*args, **kwargs)
-
         self.start_urls = kwargs.get('start_urls').split(',')
-        print self.start_urls
 
     def parse(self, response):
         hxs = HtmlXPathSelector(response)
         xpaths = Xpaths('crawler/webpages.xml')
         article = ArticleItem()
         
-        for xpath in xpaths.get_title_xpaths("dn.se"):
-            article["title"] = hxs.select(xpath).extract()
+        url = response.url
+        domain = urlparse(url)[1]
+        
+        for xpath in xpaths.get_title_xpaths(domain):
+            article["title"] = hxs.select(xpath)[0].extract()
             break
         
-        for xpath in xpaths.get_author_xpaths("dn.se"):
-            article["author"] = hxs.select(xpath).extract()
+        for xpath in xpaths.get_author_xpaths(domain):
+            article["author"] = hxs.select(xpath)[0].extract()
             break
             
-        for xpath in xpaths.get_date_xpaths("dn.se"):
-            article["date"] = hxs.select(xpath).extract()
+        for xpath in xpaths.get_date_xpaths(domain):
+            article["date"] = hxs.select(xpath)[0].extract()
             break
             
-        for xpath in xpaths.get_summary_xpaths("dn.se"):
-            article["summary"] = hxs.select(xpath).extract()
+        for xpath in xpaths.get_summary_xpaths(domain):
+            article["summary"] = hxs.select(xpath)[0].extract()
             break
             
         return article
