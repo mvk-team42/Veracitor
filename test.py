@@ -16,9 +16,8 @@ G.add_weighted_edges_from([(1,2,10),
                            (6,7,6),
                            ])
 
-
-nx.draw(G)
-#nx.draw_circular(G)
+#nx.draw(G)
+nx.draw_circular(G)
 #nx.draw_spectral(G)
 
 print tt.tidal_trust(graph=G, source=1, sink=7)
