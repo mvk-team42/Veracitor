@@ -28,8 +28,7 @@ class ArticleSpider(BaseSpider):
     
         xpaths = Xpaths('crawler/webpages.xml')
         domain = urlparse(response.url)[1]
-        loader = XPathItemLoader(item=ArticleItem(), response=response)
-        loader.default_output_processor = TakeFirst()
+        loader = ArticleLoader(item=ArticleItem(), response=response)
         
         for xpath in xpaths.get_title_xpaths(domain):
 <<<<<<< HEAD

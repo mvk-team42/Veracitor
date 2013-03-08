@@ -12,3 +12,6 @@ class ArticleItem(Item):
     date = Field(default="Unknown")
     summary = Field(default="Unknown")
 
+
+class ArticleLoader(XPathItemLoader):
+    default_output_processor = TakeFirst()
