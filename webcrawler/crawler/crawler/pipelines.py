@@ -13,9 +13,6 @@ class CrawlerPipeline(object):
             else:
                 item[field] = "unknown"
         
-        print "ARTICLE:"
-        print "-------"
-        print item
-        print ""
+        print item.short_string() + "\n"
         
         return item

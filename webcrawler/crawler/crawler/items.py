@@ -11,19 +11,23 @@ class ArticleItem(Item):
     title = Field()
     author = Field()
     date = Field()
+    url = Field()
     summary = Field()
     
     def __str__(self):
         return unicode(self).encode('utf-8')
     
-    def __unicode__(self):
-        fields = ["title", "author", "date", "summary"]
-        for field in fields:
-            if not field in self:
-                # Needed when debugging tries to print item before all fields are set
-                return ""            
-        return (self["title"] + " (" + self["author"] + ", " + self["date"] + ")\nSUMMARY: " + self["summary"])
+    def __unicode__(self):           
+        return (self["title"] + " (" + self["author"] + ", " + self["date"] + ")\nURL: " + self["url"] + "\nSUMMARY: " + self["summary"])
 
+    def long_string(self):
+        return ("---------------------------------\n"+
+                self.__unicode__() +
+                "\n---------------------------------"
+               );
+
+    def short_string(self):
+        return self["title"]
 
 
 class ArticleLoader(XPathItemLoader):

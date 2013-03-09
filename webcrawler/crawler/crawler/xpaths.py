@@ -8,21 +8,14 @@ class Xpaths:
         tree = ET.parse(filepath)
         self.root = tree.getroot()
         
-    def _xpaths(self, data, url):
-        webpage = self.root.find("webpage[@url='"+url+"']")
-        xpaths = webpage.findall("article-data/"+data+"/xpath")
+    def get_xpaths(self, field_name, domain):
+        webpage = self.root.find("webpage[@domain='"+domain+"']")
+        xpaths = webpage.findall("article-data/"+field_name+"/xpath")
         return [xpath.text for xpath in xpaths]
 
-    def get_title_xpaths(self, url):
-        return self._xpaths("title", url)
-        
-    def get_summary_xpaths(self, url):
-        return self._xpaths("summary", url)
-
-    def get_author_xpaths(self, url):
-        return self._xpaths("author", url)
-
-    def get_date_xpaths(self, url):
-        return self._xpaths("date", url)
-        
-
+    def get_article_qualification_xpaths(self, domain):
+        webpage = self.root.find("webpage[@domain='"+domain+"']")
+        if webpage is None: # Doesn't even recognise domain =>  Certainly not valid article
+            return []
+        xpaths = webpage.findall("article-qualification/xpath")
+        return [xpath.text for xpath in xpaths]

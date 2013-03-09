@@ -1,16 +1,20 @@
 <?xml version="1.0"?>
 <webpages>
 
-    <webpage url="www.dn.se">
+    <webpage domain="www.dn.se">
         <article-qualification>
-            <xpath>div[@id="article"]</xpath>
-            <xpath>div/p[@class="header"]</xpath>
+            <xpath>//div[@id="article"]</xpath>
+            <xpath>//meta[@content="article"]</xpath>
+            <xpath>//div/p[@class="header"]</xpath>
         </article-qualification>
 
         <article-data>
 
             <title>
                 <xpath>//*[@id="article-content"]/h1/text()</xpath>
+                <xpath>//*[@id="main"]/h1/text()</xpath>
+                <xpath>//*[contains(@class, "megabauta-articlestart")]/h1/text()</xpath>
+                <xpath>//h1[1]/text()</xpath>
             </title>
 
             <summary>
@@ -30,9 +34,9 @@
     
     
     
-    <webpage url="www.guardian.co.uk">
+    <webpage domain="www.guardian.co.uk">
         <article-qualification>
-            <xpath>div[contains(@class,'article')]</xpath>
+            <xpath>//div[contains(@class,'article')]</xpath>
         </article-qualification>
 
         <article-data>
@@ -58,9 +62,9 @@
     
     
     
-     <webpage url="www.svd.se">
+     <webpage domain="www.svd.se">
         <article-qualification>
-            <xpath>div[contains(@id,'article-content')]</xpath>
+            <xpath>//div[contains(@id,'article-content')]</xpath>
         </article-qualification>
 
         <article-data>
@@ -86,9 +90,9 @@
     
     
     
-    <webpage url="www.nytimes.com">
+    <webpage domain="www.nytimes.com">
         <article-qualification>
-            <xpath>div[contains(@id,'article')]</xpath>
+            <xpath>//div[contains(@id,'article')]</xpath>
         </article-qualification>
 
         <article-data>
@@ -102,7 +106,7 @@
             </summary>
 
             <author>
-                <xpath>//*[contains(@class, "byline")]/*[contains(@itemprop,"author")]//*[@itemprop="name"]/text()</xpath>
+                <xpath>//*[contains(@itemprop,"author")]//*[contains(@itemprop, "name")]/text()</xpath>
             </author>
 
             <date>
@@ -114,9 +118,9 @@
     
     
     
-    <webpage url="www.dailymail.co.uk">
+    <webpage domain="www.dailymail.co.uk">
         <article-qualification>
-            <xpath>div[contains(@class,'articlePage')]</xpath>
+            <xpath>//div[contains(@class,'articlePage')]</xpath>
         </article-qualification>
 
         <article-data>
@@ -142,9 +146,9 @@
     
     
     
-    <webpage url="timesofindia.indiatimes.com">
+    <webpage domain="timesofindia.indiatimes.com">
         <article-qualification>
-            <xpath>*[contains(@class,'article')]</xpath>
+            <xpath>//*[contains(@class,'article')]</xpath>
         </article-qualification>
 
         <article-data>
