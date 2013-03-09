@@ -24,6 +24,10 @@ class ArticleSpider(BaseSpider):
         self.start_urls = kwargs.get('start_urls').split(',')
 
     def parse(self, response):
+       return ArticleSpider.scrape_article(response)
+        
+    @staticmethod
+    def scrape_article(response):
         xpaths = Xpaths('crawler/webpages.xml')
         domain = urlparse(response.url)[1]
         loader = ArticleLoader(item=ArticleItem(), response=response)
@@ -99,5 +103,3 @@ class ArticleSpider(BaseSpider):
                 
 >>>>>>> Big commit. Added new spider that crawls entire newspaper from base-url and extracts all valid articles. article-qualification in XML-file is used to filter articles from other links.
         return loader.load_item()
-        
-

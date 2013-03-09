@@ -1,11 +1,6 @@
-# Define here the models for your scraped items
-#
-# See documentation in:
-# http://doc.scrapy.org/topics/items.html
-
 from scrapy.item import Item, Field
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
-from scrapy.contrib.loader.processor import TakeFirst, Compose
+from scrapy.contrib.loader.processor import TakeFirst, Compose, Join
 
 class ArticleItem(Item):
     title = Field()
@@ -32,4 +27,6 @@ class ArticleItem(Item):
 
 class ArticleLoader(XPathItemLoader):
     default_output_processor = TakeFirst()
-    
+    date_out = Join()
+    summary_out = Join()
+    title_out = Join()

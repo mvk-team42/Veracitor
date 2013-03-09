@@ -1,6 +1,54 @@
 <?xml version="1.0"?>
 <webpages>
 
+    <default>
+        <article-qualification>
+            <xpath>//*[@id="article"]</xpath>
+            <xpath>//meta[@content="article"]</xpath>
+            <xpath>//*[contains(@class,'article')]</xpath>
+            <xpath>//*[@id="article-content"]</xpath>
+            <xpath>//*[contains(@class,'articlePage')]</xpath>
+            <xpath>//*[contains(@role,'article')]</xpath>
+        </article-qualification>
+
+        <article-data>
+            <title>
+                <xpath>//*[@id="article-content"]//h1//text()</xpath>
+                <xpath>//*[@id="main"]//h1//text()</xpath>
+                <xpath>//*[@id="article"]/h1//text()</xpath>
+                <xpath>//h1[1]//text()</xpath>
+                
+            </title>
+
+            <summary>
+                <xpath>//*[@id="article-content"]//*[@class="preamble"]//p/text()</xpath>
+                <xpath>//*[@id="main-article-info"]//*[@itemprop="description"]//text()</xpath>
+                <xpath>//*[contains(@class, "Ingress")]//child::text()</xpath>
+                <xpath>//article//text()</xpath>
+            </summary>
+
+            <author>
+                <xpath>//*[@id="content"]//*[contains(@class,"contributor")]//text()</xpath>
+                <xpath>//*[contains(@class, "author")]//text()</xpath>
+                <xpath>//*[contains(@itemprop,"author")]//*[contains(@itemprop, "name")]//text()</xpath>
+                <xpath>//*[contains(@rel, "author")]//text()</xpath>
+            </author>
+
+            <date>
+                <xpath>//*[contains(@class, "publication")]//time//text()</xpath>
+                <xpath>//*[contains(@class, "article-timestamp")][1]//child::text()</xpath> 
+                <xpath>//*[contains(@class, "timestamp")][1]//child::text()</xpath> 
+                <xpath>//*[contains(@class, "article-metadata")]//*[contains(@class, "publishdate")]//text()</xpath>
+                <xpath>//*[contains(@class, "pubtime")]//text()</xpath>
+            </date>
+        </article-data>
+    </default>
+
+
+
+
+
+
     <webpage domain="www.dn.se">
         <article-qualification>
             <xpath>//div[@id="article"]</xpath>
@@ -14,7 +62,6 @@
                 <xpath>//*[@id="article-content"]//h1/text()</xpath>
                 <xpath>//*[@id="main"]//h1/text()</xpath>
                 <xpath>//*[contains(@class, "megabauta-articlestart")]//h1/text()</xpath>
-                <xpath>//h1[1]/text()</xpath>
             </title>
 
             <summary>
@@ -40,23 +87,6 @@
         </article-qualification>
 
         <article-data>
-
-            <title>
-                <xpath>//*[@id="main-article-info"]/h1/text()</xpath>
-            </title>
-
-            <summary>
-                <xpath>//*[@id="main-article-info"]//p[@itemprop="description"]/text()</xpath>
-            </summary>
-
-            <author>
-                <xpath>//*[@id="content"]//a[contains(@class,"contributor")]/text()</xpath>
-            </author>
-
-            <date>
-                <xpath>//*[contains(@class, "publication")]//time/text()</xpath>
-            </date>
-
         </article-data>
     </webpage>
     
@@ -68,23 +98,6 @@
         </article-qualification>
 
         <article-data>
-
-            <title>
-                <xpath>//*[@id="article"]/h1/text()</xpath>
-            </title>
-
-            <summary>
-                <xpath>//*[@id="article"]/*[contains(@class,"preamble")]/text()</xpath>
-            </summary>
-
-            <author>
-                <xpath>//*[contains(@class, "author")]/text()</xpath>
-            </author>
-
-            <date>
-                <xpath>//*[contains(@class, "article-metadata")]//*[contains(@class, "publishdate")]/text()</xpath>
-            </date>
-
         </article-data>
     </webpage>
     
@@ -105,10 +118,6 @@
                 <xpath>//nyt_text/*[@itemprop="articleBody"][1]/text()</xpath>
             </summary>
 
-            <author>
-                <xpath>//*[contains(@itemprop,"author")]//*[contains(@itemprop, "name")]/text()</xpath>
-            </author>
-
             <date>
                 <xpath>//*[contains(@class, "dateline")]/text()</xpath>
             </date>
@@ -125,21 +134,10 @@
 
         <article-data>
 
-            <title>
-                <xpath>//*[contains(@class, "article-text")]/h1[1]/text()</xpath>
-            </title>
-
             <summary>
                 <xpath>//*[contains(@class, "article-text")]//li[1]/font/text()</xpath>
+                <xpath>//*[contains(@class, "article-text")]//li[1]/text()</xpath>
             </summary>
-
-            <author>
-                <xpath>//*[contains(@class, "author")]/text()</xpath>
-            </author>
-
-            <date>
-                <xpath>//*[contains(@class, "article-timestamp")][1]/text()</xpath>
-            </date>
 
         </article-data>
     </webpage>
@@ -152,23 +150,6 @@
         </article-qualification>
 
         <article-data>
-
-            <title>
-                <xpath>//*[contains(@class, "arttle")]/h1/text()</xpath>
-            </title>
-
-            <summary>
-                <xpath>//*[contains(@class, "article-text")]//li[1]/font/text()</xpath>
-            </summary>
-
-            <author>
-                <xpath>//*[contains(@class, "author")]/text()</xpath>
-            </author>
-
-            <date>
-                <xpath>//*[contains(@class, "article-timestamp")][1]/text()</xpath>
-            </date>
-
         </article-data>
     </webpage>
     
