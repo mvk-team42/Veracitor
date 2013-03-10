@@ -3,7 +3,7 @@ import producer
 
 connect('FOISERVER') # ej korrekt
 
-class GroupRatings(EmbeddedDocument):
+class GroupRating(EmbeddedDocument):
     """ Defines a object structure used by
     User to store user specific group rating 
     
@@ -20,7 +20,7 @@ class User(producer.Producer):
     """
     password = StringField(required=True)
     time_joined = DateTimeField(required=True) #Time eller date joined?
-    group_ratings = ListField(EmbeddedDocumentField(GroupRatings))
+    group_ratings = ListField(EmbeddedDocumentField(GroupRating))
     groups = ListField(ReferenceField(Document))
     
 

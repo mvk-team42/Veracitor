@@ -2,7 +2,7 @@ from mongoengine import *
 
 connect('mydb')
 
-class SourceRatings(EmbeddedDocument):
+class SourceRating(EmbeddedDocument):
     """Defines public fields used by
        Producer to store source ratings
        together with a tag.
@@ -12,7 +12,7 @@ class SourceRatings(EmbeddedDocument):
     tag = ReferenceField(Document, required=True)
     source = ReferenceField(Document, required=True)
     
-class InformationRatings(EmbeddedDocument):
+class InformationRating(EmbeddedDocument):
     """Defines public fields used by
        Producer to store information ratings.
        
@@ -31,8 +31,8 @@ class Producer(Document):
     description = StringField(required=True)
     url = StringField(required=True)
     infos = ListField(ReferenceField(Document))
-    source_ratings = ListField(EmbeddedDocumentField(SourceRatings))
-    info_ratings = ListField(EmbeddedDocumentField(InformationRatings))
+    source_ratings = ListField(EmbeddedDocumentField(SourceRating))
+    info_ratings = ListField(EmbeddedDocumentField(InformationRating))
     type_ = StringField(required=True)
     meta = {'allow_inheritance':'On'}
     

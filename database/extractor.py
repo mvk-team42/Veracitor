@@ -29,3 +29,5 @@ def get_tag(requested_name):
     extr_tag = tag.Tag.objects(_name=requested_name)
     return extr_tag[0]
 
+def get_all_tags():
+    return tag.Tag.objects()
