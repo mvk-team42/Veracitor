@@ -1,5 +1,6 @@
 from mongoengine import * 
 
+
 connect('mydb')
 
 class SourceRating(EmbeddedDocument):
@@ -9,15 +10,15 @@ class SourceRating(EmbeddedDocument):
        
     """
     rating = IntField(required=True)
-    tag = ReferenceField(Document, required=True)
-    source = ReferenceField(Document, required=True)
+    tag = ReferenceField('Tag', required=True)
+    source = ReferenceField('Producer', required=True)
     
 class InformationRating(EmbeddedDocument):
     """Defines public fields used by
        Producer to store information ratings.
        
     """
-    information = ReferenceField(Document, required=True)
+    information = ReferenceField('Information', required=True)
     rating = IntField(required=True)
 
 class Producer(Document):
@@ -28,9 +29,9 @@ class Producer(Document):
     
     """
     name = StringField(required=True)
-    description = StringField(required=True)
-    url = StringField(required=True)
-    infos = ListField(ReferenceField(Document))
+    description = StringField()
+    url = StringField()
+    infos = ListField(ReferenceField('Information'))
     source_ratings = ListField(EmbeddedDocumentField(SourceRating))
     info_ratings = ListField(EmbeddedDocumentField(InformationRating))
     type_ = StringField(required=True)

@@ -12,8 +12,8 @@ class Group(Document):
     name = StringField(required=True)
     description = StringField(required=False)
     owner = ReferenceField((Document), required=True)
-    tags = ListField(ReferenceField(Document), required=True)
-    producers = ListField(ReferenceField(Document), required=True)
+    tags = ListField(ReferenceField('Tag'), required=True)
+    producers = ListField(ReferenceField('Producer'), required=True)
     time_created = DateTimeField(required=True)
     
     

@@ -1,6 +1,7 @@
 from mongoengine import *
 import tag
 
+
 class Information(Document):
     """Provides public fields mirroring
     underlying database object.
@@ -13,6 +14,6 @@ class Information(Document):
     url = StringField(required=True)
     time_published = DateTimeField(required=True)
     tags = ListField(ReferenceField(tag.Tag), required=True)
-    publishers = ListField(ReferenceField(Document), required=True)
+    publishers = ListField(ReferenceField('Producer', required=True))
     references = ListField(ReferenceField('self'))
     

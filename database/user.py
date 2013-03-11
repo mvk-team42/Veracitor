@@ -8,7 +8,7 @@ class GroupRating(EmbeddedDocument):
     User to store user specific group rating 
     
     """
-    group = ReferenceField(Document, required=True)
+    group = ReferenceField('Group', required=True)
     rating = IntField(required=True)
 
 class User(producer.Producer):
@@ -19,9 +19,10 @@ class User(producer.Producer):
     
     """
     password = StringField(required=True)
-    time_joined = DateTimeField(required=True) #Time eller date joined?
+    time_joined = DateTimeField() #Time eller date joined?
     group_ratings = ListField(EmbeddedDocumentField(GroupRating))
-    groups = ListField(ReferenceField(Document))
+    groups = ListField(ReferenceField('Group'))
+    type_ = "User"
     
 
     
