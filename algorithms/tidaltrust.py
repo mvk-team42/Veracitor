@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 class TidalTrust:
     
     @staticmethod
-    def tidal_trust(source, sink, graph):
+    def tidal_trust(source, sink, graph, tag="weight"):
         """ Calculates a trust value between the source and the sink nodes in the given graph """
         
         # TODO: throws networkx.exception.NetworkXNoPath. Handle?
@@ -116,15 +116,29 @@ class TidalTrust:
 
     @staticmethod
     def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
+        """
+        Computes the trust between the source and sink in a graph (bayesianNetwork) 
+        and returns the value as a float.
+
+        decision (optional): A list of node identifiers (i.e. names or id's) for
+        nodes that are not to be used in the trust calculation.
+
+        tag (optional): A tag name (String). Only edges/ratings under this tag
+        will be used in the trust calculation.
+
+        If tag is specified, edges will be tagged with properties, like so:
+        G[1][2][tag_name] = rating.
+        Otherwise, the edges will be considered weighted: G[1][2]["weight"] = rating
+        """
         # Ignore nodes as specified by decision
         if decision != None:
             for node in decision:
                 bayesianNetwork.remove_node(node)
         elif tag != None:
-            # TODO: remove edges with the wrong tag
+            tag = "weight"
             pass
 
-        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink)
+        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag)
 
         
 

@@ -30,26 +30,23 @@ G2.add_weighted_edges_from([(1,2,5),
                             (6,7,5),
                             ])
 
-Gtags = nx.MultiDiGraph()
+Gtags = nx.DiGraph()
 
-Gtags.add_weighted_edges_from([(1,2,dict(
-                tag = dict(name = "cooking", description="baka kakor, bullar osv"),
-                rating = 4)),
-                               (1,2,dict(
-                tag = dict(name = "crime", description="Murder! Assault! Robbery!"),
-                rating = 10)),
-        ])
+Gtags.add_edges_from([(1,2,{"ratings":dict(cooking = 4, crime = 10)})])
+Gtags.add_weighted_edges_from([(2,1,5)])
+
+
 
 print Gtags[1]
 print Gtags[2]
 
 #nx.draw(G)
 #nx.draw_circular(G2)
-nx.draw_spectral(G)
+nx.draw_spectral(Gtags)
 
 #print tt.tidal_trust(graph=G, source=1, sink=7)
 
-print tt.compute_trust(bayesianNetwork=G2, source=1, sink=9, decision=None)
+#print tt.compute_trust(bayesianNetwork=G2, source=1, sink=9, decision=None)
 
 
 plt.show()
