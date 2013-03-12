@@ -54,4 +54,10 @@ nosetests.xml
 .DS_Store
 
 *~
+<<<<<<< HEAD
 >>>>>>> First EntityModel
+=======
+
+# Top secret settings... :)
+veracitor/settings.py
+>>>>>>> Added a basic Flask application.
