@@ -84,7 +84,7 @@ class TestTagThings(GeneralSetup):
         assert self.tag1 in self.group1.tags
 
 class TestInformationThings(GeneralSetup):
-    def test_info_extractor(self):
+    def test_info_extractor(self): 
         date1 = datetime.datetime(year=1970, month=12, day=24)
         date2 = datetime.datetime(year=2017, month=12, day=24)
         assert self.info1 in extractor.search_informations("d", [self.tag1],
