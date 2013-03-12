@@ -12,7 +12,7 @@ class Tag(Document):
     
     """
     
-    name = StringField(required=True)
+    name = StringField(required=True, unique=True)
     description = StringField()
     parent = ListField(ReferenceField('self'))
     valid_strings = ListField(StringField())

@@ -9,11 +9,11 @@ class Group(Document):
     or delete() to delete object from the database.
     
     """
-    name = StringField(required=True)
-    description = StringField(required=False)
+    name = StringField(required=True) 
+    description = StringField()
     owner = ReferenceField((Document), required=True)
     tags = ListField(ReferenceField('Tag'), required=True)
-    producers = ListField(ReferenceField('Producer'), required=True)
+    producers = ListField(ReferenceField('Producer'))
     time_created = DateTimeField(required=True)
     
     

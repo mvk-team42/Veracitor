@@ -28,7 +28,7 @@ class Producer(Document):
     or delete() to delete object from the database.
     
     """
-    name = StringField(required=True)
+    name = StringField(required=True, unique=True)
     description = StringField()
     url = StringField()
     infos = ListField(ReferenceField('Information'))

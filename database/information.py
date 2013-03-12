@@ -9,11 +9,11 @@ class Information(Document):
     or delete() to delete object from the database.
     
     """
-    name = StringField(required=True)
-    description = StringField(required=True)
+    name = StringField(required=True, unique=True)
+    description = StringField()
     url = StringField(required=True)
-    time_published = DateTimeField(required=True)
-    tags = ListField(ReferenceField(tag.Tag), required=True)
-    publishers = ListField(ReferenceField('Producer', required=True))
+    time_published = DateTimeField()
+    tags = ListField(ReferenceField(tag.Tag))
+    publishers = ListField(ReferenceField('Producer'))
     references = ListField(ReferenceField('self'))
     

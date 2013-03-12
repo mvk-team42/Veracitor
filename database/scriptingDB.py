@@ -20,7 +20,7 @@ tag1.name = "Gardening"
 tag1.save()
 
 tag2 = tag.Tag(description="HurrrDiDurr")
-tag2.name = "Cooking"
+tag2.name = "Gardening"
 tag2.parent.append(tag1)
 tag2.save()
 
