@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 # configuration
 
@@ -9,10 +9,6 @@ try:
 except:
     app.config.from_pyfile('settings.py')
 
-
-@app.route("/test")
-def debug():
-    return ""+app.config['USERNAME']
 
 @app.route("/")
 def index():
