@@ -1,0 +1,25 @@
+{% extends "tabs/veracitor_tab.html" %}
+
+{% block content %}
+<div id="network-info-view">
+    <h1 class="title">Title</h1>
+    <p><b>Description: </b><span class="description"></span></p>
+    <p><b>Source type: </b><span class="type"></span></p>
+    <p><b>Tags: </b><span class="tags"></span></p>
+    <p><b>Calculated trust: </b><span class="rating">N/A</span></p>
+    <p><input type="button" value="Calculate trust" /></p>
+    <p><b>Your trust level: </b>
+        <form>
+            <label>1<input type="radio" name="trust" checked="true" /></label>
+            <label>2<input type="radio" name="trust" /></label>
+            <label>3<input type="radio" name="trust" /></label>
+            <label>4<input type="radio" name="trust" /></label>
+            <label>5<input type="radio" name="trust" /></label>
+        </form>
+    </p>
+</div>
+
+<div id="network-holder">
+</div>
+{% endblock %}
+
