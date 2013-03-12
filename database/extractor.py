@@ -42,6 +42,11 @@ def search_producers(possible_prod, type_):
     return producer.Producer.objects(name=re.compile('(?i)'+possible_prod), type_=type_)
 
 def search_informations(possible_info, tags, startD, endD):
+    """Returns a list of informations whose name includes possible_info,
+    with at least one tag matching one of the provided tags,
+    and whose date falls inbetween startD and endD
+
+    """
     infos = information.Information.objects(name=re.compile('(?i)'+possible_info),
                                             time_published__lte=endD,
                                             time_published__gte=startD)
