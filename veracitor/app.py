@@ -1,5 +1,7 @@
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
+from database import *
+import json
 
 # configuration
 
@@ -9,6 +11,23 @@ try:
 except:
     app.config.from_pyfile('settings.py')
 
+
+@app.route("/search_producers", methods=["GET","POST"])
+def prods(name):
+    if request.method == "POST":
+        if request.form:
+            f=request.form
+            error = None
+            if not f['name']:
+                error = "No search parameter."
+            elif not f['type']:
+                error = "No type chosen."
+                
+            if error:
+                return "ERROR: "+error
+            producers = search_producers(f['name'], f['type'])
+            return json.dumps(producers)
+    return redirect(url_for("index"))
 
 @app.route("/")
 def index():
