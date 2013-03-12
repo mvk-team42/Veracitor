@@ -25,7 +25,9 @@ def prods():
                 
             if error:
                 return "ERROR: "+error
-            producers = search_producers(f['name'], f['type'])
+             
+            producers = {'res1':f['name'], 'res2': f['type']}   
+            #producers = search_producers(f['name'], f['type'])
             return json.dumps(producers)
     return redirect(url_for("index"))
 
