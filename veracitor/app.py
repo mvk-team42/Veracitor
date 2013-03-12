@@ -13,7 +13,7 @@ except:
 
 
 @app.route("/search_producers", methods=["GET","POST"])
-def prods(name):
+def prods():
     if request.method == "POST":
         if request.form:
             f=request.form
