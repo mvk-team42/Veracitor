@@ -10,6 +10,10 @@ except:
     app.config.from_pyfile('settings.py')
 
 
+@app.route("/test")
+def debug():
+    return ""+app.config['USERNAME']
+
 @app.route("/")
 def index():
     return render_template("index.html")
