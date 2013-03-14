@@ -43,4 +43,8 @@ nosetests.xml
 =======
 # Misc
 *.py~
+<<<<<<< HEAD
 >>>>>>> Added *.~ files to ignorelist
+=======
+.DS_Store
+>>>>>>> Added mac-specific file to .gitignore
