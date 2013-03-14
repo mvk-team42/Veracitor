@@ -142,7 +142,7 @@ class TidalTrust:
             tag = "weight"
             pass
 
-        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag)
+        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
 
         
 
