@@ -11,7 +11,11 @@ class TidalTrust:
     
     @staticmethod
     def tidal_trust(source, sink, graph, tag="weight"):
-        """ Calculates a trust value between the source and the sink nodes in the given graph """
+        """ 
+        Calculates a trust value between the source and the sink nodes 
+        in the given graph for the given tag 
+        
+        """
         
         # TODO: throws networkx.exception.NetworkXNoPath. Handle?
         shortest = nx.all_shortest_paths(graph, source=source, target=sink)
