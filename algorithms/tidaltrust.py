@@ -75,7 +75,6 @@ class TidalTrust:
                 cached_trust[(current_node, sink)] = -1       
         
         if (source, sink) in cached_trust:
-            print cached_trust
             return cached_trust[(source, sink)]
         else:
             return None    # TODO: Raise exception here???
@@ -97,7 +96,6 @@ class TidalTrust:
             if min_path_weight > threshold:
                 threshold = min_path_weight  
 
-        print threshold
         return threshold
         
     # possible optimization?: use this
@@ -138,9 +136,9 @@ class TidalTrust:
         if decision != None:
             for node in decision:
                 bayesianNetwork.remove_node(node)
-        elif tag != None:
-            tag = "weight"
-            pass
+        #elif tag != None:
+        #    tag = "weight"
+         #   pass
 
         return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
 
