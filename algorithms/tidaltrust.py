@@ -38,7 +38,10 @@ class TidalTrust:
              # Select predecessors of sink in path n
             sink_neighbor = paths_list[n][len(paths_list[0])-2]   
             if (sink_neighbor, sink) not in cached_trust:
-                cached_trust[(sink_neighbor, sink)] = graph[sink_neighbor][sink]['weight']
+                # OBS This works for tags, but the default value 'weight' no longer works since it's not at the same depth
+                # in the graph (dict) as tags, since tags are within 'ratings'
+                # OBS2: No support for tags in nx.all_shortest_paths or get_threshold!
+                cached_trust[(sink_neighbor, sink)] = graph[sink_neighbor][sink]['ratings'][tag]
         
         
         # Backwards search from sink to source. Starts at the predecessors to the leaves.

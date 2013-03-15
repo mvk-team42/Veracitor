@@ -36,9 +36,10 @@ Gtags.add_edges_from([(1,2,{"ratings":dict(cooking = 4, crime = 10)})])
 Gtags.add_weighted_edges_from([(2,1,5)])
 
 
-print Gtags[1]
-print Gtags[2]
+#print Gtags[1]
+#print Gtags[2]
 
+print tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=2, decision=None, tag='crime')
 
 #nx.draw(G)
 #nx.draw_circular(G2)
