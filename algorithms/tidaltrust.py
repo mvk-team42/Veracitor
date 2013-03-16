@@ -18,6 +18,14 @@ class TidalTrust:
         """
         
         # TODO: throws networkx.exception.NetworkXNoPath. Handle?
+        # Suggestion: 
+        # Remove all edges but the ones with the specific tag so that all_shortest_paths
+        # gives correct paths. If done like this, no tag specific commands are needed
+        # either.
+        # Code: 
+        # remove_list = [(x,y) for (x,y) in Graph.edges() if 'crime' not in Graph[x][y]]
+        # Graph.remove_edges_from(remove_list)
+        
         shortest = nx.all_shortest_paths(graph, source=source, target=sink)
         paths_list = list(shortest)
         threshold = TidalTrust.get_threshold(paths_list, graph, tag)
