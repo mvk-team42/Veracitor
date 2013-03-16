@@ -2,8 +2,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from tidaltrust import TidalTrust as tt
 
-G = nx.DiGraph()
+# TODO: Unittesting!
 
+G = nx.DiGraph()
 G.add_weighted_edges_from([(1,2,10),
                            (1,3,8),
                            (1,4,9),
@@ -17,7 +18,6 @@ G.add_weighted_edges_from([(1,2,10),
                            ])
 
 G2 = nx.DiGraph()
-
 G2.add_weighted_edges_from([(1,2,5),
                             (1,3,4),
                             (2,4,10),
@@ -31,9 +31,7 @@ G2.add_weighted_edges_from([(1,2,5),
                             ])
 
 Gtags = nx.DiGraph()
-
-Gtags.add_edges_from([(1,2,dict(cooking = 4, crime = 10))])
-Gtags.add_weighted_edges_from([(2,1,5)])
+Gtags.add_edges_from([(1,2,dict(cooking = 4, crime = 10, weight=1))])
 
 
 #print Gtags[1]
@@ -44,6 +42,10 @@ print tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=2, decision=None, t
 #nx.draw(G)
 #nx.draw_circular(G2)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+nx.draw_spectral(Gtags)
+>>>>>>> Changed the format of edges - tags are now properties at the same level as the 'weight' property and so everything now works as we wanted. See related Issue for more info
 #nx.draw_spectral(Gtags)
 =======
 nx.draw_spectral(G)

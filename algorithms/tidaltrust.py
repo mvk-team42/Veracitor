@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 class TidalTrust:
     
     @staticmethod
-    def tidal_trust(source, sink, graph, tag="weight"):
+    def tidal_trust(source, sink, graph, tag):
         """ 
         Calculates a trust value between the source and the sink nodes 
         in the given graph for the given tag 
@@ -20,7 +20,7 @@ class TidalTrust:
         # TODO: throws networkx.exception.NetworkXNoPath. Handle?
         shortest = nx.all_shortest_paths(graph, source=source, target=sink)
         paths_list = list(shortest)
-        threshold = TidalTrust.get_threshold(paths_list, graph)
+        threshold = TidalTrust.get_threshold(paths_list, graph, tag)
         
         queue = []
         # Possible optimization: merge this loop with the cached_trust loop below
@@ -38,10 +38,7 @@ class TidalTrust:
              # Select predecessors of sink in path n
             sink_neighbor = paths_list[n][len(paths_list[0])-2]   
             if (sink_neighbor, sink) not in cached_trust:
-                # OBS This works for tags, but the default value 'weight' no longer works since it's not at the same depth
-                # in the graph (dict) as tags, since tags are within 'ratings'
-                # OBS2: No support for tags in nx.all_shortest_paths or get_threshold!
-                cached_trust[(sink_neighbor, sink)] = graph[sink_neighbor][sink]['ratings'][tag]
+                cached_trust[(sink_neighbor, sink)] = graph[sink_neighbor][sink][tag]
         
         
         # Backwards search from sink to source. Starts at the predecessors to the leaves.
@@ -66,11 +63,11 @@ class TidalTrust:
             # ???
             for s in children:
                 # Use edge if rating >= threshold and the successor has a cached trust to the sink.
-                if (graph[current_node][s]['weight'] >= threshold and (s, sink) in cached_trust):
+                if (graph[current_node][s][tag] >= threshold and (s, sink) in cached_trust):
                         if cached_trust[(s, sink)] >= 0:
                             numerator = (numerator + 
-                                graph[current_node][s]['weight']*cached_trust[(s, sink)])
-                            denominator = denominator + graph[current_node][s]['weight']
+                                graph[current_node][s][tag]*cached_trust[(s, sink)])
+                            denominator = denominator + graph[current_node][s][tag]
             
             if denominator > 0:
                 cached_trust[(current_node, sink)] = numerator / denominator                                
@@ -84,7 +81,7 @@ class TidalTrust:
     
     
     @staticmethod    
-    def get_threshold(paths, graph):
+    def get_threshold(paths, graph, tag):
         """ Calculates the threshold used to exclude paths in the TidalTrust algorithm. 
             Returns the maximum trust of the lowest trust in each individual path """
         threshold = 0
@@ -93,8 +90,8 @@ class TidalTrust:
             min_path_weight = sys.maxint
             
             for i in range(len(path)-2):
-                if graph[path[i]][path[i+1]]['weight'] < min_path_weight:
-                   min_path_weight = graph[path[i]][path[i+1]]['weight']
+                if graph[path[i]][path[i+1]][tag] < min_path_weight:
+                   min_path_weight = graph[path[i]][path[i+1]][tag]
             
             if min_path_weight > threshold:
                 threshold = min_path_weight  
@@ -102,6 +99,7 @@ class TidalTrust:
         return threshold
         
     # possible optimization?: use this
+    # users beware for this code is old 
     @staticmethod
     def remove_low_rated_paths(paths, threshold, graph):
         """ Removes paths from a list of paths that contains weights below the threshold """
@@ -139,15 +137,19 @@ class TidalTrust:
         if decision != None:
             for node in decision:
                 bayesianNetwork.remove_node(node)
-        #elif tag != None:
-        #    tag = "weight"
-         #   pass
+        if tag == None:
+            tag = "weight"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
 =======
         return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag="weight")
 >>>>>>> Better edge formats
+=======
+        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
+
+>>>>>>> Changed the format of edges - tags are now properties at the same level as the 'weight' property and so everything now works as we wanted. See related Issue for more info
 
         
 
