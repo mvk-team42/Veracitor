@@ -31,13 +31,27 @@ G2.add_weighted_edges_from([(1,2,5),
                             ])
 
 Gtags = nx.DiGraph()
-Gtags.add_edges_from([(1,2,dict(cooking = 4, crime = 10, weight=1))])
+# The same graph as G (graf1.png) but the weights there are here under "cooking"
+# and the "crime" ratings are kind of random.
+# this is how you add edges to the global graph I think y'all
+Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4, weight=1)),
+                               (1,3,dict(cooking=8, crime=7, weight=1)),
+                               (1,4,dict(cooking=9, crime=6, weight=1)),
+                               (2,5,dict(cooking=9, crime=9, weight=1)),
+                               (3,5,dict(cooking=10, crime=5, weight=1)),
+                               (3,6,dict(cooking=10, crime=6, weight=1)),
+                               (4,5,dict(cooking=8, crime=7, weight=1)),
+                               (4,6,dict(cooking=9, crime=6, weight=1)),
+                               (5,7,dict(cooking=8, crime=5, weight=1)),
+                               (6,7,dict(cooking=6, crime=7, weight=1)),
+                               ])
 
 
 #print Gtags[1]
 #print Gtags[2]
 
-print tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=2, decision=None, tag='crime')
+print "Gtags (tag=cooking): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=7, decision=None, tag="cooking"))
+print "Gtags (tag=crime): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=7, decision=None, tag="crime"))
 
 #nx.draw(G)
 #nx.draw_circular(G2)
@@ -53,7 +67,7 @@ nx.draw_spectral(G)
 
 #print tt.tidal_trust(graph=G, source=1, sink=7)
 
-print tt.compute_trust(bayesianNetwork=G, source=1, sink=7, decision=None)
+print "G (ordinary weighted graph): "+str(tt.compute_trust(bayesianNetwork=G, source=1, sink=7, decision=None))
 
 
 plt.show()
