@@ -32,7 +32,7 @@ G2.add_weighted_edges_from([(1,2,5),
 
 Gtags = nx.DiGraph()
 
-Gtags.add_edges_from([(1,2,{"ratings":dict(cooking = 4, crime = 10)})])
+Gtags.add_edges_from([(1,2,dict(cooking = 4, crime = 10))])
 Gtags.add_weighted_edges_from([(2,1,5)])
 
 
@@ -43,11 +43,15 @@ print tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=2, decision=None, t
 
 #nx.draw(G)
 #nx.draw_circular(G2)
+<<<<<<< HEAD
 #nx.draw_spectral(Gtags)
+=======
+nx.draw_spectral(G)
+>>>>>>> Better edge formats
 
 #print tt.tidal_trust(graph=G, source=1, sink=7)
 
-#print tt.compute_trust(bayesianNetwork=G2, source=1, sink=9, decision=None)
+print tt.compute_trust(bayesianNetwork=G, source=1, sink=7, decision=None)
 
 
 plt.show()

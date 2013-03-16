@@ -143,7 +143,11 @@ class TidalTrust:
         #    tag = "weight"
          #   pass
 
+<<<<<<< HEAD
         return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
+=======
+        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag="weight")
+>>>>>>> Better edge formats
 
         
 
