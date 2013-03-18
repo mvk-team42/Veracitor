@@ -12,24 +12,29 @@ from urlparse import urlparse
 
 class NewspaperSpider(CrawlSpider):
     name = "newspaper"
+    
 
     def __init__(self, *args, **kwargs):
+        self.xpaths = Xpaths('crawler/webpages.xml')
         domain = kwargs.get('domain')
         self.start_urls = ["http://" + domain]
         self.rules = (
-            Rule(SgmlLinkExtractor(allow_domains=domain, deny=["blogg", "webbtv"]), callback="scrape_article"),
+            Rule(
+                SgmlLinkExtractor(allow_domains=domain, deny=self.xpaths.get_article_deny_urls(domain)), 
+                callback="scrape_article"
+            ),
         )
         super(NewspaperSpider, self).__init__()
+        
 
     def scrape_article(self, response):
         if self._is_article(response):
             return ArticleSpider.scrape_article(response)
-        
+
     def _is_article(self, response):
-        xpaths = Xpaths('crawler/webpages.xml')
         domain = urlparse(response.url)[1]
         hxs = HtmlXPathSelector(response)
-        for xpath in xpaths.get_article_qualification_xpaths(domain):
+        for xpath in self.xpaths.get_article_qualification_xpaths(domain):
             if len(hxs.select(xpath)) > 0:
                 return True
         return False

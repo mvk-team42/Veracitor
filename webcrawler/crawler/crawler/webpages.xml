@@ -10,6 +10,14 @@
             <xpath>//*[contains(@class,'articlePage')]</xpath>
             <xpath>//*[contains(@role,'article')]</xpath>
         </article-qualification>
+        
+        <article-deny-url>
+            <pattern>blog</pattern>
+            <pattern>webtv</pattern>
+            <pattern>webbtv</pattern>
+            <pattern>fragesport</pattern>
+            <pattern>quiz</pattern>
+        </article-deny-url>
 
         <article-data>
             <title>
