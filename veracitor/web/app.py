@@ -31,7 +31,7 @@ def prods():
             else:
                 producers = {}
                 #    producers = {'res1':f['name'], 'res2': f['type']}   
-                res = extractor.search_producers(f['name'], f['type'])
+                res = extractor.search_producers(name=f['name'], type_=f['type'])
                 for i, x in enumerate(res):
                     producers["res"+i] = x
 
