@@ -29,7 +29,7 @@ def prods():
             if error:
                 producers = { "error":error }
             else:
-
+                producers = {}
                 #    producers = {'res1':f['name'], 'res2': f['type']}   
                 res = extractor.search_producers(f['name'], f['type'])
                 for i, x in enumerate(res):
