@@ -2,7 +2,9 @@
 from flask import Flask, render_template, request, redirect, \
                     url_for
 from ..database import *
+
 import json
+from json import JSONEncoder
 
 # configuration
 
@@ -11,6 +13,28 @@ try:
     app.config.from_envvar('VERACITOR_SETTINGS')
 except:
     app.config.from_pyfile('settings.py')
+
+### JSON
+
+class JSONEnc(JSONEncoder):
+
+    def default(self, o):
+        try:
+            iterable = iter(o)
+        except TypeError:
+            pass
+        else:
+            return list(iterable)
+
+        try:
+            d = o.__dict__
+        except:
+            pass
+        else:
+            return d    
+        # Let the base class default method raise the TypeError
+        return JSONEncoder.default(self, o)
+
 
 
 @app.route("/search_producers", methods=["GET","POST"])
@@ -35,7 +59,7 @@ def prods():
                 for i, x in enumerate(res):
                     producers["res"+str(i)] = x
 
-            return json.dumps(producers)
+            return json.dumps(producers, cls=JSONEnc)
     return redirect(url_for("index"))
 
 @app.route("/")
