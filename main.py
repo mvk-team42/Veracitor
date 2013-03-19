@@ -1,4 +1,4 @@
-import veracitor.web.app.app as app
+from veracitor.web.app import app
 
 def runserver():
     app.run()
