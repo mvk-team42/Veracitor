@@ -1,0 +1,20 @@
+{% extends "tabs/veracitor_tab.html" %}
+
+{% block content %}
+<h1>{{ tab.name }}</h1>
+
+<p>Name: Mr. Advanced User</p>
+                
+<h2>Rated sources:</h2>
+<p><input type="text"/><input type="button" value="Search sources" /></p>
+<ul class="list">
+    <li>DN<div class="rating">4</div></li>
+    <li>Global Terrorism Database (GTD)<div class="rating">5</div></li>
+    <li>Rodong Sinmun<div class="rating">4</div></li>
+    <li>Minju Choson<div class="rating">2</div></li>
+    <li>Pyongyang Sinmun<div class="rating">3</div></li>
+    <li>The Pyongyang Times<div class="rating">3</div></li>
+    <li>Rimjingang (unofficial, private publication)<div class="rating">2</div></li>
+    <li>Korean News Service (Chosun Tongsin)<div class="rating">4</div></li>
+</ul>
+{% endblock %}
