@@ -7,6 +7,7 @@ with some extended functionality.
 import sys
 import networkx as nx
 import matplotlib.pyplot as plt
+from copy import deepcopy
 
 def tidal_trust(source, sink, graph, tag):
     """ 
@@ -34,7 +35,10 @@ def tidal_trust(source, sink, graph, tag):
     try:
         shortest = nx.all_shortest_paths(graph, source=source, target=sink)
         paths_list = list(shortest)
-    except nx.exception.NetworkXNoPath as e:
+    except nx.exception.NetworkXNoPath:
+        return None
+    except KeyError:
+        # An input node was not in the graph 
         return None
     
     threshold = get_threshold(paths_list, graph, tag)
@@ -186,6 +190,12 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
     Otherwise, the edges will be considered weighted: DiGraph[1][2]["weight"] = rating
 
     """
+    #check input
+    if bayesianNetwork == None or source == None or sink == None:
+        raise TypeError("Input parameters can't be None")
+
+    bayesianNetwork = deepcopy(bayesianNetwork)
+
     # Ignore nodes as specified by decision
     if decision != None:
         bayesianNetwork.remove_nodes_from(decision)
