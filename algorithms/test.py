@@ -1,6 +1,8 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import tidaltrust as tt
+import generate_bn as gbn
+from copy import copy, deepcopy
 
 # TODO: Unittesting!
 
@@ -40,7 +42,7 @@ Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
                       (2,5,dict(cooking=9, crime=9)),
                       (3,5,dict(cooking=10, crime=5)),
                       (3,6,dict(cooking=10, crime=6)),
-                      (3,7,dict(cooking=7)),
+                      #(3,7,dict(cooking=7)),
                       (4,5,dict(cooking=8, crime=7)),
                       (4,6,dict(cooking=9, crime=6)),
                       (5,7,dict(cooking=8, crime=5)),
@@ -48,31 +50,40 @@ Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
                       ])
 
 
+### TEST TIDALTRUST
 #print Gtags[1]
 #print Gtags[2]
-print nx.to_dict_of_dicts(Gtags)
+#print nx.to_dict_of_dicts(Gtags)
 
-print "Gtags (tag=cooking): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1,
-                                                   sink=7, decision=None, tag="cooking"))
-print "Gtags (tag=crime): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1,
-                                                 sink=7, decision=None, tag="crime"))
+#print "Gtags (tag=cooking): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=7, decision=None, tag="cooking"))
+#print "Gtags (tag=crime): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=7, decision=None, tag="crime"))
 
 #nx.draw(G)
 #nx.draw_circular(G2)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 nx.draw_spectral(Gtags)
 >>>>>>> Changed the format of edges - tags are now properties at the same level as the 'weight' property and so everything now works as we wanted. See related Issue for more info
+=======
+#nx.draw_spectral(Gtags)
+>>>>>>> Started work on GenerateBN. Has a fully functional alternative function.
 #nx.draw_spectral(Gtags)
 =======
 nx.draw_spectral(G)
 >>>>>>> Better edge formats
 
 #print tt.tidal_trust(graph=G, source=1, sink=7)
-
-print "G (ordinary weighted graph): "+str(tt.compute_trust(bayesianNetwork=G, source=1,
-                                                           sink=7, decision=None))
+#print "G (ordinary weighted graph): "+str(tt.compute_trust(bayesianNetwork=G, source=1, sink=7, decision=None))
 
 
 #plt.show()
+
+### TEST GENERATEBN
+Gtags2 = deepcopy(Gtags)
+Gtags2.add_edges_from([(8,4,dict(cooking=5)), (9,8,dict(cooking=5)), (10,9,dict(cooking=5)), (11,10,dict(cooking=5)), (0,1,dict(cooking=5))])
+print nx.to_dict_of_dicts(gbn.networkx_generate_bn(Gtags2, 1, 7, "cooking"))
+#print gbn.golbeck_generate_bn(Gtags2, 1, 7, "cooking")
+nx.draw_circular(Gtags2)
+plt.show()
