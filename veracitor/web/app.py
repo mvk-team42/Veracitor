@@ -20,18 +20,11 @@ class JSONEnc(JSONEncoder):
 
     def default(self, o):
         try:
-            iterable = iter(o)
-        except TypeError:
-            pass
-        else:
-            return list(iterable)
-
-        try:
             d = o.__dict__
         except:
             pass
         else:
-            return d    
+            return d
         # Let the base class default method raise the TypeError
         return JSONEncoder.default(self, o)
 
