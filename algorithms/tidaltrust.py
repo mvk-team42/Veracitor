@@ -13,21 +13,23 @@ class TidalTrust:
     def tidal_trust(source, sink, graph, tag):
         """ 
         Calculates a trust value between the source and the sink nodes 
-        in the given graph for the given tag 
+        in the given graph for the given tag.
+
+        Returns None if no trust value could be calculated.
         
         """
         
-        # TODO: throws networkx.exception.NetworkXNoPath. Handle?
-        # Suggestion: 
         # Remove all edges but the ones with the specific tag so that all_shortest_paths
-        # gives correct paths. If done like this, no tag specific commands are needed
-        # either.
-        # Code: 
-        # remove_list = [(x,y) for (x,y) in Graph.edges() if 'crime' not in Graph[x][y]]
-        # Graph.remove_edges_from(remove_list)
-        
-        shortest = nx.all_shortest_paths(graph, source=source, target=sink)
-        paths_list = list(shortest)
+        # gives correct paths. 
+        remove_list = [(x,y) for (x,y) in graph.edges() if tag not in graph[x][y]]
+        graph.remove_edges_from(remove_list)
+            
+        try:
+            shortest = nx.all_shortest_paths(graph, source=source, target=sink)
+            paths_list = list(shortest)
+        except nx.exception.NetworkXNoPath as e:
+            return None
+
         threshold = TidalTrust.get_threshold(paths_list, graph, tag)
         
         queue = []
@@ -107,7 +109,7 @@ class TidalTrust:
         return threshold
         
     # possible optimization?: use this
-    # users beware for this code is old 
+    # users beware for this code is old and probably doesn't work
     @staticmethod
     def remove_low_rated_paths(paths, threshold, graph):
         """ Removes paths from a list of paths that contains weights below the threshold """
@@ -143,8 +145,7 @@ class TidalTrust:
         """
         # Ignore nodes as specified by decision
         if decision != None:
-            for node in decision:
-                bayesianNetwork.remove_node(node)
+            bayesianNetwork.remove_nodes_from(decision)
         if tag == None:
             tag = "weight"
 

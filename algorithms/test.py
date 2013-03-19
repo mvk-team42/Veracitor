@@ -40,6 +40,7 @@ Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4, weight=1)),
                       (2,5,dict(cooking=9, crime=9, weight=1)),
                       (3,5,dict(cooking=10, crime=5, weight=1)),
                       (3,6,dict(cooking=10, crime=6, weight=1)),
+                      (3,7,dict(cooking=7)),
                       (4,5,dict(cooking=8, crime=7, weight=1)),
                       (4,6,dict(cooking=9, crime=6, weight=1)),
                       (5,7,dict(cooking=8, crime=5, weight=1)),
@@ -49,6 +50,7 @@ Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4, weight=1)),
 
 #print Gtags[1]
 #print Gtags[2]
+print nx.to_dict_of_dicts(Gtags)
 
 print "Gtags (tag=cooking): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=7, decision=None, tag="cooking"))
 print "Gtags (tag=crime): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=7, decision=None, tag="crime"))
