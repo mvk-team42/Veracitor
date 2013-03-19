@@ -13,8 +13,8 @@ class ArticleItem(Item):
         return unicode(self).encode('utf-8')
     
     def __unicode__(self):           
-        return (self["title"] + " (" + self["author"] + ", " + self["date"] + ")\nURL: " + self["url"] + "\nSUMMARY: " + self["summary"])
-
+        return (self.safe_str("title") + " (" + self.safe_str("author") + ", " + self.safe_str("date") + ")\nURL: " + self.safe_str("url") + "\nSUMMARY: " + self.safe_str("summary"))
+        
     def long_string(self):
         return ("---------------------------------\n"+
                 self.__unicode__() +
@@ -23,6 +23,13 @@ class ArticleItem(Item):
 
     def short_string(self):
         return self["title"]
+        
+       
+    def safe_str(self, field):
+        if field in self:
+            return unicode(self[field])
+        else:
+            return "unknown"
 
 
 class ArticleLoader(XPathItemLoader):

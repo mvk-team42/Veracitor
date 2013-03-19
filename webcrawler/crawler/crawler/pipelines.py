@@ -8,11 +8,11 @@ class CrawlerPipeline(object):
 
     def __init__(self):
         self.articles = []
-        dispatcher.connect(self.spider_closed, signals.spider_closed)
+        #dispatcher.connect(self.spider_closed, signals.spider_closed)
 
     def process_item(self, item, spider):
         self.fix_fields(item)
-        self.print_if_unknown(item)
+        #self.print_if_unknown(item)
         self.articles.append(item)
         return item
         
@@ -21,21 +21,6 @@ class CrawlerPipeline(object):
             if article[field] == "unknown":
                 print article.long_string() + "\n"
                 break
-        
-    def spider_closed(self, spider):
-        print "Number of articles: " + str(len(self.articles))
-        unknowns = self.count_unknowns()
-        for field in unknowns:
-            print "Number of unknown " + field + ": " + str(unknowns[field])
-        
-    def count_unknowns(self):
-        unknowns = {}
-        for field in ArticleItem.fields.iterkeys():
-            unknowns[field] = 0
-            for article in self.articles:
-                if article[field] == "unknown":
-                    unknowns[field] += 1
-        return unknowns
         
     def fix_fields(self, item):
         self.fix_date(item)
@@ -69,3 +54,21 @@ class CrawlerPipeline(object):
                     item[field] = item[field].strip().replace("\n", "")
                     return
             item[field] = "unknown"
+            
+            
+    """       
+    def spider_closed(self, spider):
+        print "Number of articles: " + str(len(self.articles))
+        unknowns = self.count_unknowns()
+        for field in unknowns:
+            print "Number of unknown " + field + ": " + str(unknowns[field])
+        
+    def count_unknowns(self):
+        unknowns = {}
+        for field in ArticleItem.fields.iterkeys():
+            unknowns[field] = 0
+            for article in self.articles:
+                if article[field] == "unknown":
+                    unknowns[field] += 1
+        return unknowns
+   """

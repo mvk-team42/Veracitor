@@ -40,6 +40,7 @@
                 <xpath>//*[contains(@class, "author")]//text()</xpath>
                 <xpath>//*[contains(@itemprop,"author")]//*[contains(@itemprop, "name")]//text()</xpath>
                 <xpath>//*[contains(@rel, "author")]//text()</xpath>
+                <xpath>//*[contains(@itemprop, "publisher")]//text()</xpath>
             </author>
 
             <date>
