@@ -1,6 +1,6 @@
 from scrapy.spider import BaseSpider
 from scrapy.contrib.spiders import CrawlSpider, Rule
-from scrapy.selector import HtmlXPathSelector
+from scrapy.selector import XmlXPathSelector
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from crawler.xpaths import Xpaths
 from crawler.items import ArticleItem, ArticleLoader
@@ -20,7 +20,7 @@ class RssSpider(CrawlSpider):
         super(RssSpider, self).__init__()
         
     def parse(self, response):
-        hxs = HtmlXPathSelector(response)
+        hxs = XmlXPathSelector(response)
         items = []
         for item in hxs.select('//item'):
             items.append(ArticleItem())
@@ -29,6 +29,7 @@ class RssSpider(CrawlSpider):
             if len(item.select("pubDate")) > 0:
                 items[-1]["date"] =  item.select("pubDate/text()")[0].extract()
             if len(item.select("link")) > 0:
+                print item.select("link/text()").extract()
                 items[-1]["url"] = item.select("link")[0].extract()
             if len(item.select("description")) > 0:
                 items[-1]["summary"] = item.select("description/text()")[0].extract()   
