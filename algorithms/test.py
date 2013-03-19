@@ -1,6 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-from tidaltrust import TidalTrust as tt
+import tidaltrust as tt
 
 # TODO: Unittesting!
 
@@ -52,8 +52,10 @@ Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
 #print Gtags[2]
 print nx.to_dict_of_dicts(Gtags)
 
-print "Gtags (tag=cooking): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=7, decision=None, tag="cooking"))
-print "Gtags (tag=crime): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=7, decision=None, tag="crime"))
+print "Gtags (tag=cooking): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1,
+                                                   sink=7, decision=None, tag="cooking"))
+print "Gtags (tag=crime): "+str(tt.compute_trust(bayesianNetwork=Gtags, source=1,
+                                                 sink=7, decision=None, tag="crime"))
 
 #nx.draw(G)
 #nx.draw_circular(G2)
@@ -69,7 +71,8 @@ nx.draw_spectral(G)
 
 #print tt.tidal_trust(graph=G, source=1, sink=7)
 
-print "G (ordinary weighted graph): "+str(tt.compute_trust(bayesianNetwork=G, source=1, sink=7, decision=None))
+print "G (ordinary weighted graph): "+str(tt.compute_trust(bayesianNetwork=G, source=1,
+                                                           sink=7, decision=None))
 
 
 #plt.show()
