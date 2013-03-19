@@ -44,13 +44,12 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
         while KKK != K:
             KKK = K.copy()
             K = K | _pre_img(K, graph, tag)
-        # TODO: This is where Prune-States SHOULD be
+        # Remove cycles, redundant nodes etc and store only the nodes
+        # relevant (those that lie in a path from source to sink)
+        K = _prune_states(K, graph, source, sink)
 
     K.add(sink)
                 
-    # Remove cycles, redundant nodes etc and store only the nodes
-    # relevant (those that lie in a path from source to sink)
-    K = _prune_states(K, graph, source, sink)
     
     # Return a the subgraph of graph containing only the relevant nodes
     return graph.subgraph(list(K))
