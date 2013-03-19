@@ -1,5 +1,5 @@
 
-from database import *
+from veracitor.database import *
 
 def generate_test_data():
     tag1 = tag.Tag(name="Gardening", description="Hurrr HURRRRRR")
