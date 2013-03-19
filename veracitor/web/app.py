@@ -15,9 +15,12 @@ except:
 
 @app.route("/search_producers", methods=["GET","POST"])
 def prods():
+    print request
+
     if request.method == "POST":
         if request.form:
             f=request.form
+            
             error = None
             if not f['name']:
                 error = "No search parameter."
