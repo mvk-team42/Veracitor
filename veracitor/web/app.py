@@ -19,18 +19,21 @@ def prods():
     if request.method == "POST":
         if request.form:
             f=request.form
-                        
-            error = None
+
+            error = ""
             if not f['name']:
                 error = "No search parameter."
             elif not f['type']:
                 error = "No type chosen."
-                
+
             if error:
                 producers = { "error":error }
             else:
-            #    producers = {'res1':f['name'], 'res2': f['type']}   
-                producers = extractor.search_producers(f['name'], f['type'])
+
+                #    producers = {'res1':f['name'], 'res2': f['type']}   
+                res = extractor.search_producers(f['name'], f['type'])
+                producers = { "result":res }
+
             return json.dumps(producers)
     return redirect(url_for("index"))
 
