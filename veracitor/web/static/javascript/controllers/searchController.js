@@ -47,6 +47,12 @@ var SearchController = function (view) {
     // Set default search type
     $("#search-type-select input[name=web]").click();
     
+    $("input[name=search-button]").click(function (evt) {
+        var searchText = $("input[name=search-text]").val();
+        
+        requestDatabaseSearch(searchText, null, null, null);
+    });
+    
     /**
         Makes a database search request to the Controller with the speci-
         fied search term. In the case where the user has not specified any
@@ -54,7 +60,7 @@ var SearchController = function (view) {
         with “empty” fields (except from the required search term). The
         response data is handled by display response data.
      */
-    this.requestDatabaseSearch = function (searchTerm, tags, startDate, endDate) {
+    var requestDatabaseSearch = function (searchTerm, tags, startDate, endDate) {
         // TODO
     };
     
