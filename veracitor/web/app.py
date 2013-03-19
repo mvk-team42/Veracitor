@@ -15,12 +15,11 @@ except:
 
 @app.route("/search_producers", methods=["GET","POST"])
 def prods():
-    assert app.debug == False
 
     if request.method == "POST":
         if request.form:
             f=request.form
-            
+                        
             error = None
             if not f['name']:
                 error = "No search parameter."
@@ -28,10 +27,10 @@ def prods():
                 error = "No type chosen."
                 
             if error:
-                return "ERROR: "+error
-             
-            producers = {'res1':f['name'], 'res2': f['type']}   
-            #producers = search_producers(f['name'], f['type'])
+                producers = { "error":error }
+            else:
+            #    producers = {'res1':f['name'], 'res2': f['type']}   
+                producers = extractor.search_producers(f['name'], f['type'])
             return json.dumps(producers)
     return redirect(url_for("index"))
 
