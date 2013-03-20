@@ -44,7 +44,7 @@ var SearchController = function (view) {
             
             for(result in data) { break; };
             
-            console.log(data);
+            console.log(result);
             
             if(result == "undefined") {
                 console.log("could not find anything");
