@@ -37,6 +37,9 @@ var SearchController = function (view) {
             var tbody;
             var table = $("#search-result table");
             
+            $("#search-result").html(data);
+            
+            /*
             $("#search-result table").html("");
             
             // parse JSON object
@@ -77,6 +80,7 @@ var SearchController = function (view) {
                     }
                 }
             }
+            */
         })
         .fail(function () {
             display_search_error("Server error.");
@@ -97,7 +101,7 @@ var SearchController = function (view) {
         play response data.
 
      */
-    this.requestWebSearch = function (searchTerm) {
+    this.request_web_search = function (search_term) {
         // TODO
     };
     
@@ -105,14 +109,14 @@ var SearchController = function (view) {
         Displays response data from an earlier given request, and therefore
         works as a callback function.
     */
-    this.displayResponseData = function (data) {
+    this.display_response_data = function (data) {
         // TODO
     };
     
     /**
         Displays the given producer in the NetworkView.
      */
-    this.showProducerInNetwork = function (producer) {
+    this.show_producer_in_network = function (producer) {
         // TODO
     };
     

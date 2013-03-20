@@ -58,7 +58,8 @@ def prods():
                     
                     producers["res"+str(i)] = x_dict
 
-            return json.dumps(producers, cls=JSONEnc)
+            #return json.dumps(producers, cls=JSONEnc)
+            return render_template("tabs/search_results.html", producers)
     return redirect(url_for("index"))
 
 @app.route("/")
