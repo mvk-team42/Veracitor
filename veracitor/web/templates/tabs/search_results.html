@@ -11,8 +11,8 @@
         <tbody>
         {% for r in result %}
             <tr>
-                <td>{{ r['_data']['name'] }}</td>
-                <td>{{ r['type_'] }}</td>
+                <td>{{ r._data.name }}</td>
+                <td>{{ r.type_ }}</td>
             </tr>
         {% endfor %}
         </tbody>
