@@ -20,7 +20,7 @@ var SearchController = function (view) {
         
         for(t in types) {
             if(t.checked) {
-                search_type = t.name;
+                search_type = t.value;
                 break;
             }
         }
