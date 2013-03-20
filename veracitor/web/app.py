@@ -51,12 +51,12 @@ def prods():
                 #    producers = {'res1':f['name'], 'res2': f['type']}   
                 res = extractor.search_producers(possible_prod=f['name'], type_=f['type'])
                 for i, x in enumerate(res):
-                    print dir(x)
+                    x_dict = x.__dict__
                 
                     # serialize object id TODO fix
-                    x['_data'][None] = default(x['_data'][None])
+                    x_dict['_data'][None] = default(x_dict['_data'][None])
                     
-                    producers["res"+str(i)] = x.__dict__
+                    producers["res"+str(i)] = x_dict
 
             return json.dumps(producers, cls=JSONEnc)
     return redirect(url_for("index"))
