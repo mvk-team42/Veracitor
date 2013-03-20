@@ -77,7 +77,7 @@ var SearchController = function (view) {
             resultTag.html("");
             
             if(data.error) {
-                resultTag.html(data.error);
+                resultTag.html("<b>" + data.error + "</b>");
             } else {
                 for(result in data) {
                     tag = $("<div>");
@@ -89,6 +89,12 @@ var SearchController = function (view) {
                     }
                     
                     resultTag.append(tag);
+                }
+                
+                if(result == "undefined") {
+                    resultTag.append($("<p>").html(
+                        "<b>Could not find anything.</b>"
+                    );
                 }
             }
         })
