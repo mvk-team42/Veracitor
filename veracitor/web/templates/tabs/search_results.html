@@ -1,0 +1,20 @@
+{% if result.error %}
+    <h2>{{ result.error }}</h2>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+            </tr>
+        </head>
+        <tbody>
+        {% for r in result %}
+            <tr>
+                <td>{{ r['_data']['name'] }}</td>
+                <td>{{ r['type_'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
