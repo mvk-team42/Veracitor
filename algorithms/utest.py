@@ -1,6 +1,7 @@
 import unittest
 import networkx as nx
 import tidaltrust as tt
+import generate_bn as gbn
 from copy import copy, deepcopy
 
 class TestTidalTrust(unittest.TestCase):
@@ -17,7 +18,7 @@ class TestTidalTrust(unittest.TestCase):
         """
         
         # Test for weighted graph
-        G = self._get_weighted_graph()
+        G = _get_weighted_graph()
         source = 1
         sink = 7
         Gcopy = deepcopy(G)
@@ -28,7 +29,7 @@ class TestTidalTrust(unittest.TestCase):
         self.assertEqual(1, source)
 
         # Test for tagrated graph
-        G = self._get_tagrated_graph()
+        G = _get_tagrated_graph()
         Gcopy = deepcopy(G)
         tt.compute_trust(G, source, sink, tag="cooking")
         self.assertEqual(nx.to_dict_of_dicts(Gcopy),
@@ -42,6 +43,18 @@ class TestTidalTrust(unittest.TestCase):
                          nx.to_dict_of_dicts(G))
         self.assertEqual(7, sink)
         self.assertEqual(1, source)
+        
+        
+        # Test for graph with loops
+        G = _get_graph_with_loops()
+        Gcopy = deepcopy(G)
+        tt.compute_trust(G, source, sink)
+        self.assertEqual(nx.to_dict_of_dicts(Gcopy),
+                         nx.to_dict_of_dicts(G))
+        self.assertEqual(7, sink)
+        self.assertEqual(1, source)
+
+
 
     def test_returns_none_when_no_paths(self):
         """
@@ -68,7 +81,7 @@ class TestTidalTrust(unittest.TestCase):
         Raises exceptions when input was objects of the wrong type
 
         """
-        G = self._get_tagrated_graph()
+        G = _get_tagrated_graph()
 
         # Test for None source/sink
         self.assertRaises(TypeError, tt.compute_trust, G, None, 7)
@@ -84,41 +97,78 @@ class TestTidalTrust(unittest.TestCase):
         # Test for bayesianNetwork does not work like graph
         self.assertRaises(TypeError, tt.compute_trust, "string", 1, 7)
 
+
+
+class TestGenerateBN(unittest.TestCase):
+    """
+    Tests the module generate_bn    
         
+    """
+    def test_cycle_removal(self):
+        """
+        Tests that generate_bn removes cycles from graphs
+        
+        """
+        G = _get_graph_with_loops()
+        loops = nx.simple_cycles(G)
+        self.assertNotEqual(loops, [])
+        G = gbn.golbeck_generate_bn(G, 1, 7)
+        loops = nx.simple_cycles(G)
+        self.assertEqual(loops, [])
         
 
 
-    ### HELP METHODS
-    def _get_weighted_graph(self):
-        G = nx.DiGraph()
-        G.add_weighted_edges_from([(1,2,10),
-                                   (1,3,8),
-                                   (1,4,9),
-                                   (2,5,9),
-                                   (3,5,10),
-                                   (3,6,10),
-                                   (4,5,8),
-                                   (4,6,9),
-                                   (5,7,8),
-                                   (6,7,6),
-                                   ])
-        return G
+### HELP METHODS
+def _get_weighted_graph():
+    G = nx.DiGraph()
+    G.add_weighted_edges_from([(1,2,10),
+                               (1,3,8),
+                               (1,4,9),
+                               (2,5,9),
+                               (3,5,10),
+                               (3,6,10),
+                               (4,5,8),
+                               (4,6,9),
+                               (5,7,8),
+                               (6,7,6),
+                               ])
+    return G
 
-    def _get_tagrated_graph(self):
-        Gtags = nx.DiGraph()
-        Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
-                              (1,3,dict(cooking=8, crime=7)),
-                              (1,4,dict(cooking=9, crime=6)),
-                              (2,5,dict(cooking=9, crime=9)),
-                              (3,5,dict(cooking=10, crime=5)),
-                              (3,6,dict(cooking=10, crime=6)),
-                              (4,5,dict(cooking=8, crime=7)),
-                              (4,6,dict(cooking=9, crime=6)),
-                              (5,7,dict(cooking=8, crime=5)),
-                              (6,7,dict(cooking=6, crime=7)),
-                              ])
-        return Gtags
+def _get_tagrated_graph():
+    Gtags = nx.DiGraph()
+    Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
+                          (1,3,dict(cooking=8, crime=7)),
+                          (1,4,dict(cooking=9, crime=6)),
+                          (2,5,dict(cooking=9, crime=9)),
+                          (3,5,dict(cooking=10, crime=5)),
+                          (3,6,dict(cooking=10, crime=6)),
+                          (4,5,dict(cooking=8, crime=7)),
+                          (4,6,dict(cooking=9, crime=6)),
+                          (5,7,dict(cooking=8, crime=5)),
+                          (6,7,dict(cooking=6, crime=7)),
+                          ])
+    return Gtags
 
+
+def _get_graph_with_loops():
+    G = nx.DiGraph()
+    G.add_weighted_edges_from([(1,2,10),
+                               (1,3,8),
+                               (1,4,9),
+                               (2,5,9),
+                               (3,5,10),
+                               (3,6,10),
+                               (4,5,8),
+                               (4,6,9),
+                               (5,7,8),
+                               (6,7,6),
+                               (2,3,11),
+                               (3,1,11),
+                               (6,8,11),
+                               (8,4,11),
+                               ])      
+    return G
+        
 # class TestGenerateBN(unittest.TestCase):
 #     def test_dummy(self):
 #         self.assertEqual(1,1)
