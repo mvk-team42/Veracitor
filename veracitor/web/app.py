@@ -51,6 +51,8 @@ def prods():
                 #    producers = {'res1':f['name'], 'res2': f['type']}   
                 res = extractor.search_producers(possible_prod=f['name'], type_=f['type'])
                 for i, x in enumerate(res):
+                    print x
+                
                     # serialize object id TODO fix
                     x['_data'][None] = default(x['_data'][None])
                     

@@ -91,6 +91,9 @@ var SearchController = function (view) {
                     resultTag.append(tag);
                 }
             }
+        })
+        .fail(function () {
+            $("#search-result").html("Server error.");
         });
     };
     
