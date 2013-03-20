@@ -50,7 +50,7 @@ def prods():
                 #    producers = {'res1':f['name'], 'res2': f['type']}   
                 res = extractor.search_producers(possible_prod=f['name'], type_=f['type'])
                 for i, x in enumerate(res):
-                    producers["res"+str(i)] = x
+                    producers["res"+str(i)] = x.__dict__
 
             return json.dumps(producers, cls=JSONEnc)
     return redirect(url_for("index"))
