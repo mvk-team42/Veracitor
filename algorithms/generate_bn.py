@@ -42,12 +42,12 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
         KK = K.copy()
         K_has_changed = True
         while K_has_changed:
-            print "\t> K start: "+str(K)
             pre_img = _pre_img(K, graph, tag)
             if len(pre_img) = 0:
                 K_has_changed = False
             else:
                 K = K | pre_img
+<<<<<<< HEAD
 <<<<<<< HEAD
                 
 =======
@@ -63,14 +63,15 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
             print "\t< K end: "+str(K)
         
 >>>>>>> Finished GenerateBN
+=======
+                
+>>>>>>> Removed prints
         # Remove cycles, redundant nodes etc and store only the nodes
         # relevant (those that lie in a path from source to sink)
         K.add(sink)        
-        print "> K start: "+str(K)
         Kgraph = _prune_states(K, graph, source, sink)
         K = set(Kgraph.nodes())
-        print "< K end: "+str(K)
-
+      
     # Return a the subgraph of graph containing only
     # the relevant nodes and edges
     return Kgraph
