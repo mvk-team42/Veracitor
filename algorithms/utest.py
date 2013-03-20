@@ -4,6 +4,12 @@ import tidaltrust as tt
 from copy import copy, deepcopy
 
 class TestTidalTrust(unittest.TestCase):
+    def setup(self):
+        pass
+    
+    def teardown(self):
+        pass
+
     def test_parameters_constant(self):
         """
         Input parameter objects are not changed by compute_trust
@@ -40,6 +46,7 @@ class TestTidalTrust(unittest.TestCase):
     def test_returns_none_when_no_paths(self):
         """
         compute_trust returns None when no trust value could be found
+
         """
         G = nx.DiGraph()
         G.add_nodes_from([1,2]) 
@@ -71,11 +78,11 @@ class TestTidalTrust(unittest.TestCase):
         # Test for None graph
         self.assertRaises(TypeError, tt.compute_trust, None, 1, 7)
         
-        # Test for when decision is not a an iterable
+        # Test for when decision is not an iterable
         self.assertRaises(TypeError, tt.compute_trust, G, 1, 7, decision=unittest.TestCase)        
         
-        # Test for bayesianNetwork is not a graph
-        self.assertRaises(Exception, tt.compute_trust, "string", 1, 7)
+        # Test for bayesianNetwork does not work like graph
+        self.assertRaises(TypeError, tt.compute_trust, "string", 1, 7)
 
         
         

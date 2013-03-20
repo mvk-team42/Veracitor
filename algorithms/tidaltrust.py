@@ -29,7 +29,11 @@ def tidal_trust(source, sink, graph, tag):
     
     # Remove all edges but the ones with the specific tag so that all_shortest_paths
     # gives correct paths. 
-    remove_list = [(x,y) for (x,y) in graph.edges() if tag not in graph[x][y]]
+    try:
+        remove_list = [(x,y) for (x,y) in graph.edges() if tag not in graph[x][y]]
+    except AttributeError:
+        raise TypeError("Input graph is probably not a compatible graph object.")
+        
     graph.remove_edges_from(remove_list)
     
     try:

@@ -40,10 +40,14 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
 
     while K != KK and source not in K:
         KK = K.copy()
-        KKK = set()
-        while KKK != K:
-            KKK = K.copy()
-            K = K | _pre_img(K, graph, tag)
+        K_has_changed = True
+        while K_has_changed:
+            pre_img = _pre_img(K, graph, tag)
+            if len(pre_img) = 0:
+                K_has_changed = False
+            else:
+                K = K | pre_img
+                
         # Remove cycles, redundant nodes etc and store only the nodes
         # relevant (those that lie in a path from source to sink)
         K = _prune_states(K, graph, source, sink)
