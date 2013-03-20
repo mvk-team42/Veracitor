@@ -45,7 +45,7 @@ def prods():
                 error = "No type chosen."
 
             if not error:
-                #    producers = {'res1':f['name'], 'res2': f['type']}   
+                # res = {'res1':f['name'], 'res2': f['type']}
                 res = extractor.search_producers(possible_prod=f['name'], type_=f['type'])
                 
                 if res:

@@ -13,21 +13,6 @@
     <script src="{{ url_for('static', filename='javascript/database.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
         var vera = {{ vera|tojson|safe }};
-        /*
-    	// Get the vera context variable from Django
-        var vera = $("<div>").html("{{ vera }}").text();
-    	try {
-    	    // Try without replacing ' with "
-    	    // ... does it ever work to parse with '?
-    	    vera = JSON.parse(vera);
-    	} catch (exc1) {
-    	    try {
-        		vera = JSON.parse(vera.replace(/'/g, "\""));
-    		} catch (exc2) {
-    		    console.error("Error while parsing 'vera'.");
-    		}
-		}
-		*/
     </script>
     <script src="{{ url_for('static', filename='javascript/controllers/searchController.js') }}" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='javascript/controllers/networkController.js') }}" type="text/javascript"></script>
