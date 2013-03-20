@@ -39,51 +39,47 @@ var SearchController = function (view) {
             
             $("#search-result table").html("");
             
+            // parse JSON object
+            data = JSON.parse(data);
+            
             for(result in data) { break; };
             
-            if(result != "undefined") {
-                // parse JSON object
-                data = JSON.parse(data);
-                
-                if(data.error) {
-                    $("#search-result table").append(
-                        $("<thead></thead>").append(
-                            $("<tr></tr>").append($("<th>").html(data.error))
-                        )
-                    );
-                } else {
-                    table.append(
-                        $("<thead></thead>").append(
-                            $("<tr></tr>")
-                            .append($("<th>").html("Name"))
-                            .append($("<th>").html("Type"))
-                        )
-                    );
-                
-                    tbody = $("<tbody>");
-                
-                    for(result in data) {
-                        tbody.append(
-                            $("<tr></tr>")
-                            .append($("<td>").html(data[result]['_data']['name']))
-                            .append($("<td>").html(data[result]['type_']))
-                        );
-                    }
-                    
-                    table.append(tbody);
-                    
-                    if(result == "undefined") {
-                        console.log("undefined");
-                    }
-                }
-            } else {
+            console.log(data);
+            
+            if(result == "undefined") {
+                console.log("could not find anything");
+            }
+            
+            if(data.error) {
                 $("#search-result table").append(
                     $("<thead></thead>").append(
-                        $("<tr></tr>").append($("<th>").html(
-                            "Could not find anything."
-                        ))
+                        $("<tr></tr>").append($("<th>").html(data.error))
                     )
                 );
+            } else {
+                table.append(
+                    $("<thead></thead>").append(
+                        $("<tr></tr>")
+                        .append($("<th>").html("Name"))
+                        .append($("<th>").html("Type"))
+                    )
+                );
+            
+                tbody = $("<tbody>");
+            
+                for(result in data) {
+                    tbody.append(
+                        $("<tr></tr>")
+                        .append($("<td>").html(data[result]['_data']['name']))
+                        .append($("<td>").html(data[result]['type_']))
+                    );
+                }
+                
+                table.append(tbody);
+                
+                if(result == "undefined") {
+                    console.log("undefined");
+                }
             }
         })
         .fail(function () {
