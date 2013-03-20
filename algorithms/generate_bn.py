@@ -32,8 +32,7 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
     """
     GenerateBN as described by Golbeck and Kuter (2010).
     Probably faster than networkx_generate_bn().
-    TODO: Finish
-
+   
     """
     K = set(graph.predecessors(sink))
 <<<<<<< HEAD
@@ -43,11 +42,13 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
         KK = K.copy()
         K_has_changed = True
         while K_has_changed:
+            print "\t> K start: "+str(K)
             pre_img = _pre_img(K, graph, tag)
             if len(pre_img) = 0:
                 K_has_changed = False
             else:
                 K = K | pre_img
+<<<<<<< HEAD
                 
 =======
     previous_K = set()
@@ -58,39 +59,60 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
             KKK = K.copy()
             K = K | _pre_img(K, graph, tag)
 >>>>>>> Renamed KK to previous_K
+=======
+            print "\t< K end: "+str(K)
+        
+>>>>>>> Finished GenerateBN
         # Remove cycles, redundant nodes etc and store only the nodes
         # relevant (those that lie in a path from source to sink)
-        K = _prune_states(K, graph, source, sink)
-        
+        K.add(sink)        
+        print "> K start: "+str(K)
+        Kgraph = _prune_states(K, graph, source, sink)
+        K = set(Kgraph.nodes())
+        print "< K end: "+str(K)
 
-    K.add(sink)
-                
-    
-    # Return a the subgraph of graph containing only the relevant nodes
-    return graph.subgraph(list(K))
+    # Return a the subgraph of graph containing only
+    # the relevant nodes and edges
+    return Kgraph
 
 def _pre_img(K, graph, tag):
-    """
-    pre_img(K, graph, tag) =
-        set({n | n is a node in graph, n not in K, n' in K and graph[n][n'][tag] != 0}).
+     """
+     pre_img(K, graph, tag) =
+         set({n | n is a node in graph, n not in K, n' in K and graph[n][n'][tag] != 0}).
 
-    (Returns a set of nodes that lie outside of K but have neighbours in K.)
+     (Returns a set of nodes that lie outside of K but have neighbours in K.)
 
-    """
-    return set([x for (x, y) in graph.edges()
-                if y in K and
-                graph[x][y][tag] != 0
-                and x not in K])
+     """
+     return set([x for (x, y) in graph.edges()
+                 if y in K and
+                 graph[x][y][tag] != 0
+                 and x not in K])
 
 def _prune_states(K, graph, source, sink):
-    # TODO: This is not a correct implementation
-    # Create a subgraph with the nodes now in K
-    subgraph = graph.subgraph(list(K))
-
-    # Get all paths from source to sink without cycles and redundant nodes
-    simple_paths_gen = nx.all_simple_paths(G=subgraph, source=source, target=sink)
-
-    # Make a set of all nodes in the relevant paths
-    relevant_nodes = set(chain.from_iterable(simple_paths_gen))
+    """
+    Removes cycles and redundant nodes (that are not reachable from source)
+    from the subgraph of graph defined by the nodes in K.
     
-    return relevant_nodes
+    """
+    
+     # Create a subgraph with the nodes now in K
+    subgraph = graph.subgraph(list(K))
+    
+    # Find and remove cycles by deleting the edge between the second to last
+    # node and the last node of the cycle, thus keeping nodes that may be
+    # important to the trust calculation.
+    cycles = nx.simple_cycles(subgraph)
+    if cycles:
+        for cycle in cycles:
+            subgraph.remove_edges_from([(cycle[-2], cycle[-1])])
+            
+    # Get all paths from source to sink without cycles and redundant nodes
+    simple_paths = list(nx.all_simple_paths(G=subgraph, source=source, target=sink))
+    relevant_nodes = set(chain.from_iterable(simple_paths))
+            
+    # Remove nodes no longer used (not in simple_paths)
+    for n in K:
+        if n not in relevant_nodes:
+            subgraph.remove_node(n)
+            
+    return subgraph

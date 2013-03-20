@@ -47,6 +47,10 @@ Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
                       (4,6,dict(cooking=9, crime=6)),
                       (5,7,dict(cooking=8, crime=5)),
                       (6,7,dict(cooking=6, crime=7)),
+                      (6,8,dict(cooking=5, crime=7)),
+                      (8,4,dict(cooking=5, crime=7)),
+                      (3,2,dict(cooking=5, crime=7)),
+                      (2,1,dict(cooking=5, crime=7)),
                       ])
 
 
@@ -82,8 +86,8 @@ nx.draw_spectral(G)
 
 ### TEST GENERATEBN
 Gtags2 = deepcopy(Gtags)
-Gtags2.add_edges_from([(8,4,dict(cooking=5)), (9,8,dict(cooking=5)), (10,9,dict(cooking=5)), (11,10,dict(cooking=5)), (0,1,dict(cooking=5))])
+#Gtags2.add_edges_from([(8,4,dict(cooking=5)), (9,8,dict(cooking=5)), (10,9,dict(cooking=5)), (11,10,dict(cooking=5)), (0,1,dict(cooking=5))])
 print nx.to_dict_of_dicts(gbn.networkx_generate_bn(Gtags2, 1, 7, "cooking"))
-#print gbn.golbeck_generate_bn(Gtags2, 1, 7, "cooking")
+print nx.to_dict_of_dicts(gbn.golbeck_generate_bn(Gtags2, 1, 7, "cooking"))
 nx.draw_circular(Gtags2)
 plt.show()
