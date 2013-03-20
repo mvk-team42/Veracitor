@@ -9,43 +9,8 @@
  */
 var SearchController = function (view) {
 
-    /** Search types */
-    var SEARCH_TYPE = {
-        'WEB' : 0,
-        'DATABASE' : 1
-    };
     /** The time taken to switch between search types in milliseconds. */
     var SEARCH_SWITCH_TIME = 50;
-    
-    /** The current search type. */
-    var currentSearchType;
-
-    $("#search-type-select input[name=web]").click(function (evt) {
-        $(this).addClass("active");
-        $("#search-type-select input[name=database]").removeClass("active");
-
-        $("#database-search").slideUp(SEARCH_SWITCH_TIME);
-        
-        $("input[name=search-button]").attr("value", "Web search");
-        $("#search-info").html("Perform a web search for sources and publications.");
-        
-        currentSearchType = SEARCH_TYPE.WEB;
-    });
-    
-    $("#search-type-select input[name=database]").click(function (evt) {
-        $(this).addClass("active");
-        $("#search-type-select input[name=web]").removeClass("active");
-           
-        $("#database-search").slideDown(SEARCH_SWITCH_TIME);
-        
-        $("input[name=search-button]").attr("value", "Database search");
-        $("#search-info").html("Perform a local search in the database for sources or publications.");
-        
-        currentSearchType = SEARCH_TYPE.DATABASE;
-    });
-    
-    // Set default search type
-    $("#search-type-select input[name=database]").click();
     
     $("input[name=search-button]").click(function (evt) {
         var searchText = $("input[name=search-text]").val();
@@ -61,45 +26,70 @@ var SearchController = function (view) {
         with “empty” fields (except from the required search term). The
         response data is handled by display response data.
      */
-    var requestDatabaseSearch = function (searchTerm, tags, startDate, endDate) {
+    var request_database_search = function (search_term, type, start_date,
+                                                end_date) {
         $.post("/search_producers",{
-            'name' : searchTerm,
-            'type' : tags // TODO search by type or tags?
+            'name' : search_term,
+            'type' : type
         }, function (data) {
             var result;
-            var tag;
             var key;
-            var resultTag = $("#search-result");
+            var tbody;
+            var tr;
+            var table = $("#search-result table");
+            
+            console.log(data);
             
             // parse JSON object
             data = JSON.parse(data);
             
-            resultTag.html("");
+            console.log(data);
+            
+            $("#search-result table").html("");
             
             if(data.error) {
-                resultTag.html("<b>" + data.error + "</b>");
+                $("#search-result table").append(
+                    $("<thead></thead>").append(
+                        $("<tr></tr>").append($("<th>").html(data.error))
+                    )
+                );
             } else {
+                table.append(
+                    $("<thead></thead>").append(
+                        $("<tr></tr>")
+                        .append($("<th>").html("Name"))
+                        .append($("<th>").html("Type"))
+                    )
+                );
+            
+                tbody = $("<tbody>");
+            
                 for(result in data) {
-                    tag = $("<div>");
                     
-                    for(key in data[result]) {
-                        tag.append($("<p>").html(
-                            key + ": " + data[result][key]
-                        ));
-                    }
+                    tr.append($("<td>").html(
+                        key + ": " + data[result][key]
+                    ));
                     
-                    resultTag.append(tag);
+                    tbody.append(
+                        $("<tr></tr>")
+                        .append($("<td>").html(data[result]['_data']['name']))
+                        .append($("<td>").html(data[result]['type_']))
+                    );
                 }
                 
+                table.append(tbody);
+                
                 if(result == "undefined") {
-                    resultTag.append($("<p>").html(
-                        "<b>Could not find anything.</b>"
-                    ));
+                    console.log("undefined");
                 }
             }
         })
         .fail(function () {
-            $("#search-result").html("Server error.");
+            $("#search-result table").append(
+                $("<thead></thead>").append(
+                    $("<tr></tr>").append($("<th>").html("Name"))
+                )
+            );
         });
     };
     
