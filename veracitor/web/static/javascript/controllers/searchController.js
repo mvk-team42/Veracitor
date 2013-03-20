@@ -69,6 +69,10 @@ var SearchController = function (view) {
             var tag;
             var key;
             var resultTag = $("#search-result");
+            
+            // parse JSON object
+            data = JSON.parse(data);
+            
             resultTag.html("");
             
             if(data.error) {
