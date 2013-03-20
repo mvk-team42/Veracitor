@@ -32,6 +32,14 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
     """
     GenerateBN as described by Golbeck and Kuter (2010).
     Probably faster than networkx_generate_bn().
+
+    Implements Prune-States by first eliminating cycles found by
+    nx.simple_cycles and removing the edge between the second last and last
+    node in all cycles and then running nx.all_simple_paths to find only
+    the relevant nodes left after all cycles have been destroyed.
+
+    Returns not a true subgraph of the input graph, but a subgraph with some
+    edges removed (e.g., "internal" cycles).
    
     """
     K = set(graph.predecessors(sink))

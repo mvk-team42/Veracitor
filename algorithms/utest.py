@@ -13,7 +13,7 @@ class TestTidalTrust(unittest.TestCase):
 
     def test_parameters_constant(self):
         """
-        Input parameter objects are not changed by compute_trust
+        (compute_trust) Input parameter objects are not changed
 
         """
         
@@ -45,8 +45,8 @@ class TestTidalTrust(unittest.TestCase):
         self.assertEqual(1, source)
         
         
-        # Test for graph with loops
-        G = _get_graph_with_loops()
+        # Test for graph with cycles
+        G = _get_graph_with_cycles()
         Gcopy = deepcopy(G)
         tt.compute_trust(G, source, sink)
         self.assertEqual(nx.to_dict_of_dicts(Gcopy),
@@ -58,7 +58,7 @@ class TestTidalTrust(unittest.TestCase):
 
     def test_returns_none_when_no_paths(self):
         """
-        compute_trust returns None when no trust value could be found
+        (compute_trust) Return None when no trust value could be found
 
         """
         G = nx.DiGraph()
@@ -78,7 +78,7 @@ class TestTidalTrust(unittest.TestCase):
 
     def test_raises_exceptions_on_strange_input(self):
         """
-        Raises exceptions when input was objects of the wrong type
+        (compute_trust) Raises exceptions when input was objects of the wrong type
 
         """
         G = _get_tagrated_graph()
@@ -92,7 +92,7 @@ class TestTidalTrust(unittest.TestCase):
         self.assertRaises(TypeError, tt.compute_trust, None, 1, 7)
         
         # Test for when decision is not an iterable
-        self.assertRaises(TypeError, tt.compute_trust, G, 1, 7, decision=unittest.TestCase)        
+        self.assertRaises(TypeError, tt.compute_trust, G, 1, 7, decision=unittest.TestCase)  
         
         # Test for bayesianNetwork does not work like graph
         self.assertRaises(TypeError, tt.compute_trust, "string", 1, 7)
@@ -106,10 +106,10 @@ class TestGenerateBN(unittest.TestCase):
     """
     def test_cycle_removal(self):
         """
-        Tests that generate_bn removes cycles from graphs
+        (generate_bn) Removes cycles from graphs
         
         """
-        G = _get_graph_with_loops()
+        G = _get_graph_with_cycles()
         loops = nx.simple_cycles(G)
         self.assertNotEqual(loops, [])
         G = gbn.golbeck_generate_bn(G, 1, 7)
@@ -150,7 +150,7 @@ def _get_tagrated_graph():
     return Gtags
 
 
-def _get_graph_with_loops():
+def _get_graph_with_cycles():
     G = nx.DiGraph()
     G.add_weighted_edges_from([(1,2,10),
                                (1,3,8),
