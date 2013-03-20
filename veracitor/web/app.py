@@ -5,6 +5,7 @@ from ..database import *
 
 import json
 from json import JSONEncoder
+from bson.json_util import default
 
 # configuration
 
@@ -50,6 +51,9 @@ def prods():
                 #    producers = {'res1':f['name'], 'res2': f['type']}   
                 res = extractor.search_producers(possible_prod=f['name'], type_=f['type'])
                 for i, x in enumerate(res):
+                    # serialize object id TODO fix
+                    x['_data'][None] = default(x['_data'][None])
+                    
                     producers["res"+str(i)] = x.__dict__
 
             return json.dumps(producers, cls=JSONEnc)
