@@ -14,9 +14,18 @@ var SearchController = function (view) {
     
     $("input[name=search-button]").click(function (evt) {
         var search_text = $("input[name=search-text]").val();
-        var search_type_text = $("input[name=search-type-text]").val();
+        var t, types, search_type;
         
-        request_database_search(search_text, search_type_text, null, null);
+        types = $("#search-types input");
+        
+        for(t in types) {
+            if(t.checked) {
+                search_type = t.name;
+                break;
+            }
+        }
+        
+        request_database_search(search_text, search_type, null, null);
     });
     
     /**
