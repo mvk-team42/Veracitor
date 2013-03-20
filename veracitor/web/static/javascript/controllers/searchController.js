@@ -18,9 +18,9 @@ var SearchController = function (view) {
         
         types = $("#search-types input");
         
-        for(t in types) {
-            if(t.checked) {
-                search_type = t.value;
+        for(t = 0; t < types.length; t ++) {
+            if(types[t].checked) {
+                search_type = types[t].value;
                 break;
             }
         }
@@ -44,7 +44,7 @@ var SearchController = function (view) {
             $("#search-result").html(data);
         })
         .fail(function () {
-            $("#search-result").html("Server error.");
+            $("#search-result").html("<h2>Server error.</h2>");
         });
     };
     
