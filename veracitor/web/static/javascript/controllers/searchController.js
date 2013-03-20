@@ -13,10 +13,10 @@ var SearchController = function (view) {
     var SEARCH_SWITCH_TIME = 50;
     
     $("input[name=search-button]").click(function (evt) {
-        var searchText = $("input[name=search-text]").val();
-        var searchTypeText = $("input[name=search-type-text]").val();
+        var search_text = $("input[name=search-text]").val();
+        var search_type_text = $("input[name=search-type-text]").val();
         
-        requestDatabaseSearch(searchText, searchTypeText, null, null);
+        request_database_search(search_text, search_type_text, null, null);
     });
     
     /**
