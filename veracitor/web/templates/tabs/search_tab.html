@@ -11,9 +11,9 @@
 <p id="search-info">This is how the chosen search works.</p>
 
 <input type="text" name="search-text" />
-<input type="button" name="search-button" value="Search" />
 				
 <div id="database-search">
+    <input type="text" name="search-type-text" />
 	<hr></hr>
     <p>Tags:
 	    <label><input type="checkbox" name="terrorism" />Terrorism</label>
@@ -23,6 +23,8 @@
 	
     <p>Time period:<br /><p id="period">1968 - 2011</p><img src="{{ url_for('static', filename='images/slider.png') }}" /></p>
 </div>
+
+<input type="button" name="search-button" value="Search" />
 
 <div id="search-result">
 	<h1>Search result</h1>

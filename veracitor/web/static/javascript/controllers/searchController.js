@@ -45,12 +45,13 @@ var SearchController = function (view) {
     });
     
     // Set default search type
-    $("#search-type-select input[name=web]").click();
+    $("#search-type-select input[name=database]").click();
     
     $("input[name=search-button]").click(function (evt) {
         var searchText = $("input[name=search-text]").val();
+        var searchTypeText = $("input[name=search-type-text]").val();
         
-        requestDatabaseSearch(searchText, null, null, null);
+        requestDatabaseSearch(searchText, searchTypeText, null, null);
     });
     
     /**
@@ -63,7 +64,7 @@ var SearchController = function (view) {
     var requestDatabaseSearch = function (searchTerm, tags, startDate, endDate) {
         $.post("/search_producers",{
             'name' : searchTerm,
-            'type' : ''
+            'type' : tags // TODO search by type or tags?
         }, function (data) {
             var result;
             var tag;
