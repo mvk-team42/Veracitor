@@ -35,53 +35,55 @@ var SearchController = function (view) {
             var result;
             var key;
             var tbody;
-            var tr;
             var table = $("#search-result table");
-            
-            console.log(data);
-            
-            // parse JSON object
-            data = JSON.parse(data);
-            
-            console.log(data);
             
             $("#search-result table").html("");
             
-            if(data.error) {
+            for(result in data) { break; };
+            
+            if(result != "undefined") {
+                // parse JSON object
+                data = JSON.parse(data);
+                
+                if(data.error) {
+                    $("#search-result table").append(
+                        $("<thead></thead>").append(
+                            $("<tr></tr>").append($("<th>").html(data.error))
+                        )
+                    );
+                } else {
+                    table.append(
+                        $("<thead></thead>").append(
+                            $("<tr></tr>")
+                            .append($("<th>").html("Name"))
+                            .append($("<th>").html("Type"))
+                        )
+                    );
+                
+                    tbody = $("<tbody>");
+                
+                    for(result in data) {
+                        tbody.append(
+                            $("<tr></tr>")
+                            .append($("<td>").html(data[result]['_data']['name']))
+                            .append($("<td>").html(data[result]['type_']))
+                        );
+                    }
+                    
+                    table.append(tbody);
+                    
+                    if(result == "undefined") {
+                        console.log("undefined");
+                    }
+                }
+            } else {
                 $("#search-result table").append(
                     $("<thead></thead>").append(
-                        $("<tr></tr>").append($("<th>").html(data.error))
+                        $("<tr></tr>").append($("<th>").html(
+                            "Could not find anything."
+                        ))
                     )
                 );
-            } else {
-                table.append(
-                    $("<thead></thead>").append(
-                        $("<tr></tr>")
-                        .append($("<th>").html("Name"))
-                        .append($("<th>").html("Type"))
-                    )
-                );
-            
-                tbody = $("<tbody>");
-            
-                for(result in data) {
-                    
-                    tr.append($("<td>").html(
-                        key + ": " + data[result][key]
-                    ));
-                    
-                    tbody.append(
-                        $("<tr></tr>")
-                        .append($("<td>").html(data[result]['_data']['name']))
-                        .append($("<td>").html(data[result]['type_']))
-                    );
-                }
-                
-                table.append(tbody);
-                
-                if(result == "undefined") {
-                    console.log("undefined");
-                }
             }
         })
         .fail(function () {
