@@ -63,6 +63,8 @@ def prods():
                     
             if error:
                 response = { "error" : error }
+                
+            print response
 
             #return json.dumps(producers, cls=JSONEnc)
             return render_template("tabs/search_results.html", response=response)
