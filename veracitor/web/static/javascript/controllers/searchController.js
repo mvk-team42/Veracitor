@@ -32,67 +32,11 @@ var SearchController = function (view) {
             'name' : search_term,
             'type' : type
         }, function (data) {
-            var result;
-            var key;
-            var tbody;
-            var table = $("#search-result table");
-            
             $("#search-result").html(data);
-            
-            /*
-            $("#search-result table").html("");
-            
-            // parse JSON object
-            data = JSON.parse(data);
-            
-            for(result in data) { break; };
-            
-            console.log(result);
-            
-            if(typeof(result) == "undefined") {
-                display_search_error("Could not find anything.");
-            } else {
-                if(data.error) {
-                    display_search_error(data.error);
-                } else {
-                    table.append(
-                        $("<thead></thead>").append(
-                            $("<tr></tr>")
-                            .append($("<th>").html("Name"))
-                            .append($("<th>").html("Type"))
-                        )
-                    );
-                
-                    tbody = $("<tbody>");
-                
-                    for(result in data) {
-                        tbody.append(
-                            $("<tr></tr>")
-                            .append($("<td>").html(data[result]['_data']['name']))
-                            .append($("<td>").html(data[result]['type_']))
-                        );
-                    }
-                    
-                    table.append(tbody);
-                    
-                    if(result == "undefined") {
-                        console.log("undefined");
-                    }
-                }
-            }
-            */
         })
         .fail(function () {
-            display_search_error("Server error.");
+            $("#search-result").html("Server error.");
         });
-    };
-    
-    function display_search_error(text) {
-        $("#search-result table").html(
-            $("<thead></thead>").append(
-                $("<tr></tr>").append($("<th>").html(text))
-            )
-        );
     };
     
     /**

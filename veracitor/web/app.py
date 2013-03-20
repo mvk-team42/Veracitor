@@ -36,7 +36,7 @@ def prods():
 
     if request.method == "POST":
         if request.form:
-            f=request.form
+            f = request.form
 
             error = ""
             if not f['name']:
@@ -44,12 +44,14 @@ def prods():
             elif not f['type']:
                 error = "No type chosen."
 
-            if error:
-                response = { "error":error }
-            else:
+            if not error:
                 #    producers = {'res1':f['name'], 'res2': f['type']}   
                 res = extractor.search_producers(possible_prod=f['name'], type_=f['type'])
-                response = { "result":res }
+                
+                if res:
+                    response = { "result" : res }
+                else:
+                    error = "Could not find anything."
                 #for i, x in enumerate(res):
                     
                     #x_dict = x.__dict__
@@ -58,6 +60,9 @@ def prods():
                     #x_dict['_data'][None] = default(x_dict['_data'][None])
                     
                     #producers["res"+str(i)] = x
+                    
+            if error:
+                response = { "error" : error }
 
             #return json.dumps(producers, cls=JSONEnc)
             return render_template("tabs/search_results.html", response=response)
