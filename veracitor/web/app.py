@@ -45,21 +45,22 @@ def prods():
                 error = "No type chosen."
 
             if error:
-                producers = { "error":error }
+                response = { "error":error }
             else:
-                producers = {}
                 #    producers = {'res1':f['name'], 'res2': f['type']}   
                 res = extractor.search_producers(possible_prod=f['name'], type_=f['type'])
-                for i, x in enumerate(res):
-                    x_dict = x.__dict__
+                response = { "result":res }
+                #for i, x in enumerate(res):
+                    
+                    #x_dict = x.__dict__
                 
                     # serialize object id TODO fix
-                    x_dict['_data'][None] = default(x_dict['_data'][None])
+                    #x_dict['_data'][None] = default(x_dict['_data'][None])
                     
-                    producers["res"+str(i)] = x_dict
+                    #producers["res"+str(i)] = x
 
             #return json.dumps(producers, cls=JSONEnc)
-            return render_template("tabs/search_results.html", result=producers)
+            return render_template("tabs/search_results.html", response=response)
     return redirect(url_for("index"))
 
 @app.route("/")

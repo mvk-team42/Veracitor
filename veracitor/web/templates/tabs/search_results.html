@@ -1,5 +1,5 @@
-{% if result.error %}
-    <h2>{{ result.error }}</h2>
+{% if response.error %}
+    <h2>{{ response.error }}</h2>
 {% else %}
     <table>
         <thead>
@@ -9,7 +9,7 @@
             </tr>
         </head>
         <tbody>
-        {% for r in result %}
+        {% for r in response.result %}
             <tr>
                 <td>{{ r._data.name }}</td>
                 <td>{{ r.type_ }}</td>
