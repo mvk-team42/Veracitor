@@ -61,7 +61,32 @@ var SearchController = function (view) {
         response data is handled by display response data.
      */
     var requestDatabaseSearch = function (searchTerm, tags, startDate, endDate) {
-        // TODO
+        $.post("/search_producers",{
+            'name' : searchTerm,
+            'type' : ''
+        }, function (data) {
+            var result;
+            var tag;
+            var key;
+            var resultTag = $("#search-result");
+            resultTag.html("");
+            
+            if(data.error) {
+                resultTag.html(data.error);
+            } else {
+                for(result in data) {
+                    tag = $("<div>");
+                    
+                    for(key in data[result]) {
+                        tag.append($("<p>").html(
+                            key + ": " + data[result][key]
+                        ));
+                    }
+                    
+                    resultTag.append(tag);
+                }
+            }
+        });
     };
     
     /**
