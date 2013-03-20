@@ -131,7 +131,7 @@
             controllers.account = new AccountController(vera.dom.account);
             
         } catch(exc) {
-            console.error("Error while adding controller " + debugText + ".");
+            console.error("Error while adding " + debugText + " controller.");
             console.error(exc.message);
         }
     }

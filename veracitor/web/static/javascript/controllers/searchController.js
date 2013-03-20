@@ -94,7 +94,7 @@ var SearchController = function (view) {
                 if(result == "undefined") {
                     resultTag.append($("<p>").html(
                         "<b>Could not find anything.</b>"
-                    );
+                    ));
                 }
             }
         })
