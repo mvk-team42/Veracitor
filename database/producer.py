@@ -1,6 +1,6 @@
-from mongoengine import * 
-
-
+from mongoengine import *  
+#from globalnetwork import *
+import globalNetwork
 connect('mydb')
 
 class SourceRating(EmbeddedDocument):
@@ -37,5 +37,7 @@ class Producer(Document):
     type_of = StringField(required=True)
     meta = {'allow_inheritance':'On'}
     
-
+    def save(self):
+        globalNetwork.notify_producer_was_updated(self)
+        super(Producer,self).save()
 
