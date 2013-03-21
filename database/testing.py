@@ -8,7 +8,7 @@ import group
 import extractor
 import datetime
 
-connect('mydb')
+connect('testDB')
 
 class GeneralSetup(unittest.TestCase):
     
@@ -43,9 +43,9 @@ class GeneralSetup(unittest.TestCase):
                                              time_punlished=datetime.datetime.now(),
                                              tags=[self.tag1, self.tag2])
         self.prod1 = producer.Producer(name="DN",
-                                       type_="newspaper")
+                                       type_of="newspaper")
         self.prod2 = producer.Producer(name="SvD",
-                                       type_="newspaper")
+                                       type_of="newspaper")
         self.info_rating1 = producer.InformationRating(rating=4, 
                                                        information=self.info1)
         self.prod2.info_ratings.append(self.info_rating1)

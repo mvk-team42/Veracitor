@@ -34,7 +34,7 @@ class Producer(Document):
     infos = ListField(ReferenceField('Information'))
     source_ratings = ListField(EmbeddedDocumentField(SourceRating))
     info_ratings = ListField(EmbeddedDocumentField(InformationRating))
-    type_ = StringField(required=True)
+    type_of = StringField(required=True)
     meta = {'allow_inheritance':'On'}
     
 

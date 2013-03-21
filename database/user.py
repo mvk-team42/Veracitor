@@ -22,7 +22,7 @@ class User(producer.Producer):
     time_joined = DateTimeField() #Time eller date joined?
     group_ratings = ListField(EmbeddedDocumentField(GroupRating))
     groups = ListField(ReferenceField('Group'))
-    type_ = "User"
+    type_of = "User"
     
 
     
