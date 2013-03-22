@@ -98,6 +98,28 @@ class TestTidalTrust(unittest.TestCase):
         self.assertRaises(TypeError, tt.compute_trust, "string", 1, 7)
 
 
+    def test_dry_runs(self):
+        """
+        (compute_trust) Assert that the function returns the same value as Tidal Trust would
+        
+        """
+        #
+        # Dry run 1:
+        #
+        # Threshold candidates = [9,8]. Threshold = max([9,8] = 9
+        # 
+        # Rating 1 -> 7:
+        #     5 -> 7 = 8 (Direct trust value)
+        #     6 -> 7 = 6 (Direct trust value)
+        #     2 -> 7 = (9*8)/9 = 8
+        #     3 -> 7 Invalid path since 1 -> 3 has a trust value below the Threshold.
+        #     4 -> 7 = (4 -> 5 < Threshold. Not included) = (9*6)/9 = 6
+        # 1 -> 7 = ((10*8) + 9*6))/(10+9) = 7.052631578947368 
+        # (Calculated using python to get the same number of decimals)
+        
+        G = _get_weighted_graph()
+        self.assertEqual(tt.compute_trust(G,1,7), 7.052631578947368)
+
 
 class TestGenerateBN(unittest.TestCase):
     """
