@@ -64,19 +64,10 @@ Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
 
 #nx.draw(G)
 #nx.draw_circular(G2)
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 nx.draw_spectral(Gtags)
->>>>>>> Changed the format of edges - tags are now properties at the same level as the 'weight' property and so everything now works as we wanted. See related Issue for more info
-=======
 #nx.draw_spectral(Gtags)
->>>>>>> Started work on GenerateBN. Has a fully functional alternative function.
 #nx.draw_spectral(Gtags)
-=======
-nx.draw_spectral(G)
->>>>>>> Better edge formats
+
 
 #print tt.tidal_trust(graph=G, source=1, sink=7)
 #print "G (ordinary weighted graph): "+str(tt.compute_trust(bayesianNetwork=G, source=1, sink=7, decision=None))

@@ -43,7 +43,6 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
    
     """
     K = set(graph.predecessors(sink))
-<<<<<<< HEAD
     KK = set()
 
     while K != KK and source not in K:
@@ -55,25 +54,7 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
                 K_has_changed = False
             else:
                 K = K | pre_img
-<<<<<<< HEAD
-<<<<<<< HEAD
-                
-=======
-    previous_K = set()
-    while K != previous_K and source not in K:
-        previous_K = K.copy()
-        KKK = set()
-        while KKK != K:
-            KKK = K.copy()
-            K = K | _pre_img(K, graph, tag)
->>>>>>> Renamed KK to previous_K
-=======
-            print "\t< K end: "+str(K)
-        
->>>>>>> Finished GenerateBN
-=======
-                
->>>>>>> Removed prints
+
         # Remove cycles, redundant nodes etc and store only the nodes
         # relevant (those that lie in a path from source to sink)
         K.add(sink)        
