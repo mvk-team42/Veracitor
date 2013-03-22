@@ -1,31 +1,40 @@
 from networkx import to_dict_of_dicts, DiGraph
-#from database import *
 from tag import *
 from producer import *
 from information import *
 from group import *
 from user import *
 from mongoengine import *
+
 connect('mydb')
 
 graph = None
 
 def build_network_from_db():
+    global graph
+    # Users not included in graph
     producers = producer.Producer.objects(type_of__ne="User")
     graph = DiGraph()
    
-    for p1 in producers: # Get all producers
+    # Add all producers in the database as nodes
+    for p1 in producers:
         graph.add_node(p1.name)
     
-    for p2 in producers: # Get all ratings, create all edges
+    # Add all producers' source ratings to the database as edges
+    for p2 in producers:
         for s in p2.source_ratings:
             graph.add_edges_from([(p2.name, s.source.name)], {s.tag.name: s.rating})
     
     print to_dict_of_dicts(graph)
 
+def getDictionaryGraph():
+    return to_dict_of_dicts(graph)
+
 def notify_producer_was_added(producer):
-    graph.add_node(producer.id)
-    # add edges corresponding to the producers trust-relations
+    print producer.name
+    graph.add_node(producer.name)
+    for s in producer.source_ratings:
+        graph.add_edges_from([(producer.name, s.source.name)], {s.tag.name: s.rating})
     
 
 def notify_information_was_added(information):

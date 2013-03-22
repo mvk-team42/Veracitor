@@ -1,6 +1,7 @@
 from mongoengine import *  
 #from globalnetwork import *
 import globalNetwork
+from dbExceptions import GlobalNetworkException
 connect('mydb')
 
 class SourceRating(EmbeddedDocument):
@@ -38,6 +39,19 @@ class Producer(Document):
     meta = {'allow_inheritance':'On'}
     
     def save(self):
-        globalNetwork.notify_producer_was_updated(self)
+        if globalNetwork.graph is None:
+            raise GlobalNetworkException("There is no Global Network created!")
+        if(len(Producer.objects(name=self.name)) == 0):
+            globalNetwork.notify_producer_was_added(self)
+        else:
+            globalNetwork.notify_producer_was_updated(self)
+        
         super(Producer,self).save()
 
+
+if __name__ == "__main__":
+    globalNetwork.build_network_from_db()
+    newP = Producer(name="ABC", type_of="MediaNetwork")
+    newP.save()
+    print globalNetwork.getDictionaryGraph()
+    newP.delete()
