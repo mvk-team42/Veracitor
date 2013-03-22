@@ -31,7 +31,6 @@ def getDictionaryGraph():
     return to_dict_of_dicts(graph)
 
 def notify_producer_was_added(producer):
-    print producer.name
     graph.add_node(producer.name)
     for s in producer.source_ratings:
         graph.add_edges_from([(producer.name, s.source.name)], {s.tag.name: s.rating})
@@ -43,7 +42,7 @@ def notify_information_was_added(information):
 
 
 def notify_producer_was_removed(producer):
-    graph.remove_node(producer.id)
+    graph.remove_node(producer.name)
     # edges are removed automatically :)
 
 def notify_information_was_removed(information):
@@ -51,7 +50,8 @@ def notify_information_was_removed(information):
     # edges are removed automatically :)
 
 def notify_producer_was_updated(producer):
-    pass
+    notify_producer_was_removed(producer)
+    notify_producer_was_added(producer)
     # add/remove edges corr. to trust-relations
 
 def notify_information_was_updated(information):
