@@ -38,26 +38,11 @@ nosetests.xml
 *.sublime-project
 *.sublime-workspace
 
-<<<<<<< HEAD
-*~
-=======
 # Misc
 *.py~
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> Added *.~ files to ignorelist
-=======
-.DS_Store
->>>>>>> Added mac-specific file to .gitignore
-=======
-
 .DS_Store
 
 *~
-<<<<<<< HEAD
->>>>>>> First EntityModel
-=======
 
 # Top secret settings... :)
 veracitor/settings.py
->>>>>>> Added a basic Flask application.

@@ -12,7 +12,7 @@ import datetime
 connect('mydb')
 
 def get_producer(requested_name):
-    extr_producer = producer.Producer.objects(name=requested_nam1e)
+    extr_producer = producer.Producer.objects(name=requested_name)
     return extr_producer[0]
     
 def get_user(requested_name):
@@ -34,13 +34,13 @@ def get_tag(requested_name):
 def get_all_tags():
     return tag.Tag.objects()
 
-def search_producers(possible_prod, type_):
+def search_producers(possible_prod, type_of):
     """Returns a list of producers whose name includes possible_prod,
     and whose type_ exactly matches parameter type_.
 
     """
     #(?i) - case insensitive
-    return producer.Producer.objects(name=re.compile('(?i)'+possible_prod), type_=type_)
+    return producer.Producer.objects(name=re.compile('(?i)'+possible_prod), type_of=type_of)
 
 def search_informations(possible_info, tags, startD, endD):
     """Returns a list of informations whose name includes possible_info,

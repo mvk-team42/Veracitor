@@ -1,17 +1,17 @@
 from mongoengine import *
-import producer
+from Producer import Producer
 
 connect('FOISERVER') # ej korrekt
 
-class GroupRating(EmbeddedDocument):
+class GroupRatings(EmbeddedDocument):
     """ Defines a object structure used by
     User to store user specific group rating 
     
     """
-    group = ReferenceField('Group', required=True)
+    group = ReferenceField(Document)
     rating = IntField(required=True)
 
-class User(producer.Producer):
+class User(Producer):
     """Provides public fields mirroring
     underlying database object.
     Call save() to update database
@@ -19,10 +19,9 @@ class User(producer.Producer):
     
     """
     password = StringField(required=True)
-    time_joined = DateTimeField() #Time eller date joined?
-    group_ratings = ListField(EmbeddedDocumentField(GroupRating))
-    groups = ListField(ReferenceField('Group'))
-    type_of = "User"
+    time_joined = StringField(required=True) #Time eller date joined?
+    group_ratings = ListField(EmbeddedDocumentField(GroupRatings))
+    groups = ListField(ReferenceField(Document))
     
 
     
