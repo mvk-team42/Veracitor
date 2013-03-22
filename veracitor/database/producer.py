@@ -46,8 +46,17 @@ class Producer(Document):
         else:
             globalNetwork.notify_producer_was_updated(self)
         
-        super(Producer,self).save()
+        super(Producer, self).save()
 
+    def delete(self):
+        if globalNetwork.graph is None:
+            raise GlobalNetworkException("There is no Global Network created!")
+        if(len(Producer.objects(name=self.name)) == 0):
+            return
+        else:
+            globalNetwork.notify_producer_was_removed(self)
+            
+        super(Producer, self).save()
 
 if __name__ == "__main__":
     globalNetwork.build_network_from_db()
