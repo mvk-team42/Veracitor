@@ -119,43 +119,6 @@ def get_threshold(paths, graph, tag):
             if graph[path[i]][path[i+1]][tag] < min_path_weight:
                min_path_weight = graph[path[i]][path[i+1]][tag]
         
-<<<<<<< HEAD
-        #nx.draw(graph)
-        #nx.draw_circular(graph)
-        #nx.draw_spectral(graph)
-        #plt.show()
-
-    @staticmethod
-    def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
-        """
-        Computes the trust between the source and sink in a graph (bayesianNetwork) 
-        and returns the value as a float.
-
-        decision (optional): A list of node identifiers (i.e. names or id's) for
-        nodes that are not to be used in the trust calculation.
-
-        tag (optional): A tag name (String). Only edges/ratings under this tag
-        will be used in the trust calculation.
-
-        If tag is specified, edges will be tagged with properties, like so:
-        G[1][2][tag_name] = rating.
-        Otherwise, the edges will be considered weighted: G[1][2]["weight"] = rating
-        """
-        # Ignore nodes as specified by decision
-        if decision != None:
-            bayesianNetwork.remove_nodes_from(decision)
-        if tag == None:
-            tag = "weight"
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
-=======
-        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag="weight")
->>>>>>> Better edge formats
-=======
-        return TidalTrust.tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
-=======
         if min_path_weight > threshold:
             threshold = min_path_weight  
 
@@ -209,9 +172,6 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
         tag = "weight"
 
     return tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
->>>>>>> Release Candidate! Works as it should probably
-
->>>>>>> Changed the format of edges - tags are now properties at the same level as the 'weight' property and so everything now works as we wanted. See related Issue for more info
 
         
 
