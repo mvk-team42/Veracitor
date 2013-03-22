@@ -61,7 +61,7 @@ def expand_with_references(start_url, max_time):
     crawler.configure()
     crawler.crawl(spider)
     crawler.start()
-    log.start()
+    #log.start()
     reactor.run()
     
     

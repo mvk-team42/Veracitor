@@ -8,11 +8,11 @@ class CrawlerPipeline(object):
 
     def __init__(self):
         self.articles = []
-        #dispatcher.connect(self.spider_closed, signals.spider_closed)
+        dispatcher.connect(self.spider_closed, signals.spider_closed)
 
     def process_item(self, item, spider):
         self.fix_fields(item)
-        #self.print_if_unknown(item)
+        self.print_if_unknown(item)
         self.articles.append(item)
         return item
         
@@ -56,7 +56,6 @@ class CrawlerPipeline(object):
             item[field] = "unknown"
             
             
-    """       
     def spider_closed(self, spider):
         print "Number of articles: " + str(len(self.articles))
         unknowns = self.count_unknowns()
@@ -71,4 +70,3 @@ class CrawlerPipeline(object):
                 if article[field] == "unknown":
                     unknowns[field] += 1
         return unknowns
-   """
