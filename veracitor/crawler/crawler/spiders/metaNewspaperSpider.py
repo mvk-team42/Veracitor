@@ -17,8 +17,8 @@ class MetaNewspaperSpider(BaseSpider):
 
     def __init__(self, *args, **kwargs):
         url = domain = kwargs.get('url')
-        
-        self.start_urls = [url]
+
+        self.start_urls = ["http://" + url]
         super(MetaNewspaperSpider, self).__init__()
         
 
