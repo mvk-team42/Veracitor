@@ -16,6 +16,9 @@ import xml.etree.ElementTree as ET
 
 from scrapy.signalmanager import SignalManager
 
+from scrapy.crawler import CrawlerProcess
+from multiprocessing import Process
+
 
 def createNewspaperBank():
     _run_spider(NewspaperBankSpider())
@@ -46,12 +49,23 @@ def stopContinuousScrape():
     
 def _run_spider(spider):
     settings = get_project_settings()
-    crawler = Crawler(settings)
+    crawler = CrawlerProcess(settings)
+    crawler.install()
     crawler.configure()
+    p = Process(target=_crawl,args=[crawler,spider])
+    p.start()
+    p.join()
+    #settings = get_project_settings()
+    #crawler = Crawler(settings)
+    #crawler.configure()
+    #crawler.crawl(spider)
+    #crawler.start()
+    #reactor.run()
+
+def _crawl(crawler, spider):
     crawler.crawl(spider)
     crawler.start()
-    reactor.run()
-    
+    crawler.stop()
     
 if __name__ == "__main__":
     startContinuousScrape() 
