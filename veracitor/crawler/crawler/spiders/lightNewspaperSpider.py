@@ -8,41 +8,25 @@ from crawler.spiders.articleSpider import ArticleSpider
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
+from xml.etree.ElementTree import ElementTree
 
 
-class LightNewspaperSpider(CrawlSpider):
+class LightNewspaperSpider(BaseSpider):
     name = "lightNewspaper"
     
 
     def __init__(self, *args, **kwargs):
-        self.start_urls = ["http://" + domain]
-        self.rules = (
-            Rule(
-                SgmlLinkExtractor(allow_domains=domain, deny=self.xpaths.get_article_deny_urls(domain)), 
-                callback="scrape_article"
-            ),
-        )
-        super(NewspaperSpider, self).__init__()
+        url = domain = kwargs.get('url')
+        
+        self.start_urls = [url]
+        super(LightNewspaperSpider, self).__init__()
         
 
-    def scrape_article(self, response):
-        if self._is_article(response):
-            return ArticleSpider.scrape_article(response)
-
-    def _is_article(self, response):
-        domain = urlparse(response.url)[1]
-        hxs = HtmlXPathSelector(response)
-        for xpath in self.xpaths.get_article_qualification_xpaths(domain):
-            if len(hxs.select(xpath)) > 0:
-                return True
-        return False
+    def parse(self, response):
+        tree = ElementTree()
+        xml_file = "crawler/webpages.xml"
+        webpages = ElementTree.parse(xml_file).getroot().find("//webpages")
         
         
-        
-        
-        
-        
-        
-        
-        
-        
+       
+  
