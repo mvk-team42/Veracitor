@@ -1,10 +1,4 @@
-<?xml version="1.0"?>
 <webpages>
 
-    <webpage
-        name="DN"
-        domain="www.dn.se"
-        rss="http://www.dn.se/m/rss/senaste-nytt"
-    />
-
-</webpages>
+    <webpage domain="www.dn.se" name="DN" rss="http://www.dn.se/m/rss/senaste-nytt" />
+<webpage domain="http://www.dn.se" name="http://www.dn.se" rss="http://www.dn.se" /></webpages>
