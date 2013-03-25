@@ -8,25 +8,29 @@ from crawler.spiders.articleSpider import ArticleSpider
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
-from xml.etree.ElementTree import ElementTree
+import xml.etree.ElementTree as ET
 
 
-class LightNewspaperSpider(BaseSpider):
-    name = "lightNewspaper"
+class MetaNewspaperSpider(BaseSpider):
+    name = "metaNewspaper"
     
 
     def __init__(self, *args, **kwargs):
         url = domain = kwargs.get('url')
         
         self.start_urls = [url]
-        super(LightNewspaperSpider, self).__init__()
+        super(MetaNewspaperSpider, self).__init__()
         
 
     def parse(self, response):
-        tree = ElementTree()
         xml_file = "crawler/webpages.xml"
-        webpages = ElementTree.parse(xml_file).getroot().find("//webpages")
-        
+        tree = ET.parse(xml_file)
+        webpages = tree.getroot()
+        url = response.url
+        already_in_xml = len(webpages.findall("./webpage[@domain='" + url + "']")) > 0
+        if not already_in_xml:
+            webpages.append(ET.Element("webpage", attrib={'domain':url, 'name':url, 'rss':url}))
+            tree.write(xml_file)
         
        
   

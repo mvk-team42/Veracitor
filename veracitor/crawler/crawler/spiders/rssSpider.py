@@ -16,14 +16,7 @@ class RssSpider(CrawlSpider):
    
     def __init__(self, *args, **kwargs):
         self.xpaths = Xpaths('crawler/webpages.xml')
-        #self.start_urls = [kwargs.get('url')]
-        self.start_urls = [
-            "http://www.dn.se/m/rss/senaste-nytt",
-            "http://www.svd.se/nyheter/nyhetsdygnet/?service=rss",
-            "http://www.unt.se/rss/lokalt",
-            "http://www.expressen.se/Pages/OutboundFeedsPage.aspx?id=3646032&viewstyle=rss",
-            "http://feeds.washingtonpost.com/rss/rss_she-the-people"    
-        ]
+        self.start_urls = [kwargs.get('url')]
         super(RssSpider, self).__init__()
         
     def parse(self, response):

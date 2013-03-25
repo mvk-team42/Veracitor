@@ -14,7 +14,7 @@ class NewspaperBankSpider(BaseSpider):
     name = "newspaperBank"
 
     def __init__(self, *args, **kwargs):
-        super(NewsPaperBankSpider, self).__init__(*args, **kwargs)
+        super(NewspaperBankSpider, self).__init__(*args, **kwargs)
         self.start_urls = ["http://www.listofnewspapers.com/en/europe/newspapers-in-west-midlands.html"]
 
         
