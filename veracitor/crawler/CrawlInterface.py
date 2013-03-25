@@ -50,7 +50,7 @@ def stopContinuousScrape():
 def _run_spider(spider):
     settings = get_project_settings()
     crawler = CrawlerProcess(settings)
-    crawler.install()
+    #crawler.install()
     crawler.configure()
     p = Process(target=_crawl,args=[crawler,spider])
     p.start()
