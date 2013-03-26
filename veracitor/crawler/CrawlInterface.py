@@ -19,6 +19,13 @@ from scrapy.signalmanager import SignalManager
 from scrapy.crawler import CrawlerProcess
 from multiprocessing import Process
 
+def init():
+    dispatcher.connect(item_scraped , signals.item_scraped)
+    
+def item_scraped(item, reponse, spider):
+    if isinstance(spider, NewspaperBankSpider):
+        addNewspaper(item.url)
+
 
 def createNewspaperBank():
     _run_spider(NewspaperBankSpider())
