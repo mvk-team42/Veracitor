@@ -3,6 +3,8 @@ import networkx as nx
 import tidaltrust as tt
 import generate_bn as gbn
 from copy import copy, deepcopy
+from random import randint
+import matplotlib.pyplot as plt
 
 class TestTidalTrust(unittest.TestCase):
     def setup(self):
@@ -137,6 +139,27 @@ class TestGenerateBN(unittest.TestCase):
         G = gbn.golbeck_generate_bn(G, 1, 7)
         loops = nx.simple_cycles(G)
         self.assertEqual(loops, [])
+
+    def test_source_sink_neighbours(self):
+        """
+        (generate_bn) Return a correct network when there is an edge source->sink
+
+        """
+        # Test for minimal trivial graph, should just return the same graph
+        G = nx.DiGraph()
+        G.add_weighted_edges_from([[0,1,1]])
+
+        self.assertEqual(nx.to_dict_of_dicts(gbn.golbeck_generate_bn(G, 0, 1)), 
+                         {0: {1:{'weight':1}}, 1: {}})
+
+    def test_returns_correct_graph_when_source_sink_disconnected(self):
+        """
+        (generate_bn) Returs a graph with only the sink when there is no path source -> sink
+
+        """
+        G = _get_weighted_graph()
+        G.remove_edges_from([(5,7),(6,7)])
+        self.assertEqual(nx.to_dict_of_dicts(gbn.golbeck_generate_bn(G,1,7)), {7: {}})
         
 
 
@@ -190,6 +213,22 @@ def _get_graph_with_cycles():
                                (8,4,11),
                                ])      
     return G
+
+def _get_random_graph(number_of_nodes, least_number_of_edges):
+    """
+    Generates a random graph. Probably with some cycles. This graph is not guaranteed to be connected.
+
+    """
+    G = nx.DiGraph()
+    G.add_nodes_from(range(number_of_nodes))
+    
+    for i in range(least_number_of_edges):
+        G.add_weighted_edges_from([(randint(0, number_of_nodes),
+                                    randint(0, number_of_nodes), 1)])
+
+  
+    return G
+              
         
 # class TestGenerateBN(unittest.TestCase):
 #     def test_dummy(self):
