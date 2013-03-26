@@ -74,7 +74,7 @@ def stopContinuousScrape():
     
 def _run_spider(spider):
     settings = get_project_settings()
-    print settings.getlist("SPIDER_MODULES")
+    #print settings.getlist("SPIDER_MODULES")
     crawler = CrawlerProcess(settings)
     #crawler.install()
     crawler.configure()

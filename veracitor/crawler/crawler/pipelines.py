@@ -30,11 +30,11 @@ class CrawlerPipeline(object):
         self.add_to_database(item)
         return item
         
-    def add_to_database(item):
+    def add_to_database(self, item):
         print "add_to_database"
         if extractor.contains_information(item["title"]):
             return #already in database
-        information = information.Information(
+        info = information.Information(
                             title = item["title"],
                             summary = item["summary"],
                             url = item["url"],
@@ -43,7 +43,7 @@ class CrawlerPipeline(object):
                             publishers = [], #item["publishers"],
                             references = [],
                        )
-        information.save()       
+        info.save()       
                                                      
         
     def print_if_unknown(self, article):
