@@ -1,4 +1,6 @@
 <webpages>
 
     <webpage domain="www.dn.se" name="DN" rss="http://www.dn.se/m/rss/senaste-nytt" />
-<webpage domain="http://www.dn.se" name="http://www.dn.se" rss="http://www.dn.se" /></webpages>
+    <webpage domain="http://www.dn.se" name="http://www.dn.se" rss="http://www.dn.se" />
+
+</webpages>

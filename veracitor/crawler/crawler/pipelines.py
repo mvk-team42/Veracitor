@@ -6,6 +6,7 @@ from scrapy import signals
 from database.information import Information
 from time import DateTime
 import database.extractor as extractor
+from database.dbexception import NotInDatabase
 
 class CrawlerPipeline(object):
 
@@ -14,6 +15,11 @@ class CrawlerPipeline(object):
         #dispatcher.connect(self.print_info, signals.spider_closed)
 
     def process_item(self, item, spider):
+    
+        if isinstance(spider, NewspaperBankSpider):
+            return item
+    
+    
         self.fix_fields(item)
         #self.print_if_unknown(item)
         self.articles.append(item)
@@ -22,7 +28,7 @@ class CrawlerPipeline(object):
         
     def add_to_database(item):
         try:
-            extractor.get_information(item["title"])
+            extractor.get_information(item["title"])        
             return # already in db => return
         except NotInDatabase:
             pass # not already in db => carry on
