@@ -168,7 +168,31 @@ class TestGenerateBN(unittest.TestCase):
         G = _get_weighted_graph()
         G.remove_edges_from([(5,7),(6,7)])
         self.assertEqual(nx.to_dict_of_dicts(gbn.golbeck_generate_bn(G,1,7)), {7: {}})
-        
+
+    def test_parameters_constant(self):
+        """
+        (generate_bn) Input parameter objects are not changed
+
+        """
+        # Test for weighted graph
+        G = _get_weighted_graph()
+        source = 1
+        sink = 7
+        Gcopy = deepcopy(G)
+        gbn.golbeck_generate_bn(G,1,7)
+        self.assertEqual(nx.to_dict_of_dicts(Gcopy),
+                         nx.to_dict_of_dicts(G))
+        self.assertEqual(7, sink)
+        self.assertEqual(1, source)
+
+        # Test for tagrated graph
+        G = _get_tagrated_graph()
+        Gcopy = deepcopy(G)
+        gbn.golbeck_generate_bn(G, source, sink, tag="cooking")
+        self.assertEqual(nx.to_dict_of_dicts(Gcopy),
+                         nx.to_dict_of_dicts(G))
+        self.assertEqual(7, sink)
+        self.assertEqual(1, source)
 
 
 ### HELP METHODS

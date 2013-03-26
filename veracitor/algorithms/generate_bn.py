@@ -64,7 +64,7 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
         Kgraph = _prune_states(K, graph, source, sink)
         K = set(Kgraph.nodes())
     
-    # Return a the subgraph of graph containing only
+    # Return a subgraph of graph containing only
     # the relevant nodes and edges
     return Kgraph
 
