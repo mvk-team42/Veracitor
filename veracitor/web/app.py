@@ -47,23 +47,23 @@ def prods():
             if not error:
                 # res = {'res1':f['name'], 'res2': f['type']}
                 res = extractor.search_producers(possible_prod=f['name'], type_=f['type'])
-                
+
                 if res:
                     response = { "result" : res }
                 else:
                     error = "Could not find anything."
                 #for i, x in enumerate(res):
-                    
+
                     #x_dict = x.__dict__
-                
+
                     # serialize object id TODO fix
                     #x_dict['_data'][None] = default(x_dict['_data'][None])
-                    
+
                     #producers["res"+str(i)] = x
-                    
+
             if error:
                 response = { "error" : error }
-                
+
             print response
 
             #return json.dumps(producers, cls=JSONEnc)
@@ -107,5 +107,8 @@ def index():
     }
     return render_template("index.html", vera=veracitor)
 
-if __name__ == "__main__":
-    app.run()
+def runserver():
+    if app.config['VERACITOR_PORT']:
+        app.run(port=app.config['VERACITOR_PORT'])
+    else:
+        app.run()
