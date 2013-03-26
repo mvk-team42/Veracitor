@@ -50,6 +50,26 @@ def search_producers(possible_prod, type_of):
     #(?i) - case insensitive
     return producer.Producer.objects(name=re.compile('(?i)'+possible_prod), type_of=type_of)
 
+def contains_producer(producer_name):
+    p = producer.Producer.objects(name=producer_name)
+    return len(p) != 0
+
+def contains_user(user_name):
+    u = user.User.objects(name=user_name)
+    return len(u) != 0
+
+def contains_information(info_title):
+    i = information.Information.objects(title=info_title)
+    return len(i) != 0
+
+def contains_group(group_name):
+    g = group.Group.objects(name=group_name)
+    return len(g) != 0
+
+def contains_tag(tag_name):
+    t = tag.Tag.objects(name=tag_name)
+    return len(t) != 0
+
 def search_informations(possible_info, tags, startD, endD):
     """Returns a list of informations whose name includes possible_info,
     with at least one tag matching one of the provided tags,
