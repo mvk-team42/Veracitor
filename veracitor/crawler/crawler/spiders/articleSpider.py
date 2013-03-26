@@ -18,7 +18,7 @@ class ArticleSpider(BaseSpider):
         
     @staticmethod
     def scrape_article(response):
-        xpaths = Xpaths('crawler/webpages.xml')
+        xpaths = Xpaths('crawler/webpageXpaths.xml')
         domain = urlparse(response.url)[1]
         loader = ArticleLoader(item=ArticleItem(), response=response)
         
