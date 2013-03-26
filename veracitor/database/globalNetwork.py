@@ -79,10 +79,28 @@ turned ratings need to have been set under at least one of the
 specified tags. Returns an empty list if no common ratings are
 found."""    
 def get_common_info_ratings(producer1, producer2, tags):
-    return []
+    p1_info_ratings = producer1.info_ratings
+    p2_info_ratings = producer2.info_ratings
     
+    common_info_ratings = []
+    #Optimize this..
+    for info_1 in p1_info_ratings:
+        for info_2 in p2_info_ratings:
+            if info_1.information.title == info_2.information.title:
+                if contains_common_tags(info_1.information.tags, tags):
+                    common_info_ratings.append((info_1, info_2,))
+                    
+   
+    return common_info_ratings
+
     
-    
+def contains_common_tags(tags_1, tags_2):
+    for tag in tags_1:
+        if tag in tags_2:
+            return True
+
+    return False
+
 """Returns a list of info ratings who are set at a level matching the
 top/bottom 20% of the specified producer (I.E. ratings that
 are unusually extreme relative to specified producer's ratings).

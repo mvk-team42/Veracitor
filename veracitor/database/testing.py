@@ -45,15 +45,31 @@ class GeneralSetup(unittest.TestCase):
         self.info2 = information.Information(title="SvDledare",
                                              url="svd.se/ledare",
                                              references=[self.info1],
-                                             time_punlished=datetime.datetime.now(),
+                                             time_published=datetime.datetime.now(),
                                              tags=[self.tag1, self.tag2])
+        self.info3 = information.Information(title="AftonbladetEntertainment",
+                                             references=[],
+                                             time_published=datetime.datetime.now(),
+                                             tags=[self.tag2])
         self.prod1 = producer.Producer(name="DN",
                                        type_of="newspaper")
         self.prod2 = producer.Producer(name="SvD",
                                        type_of="newspaper")
+        self.prod3 = producer.Producer(name="Aftonbladet",
+                                       type_of="newspaper")
         self.info_rating1 = producer.InformationRating(rating=4, 
                                                        information=self.info1)
-        self.prod2.info_ratings.append(self.info_rating1)
+        self.info_rating2 = producer.InformationRating(rating=2,
+                                                       information=self.info1)
+        self.info_rating3 = producer.InformationRating(rating=1,
+                                                       information=self.info2)
+        self.info_rating4 = producer.InformationRating(rating=5,
+                                                       information=self.info2)
+        
+        self.prod1.info_ratings.append(self.info_rating1)
+        self.prod2.info_ratings.append(self.info_rating2)
+        self.prod2.info_ratings.append(self.info_rating3)
+        self.prod3.info_ratings.append(self.info_rating4)
         self.group1.save()
         self.info1.save()
         self.info2.save()
@@ -117,6 +133,21 @@ class TestGroupThings(GeneralSetup):
         assert extractor.contains_group(self.group1.name) == True
         assert extractor.contains_group("Not a group!!") == False
 
+
+class TestGlobalNetworkThings(GeneralSetup):
+    
+    def test_global_info_ratings(self):
+        assert globalNetwork.get_common_info_ratings(self.prod1, self.prod2,[self.tag1])\
+            == [(self.info_rating1, self.info_rating2,)]
+        assert globalNetwork.get_common_info_ratings(self.prod1, self.prod2,[self.tag2])\
+            == []
+        assert globalNetwork.get_common_info_ratings(self.prod1, self.prod3,[self.tag1, self.tag2])\
+            == []
+        assert globalNetwork.get_common_info_ratings(self.prod2, self.prod3,[self.tag2])\
+            == [(self.info_rating3, self.info_rating4,)]
+
+
 if __name__ == "__main__":
     unittest.main()
+
 

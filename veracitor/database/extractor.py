@@ -89,21 +89,3 @@ def search_informations(possible_info, tags, startD, endD):
                 break
 
     return to_be_ret
-
-
-""" TESTING
-print search_producers("g", "User")
-
-date1 = datetime.datetime(year=1970,
-                          month=12,
-                          day=24)
-
-date2 = datetime.datetime(year=2040,
-                          month=12,
-                          day=24)
-
-
-tag1 = tag.Tag(name="Gardening", description="Hurrr HURRRRRR")
-tag2 = tag.Tag(name="Cooking", description="Hurrr HURRRRRR")
-print search_informations("dn", [tag1, tag2], date1, date2)
-"""
