@@ -10,8 +10,7 @@ import xml.etree.ElementTree as ET
 from ..xpaths import Xpaths
 from ..items import ArticleItem, ArticleLoader
 from .articleSpider import ArticleSpider
-from ....database.producer import Producer
-from ....database.extractor import *
+from ....database import *
 
 
 class MetaNewspaperSpider(BaseSpider):
