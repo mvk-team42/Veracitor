@@ -5,7 +5,11 @@
 
     <title>{{ vera.title }}</title>
     
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url_for('static', filename='css/veracitor.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url_for('static', filename='css/search.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url_for('static', filename='css/network.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url_for('static', filename='css/ratings.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ url_for('static', filename='css/account.css') }}" rel="stylesheet" type="text/css" />
     
     <script src="{{ url_for('static', filename='javascript/jquery-1.9.0.min.js') }}" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='javascript/d3.v3.min.js') }}" type="text/javascript"></script>
@@ -27,7 +31,7 @@
 
 	<header>
 	
-		<img src="{{ url_for('static', filename='images/veracitor_logo_2.png') }}" />
+		<img id="veracitor-logo" src="{{ url_for('static', filename='images/veracitor_logo_2.png') }}" />
 		
 		<h1>{{ vera.title }}</h1>
 		
@@ -47,7 +51,7 @@
 	
 	<footer>
 	
-		<p>2013 team 42 <img src="{{ url_for('static', filename='images/pc.png') }}" /> {{ vera.title }}</p>
+		<p>2013 team 42 <img id="team42-logo" src="{{ url_for('static', filename='images/pc.png') }}" /> {{ vera.title }}</p>
 		
 		<p id="login">Logged in as <b>advanced user</b></p>
 		

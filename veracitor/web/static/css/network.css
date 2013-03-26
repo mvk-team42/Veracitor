@@ -1,0 +1,38 @@
+/* NETWORK VIEW */
+
+#network table {
+    width: 600px;
+    border-collapse: collapse;
+}
+
+#network td {
+    border: 1px solid #bbb;
+}
+
+/* NETWORK */
+
+#network-info-view {
+    width: 400px;
+}
+
+#network-holder {
+	position: absolute;
+	left: 500px;
+	right: 60px;
+	top: 30px;
+	bottom: 20px;
+	background-color: #fff;
+	-webkit-box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
+	-moz-box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
+	box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
+}
+
+#network-graph {
+	width: 100%;
+	height: 100%;
+}
+
+#account .content p input[type=text] {
+    margin-right: 40px;
+}
+
