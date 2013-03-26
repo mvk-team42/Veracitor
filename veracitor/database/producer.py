@@ -56,7 +56,7 @@ class Producer(Document):
         else:
             globalNetwork.notify_producer_was_removed(self)
             
-        super(Producer, self).save()
+        super(Producer, self).delete()
 
 if __name__ == "__main__":
     globalNetwork.build_network_from_db()
