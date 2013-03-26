@@ -1,12 +1,14 @@
-from items import ArticleItem
+
 import re
 from time_publishedtime import time_published
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
-from database.information import Information
 from time import DateTime
-import database.extractor as extractor
-from database.dbexception import NotInDatabase
+
+from .items import ArticleItem
+from ...database.information import Information
+import ...database.extractor as extractor
+from ...database.dbexception import NotInDatabase
 
 class CrawlerPipeline(object):
 

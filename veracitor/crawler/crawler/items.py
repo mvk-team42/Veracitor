@@ -39,3 +39,25 @@ class ArticleLoader(XPathItemLoader):
     date_out = Join()
     summary_out = Join()
     title_out = Join()
+    
+    
+class ProducerItem(Item):
+    name = Field()
+    description = Field()
+    url = Field()
+    infos = Field()
+    source_ratings = Field()
+    info_ratings = Field()
+    type_of = Field()
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

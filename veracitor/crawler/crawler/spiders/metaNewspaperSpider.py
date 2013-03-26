@@ -2,13 +2,16 @@ from scrapy.spider import BaseSpider
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.selector import HtmlXPathSelector
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
-from crawler.xpaths import Xpaths
-from crawler.items import ArticleItem, ArticleLoader
-from crawler.spiders.articleSpider import ArticleSpider
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
 import xml.etree.ElementTree as ET
+
+from ..xpaths import Xpaths
+from ..items import ArticleItem, ArticleLoader
+from .articleSpider import ArticleSpider
+from ....database.producer import Producer
+from ....database.extractor import *
 
 
 class MetaNewspaperSpider(BaseSpider):
@@ -30,6 +33,12 @@ class MetaNewspaperSpider(BaseSpider):
         if not already_in_xml:
             webpages.append(ET.Element("webpage", attrib={'domain':url, 'name':url, 'rss':url}))
             tree.write(xml_file)
+        if not exists_producer(url):
+            new_producer = Producer(name = url, description = "No description")
+            new_producer.save()
+            
+            
+                                
         
        
   

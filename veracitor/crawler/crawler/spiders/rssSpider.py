@@ -2,14 +2,16 @@ from scrapy.spider import BaseSpider
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.selector import XmlXPathSelector, HtmlXPathSelector
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
-from crawler.xpaths import Xpaths
-from crawler.items import ArticleItem, ArticleLoader
-from crawler.spiders.articleSpider import ArticleSpider
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
 from pprint import pprint
 from scrapy.http import Request
+
+from ..xpaths import Xpaths
+from ..items import ArticleItem, ArticleLoader
+from .articleSpider import ArticleSpider
+
 
 class RssSpider(CrawlSpider):
     name = "rss"

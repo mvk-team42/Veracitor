@@ -1,10 +1,11 @@
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
-from crawler.xpaths import Xpaths
-from crawler.items import ArticleItem, ArticleLoader
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
+from ..xpaths import Xpaths
+from ..items import ArticleItem, ArticleLoader
+
 
 class ArticleSpider(BaseSpider):
     name = "article"
