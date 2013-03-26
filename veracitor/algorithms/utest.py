@@ -130,7 +130,7 @@ class TestGenerateBN(unittest.TestCase):
     """
     def test_cycle_removal(self):
         """
-        (generate_bn) Removes cycles from graphs
+        (generate_bn) Removes cycles from graphs. 
         
         """
         G = _get_graph_with_cycles()
@@ -139,6 +139,14 @@ class TestGenerateBN(unittest.TestCase):
         G = gbn.golbeck_generate_bn(G, 1, 7)
         loops = nx.simple_cycles(G)
         self.assertEqual(loops, [])
+
+        # Does not remove a cycle source -> sink -> source but that's not necessary I think
+        G = _get_graph_with_cycles()
+        G.add_edge(1,7,weight=10)
+        G.add_edge(7,1,weight=10)
+        G = gbn.golbeck_generate_bn(G, 1, 7)
+        loops = nx.simple_cycles(G)
+        self.assertNotEqual(loops, [])
 
     def test_source_sink_neighbours(self):
         """
