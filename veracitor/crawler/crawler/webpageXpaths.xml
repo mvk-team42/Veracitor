@@ -35,21 +35,21 @@
                 <xpath>//article//text()</xpath>
             </summary>
 
-            <author>
+            <publishers>
                 <xpath>//*[@id="content"]//*[contains(@class,"contributor")]//text()</xpath>
                 <xpath>//*[contains(@class, "author")]//text()</xpath>
                 <xpath>//*[contains(@itemprop,"author")]//*[contains(@itemprop, "name")]//text()</xpath>
                 <xpath>//*[contains(@rel, "author")]//text()</xpath>
                 <xpath>//*[contains(@itemprop, "publisher")]//text()</xpath>
-            </author>
+            </publishers>
 
-            <date>
+            <time_published>
                 <xpath>//*[contains(@class, "publication")]//time//text()</xpath>
                 <xpath>//*[contains(@class, "article-timestamp")][1]//child::text()</xpath> 
                 <xpath>//*[contains(@class, "timestamp")][1]//child::text()</xpath> 
                 <xpath>//*[contains(@class, "article-metadata")]//*[contains(@class, "publishdate")]//text()</xpath>
                 <xpath>//*[contains(@class, "pubtime")]//text()</xpath>
-            </date>
+            </time_published>
         </article-data>
     </default>
 
@@ -77,13 +77,13 @@
                 <xpath>//*[@id="article-content"]//*[@class="preamble"]//p/text()</xpath>
             </summary>
 
-            <author>
+            <publishers>
                 <xpath>//*[@id="byline"]/div/p/strong/text()</xpath>
-            </author>
+            </publishers>
 
-            <date>
+            <time_published>
                 <xpath>//*[@id="article-content"]/p/text()</xpath>
-            </date>
+            </time_published>
 
         </article-data>
     </webpage>
@@ -127,9 +127,9 @@
                 <xpath>//nyt_text/*[@itemprop="articleBody"][1]/text()</xpath>
             </summary>
 
-            <date>
+            <time_published>
                 <xpath>//*[contains(@class, "dateline")]/text()</xpath>
-            </date>
+            </time_published>
 
         </article-data>
     </webpage>
