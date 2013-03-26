@@ -1,0 +1,2 @@
+class GlobalNetworkException(Exception):
+    pass
