@@ -1,5 +1,6 @@
 import unittest
 from mongoengine import *
+import globalNetwork
 import tag
 import producer
 import user
@@ -7,14 +8,16 @@ import information
 import group
 import extractor
 import datetime
-
-connect('testDB')
+from dbExceptions import *
+connect('mydb')
 
 class GeneralSetup(unittest.TestCase):
     
     def setUp(self):
 
         self.tearDown()
+
+        globalNetwork.build_network_from_db()
 
         self.tag1 = tag.Tag(name="Gardening", 
                             description="Hurrr HURRRRRR")
@@ -33,11 +36,11 @@ class GeneralSetup(unittest.TestCase):
                                   tags=[self.tag1, self.tag2],
                                   time_created=datetime.\
                                       datetime.now())
-        self.info1 = information.Information(name="dnledare",
+        self.info1 = information.Information(title="dnledare",
                                              url="dn.se/ledare",
                                              time_published=datetime.datetime.now(),
                                              tags=[self.tag1])
-        self.info2 = information.Information(name="SvDledare",
+        self.info2 = information.Information(title="SvDledare",
                                              url="svd.se/ledare",
                                              references=[self.info1],
                                              time_punlished=datetime.datetime.now(),
@@ -87,8 +90,10 @@ class TestInformationThings(GeneralSetup):
     def test_info_extractor(self): 
         date1 = datetime.datetime(year=1970, month=12, day=24)
         date2 = datetime.datetime(year=2017, month=12, day=24)
+        
         assert self.info1 in extractor.search_informations("d", [self.tag1],
-                                             date1, date2)
+                                                           date1, date2)
+        self.assertRaises(Exception, extractor.get_information, "Woo")
                                          
 class TestProducerThings(GeneralSetup):
     

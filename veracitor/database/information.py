@@ -9,8 +9,8 @@ class Information(Document):
     or delete() to delete object from the database.
     
     """
-    name = StringField(required=True, unique=True)
-    description = StringField()
+    title = StringField(required=True, unique=True)
+    summary = StringField()
     url = StringField(required=True)
     time_published = DateTimeField()
     tags = ListField(ReferenceField(tag.Tag))

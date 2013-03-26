@@ -1,6 +1,4 @@
 from mongoengine import *
-#from Tag import Tag
-#from Tag import TagValidStrings
 import tag
 import producer
 import user
@@ -8,31 +6,41 @@ import information
 import group
 import re
 import datetime
+from dbExceptions import *
 
 connect('mydb')
 
 def get_producer(requested_name):
     extr_producer = producer.Producer.objects(name=requested_name)
+    checkIfEmpty(extr_producer)
     return extr_producer[0]
     
 def get_user(requested_name):
     extr_user = user.User.objects(name=requested_name)
+    checkIfEmpty(extr_user)
     return extr_user[0]
     
-def get_information(requested_name):
-    extr_information = information.Information.objects(name=requested_name)
+def get_information(requested_title):
+    extr_information = information.Information.objects(title=requested_title)
+    checkIfEmpty(extr_information)
     return extr_information[0]
     
 def get_group(owner_name, group_name):
     group = group.Group.objects(owner=owner_name, name=group_name)
+    checkIfEmpty(group)
     return extr_group[0]
     
 def get_tag(requested_name):
     extr_tag = tag.Tag.objects(name=requested_name)
+    checkIfEmpty(extr_tag)
     return extr_tag[0]
 
 def get_all_tags():
     return tag.Tag.objects()
+
+def checkIfEmpty(extr_list):
+    if (len(extr_list) == 0):
+        raise NotInDatabaseException("Item not found")
 
 def search_producers(possible_prod, type_of):
     """Returns a list of producers whose name includes possible_prod,
@@ -49,7 +57,7 @@ def search_informations(possible_info, tags, startD, endD):
 
 
     """
-    infos = information.Information.objects(name=re.compile('(?i)'+possible_info),
+    infos = information.Information.objects(title=re.compile('(?i)'+possible_info),
                                             time_published__lte=endD,
                                             time_published__gte=startD)
     to_be_ret = []

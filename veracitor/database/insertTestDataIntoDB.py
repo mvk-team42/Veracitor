@@ -30,11 +30,11 @@ if __name__ == "__main__":
                          time_created=datetime.\
                              datetime.now())
 
-    info1 = information.Information(name="dnledare",
+    info1 = information.Information(title="dnledare",
                                     url="dn.se/ledare",
                                     time_published=datetime.datetime.now(),
                                     tags=[tag1])
-    info2 = information.Information(name="SvDledare",
+    info2 = information.Information(title="SvDledare",
                                     url="svd.se/ledare",
                                     references=[info1],
                                     time_punlished=datetime.datetime.now(),
