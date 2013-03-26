@@ -30,6 +30,9 @@ class JSONEnc(JSONEncoder):
         return JSONEncoder.default(self, o)
 
 
+@app.route("/request_url_crawling", methods=["GET","POST"])
+def request_url_crawling():
+    return "Hello crawler"
 
 @app.route("/search_producers", methods=["GET","POST"])
 def prods():
