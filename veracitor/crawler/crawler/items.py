@@ -4,16 +4,18 @@ from scrapy.contrib.loader.processor import TakeFirst, Compose, Join
 
 class ArticleItem(Item):
     title = Field()
-    author = Field()
-    date = Field()
-    url = Field()
     summary = Field()
+    publishers = Field()
+    time_published = Field()
+    url = Field()
+    tags = Field()
+    regerences = Field()
     
     def __str__(self):
         return unicode(self).encode('utf-8')
     
     def __unicode__(self):           
-        return (self.safe_str("title") + " (" + self.safe_str("author") + ", " + self.safe_str("date") + ")\nURL: " + self.safe_str("url") + "\nSUMMARY: " + self.safe_str("summary"))
+        return (self.safe_str("title") + " (" + self.safe_str("publishers") + ", " + self.safe_str("time_published") + ")\nURL: " + self.safe_str("url") + "\nSUMMARY: " + self.safe_str("summary"))
         
     def long_string(self):
         return ("---------------------------------\n"+
