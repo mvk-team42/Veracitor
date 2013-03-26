@@ -16,14 +16,7 @@ class RssSpider(CrawlSpider):
    
     def __init__(self, *args, **kwargs):
         self.xpaths = Xpaths('crawler/webpages.xml')
-        #self.start_urls = [kwargs.get('url')]
-        self.start_urls = [
-            "http://www.dn.se/m/rss/senaste-nytt",
-            "http://www.svd.se/nyheter/nyhetsdygnet/?service=rss",
-            "http://www.unt.se/rss/lokalt",
-            "http://www.expressen.se/Pages/OutboundFeedsPage.aspx?id=3646032&viewstyle=rss",
-            "http://feeds.washingtonpost.com/rss/rss_she-the-people"    
-        ]
+        self.start_urls = [kwargs.get('url')]
         super(RssSpider, self).__init__()
         
     def parse(self, response):
@@ -35,7 +28,7 @@ class RssSpider(CrawlSpider):
             if len(item.select("title")) > 0:
                 items[-1]["title"] = item.select("title/text()")[0].extract()  
             if len(item.select("pubDate")) > 0:
-                items[-1]["date"] =  item.select("pubDate/text()")[0].extract()
+                items[-1]["time_published"] =  item.select("pubDate/text()")[0].extract()
             if len(item.select("link")) > 0:
                 items[-1]["url"] = item.select("link/text()")[0].extract()
             if len(item.select("description")) > 0:
@@ -47,13 +40,13 @@ class RssSpider(CrawlSpider):
 
         
     def extract_author_from_link(self, response):
-        xpaths = Xpaths('crawler/webpages.xml')
+        xpaths = Xpaths('crawler/webpageXpaths.xml')
         domain = urlparse(response.url)[1]
         hxs = HtmlXPathSelector(response)
-        for xpath in xpaths.get_xpaths("author", domain):
+        for xpath in xpaths.get_xpaths("publishers", domain):
                 author = hxs.select(xpath).extract()
                 if len(author) > 0 and author[0].strip() != "":
-                    response.meta["item"]["author"] = author[0]
+                    response.meta["item"]["publishers"] = author[0]
                     return response.meta["item"]   
         return response.meta["item"]
 
