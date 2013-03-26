@@ -5,7 +5,7 @@ from information import *
 from group import *
 from user import *
 from mongoengine import *
-
+import math
 connect('mydb')
 
 graph = None
@@ -119,15 +119,26 @@ Returned ratings need to have been set under at least one of
 specified tags."""
 def get_extreme_info_ratings(producer, tags):
     relevant_info_ratings = []
+    total_sum = 0.0
     for info in producer.info_ratings:
         for tag in info.tags:
             if tag in tags:
                 relevant_info_ratings.append(info)
+                total_sum += info.rating
                 break
     
-    mean = 0.0
-    
-    return []
+    mean = (total_sum)/len(relevant_info_ratings)
+    """
+    Primitive working version
+    """
+    delta = (mean)*0.2
+    extremes = []
+    for info in relevant_info_ratings:
+       diff = math.abs((info.rating - mean))
+       if diff > delta:
+           extremes.append(info)
+
+    return extremes
     
     
     
