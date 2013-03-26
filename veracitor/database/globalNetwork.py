@@ -11,6 +11,12 @@ connect('mydb')
 graph = None
 
 def build_network_from_db():
+    """Creates a new graph with data inserted from the database,
+    overwrites the current graph. Only inserts producers into the 
+    database as of now.
+
+    """
+
     global graph
     # Users not included in graph
     producers = producer.Producer.objects(type_of__ne="User")
@@ -28,9 +34,16 @@ def build_network_from_db():
     print to_dict_of_dicts(graph)
 
 def getDictionaryGraph():
+    """Returns a python dictionary representation of the graph.
+
+    """
     return to_dict_of_dicts(graph)
 
 def notify_producer_was_added(producer):
+    """Adds a new producer into the graph,
+    connects it with existing producers.
+
+    """
     graph.add_node(producer.name)
     for s in producer.source_ratings:
         graph.add_edges_from([(producer.name, s.source.name)], {s.tag.name: s.rating})

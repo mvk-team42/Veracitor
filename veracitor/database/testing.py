@@ -11,13 +11,15 @@ import datetime
 from dbExceptions import *
 connect('mydb')
 
+graph = None
+
 class GeneralSetup(unittest.TestCase):
     
     def setUp(self):
 
         self.tearDown()
 
-        globalNetwork.build_network_from_db()
+        graph = globalNetwork.build_network_from_db()
 
         self.tag1 = tag.Tag(name="Gardening", 
                             description="Hurrr HURRRRRR")
@@ -82,6 +84,8 @@ class TestTagThings(GeneralSetup):
         assert self.tag1 == extractor.get_tag("Gardening")
         assert self.tag1 in extractor.get_all_tags() and\
             self.tag2 in extractor.get_all_tags()
+        assert extractor.contains_tag(self.tag1.name) == True
+        assert extractor.contains_tag("Not a tag!") == False
 
     def test_tag_group(self):
         assert self.tag1 in self.group1.tags
@@ -93,6 +97,8 @@ class TestInformationThings(GeneralSetup):
         
         assert self.info1 in extractor.search_informations("d", [self.tag1],
                                                            date1, date2)
+        assert extractor.contains_information(self.info1.title) == True
+        assert extractor.contains_information("DEUS EX!!!") == False
         self.assertRaises(Exception, extractor.get_information, "Woo")
                                          
 class TestProducerThings(GeneralSetup):
@@ -102,6 +108,14 @@ class TestProducerThings(GeneralSetup):
         assert self.prod2 in extractor.search_producers('d', 'newspaper')
         assert self.prod1 in extractor.search_producers('d', 'newspaper')
         assert self.prod1 not in extractor.search_producers('vd', 'newspaper')
+        assert extractor.contains_producer(self.prod1.name) == True
+        assert extractor.contains_producer("Should not exist!") == False
+
+class TestGroupThings(GeneralSetup):
+    
+    def test_group_extractor(self):
+        assert extractor.contains_group(self.group1.name) == True
+        assert extractor.contains_group("Not a group!!") == False
 
 if __name__ == "__main__":
     unittest.main()
