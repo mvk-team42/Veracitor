@@ -10,6 +10,13 @@ connect('mydb')
 
 graph = None
 
+def get_global_network():
+    global graph
+    if graph is None:
+        graph = build_network_from_db()
+    return graph
+
+
 def build_network_from_db():
     """Creates a new graph with data inserted from the database,
     overwrites the current graph. Only inserts producers into the 
@@ -29,11 +36,12 @@ def build_network_from_db():
     # Add all producers' source ratings to the database as edges
     for p2 in producers:
         for s in p2.source_ratings:
-            graph.add_edges_from([(p2.name, s.source.name)], {s.tag.name: s.rating})
+            #graph.add_edges_from([(p2.name, s.source.name)], {s.tag.name: s.rating})
+            graph.add_edge(p2.name, s.source.name, {s.tag.name: s.rating})
     
-    print to_dict_of_dicts(graph)
+    return graph
 
-def getDictionaryGraph():
+def get_dictionary_graph():
     """Returns a python dictionary representation of the graph.
 
     """
@@ -46,8 +54,8 @@ def notify_producer_was_added(producer):
     """
     graph.add_node(producer.name)
     for s in producer.source_ratings:
-        graph.add_edges_from([(producer.name, s.source.name)], {s.tag.name: s.rating})
-    
+        #graph.add_edges_from([(producer.name, s.source.name)], {s.tag.name: s.rating})
+        graph.add_edge(producer.name, s.source.name, {s.tag.name: s.rating})
 
 def notify_information_was_added(information):
     graph.add_node(information.id)
@@ -55,7 +63,10 @@ def notify_information_was_added(information):
 
 
 def notify_producer_was_removed(producer):
-    graph.remove_node(producer.name)
+    try:
+        graph.remove_node(producer.name)
+    except Exception:
+        pass
     # edges are removed automatically :)
 
 def notify_information_was_removed(information):
@@ -107,6 +118,15 @@ are unusually extreme relative to specified producer's ratings).
 Returned ratings need to have been set under at least one of
 specified tags."""
 def get_extreme_info_ratings(producer, tags):
+    relevant_info_ratings = []
+    for info in producer.info_ratings:
+        for tag in info.tags:
+            if tag in tags:
+                relevant_info_ratings.append(info)
+                break
+    
+    mean = 0.0
+    
     return []
     
     

@@ -9,7 +9,7 @@ import group
 import extractor
 import datetime
 from dbExceptions import *
-connect('mydb')
+connect('testdb')
 
 graph = None
 
@@ -65,19 +65,27 @@ class GeneralSetup(unittest.TestCase):
                                                        information=self.info2)
         self.info_rating4 = producer.InformationRating(rating=5,
                                                        information=self.info2)
+
+        self.prod2.save()
+        self.source_rating1 = producer.SourceRating(rating=3,
+                                                    source=self.prod2,
+                                                    tag=self.tag1)
         
         self.prod1.info_ratings.append(self.info_rating1)
         self.prod2.info_ratings.append(self.info_rating2)
         self.prod2.info_ratings.append(self.info_rating3)
         self.prod3.info_ratings.append(self.info_rating4)
+        self.prod1.source_ratings.append(self.source_rating1)
         self.group1.save()
         self.info1.save()
         self.info2.save()
-        self.prod1.save()
         self.prod2.save()
+        self.prod1.save()
+        
                                                        
                                                        
     def tearDown(self):
+        globalNetwork.build_network_from_db()
         for t in tag.Tag.objects:
             t.delete()
         for p in producer.Producer.objects:
@@ -88,6 +96,7 @@ class GeneralSetup(unittest.TestCase):
             g.delete()
         for i in information.Information.objects:
             i.delete()
+
 
 class TestTagThings(GeneralSetup):
 
@@ -135,7 +144,10 @@ class TestGroupThings(GeneralSetup):
 
 
 class TestGlobalNetworkThings(GeneralSetup):
-    
+    """
+    def test_global_network(self):
+        assert globalNetwork.neighbours(self.prod1) == [self.prod2]
+    """
     def test_global_info_ratings(self):
         assert globalNetwork.get_common_info_ratings(self.prod1, self.prod2,[self.tag1])\
             == [(self.info_rating1, self.info_rating2,)]
