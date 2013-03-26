@@ -1,7 +1,6 @@
 """
 The algorithm used for probabilistic logic sampling in SUNNY (as described by Golbeck and Kuter (2010)).
-Computes minimum and maximum probability of success by using a stochastic simulation. Success is in this case defined as being used in the 
-trust evaluation done by SUNNY.
+Computes minimum and maximum probability of success by using a stochastic simulation. Success is in this case defined as being used in the trust evaluation done by SUNNY.
 
 """
 
