@@ -40,7 +40,7 @@ def get_all_tags():
 
 def checkIfEmpty(extr_list):
     if (len(extr_list) == 0):
-        raise NotInDatabaseException("Item not found")
+        raise NotInDatabase("Item not found")
 
 def search_producers(possible_prod, type_of):
     """Returns a list of producers whose name includes possible_prod,

@@ -1,5 +1,5 @@
 class GlobalNetworkException(Exception):
     pass
 
-class NotInDatabaseException(Exception):
+class NotInDatabase(Exception):
     pass
