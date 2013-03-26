@@ -45,7 +45,7 @@ def addNewspaper(url, job_id):
     _run_spider(spider)
     
 def scrapeArticle(url, job_id):
-    spider = ArticleSpider(url=url)
+    spider = ArticleSpider(start_urls=url)
     spider.job_id = job_id
     _run_spider(spider)
 
@@ -74,6 +74,7 @@ def stopContinuousScrape():
     
 def _run_spider(spider):
     settings = get_project_settings()
+    print settings.getlist("SPIDER_MODULES")
     crawler = CrawlerProcess(settings)
     #crawler.install()
     crawler.configure()

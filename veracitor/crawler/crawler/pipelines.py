@@ -1,14 +1,14 @@
-
 import re
-from time_publishedtime import time_published
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
-from time import DateTime
 
 from .items import ArticleItem
-from ...database.information import Information
-import ...database.extractor as extractor
-from ...database.dbexception import NotInDatabase
+from .spiders.newspaperBankSpider import NewspaperBankSpider
+from .spiders.newspaperSpider import NewspaperSpider
+from .spiders.metaNewspaperSpider import MetaNewspaperSpider
+from .spiders.articleSpider import ArticleSpider
+from .spiders.rssSpider import RssSpider
+from ...database import *
 
 class CrawlerPipeline(object):
 
@@ -25,22 +25,22 @@ class CrawlerPipeline(object):
         self.fix_fields(item)
         #self.print_if_unknown(item)
         self.articles.append(item)
+        print item
+        print "---------------------"
         self.add_to_database(item)
         return item
         
     def add_to_database(item):
-        try:
-            extractor.get_information(item["title"])        
-            return # already in db => return
-        except NotInDatabase:
-            pass # not already in db => carry on
-        information = Information(
+        print "add_to_database"
+        if extractor.contains_information(item["title"]):
+            return #already in database
+        information = information.Information(
                             title = item["title"],
                             summary = item["summary"],
                             url = item["url"],
-                            time_published = item["time_published"],
+                            time_published = None, #item["time_published"],
                             tags = [],
-                            publishers = item["publishers"],
+                            publishers = [], #item["publishers"],
                             references = [],
                        )
         information.save()       

@@ -36,7 +36,7 @@ class ArticleItem(Item):
 
 class ArticleLoader(XPathItemLoader):
     default_output_processor = TakeFirst()
-    date_out = Join()
+    time_published_out = Join()
     summary_out = Join()
     title_out = Join()
     

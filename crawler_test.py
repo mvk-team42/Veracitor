@@ -1,4 +1,5 @@
 import veracitor.crawler.crawlInterface as ci
+from veracitor.database import *
 
 #run tests
 
@@ -13,4 +14,19 @@ def b(item, id):
     print item.values()
 
 ci.set_callbacks(a,b)
-ci.requestScrape("www.dn.se", "1")
+ci.scrapeArticle("http://www.dn.se/nyheter/varlden/nordkoreaexpert-varre-an-pa-mycket-lange", "1")
+
+
+
+'''
+information = information.Information(
+                    title = "test",
+                    summary = "test",
+                    url = "test",
+                    time_published = None,
+                    tags = [],
+                    publishers = [],
+                    references = [],
+               )
+information.save()
+'''

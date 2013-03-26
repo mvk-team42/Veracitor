@@ -3,6 +3,8 @@ from scrapy.selector import HtmlXPathSelector
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
+from os.path import realpath, dirname
+
 from ..xpaths import Xpaths
 from ..items import ArticleItem, ArticleLoader
 
@@ -19,7 +21,8 @@ class ArticleSpider(BaseSpider):
         
     @staticmethod
     def scrape_article(response):
-        xpaths = Xpaths('crawler/webpageXpaths.xml')
+        current_dir = dirname(realpath(__file__))
+        xpaths = Xpaths(current_dir + '/../webpages.xml')
         domain = urlparse(response.url)[1]
         loader = ArticleLoader(item=ArticleItem(), response=response)
         
