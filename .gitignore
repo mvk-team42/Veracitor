@@ -45,3 +45,6 @@ nosetests.xml
 
 # Top secret settings... :)
 veracitor/settings.py
+
+# log-files
+*.log
