@@ -4,6 +4,7 @@ from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
 from os.path import realpath, dirname
+from scrapy import log
 
 from ..xpaths import Xpaths
 from ..items import ArticleItem, ArticleLoader
@@ -22,11 +23,13 @@ class ArticleSpider(BaseSpider):
     @staticmethod
     def scrape_article(response):
         current_dir = dirname(realpath(__file__))
-        xpaths = Xpaths(current_dir + '/../webpages.xml')
+        xpaths = Xpaths(current_dir + '/../webpageXpaths.xml')
         domain = urlparse(response.url)[1]
         loader = ArticleLoader(item=ArticleItem(), response=response)
         
+        
         for field in ArticleItem.fields.iterkeys():
+            log.msg("field: " + field)
             for xpath in xpaths.get_xpaths(field, domain):
                 loader.add_xpath(field, xpath)
         loader.add_value("url", response.url)
