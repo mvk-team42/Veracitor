@@ -1,14 +1,21 @@
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
+from scrapy import log
+from datetime import datetime
+from datetime import date
+from os.path import dirname, realpath
+from urlparse import urlparse
 
 from .items import ArticleItem
+from .xpaths import Xpaths
 from .spiders.newspaperBankSpider import NewspaperBankSpider
 from .spiders.newspaperSpider import NewspaperSpider
 from .spiders.metaNewspaperSpider import MetaNewspaperSpider
 from .spiders.articleSpider import ArticleSpider
 from .spiders.rssSpider import RssSpider
 from ...database import *
+from ...logger import *
 
 class CrawlerPipeline(object):
 
@@ -31,14 +38,14 @@ class CrawlerPipeline(object):
         return item
         
     def add_to_database(self, item):
-        print "add_to_database"
+        log.msg("add_to_database")
         if extractor.contains_information(item["title"]):
-            return #already in database
+            pass #return #already in database
         info = information.Information(
                             title = item["title"],
                             summary = item["summary"],
                             url = item["url"],
-                            time_published = None, #item["time_published"],
+                            time_published = self.parse_datetime(item),
                             tags = [],
                             publishers = [], #item["publishers"],
                             references = [],
@@ -72,7 +79,15 @@ class CrawlerPipeline(object):
     def replace_words_in_time_published(self, item):
         special_words = ["idag", "i dag", "today"]
         for word in special_words:
-            item["time_published"] = item["time_published"].replace(word, time_published.today().isoformat())
+            item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
+
+    def parse_datetime(self, item):
+        current_dir = dirname(realpath(__file__))
+        xpaths = Xpaths(current_dir + '/webpageXpaths.xml')
+        datetime_format = xpaths.get_xpaths("datetime_format", urlparse(item['url'])[1])
+        if len(datetime_format) > 0:
+            log.msg("found time format:" + str(datetime_format))
+        return None
             
     def shorten_summary(self, item):
         if "summary" in item:

@@ -85,6 +85,10 @@
                 <xpath>//*[@id="article-content"]/p/text()</xpath>
             </time_published>
 
+            <datetime_format>
+                <xpath>blablabla</xpath>
+            </datetime_format>
+
         </article-data>
     </webpage>
     
