@@ -12,11 +12,12 @@ from time import time
 from scrapy.exceptions import CloseSpider
 import xml.etree.ElementTree as ET
 
-from crawler.spiders.newspaperBankSpider import NewspaperBankSpider
-from crawler.spiders.metaNewspaperSpider import MetaNewspaperSpider
-from crawler.spiders.rssSpider import RssSpider
-from crawler.spiders.articleSpider import ArticleSpider
-from crawler.spiders.newspaperSpider import NewspaperSpider
+from .crawler.spiders.newspaperBankSpider import NewspaperBankSpider
+from .crawler.spiders.metaNewspaperSpider import MetaNewspaperSpider
+from .crawler.spiders.rssSpider import RssSpider
+from .crawler.spiders.articleSpider import ArticleSpider
+from .crawler.spiders.newspaperSpider import NewspaperSpider
+from ..logger import logger
 
 
 def set_callbacks(information, producer):
@@ -24,6 +25,7 @@ def set_callbacks(information, producer):
     information_callback = information
     producer_callback = producer
     dispatcher.connect(item_scraped , signals.item_scraped)
+    log.start()
     
     
 def item_scraped(item, response, spider):
@@ -45,6 +47,7 @@ def addNewspaper(url, job_id):
     _run_spider(spider)
     
 def scrapeArticle(url, job_id):
+    logger.log("blablabla",logger.Level.debug, logger.Area.crawler)
     spider = ArticleSpider(start_urls=url)
     spider.job_id = job_id
     _run_spider(spider)
