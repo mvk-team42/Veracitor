@@ -1,5 +1,13 @@
-{% if response.error %}
-    <h2>{{ response.error.message }}</h2>
+{% if data.error %}
+    <h2>{{ data.error.message }}</h2>
+
+    {% if data.error.type == 'no_result' %}
+        <p>Add a producer from a given URL.</p>
+
+        <input type="text" id="search-add-field" />
+
+        <input type="button" id="search-add-button" value="Add" />
+    {% endif %}
 {% else %}
     <table>
         <thead>
@@ -9,7 +17,7 @@
             </tr>
         </head>
         <tbody>
-        {% for r in response.result %}
+        {% for r in data.result %}
             <tr>
                 <td>{{ r._data.name }}</td>
                 <td>{{ r.type_ }}</td>

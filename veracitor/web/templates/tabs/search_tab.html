@@ -7,7 +7,7 @@
     Perform a local search in the database for sources or publications.
 </p>
 
-<input type="text" name="search-text" />
+<input type="text" id="local-search-field" name="search-text" />
 
 <p>Type:
     <form id="search-types">
@@ -22,16 +22,10 @@
     <img src="{{ url_for('static', filename='images/slider.png') }}" />
 </p>
 
-<input type="button" name="search-button" value="Search" />
+<input type="button" id="local-search-button" name="search-button" value="Search" />
 
 <h1>Search result</h1>
 
 <div id="search-result"></div>
-
-<p>Add a producer from a given URL.</p>
-
-<input type="text" id="search-add-field" />
-
-<input type="button" id="search-add-button" value="Add" />
 
 {% endblock %}

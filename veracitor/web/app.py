@@ -15,8 +15,6 @@ try:
 except:
     app.config.from_pyfile('settings.py')
 
-### JSON
-
 class JSONEnc(JSONEncoder):
 
     def default(self, o):
@@ -29,51 +27,96 @@ class JSONEnc(JSONEncoder):
         # Let the base class default method raise the TypeError
         return JSONEncoder.default(self, o)
 
+"""
+Starts a crawler to crawl the given URL for an entity.
 
-@app.route("/request_url_crawling", methods=["GET","POST"])
-def request_url_crawling():
-    return "Hello crawler"
+"""
+@app.route('/add_entity', methods=['GET','POST'])
+def add_entity():
 
-@app.route("/search_producers", methods=["GET","POST"])
-def prods():
+    if request.method == 'POST':
+        error = {
+            'message' : 'none',
+            'type' : 'none'
+        }
 
-    if request.method == "POST":
         if request.form:
             f = request.form
 
-            error = ""
-            if not f['name']:
-                error = "No search parameter."
-            elif not f['type']:
-                error = "No type chosen."
+            if not f['url']:
+                error = {
+                    'message' : 'No source URL specified.',
+                    'type' : 'no_url'
+                }
+        else:
+            error = {
+                'message' : 'Form data error.',
+                'type' : 'form_error'
+            }
 
-            if not error:
-                # res = {'res1':f['name'], 'res2': f['type']}
-                res = extractor.search_producers(possible_prod=f['name'], type_=f['type'])
+        return json.dumps({ 'error' : error })
+
+    return redirect(url_for('index'))
+
+"""
+Performs a search in the database for producers that match the given
+parameters. The client is returned a JSON object with information
+about possible errors and computed HTML code representing the result
+from the performed search.
+"""
+@app.route('/search_producers', methods=['GET','POST'])
+def search_producers():
+
+    if request.method == 'POST':
+        error = {
+            'message' : 'none',
+            'type' : 'none'
+        }
+        html = ''
+
+        if request.form:
+            f = request.form
+
+            data = {}
+
+            if not f['name']:
+                error = {
+                    'message' : 'No search parameter.',
+                    'type' : 'no_param'
+                }
+            elif not f['type']:
+                error = {
+                    'message' : 'No type chosen.',
+                    'type' : 'no_type'
+                }
+
+            if error['type'] == 'none':
+                res = extractor.search_producers(possible_prod=f['name'],
+                                                 type_of=f['type'])
 
                 if res:
-                    response = { "result" : res }
+                    data = { 'result' : res }
                 else:
-                    error = "Could not find anything."
-                #for i, x in enumerate(res):
+                    error = {
+                        'message' : 'Could not find anything.',
+                        'type' : 'no_result'
+                    }
 
-                    #x_dict = x.__dict__
+            if not error['type'] == 'none':
+                data = { 'error' : error }
 
-                    # serialize object id TODO fix
-                    #x_dict['_data'][None] = default(x_dict['_data'][None])
+            html = render_template('tabs/search_results.html', data=data)
+        else:
+            error = {
+                'message' : 'Form data error.',
+                'type' : 'form_error'
+            }
 
-                    #producers["res"+str(i)] = x
+        return json.dumps({ 'error' : error, 'html' : html })
 
-            if error:
-                response = { "error" : error }
+    return redirect(url_for('index'))
 
-            print response
-
-            #return json.dumps(producers, cls=JSONEnc)
-            return render_template("tabs/search_results.html", response=response)
-    return redirect(url_for("index"))
-
-@app.route("/")
+@app.route('/')
 def index():
     veracitor = {
         'title' : 'Veracitor',
@@ -108,7 +151,7 @@ def index():
             }
         ]
     }
-    return render_template("index.html", vera=veracitor)
+    return render_template('index.html', vera=veracitor)
 
 def runserver():
     if app.config['VERACITOR_PORT']:
