@@ -32,7 +32,7 @@
     var SIDE_TAB_WIDTH = 40;
     /** The time taken to switch from one tab to another in milliseconds. */
     var TAB_SWITCH_TIME = 300;
-    
+
     /**
         This function is run when the document is loaded.
         @name Vera#init
@@ -47,14 +47,14 @@
         var sideTab;
         /** Text used when explaining errors */
         var debugText;
-        
+
         activeTab = 0;
-        
+
         vera.dom = {};
-        
+
         for(tab = 0; tab < vera.tabs.length; tab ++) {
             key = vera.tabs[tab].key;
-        
+
             vera.dom[key] = {};
             // Pointer to the view
             vera.dom[key].view = $("#" + vera.tabs[tab].viewid);
@@ -62,34 +62,34 @@
             vera.dom[key].menu = $("#" + vera.tabs[tab].menuid);
             // An index to specify the view position
             vera.dom[key].index = parseInt(tab);
-            
+
             // Add click events
             vera.dom[key].menu.click(menuClick);
-            
+
             // Set the active tab and initialize the tab positions
             if(tab == activeTab) {
                 vera.dom[key].view.css({
                     'left' : VIEW_POS.CENTER
                 });
                 vera.dom[key].menu.addClass(CLASSES.ACTIVE);
-                
+
             } else {
                 vera.dom[key].view.css({
                     'left' : (vera.dom[key].index < activeTab) ?
                             VIEW_POS.LEFT : VIEW_POS.RIGHT
                 });
             }
-            
+
             // Get the left side tab
             sideTab = vera.dom[key].view.find(".left.side-tab");
-            
+
             if(tab == 0) {
                 sideTab.remove();
-                
+
             } else {
                 // Set side tab text
                 sideTab.find("p").html(vera.tabs[tab - 1].name);
-                
+
                 // Simulates a click in the menu.
                 // A function is generated with the corresponding key in its scope.
                 sideTab.click((function (tabIndex) {
@@ -98,17 +98,17 @@
                     };
                 })(tab - 1));
             }
-            
+
             // Get the right tab side
             sideTab = vera.dom[key].view.find(".right.side-tab");
-            
+
             if(tab == vera.tabs.length - 1) {
                 sideTab.remove();
-                
+
             } else if(vera.tabs.length > 1) {
                 // Set side tab text
                 sideTab.find("p").html(vera.tabs[tab + 1].name);
-                
+
                 // Simulates a click in the menu.
                 // A function is generated with the corresponding key in its scope.
                 sideTab.click((function (tabIndex) {
@@ -118,7 +118,10 @@
                 })(tab + 1));
             }
         }
-        
+
+        // set focus on the search field
+        $("#local-search-field").focus();
+
         try {
             // Add controllers
             debugText = "search";
@@ -129,7 +132,7 @@
             controllers.ratings = new RatingsController(vera.dom.ratings);
             debugText = "account";
             controllers.account = new AccountController(vera.dom.account);
-            
+
         } catch(exc) {
             console.error("Error while adding " + debugText + " controller.");
             console.error(exc.message);
@@ -137,7 +140,7 @@
     }
     // Run this function when the document has loaded
     $(document).ready(init);
-    
+
     /**
         Handles the event fired when a menu tab is clicked.
         If the current visible tab is to the left of the clicked
@@ -156,36 +159,36 @@
         var clickedTab;
 
         clickedTab = 0;
-        
+
         // Retrieve the index of the clicked tab
         for(tab in vera.dom) {
             if(vera.dom[tab].menu[0] == evt.currentTarget) {
                 clickedTab = vera.dom[tab].index;
             }
         }
-        
+
         for(tab in vera.dom) {
-        
+
             if(vera.dom[tab].index == clickedTab) {
                 vera.dom[tab].menu.addClass(CLASSES.ACTIVE);
-                
+
                 // Animate the clicked tab to the center of the screen
                 vera.dom[tab].view.animate({
                     'left' : VIEW_POS.CENTER
                 }, TAB_SWITCH_TIME, null);
-            
+
             } else if(vera.dom[tab].index == activeTab) {
                 vera.dom[tab].menu.removeClass(CLASSES.ACTIVE);
-                
+
                 // Animate the previous visible tab out of the screen
                 vera.dom[tab].view.animate({
                     'left' : (vera.dom[tab].index < clickedTab) ?
                             VIEW_POS.LEFT : VIEW_POS.RIGHT
                 }, TAB_SWITCH_TIME, null);
-            
+
             } else {
                 vera.dom[tab].menu.removeClass(CLASSES.ACTIVE);
-                
+
                 // Move the tab relative to the clicked tab
                 vera.dom[tab].view.css({
                     'left' : (vera.dom[tab].index < clickedTab) ?
@@ -193,12 +196,12 @@
                 });
             }
         }
-        
+
         activeTab = clickedTab;
-        
+
         return false;
     }
-    
+
     /**
         Switches to the tab with the given index.
         @param tabIndex The index of the target tab.

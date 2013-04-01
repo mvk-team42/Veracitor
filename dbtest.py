@@ -4,16 +4,16 @@ from veracitor.database import *
 import datetime
 
 def generate_test_data():
-    
+
     tear_down()
 
     tag1 = tag.Tag(name="Gardening", description="Hurrr HURRRRRR")
     tag1.save()
-    
+
     tag2 = tag.Tag(name="Cooking", description="Hurrdidurr")
     tag2.parent.append(tag1)
     tag2.save()
-    
+
     user1 = user.User(name="Lasse", password="123")
     user1.save()
 
@@ -48,4 +48,3 @@ def tear_down():
             g.delete()
         for i in information.Information.objects:
             i.delete()
-
