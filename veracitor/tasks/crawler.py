@@ -1,5 +1,5 @@
 from celery import task
-from ..crawler import crawlerInterface as ci
+from ..crawler import crawlInterface as ci
 
 @task()
 def scrape_article(url):
