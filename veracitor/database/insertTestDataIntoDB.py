@@ -9,6 +9,7 @@ import tag
 import extractor
 import datetime
 from networkx import nx
+from copy import deepcopy
 connect('mydb')
 
 if __name__ == "__main__":
@@ -19,8 +20,19 @@ if __name__ == "__main__":
 
     tag2 = tag.Tag(name="cooking",
                             description="Hurrdidurr")
+
     tag2.parent.append(tag1)
     tag2.save()
+
+    tag3 = tag.Tag(name="crime",
+                   description="Durrihuurriii duurr")
+    tag3.save()
+
+    # For adding test graph to database
+    tags = {}
+    tags['gardening'] = tag1
+    tags['cooking'] = tag2
+    tags['crime'] = tag3
 
     user1 = user.User(name="Lasse", password="123")
     user1.save()
@@ -82,10 +94,17 @@ if __name__ == "__main__":
     
     prods = {}
     for n in G.nodes():
-        prods[n] = producer.Producer(name=n, type_of="testdummy")
+        prods[n] = producer.Producer(name=str(n), type_of="testdummy")
+        prods[n].save()
 
     for n in G.nodes():
         for rated in G[n]:
-            for tag in rated:
-                source_rating = producer.SourceRating(rating=3, source=prod2,
-                                                      tag=tag1)
+            for tag_name in G[n][rated]:
+                source_rating = producer.SourceRating(rating=G[n][rated][tag_name],
+                                                      source=prods[n],
+                                                      tag=tags[tag_name])
+                prods[n].source_ratings.append(deepcopy(source_rating))
+
+        prods[n].save()
+        
+                
