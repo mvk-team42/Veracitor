@@ -107,8 +107,6 @@ if __name__ == "__main__":
                 prods[n].source_ratings.append(deepcopy(source_rating))
 
         prods[n].save()
-        
-                
 
     # Dummy info object 1
     info1 = information.Information(title="dnledare",
@@ -133,4 +131,3 @@ if __name__ == "__main__":
         prod.info_ratings.append(info_rating2)
         prod.save()
         
->>>>>>> d1d9c981af8da9ed2f8e93ccc6725feb9eb6a74c
