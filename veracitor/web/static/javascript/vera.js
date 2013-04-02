@@ -45,8 +45,6 @@
         var name;
         /** Side tab dom element */
         var sideTab;
-        /** Text used when explaining errors */
-        var debugText;
 
         activeTab = 0;
 
@@ -122,21 +120,16 @@
         // set focus on the search field
         $("#local-search-field").focus();
 
-        try {
-            // Add controllers
-            debugText = "search";
-            controllers.search = new SearchController(vera.dom.search);
-            debugText = "network";
-            controllers.network = new NetworkController(vera.dom.network, new Visualizer());
-            debugText = "ratings";
-            controllers.ratings = new RatingsController(vera.dom.ratings);
-            debugText = "account";
-            controllers.account = new AccountController(vera.dom.account);
-
-        } catch(exc) {
-            console.error("Error while adding " + debugText + " controller.");
-            console.error(exc.message);
-        }
+        // Add controllers
+        controllers.super = new SuperController();
+        controllers.search = new SearchController(
+            vera.dom.search, controllers.super);
+        controllers.network = new NetworkController(
+            vera.dom.network, controllers.super, new Visualizer());
+        controllers.ratings = new RatingsController(
+            vera.dom.ratings, controllers.super);
+        controllers.account = new AccountController(
+            vera.dom.account, controllers.super);
     }
     // Run this function when the document has loaded
     $(document).ready(init);
