@@ -30,12 +30,14 @@ def init_interface():
 def item_scraped(item, response, spider):
     if isinstance(spider, NewspaperBankSpider):
         add_newspaper(item['url']) #, "-1")
+        '''
     if isinstance(spider, ArticleSpider):
         callback(item) #, spider.job_id)
     if isinstance(spider, MetaNewspaperSpider):
         callback(item) #, spider.job_id)
     if isinstance(spider, NewspaperSpider):
         callback(item) #, spider.job_id)
+        '''
 
 
 def create_newspaper_bank():
