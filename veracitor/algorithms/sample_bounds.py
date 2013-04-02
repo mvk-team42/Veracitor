@@ -37,9 +37,10 @@ def sample_bounds(bayesianNetwork, k=10):
                     n['xmax'] = 0
                     
             else:
-                print globalNetwork.get_global_network()
+                #print str(globalNetwork.get_global_network())
+                print globalNetwork.get_global_network()['DN']
                 print nx.to_dict_of_dicts(globalNetwork.get_global_network())
-                globalNetwork.get_common_info_ratings(n, bayesianNetwork.predecessors(n)[0], ['crime'])
+                #globalNetwork.get_common_info_ratings(n, bayesianNetwork.predecessors(n)[0], ['crime'])
                     
     
     
