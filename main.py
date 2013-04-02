@@ -1,5 +1,4 @@
-from veracitor.web.app import runserver
-
+from veracitor.web import runserver
 
 if __name__ == "__main__":
     runserver()

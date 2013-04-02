@@ -9,7 +9,7 @@
     the “rated list” when a rating is set.
     @constructor
  */
-var RatingsController = function (view) {
+var RatingsController = function (view, controller) {
 
     /**
         Displays the given producer in the NetworkView.
@@ -19,4 +19,3 @@ var RatingsController = function (view) {
     };
 
 };
-
