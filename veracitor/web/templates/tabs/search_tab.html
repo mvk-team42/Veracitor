@@ -9,18 +9,21 @@
 
 <input type="text" id="local-search-field" name="search-text" />
 
-<p>Type:
-    <form id="search-types">
-        <label><input type="radio" name="type" value="User" checked />User</label>
-        <label><input type="radio" name="type" value="newspaper" />Newspaper</label>
-    </form>
-</p>
+<input type="radio" name="search-type" value="producer" checked />
 
-<p>Time period:
-    <br />
-    <p id="period">1968 - 2011</p>
-    <img src="{{ url_for('static', filename='images/slider.png') }}" />
-</p>
+<input type="radio" name="search-type" value="information" />
+
+<p>Type:</p>
+<form id="search-types">
+    <label><input type="radio" name="type" value="User" checked />User</label>
+    <label><input type="radio" name="type" value="newspaper" />Newspaper</label>
+</form>
+
+<div>Time period: <div id="time-period"></div></div>
+<div id="slider-container">
+    <div id="slider-labels"></div>
+    <div id="slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false"></div>
+</div>
 
 <input type="button" id="local-search-button" name="search-button" value="Search" />
 
