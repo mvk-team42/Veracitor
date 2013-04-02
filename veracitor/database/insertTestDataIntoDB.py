@@ -108,26 +108,12 @@ if __name__ == "__main__":
 
         prods[n].save()
 
-    # Dummy info object 1
-    info1 = information.Information(title="dnledare",
-                                    url="dn.se/ledare",
-                                    time_published=datetime.datetime.now(),
-                                    tags=[tag1])
-    # Dummy info object 2
-    info2 = information.Information(title="SvDledare",
-                                    url="svd.se/ledare",
-                                    references=[info1],
-                                    time_punlished=datetime.datetime.now(),
-                                    tags=[tag1, tag2])
-    
     # Create random info ratings for all producers
     for n in G.nodes():
-        prod = producer.Producer(name=n, type_of="testdummy").info_ratings.append()
         info_rating1 = producer.InformationRating(rating=random.randint(1,10),
                                               information=info1)
         info_rating2 = producer.InformationRating(rating=random.randint(1,10),
                                               information=info2)
-        prod.info_ratings.append(info_rating1)
-        prod.info_ratings.append(info_rating2)
-        prod.save()
-        
+        prods[n].info_ratings.append(info_rating1)
+        prods[n].info_ratings.append(info_rating2)
+        prods[n].save()
