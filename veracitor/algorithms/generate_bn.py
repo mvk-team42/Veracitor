@@ -13,10 +13,12 @@ def networkx_generate_bn(graph, source, sink, tag="weight", cutoff=None):
     implements NetworkX functions rather than the pseudo-code published in
     the paper.
 
-    It's probably slower than golbeck_generate_bn() and not guaranteed to
+    It's A LOT slower than golbeck_generate_bn() and not guaranteed to
     return the same graph as a golbeck_generate_bn would given the same
     input, but it does the job of minimizing the input network by finding
     all paths from source to sink.
+
+    Use only for small graphs.
 
     """
     # Get all paths from source to sink without cycles and redundant nodes
@@ -44,13 +46,14 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
     """
     K = set(graph.predecessors(sink))
     KK = set()
+    Kgraph = graph.subgraph(list(K)+[sink]) # makes it work if source and sink are neigbours
 
     while K != KK and source not in K:
         KK = K.copy()
         K_has_changed = True
         while K_has_changed:
             pre_img = _pre_img(K, graph, tag)
-            if len(pre_img) = 0:
+            if len(pre_img) == 0:
                 K_has_changed = False
             else:
                 K = K | pre_img
@@ -60,8 +63,8 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
         K.add(sink)        
         Kgraph = _prune_states(K, graph, source, sink)
         K = set(Kgraph.nodes())
-      
-    # Return a the subgraph of graph containing only
+    
+    # Return a subgraph of graph containing only
     # the relevant nodes and edges
     return Kgraph
 
