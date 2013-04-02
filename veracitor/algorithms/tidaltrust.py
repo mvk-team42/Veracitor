@@ -6,7 +6,6 @@ with some extended functionality.
 
 import sys
 import networkx as nx
-import matplotlib.pyplot as plt
 from copy import deepcopy
 
 def tidal_trust(source, sink, graph, tag):
@@ -141,7 +140,7 @@ def remove_low_rated_paths(paths, threshold, graph):
     
     return relevant_paths
 
-def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
+def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None, callback=None):
     """
     Computes the trust between the source and sink in a NetworkX DiGraph (bayesianNetwork) 
     and returns the value as a float.
@@ -151,6 +150,8 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
 
     tag (optional): A tag name (String). Only edges/ratings under this tag
     will be used in the trust calculation.
+    
+    callback (optional): A callback function to be called when the trust has been calculated.
 
     If tag is specified, edges will be tagged with properties, like so:
     DiGraph[1][2][tag_name] = rating.
@@ -171,8 +172,13 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
     if tag == None:
         tag = "weight"
 
-    return tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
 
+    trust = tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
+    
+    if callback != None:
+        callback(trust)
+        
+    return trust
         
 
 
