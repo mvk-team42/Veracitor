@@ -151,6 +151,8 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None, callba
 
     tag (optional): A tag name (String). Only edges/ratings under this tag
     will be used in the trust calculation.
+    
+    callback (optional): A callback function to be called when the trust has been calculated.
 
     If tag is specified, edges will be tagged with properties, like so:
     DiGraph[1][2][tag_name] = rating.
