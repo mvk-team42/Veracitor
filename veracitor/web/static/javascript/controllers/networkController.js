@@ -15,22 +15,25 @@ var NetworkController = function (view, controller, visualizer) {
     visualizer.visualizeProducerInNetwork(null, -1);
 
     $('#calculate-sunny').click(function (evt) {
-        request_sunny_value('heaven', 'hell');
+        request_sunny_value('SvD', 'DN', 'newspaper');
     });
 
     /**
        Request a SUNNY value.
     */
-    function request_sunny_value(source, sink) {
+    function request_sunny_value(source, sink, tag) {
         $.post('/calculate_sunny_value', {
             'source': source,
-            'sink': sink
+            'sink': sink,
+            'tag': tag
         }, function (data) {
             var response = JSON.parse(data);
 
             if(response.error.type == 'none') {
+                $('#calculated-trust').html(response.procedure.trust);
+
                 controller.watch_callback(function (response) {
-                    $('#calculated-trust').html(response.procedure.trust);
+                    //$('#calculated-trust').html(response.procedure.trust);
                 }, response.procedure.callback_url, response.procedure.id);
             } else {
                 $('#search-result').html('<h2>' + response.error.message + '</h2>');

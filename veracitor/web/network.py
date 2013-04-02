@@ -1,12 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 from veracitor.web import app
-from veracitor.web.crawler import crawl_callback, get_unique_crawl_id
+from veracitor.web import callback
 
 from ..database import globalNetwork as gn
 from ..algorithms.tidaltrust import compute_trust
 
 import json
+
+def callback_function(trust):
+    pass
+    # TODO
+    # callback.set_item(trust)
 
 """
 Starts a SUNNY procedure given a source and sink producer.
@@ -35,15 +40,23 @@ def calculate_sunny_value():
                     'message': 'No sink node specified.',
                     'type': 'no_sink'
                 }
+            if not f['tag']:
+                error = {
+                    'message': 'No tag specified',
+                    'type': 'no_tag'
+                }
 
             if error['type'] == 'none':
-                id = get_unique_crawl_id()
+                id = callback.get_unique_id()
 
-                #compute_trust(gn.get_global_network(),
+                trust = compute_trust(gn.get_global_network(),
+                                      f['source'], f['sink'],
+                                      tag=f['tag'], callback=callback_function)
 
                 procedure = {
                     'message': 'Started SUNNY procedure',
                     'callback_url': '/check_sunny_procedure',
+                    'trust': trust,
                     'id': id
                 }
         else:
@@ -81,12 +94,17 @@ def check_sunny_procedure():
                 }
 
             if error['type'] == 'none':
-                # check SUNNY procedure
+                item = callback.check_id(f['id'])
 
-                procedure = {
-                    'status': 'done',
-                    'trust': 3
-                }
+                if item:
+                    procedure = {
+                        'status': 'done',
+                        'trust': item
+                    }
+                else:
+                    procedure = {
+                        'status': 'processing'
+                    }
 
         else:
             error = {
