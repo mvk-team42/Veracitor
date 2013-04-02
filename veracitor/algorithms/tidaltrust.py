@@ -8,6 +8,13 @@ import sys
 import networkx as nx
 from copy import deepcopy
 
+# Callback function used in calls to compute_trust
+callback_function
+
+def set_callback(callback):
+    global callback_function
+    callback_function = callback
+
 def tidal_trust(source, sink, graph, tag):
     """ 
     Calculates a trust value between the source and the sink nodes 
@@ -140,7 +147,7 @@ def remove_low_rated_paths(paths, threshold, graph):
     
     return relevant_paths
 
-def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None, callback=None):
+def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
     """
     Computes the trust between the source and sink in a NetworkX DiGraph (bayesianNetwork) 
     and returns the value as a float.
@@ -175,9 +182,11 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None, callba
 
     trust = tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
     
-    if callback != None:
-        callback(trust)
-        
+    if callback_function != None:
+        # TODO: Any parameters to the callback function?
+        callback_function()
+    # Big TODO: Return path used to compute trust? Done somewhere in the middle of the
+    # numerator/denominator-calculations?
     return trust
         
 
