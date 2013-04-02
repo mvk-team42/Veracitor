@@ -83,7 +83,7 @@ def notify_producer_was_updated(producer):
     notify_producer_was_removed(producer)
     notify_producer_was_added(producer)
 
-def get_common_info_ratings(producer_name1, producer_name2, tags):
+def get_common_info_ratings(producer_name1, producer_name2, tag_names):
     """Returns a list of tuples on the form (info rating rating A,
     info rating rating B), where both A and B are ratings on the same
     information but A is made by producer1 and B by producer2. Re-
@@ -100,22 +100,22 @@ def get_common_info_ratings(producer_name1, producer_name2, tags):
     for info_1 in p1_info_ratings:
         for info_2 in p2_info_ratings:
             if info_1.information.title == info_2.information.title:
-                if __contains_common_tags(info_1.information.tags, tags):
+                if __contains_common_tags(info_1.information.tags, tag_names):
                     common_info_ratings.append((info_1, info_2,))
                     
    
     return common_info_ratings
 
     
-def __contains_common_tags(tags_1, tags_2):
+def __contains_common_tags(tags_1, tag2_names):
     for tag in tags_1:
-        if tag in tags_2:
+        if tag.name in tag2_names:
             return True
 
     return False
 
 
-def get_extreme_info_ratings(producer_name, tags):
+def get_extreme_info_ratings(producer_name, tag_names):
     """Returns a list of info ratings who differ from the mean by
     one standard deviation of the specified producer (I.E. ratings that
     are unusually extreme relative to specified producer's ratings).
@@ -130,7 +130,7 @@ def get_extreme_info_ratings(producer_name, tags):
     total_sum = 0.0
     for info in producer.info_ratings:
         for tag in info.information.tags:
-            if tag in tags:
+            if tag.name in tag_names:
                 relevant_info_ratings.append(info)
                 relevant_info_ratings_ints.append(info.rating)
                 total_sum += info.rating
@@ -149,7 +149,7 @@ def get_extreme_info_ratings(producer_name, tags):
     
     
 
-def get_max_rating_difference(producer_name1, producer_name2, tags):
+def get_max_rating_difference(producer_name1, producer_name2, tag_names):
     """Returns an int equal to the difference between the two most differ-
     ing ratings between producer1 and producer2.
     If no common info_ratings were found -1 will be returned
@@ -158,7 +158,7 @@ def get_max_rating_difference(producer_name1, producer_name2, tags):
     producer1 = extractor.get_producer(producer_name1)
     producer2 = extractor.get_producer(producer_name2)
 
-    common_info_ratings = get_common_info_ratings(producer_name1, producer_name2,tags)
+    common_info_ratings = get_common_info_ratings(producer_name1, producer_name2,tag_names)
     if len(common_info_ratings) == 0:
         return -1 
 
