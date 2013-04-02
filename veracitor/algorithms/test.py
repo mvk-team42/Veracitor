@@ -2,6 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import tidaltrust as tt
 import generate_bn as gbn
+import sample_bounds as sb
 from copy import copy, deepcopy
 
 # TODO: Unittesting!
@@ -78,7 +79,14 @@ nx.draw_spectral(Gtags)
 ### TEST GENERATEBN
 Gtags2 = deepcopy(Gtags)
 #Gtags2.add_edges_from([(8,4,dict(cooking=5)), (9,8,dict(cooking=5)), (10,9,dict(cooking=5)), (11,10,dict(cooking=5)), (0,1,dict(cooking=5))])
-print nx.to_dict_of_dicts(gbn.networkx_generate_bn(Gtags2, 1, 7, "cooking"))
-print nx.to_dict_of_dicts(gbn.golbeck_generate_bn(Gtags2, 1, 7, "cooking"))
+#print nx.to_dict_of_dicts(gbn.networkx_generate_bn(Gtags2, 1, 7, "cooking"))
+#print nx.to_dict_of_dicts(gbn.golbeck_generate_bn(Gtags2, 1, 7, "cooking"))
 nx.draw_circular(Gtags2)
 plt.show()
+
+print "Running sample bounds"
+print sb.sample_bounds(Gtags,10)
+
+### TEST SAMPLE-BOUNDS
+
+
