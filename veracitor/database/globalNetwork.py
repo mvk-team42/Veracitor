@@ -113,8 +113,8 @@ def contains_common_tags(tags_1, tags_2):
 
     return False
 
-"""Returns a list of info ratings who are set at a level matching the
-top/bottom 20% of the specified producer (I.E. ratings that
+"""Returns a list of info ratings who differ from the mean by
+one standard deviation of the specified producer (I.E. ratings that
 are unusually extreme relative to specified producer's ratings).
 Returned ratings need to have been set under at least one of
 specified tags."""
@@ -131,17 +131,7 @@ def get_extreme_info_ratings(producer, tags):
                 break
     
     mean = (total_sum)/len(relevant_info_ratings)
-    """
-    Primitive working version
-        delta = (mean)*0.2
-    extremes = []
-    for info in relevant_info_ratings:
-       diff = math.fabs((info.rating - mean))
-       if diff > delta:
-           extremes.append(info)
 
-    return extremes
-    """
     extremes = []
     np_array = array(relevant_info_ratings_ints)
     std = np_array.std()

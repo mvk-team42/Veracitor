@@ -51,6 +51,12 @@ class GeneralSetup(unittest.TestCase):
                                              references=[],
                                              time_published=datetime.datetime.now(),
                                              tags=[self.tag2])
+
+        self.info4 = information.Information(title="EnDingDingVaerldArticle2",
+                                             references=[],
+                                             time_published=datetime.datetime.now(),
+                                             tags=[self.tag1, self.tag2])
+
         self.prod1 = producer.Producer(name="DN",
                                        type_of="newspaper")
         self.prod2 = producer.Producer(name="SvD",
@@ -65,6 +71,10 @@ class GeneralSetup(unittest.TestCase):
                                                        information=self.info2)
         self.info_rating4 = producer.InformationRating(rating=5,
                                                        information=self.info2)
+        self.info_rating5 = producer.InformationRating(rating=3,
+                                                       information=self.info3)
+        self.info_rating6 = producer.InformationRating(rating=4,
+                                                       information=self.info4)
 
         self.prod2.save()
         self.source_rating1 = producer.SourceRating(rating=3,
@@ -75,6 +85,10 @@ class GeneralSetup(unittest.TestCase):
         self.prod2.info_ratings.append(self.info_rating2)
         self.prod2.info_ratings.append(self.info_rating3)
         self.prod3.info_ratings.append(self.info_rating4)
+        self.prod3.info_ratings.append(self.info_rating5)
+        self.prod3.info_ratings.append(self.info_rating1)
+        self.prod3.info_ratings.append(self.info_rating6)
+
         self.prod1.source_ratings.append(self.source_rating1)
         self.group1.save()
         self.info1.save()
@@ -154,13 +168,15 @@ class TestGlobalNetworkThings(GeneralSetup):
         assert globalNetwork.get_common_info_ratings(self.prod1, self.prod2,[self.tag2])\
             == []
         assert globalNetwork.get_common_info_ratings(self.prod1, self.prod3,[self.tag1, self.tag2])\
-            == []
+            == [(self.info_rating1, self.info_rating1,)]
         assert globalNetwork.get_common_info_ratings(self.prod2, self.prod3,[self.tag2])\
             == [(self.info_rating3, self.info_rating4,)]
 
     def test_get_extreme_info_ratings(self):
-        print globalNetwork.get_extreme_info_ratings(self.prod1, [self.tag1])
-        assert 0 == 0
+        res = globalNetwork.get_extreme_info_ratings(self.prod3, [self.tag1, self.tag2])
+        assert self.info_rating4 in res
+        assert self.info_rating5 in res
+        assert len(res) == 2
 
 
 if __name__ == "__main__":
