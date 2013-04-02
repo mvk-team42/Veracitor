@@ -11,6 +11,8 @@ from veracitor.crawler import crawlInterface as ci
 crawl_id_counter = 0
 crawl_ids = {}
 
+ci.set_callback(crawl_callback)
+
 """
 Callback function for the crawler
 """
@@ -21,7 +23,7 @@ def crawl_callback(item, id):
 Returns a unique crawl procedure  id.
 """
 def get_unique_crawl_id():
-    id = crawl_id_counter
+    id = '#' + crawl_id_counter
     crawl_id_counter += 1
     return id
 
@@ -48,12 +50,17 @@ def start_crawl_procedure():
                 }
 
             if error['type'] == 'none':
-                # start SUNNY procedure
+                id = get_unique_crawl_id()
+
+                crawl_ids[id] = None
+
+                # start scraping the specified URL
+                ci.scrape_article(f['url'], id)
 
                 procedure = {
                     'message': 'Started crawling %s.' % f['url'],
                     'callback_url': '/check_crawl_procedure',
-                    'id': get_unique_crawl_id()
+                    'id': id
                 }
         else:
             error = {
@@ -90,12 +97,18 @@ def check_crawl_procedure():
                 }
 
             if error['type'] == 'none':
-                # check SUNNY procedure
-
-                procedure = {
-                    'status': 'done',
-                    'trust': 3
-                }
+                if crawl_ids[f['id']]:
+                    procedure = {
+                        'status': 'done',
+                        'id': f['id']
+                        #'item': crawl_ids[f['id']]
+                    }
+                    # remove the procedure
+                    del crawl_ids[f['id']]
+                else:
+                    procedure = {
+                        'status': 'processing'
+                    }
 
         else:
             error = {
