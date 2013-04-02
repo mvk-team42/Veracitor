@@ -129,9 +129,9 @@ var SearchController = function (view, controller) {
 
                     // add an event listener for the created button
                     $("#search-add-button").click(function () {
-                        var search_text = $("#search-add-field").val();
+                        var url = $("#search-add-field").val();
 
-                        request_database_add_entity(search_text);
+                        request_crawl_procedure(url);
                     });
                 }
             }
@@ -147,14 +147,19 @@ var SearchController = function (view, controller) {
         started on the server side. The crawler will notify the client
         that a crawler has been started with a callback.
      */
-    var request_database_add_entity = function (search_term) {
-        $.post("/add_entity", {
-            'url' : search_term
+    var request_crawl_procedure = function (url) {
+        $.post("/request_crawl_procedure", {
+            'url' : url
         }, function (data) {
             var response = JSON.parse(data);
 
             if(response.error.type == "none") {
-                $("#search-result").html("<h2>Request succesfully sent to server.</h2>");
+                $("#search-result").html("<h2>" + response.procedure.message + "</h2>");
+
+                controller.watch_callback(function (response) {
+                    $('#search-result').html("<h2>" + response.procedure.message + "</h2>");
+                }, response.procedure.callback_url, response.procedure.id);
+
             } else {
                 $("#search-result").html("<h2>" + response.error.message + "</h2>");
             }
