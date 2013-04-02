@@ -82,6 +82,22 @@ class CrawlerPipeline(object):
         for word in special_words:
             item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
 
+        #replace swedish months with english
+        months_in_swedish = {"januari":"january",
+            "februari":"february",
+            "mars":"march",
+            "april":"april",
+            "maj":"may",
+            "juni":"june",
+            "juli":"july",
+            "augusti":"august",
+            "september":"september",
+            "oktober":"october",
+            "november":"november",
+            "december":"december"}
+        for swedish, english in months_in_swedish.items():
+            item['time_published'] = item['time_published'].replace(swedish, english)
+
         updated_keywords = ["uppdaterad: "]
         for word in updated_keywords:
             if word in item["time_published"]:
@@ -91,7 +107,7 @@ class CrawlerPipeline(object):
     def parse_datetime(self, item):
         current_dir = dirname(realpath(__file__))
         xpaths = Xpaths(current_dir + '/webpageXpaths.xml')
-        datetime_format = xpaths.get_xpaths("datetime_format", urlparse(item['url'])[1])
+        datetime_format = xpaths.get_datetime_formats(urlparse(item['url'])[1])
         time = None
 
         if len(datetime_format) > 0:
@@ -99,7 +115,7 @@ class CrawlerPipeline(object):
             time = strptime(item['time_published'],datetime_format[0])
         else:
             log.msg("no time format found, trying defaults on: " + item['time_published'])
-            formats = ["%Y-%m-%d %H:%M"]
+            formats = ["%Y-%m-%d %H:%M","%d %B %Y kl %H:%M"]
             for time_format in formats:
                 try:
                     time = strptime(item['time_published'],time_format)

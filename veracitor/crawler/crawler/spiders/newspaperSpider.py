@@ -4,6 +4,7 @@ from scrapy.selector import HtmlXPathSelector
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
+from scrapy import log
 from urlparse import urlparse
 from os.path import realpath, dirname
 
@@ -19,7 +20,7 @@ class NewspaperSpider(CrawlSpider):
 
     def __init__(self, *args, **kwargs):
         current_dir = dirname(realpath(__file__))
-        self.xpaths = Xpaths(current_dir + '/../webpages.xml')
+        self.xpaths = Xpaths(current_dir + '/../webpageXpaths.xml')
         domain = kwargs.get('domain')
         self.start_urls = ["http://" + domain]
         self.rules = (
