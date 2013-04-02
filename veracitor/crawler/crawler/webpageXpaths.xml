@@ -27,8 +27,8 @@
                 <xpath>//meta[@name="description"]/@content</xpath>
             </description>
             <rss-link>
-                <xpath>//a[contains(@class, "rss")]</xpath>    
-                <xpath>//*[contains(@class, "rss")]//a</xpath>   
+                <xpath>//a[contains(@class, "rss")]/@href</xpath>    
+                <xpath>//*[contains(@class, "rss")]//a/@href</xpath>   
             </rss-link>
         </webpage-data>
 
