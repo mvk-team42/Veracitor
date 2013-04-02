@@ -101,7 +101,7 @@
             </time_published>
 
             <datetime_format>
-                <xpath>blablabla</xpath>
+                <xpath>%Y-%m-%d %H:%M</xpath>
             </datetime_format>
 
         </article-data>
