@@ -6,7 +6,6 @@ with some extended functionality.
 
 import sys
 import networkx as nx
-import matplotlib.pyplot as plt
 from copy import deepcopy
 
 def tidal_trust(source, sink, graph, tag):

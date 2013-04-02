@@ -1,5 +1,5 @@
 import networkx as nx
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import tidaltrust as tt
 import generate_bn as gbn
 import sample_bounds as sb
@@ -65,7 +65,7 @@ Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
 
 #nx.draw(G)
 #nx.draw_circular(G2)
-nx.draw_spectral(Gtags)
+#nx.draw_spectral(Gtags)
 #nx.draw_spectral(Gtags)
 #nx.draw_spectral(Gtags)
 
@@ -81,8 +81,8 @@ Gtags2 = deepcopy(Gtags)
 #Gtags2.add_edges_from([(8,4,dict(cooking=5)), (9,8,dict(cooking=5)), (10,9,dict(cooking=5)), (11,10,dict(cooking=5)), (0,1,dict(cooking=5))])
 #print nx.to_dict_of_dicts(gbn.networkx_generate_bn(Gtags2, 1, 7, "cooking"))
 #print nx.to_dict_of_dicts(gbn.golbeck_generate_bn(Gtags2, 1, 7, "cooking"))
-nx.draw_circular(Gtags2)
-plt.show()
+#nx.draw_circular(Gtags2)
+#plt.show()
 
 print "Running sample bounds"
 print sb.sample_bounds(Gtags,10)

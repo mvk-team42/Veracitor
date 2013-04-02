@@ -4,7 +4,8 @@ Computes minimum and maximum probability of success by using a stochastic simula
 
 """
 
-from veracitor.database import *
+import veracitor.database as db
+from veracitor.database import globalNetwork
 import networkx as nx
 import random
 import itertools
@@ -36,8 +37,9 @@ def sample_bounds(bayesianNetwork, k=10):
                     n['xmax'] = 0
                     
             else:
-                print "RUNNING get_common_info_ratings"
-                get_common_info_ratings(n, n.predecessors(0))
+                print globalNetwork.get_global_network()
+                print nx.to_dict_of_dicts(globalNetwork.get_global_network())
+                globalNetwork.get_common_info_ratings(n, bayesianNetwork.predecessors(n)[0], ['crime'])
                     
     
     
