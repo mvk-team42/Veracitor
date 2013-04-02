@@ -158,6 +158,10 @@ class TestGlobalNetworkThings(GeneralSetup):
         assert globalNetwork.get_common_info_ratings(self.prod2, self.prod3,[self.tag2])\
             == [(self.info_rating3, self.info_rating4,)]
 
+    def test_get_extreme_info_ratings(self):
+        print globalNetwork.get_extreme_info_ratings(self.prod1, [self.tag1])
+        assert 0 == 0
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -6,6 +6,7 @@ from group import *
 from user import *
 from mongoengine import *
 import math
+from numpy import array
 connect('mydb')
 
 graph = None
@@ -119,27 +120,36 @@ Returned ratings need to have been set under at least one of
 specified tags."""
 def get_extreme_info_ratings(producer, tags):
     relevant_info_ratings = []
+    relevant_info_ratings_ints = []
     total_sum = 0.0
     for info in producer.info_ratings:
-        for tag in info.tags:
+        for tag in info.information.tags:
             if tag in tags:
                 relevant_info_ratings.append(info)
+                relevant_info_ratings_ints.append(info.rating)
                 total_sum += info.rating
                 break
     
     mean = (total_sum)/len(relevant_info_ratings)
     """
     Primitive working version
-    """
-    delta = (mean)*0.2
+        delta = (mean)*0.2
     extremes = []
     for info in relevant_info_ratings:
-       diff = math.abs((info.rating - mean))
+       diff = math.fabs((info.rating - mean))
        if diff > delta:
            extremes.append(info)
 
     return extremes
-    
+    """
+    extremes = []
+    np_array = array(relevant_info_ratings_ints)
+    std = np_array.std()
+    for info in relevant_info_ratings:
+        diff = math.fabs(info.rating - mean)
+        if diff > std:
+            extremes.append(info)
+    return extremes
     
     
 """Returns an int equal to the difference between the two most differ-
