@@ -34,7 +34,6 @@ class Xpaths:
         return [f.text for f in formats]
         
         
-        
     def get_webpage_xpaths(self, field_name, domain):
         xpaths = self.root.findall("webpage[@domain='"+domain+"']/webpage-data/"+field_name+"/xpath")
         if len(xpaths) == 0:
