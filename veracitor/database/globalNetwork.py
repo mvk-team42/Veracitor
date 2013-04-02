@@ -84,13 +84,16 @@ def notify_information_was_updated(information):
     # add/remove edges corr. to trust-relations
     
 
-"""Returns a list of tuples on the form (info rating rating A,
-info rating rating B), where both A and B are ratings on the same
-information but A is made by producer1 and B by producer2. Re-
-turned ratings need to have been set under at least one of the
-specified tags. Returns an empty list if no common ratings are
-found."""    
+
 def get_common_info_ratings(producer1, producer2, tags):
+    """Returns a list of tuples on the form (info rating rating A,
+    info rating rating B), where both A and B are ratings on the same
+    information but A is made by producer1 and B by producer2. Re-
+    turned ratings need to have been set under at least one of the
+    specified tags. Returns an empty list if no common ratings are
+    found.
+    
+    """    
     p1_info_ratings = producer1.info_ratings
     p2_info_ratings = producer2.info_ratings
     
@@ -113,12 +116,15 @@ def contains_common_tags(tags_1, tags_2):
 
     return False
 
-"""Returns a list of info ratings who differ from the mean by
-one standard deviation of the specified producer (I.E. ratings that
-are unusually extreme relative to specified producer's ratings).
-Returned ratings need to have been set under at least one of
-specified tags."""
+
 def get_extreme_info_ratings(producer, tags):
+    """Returns a list of info ratings who differ from the mean by
+    one standard deviation of the specified producer (I.E. ratings that
+    are unusually extreme relative to specified producer's ratings).
+    Returned ratings need to have been set under at least one of
+    specified tags.
+
+    """
     relevant_info_ratings = []
     relevant_info_ratings_ints = []
     total_sum = 0.0
@@ -142,10 +148,24 @@ def get_extreme_info_ratings(producer, tags):
     return extremes
     
     
-"""Returns an int equal to the difference between the two most differ-
-ing ratings between producer1 and producer2."""
+
 def get_max_rating_difference(producer1, producer2, tags):
-    return 0
+    """Returns an int equal to the difference between the two most differ-
+    ing ratings between producer1 and producer2.
+    If no common info_ratings were found -1 will be returned
+    
+    """
+    common_info_ratings = get_common_info_ratings(producer1, producer2,tags)
+    if len(common_info_ratings) == 0:
+        return -1 
+
+    max_diff = 0
+    for common_tuple in common_info_ratings:
+       diff = math.fabs(common_tuple[0].rating - common_tuple[1].rating)
+       if diff > max_diff:
+           max_diff = diff
+
+    return max_diff
 
 if __name__ == "__main__":
     build_network_from_db()

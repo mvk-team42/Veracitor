@@ -63,6 +63,9 @@ class GeneralSetup(unittest.TestCase):
                                        type_of="newspaper")
         self.prod3 = producer.Producer(name="Aftonbladet",
                                        type_of="newspaper")
+        self.prod4 = producer.Producer(name="USSR",
+                                       type_of="propaganda")
+
         self.info_rating1 = producer.InformationRating(rating=4, 
                                                        information=self.info1)
         self.info_rating2 = producer.InformationRating(rating=2,
@@ -74,6 +77,8 @@ class GeneralSetup(unittest.TestCase):
         self.info_rating5 = producer.InformationRating(rating=3,
                                                        information=self.info3)
         self.info_rating6 = producer.InformationRating(rating=4,
+                                                       information=self.info4)
+        self.info_rating7 = producer.InformationRating(rating=5,
                                                        information=self.info4)
 
         self.prod2.save()
@@ -88,6 +93,7 @@ class GeneralSetup(unittest.TestCase):
         self.prod3.info_ratings.append(self.info_rating5)
         self.prod3.info_ratings.append(self.info_rating1)
         self.prod3.info_ratings.append(self.info_rating6)
+        self.prod4.info_ratings.append(self.info_rating7)
 
         self.prod1.source_ratings.append(self.source_rating1)
         self.group1.save()
@@ -177,7 +183,14 @@ class TestGlobalNetworkThings(GeneralSetup):
         assert self.info_rating4 in res
         assert self.info_rating5 in res
         assert len(res) == 2
-
+    
+    def test_get_max_rating_differnce(self):
+        test1 = globalNetwork.get_max_rating_difference(self.prod1, self.prod4, [self.tag1, self.tag2])
+        assert test1 == -1
+        test2 = globalNetwork.get_max_rating_difference(self.prod1, self.prod2, [self.tag1])
+        assert test2 == 2
+        test3 = globalNetwork.get_max_rating_difference(self.prod1, self.prod2, [self.tag2])
+        assert test3 == -1
 
 if __name__ == "__main__":
     unittest.main()
