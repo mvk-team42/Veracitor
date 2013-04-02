@@ -18,6 +18,15 @@ class NewspaperBankSpider(CrawlSpider):
 
     def __init__(self, *args, **kwargs):
         
+        
+        self.start_urls = [
+                    "http://www.listofnewspapers.com/en/europe/english-newspapers-in-united-kingdom.html",
+                    "http://www.listofnewspapers.com/en/europe/swedish-newspapers-in-sweden.html",
+                    "http://www.listofnewspapers.com/en/north-america/usa-newspapers-in-united-states-of-america.html",
+                    ]
+                
+        
+        
         domain = "http://www.listofnewspapers.com"
 
         self.start_urls = ["http://www.listofnewspapers.com/en/europe/newspapers-in-west-midlands.html"]
