@@ -65,8 +65,10 @@
             </time_published>
             
             <datetime-formats>
-                <format>blablabla</format>
+                <format>%Y-%m-%d %H:%M</format>
+                <format>%d %B %Y kl %H:%M</format>
             </datetime-formats>
+            
             
         </article-data>
     </default>
