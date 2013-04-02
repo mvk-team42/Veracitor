@@ -18,6 +18,16 @@
             <pattern>fragesport</pattern>
             <pattern>quiz</pattern>
         </article-deny-url>
+        
+        <webpage-data>
+            <name>
+                <xpath>//title/text()</xpath>
+            </name>
+            <rss-link>
+                <xpath>//a[contains(@class, "rss")</xpath>    
+                <xpath>//*[contains(@class, "rss")//a</xpath>   
+            </rss-link>
+        </webpage-data>
 
         <article-data>
             <title>
@@ -50,6 +60,11 @@
                 <xpath>//*[contains(@class, "article-metadata")]//*[contains(@class, "publishdate")]//text()</xpath>
                 <xpath>//*[contains(@class, "pubtime")]//text()</xpath>
             </time_published>
+            
+            <datetime-formats>
+                <format>blablabla</format>
+            </datetime-formats>
+            
         </article-data>
     </default>
 
