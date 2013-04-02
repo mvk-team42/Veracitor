@@ -4,15 +4,11 @@ Computes minimum and maximum probability of success by using a stochastic simula
 
 """
 
-import database as db
+from veracitor.database import *
 import networkx as nx
 import random
 import itertools
 from numpy import array
-
-UNKNOWN = 0
-EXCLUDE = 1
-INCLUDE = 2
 
 
 
@@ -26,21 +22,22 @@ def sample_bounds(bayesianNetwork, k=10):
     sample_size = 0
     for _ in range(k):
         sample_size+=1
-        nodes = bayesianNetwork.nodes()
+        nodes = bayesianNetwork.node
         for n in nodes:
-            if not n.predecessors():
-                if n['decision'] == INCLUDE:
+            if not bayesianNetwork.predecessors(n):
+                if not 'decision' in n: 
+                    n['xmin'] = 0
+                    n['xmax'] = 1
+                elif n['decision']:
                     n['xmin'] = 1
                     n['xmax'] = 1
-                elif n['decision'] == EXCLUDE:
+                else: 
                     n['xmin'] = 0
                     n['xmax'] = 0
-                else:
-                    n['xmin'] = 0
-                    n['xmax'] = 1
+                    
             else:
                 print "RUNNING get_common_info_ratings"
-                db.get_common_info_ratings(n, n.predecessors(0))
+                get_common_info_ratings(n, n.predecessors(0))
                     
     
     
