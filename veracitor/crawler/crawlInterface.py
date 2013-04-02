@@ -20,52 +20,52 @@ from .crawler.spiders.newspaperSpider import NewspaperSpider
 from ..logger import logger
 
 
-def set_callbacks(information, producer):
-    global information_callback, producer_callback
-    information_callback = information
-    producer_callback = producer
+def set_callback(callback_method):
+    global callback
+    callback = callback_method
     dispatcher.connect(item_scraped , signals.item_scraped)
     log.start()
     
     
 def item_scraped(item, response, spider):
     if isinstance(spider, NewspaperBankSpider):
-        addNewspaper(item.url)
+        add_newspaper(item.url)
     if isinstance(spider, ArticleSpider):
-        information_callback(item, spider.job_id)
+        callback(item, spider.job_id)
     if isinstance(spider, MetaNewspaperSpider):
-        producer_callback(item, spider.job_id)
-        
+        callback(item, spider.job_id)
+    if isinstance(spider, NewspaperSpider):
+        callback(item, spider.job_id)
 
 
-def createNewspaperBank():
+def create_newspaper_bank():
     _run_spider(NewspaperBankSpider())
 
-def addNewspaper(url, job_id):
+def add_newspaper(url, job_id):
     spider = MetaNewspaperSpider(url=url)
     spider.job_id = job_id
     _run_spider(spider)
     
-def scrapeArticle(url, job_id):
+def scrape_article(url, job_id):
     logger.log("blablabla",logger.Level.debug, logger.Area.crawler)
     spider = ArticleSpider(start_urls=url)
     spider.job_id = job_id
     _run_spider(spider)
 
-def requestScrape(newspaper, job_id):
+def request_scrape(newspaper, job_id):
     spider = NewspaperSpider(domain=newspaper)
     spider.job_id = job_id
     _run_spider(spider)
 
 def startContinuousScrape():
-    newspaperUrls = []
+    newspaper_urls = []
     xml_file = "crawler/webpages.xml"
     tree = ET.parse(xml_file)
     webpages = tree.getroot().findall("./webpage")
     for webpage in webpages:
-        newspaperUrls.append(webpage.get("url"))
+        newspaper_urls.append(webpage.get("url"))
     while (True):
-        for url in newspaperUrls:
+        for url in newspaper_urls:
             print url
             spider = RssSpider(url="http://www.dn.se/m/rss/senaste-nytt")
             _run_spider(spider)
