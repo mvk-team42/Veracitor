@@ -6,6 +6,7 @@ from datetime import datetime
 from datetime import date
 from os.path import dirname, realpath
 from urlparse import urlparse
+from time import strptime, mktime
 
 from .items import ArticleItem
 from .xpaths import Xpaths
@@ -81,13 +82,35 @@ class CrawlerPipeline(object):
         for word in special_words:
             item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
 
+    # Parse the date from item['time_published'] either using one of the default common formats or a format specified in webpageXpaths.xml
     def parse_datetime(self, item):
         current_dir = dirname(realpath(__file__))
         xpaths = Xpaths(current_dir + '/webpageXpaths.xml')
         datetime_format = xpaths.get_xpaths("datetime_format", urlparse(item['url'])[1])
+        time = None
+
         if len(datetime_format) > 0:
-            log.msg("found time format:" + str(datetime_format))
-        return None
+            log.msg("found time format: " + str(datetime_format[0]))
+            time = strptime(item['time_published'],datetime_format[0])
+        else:
+            log.msg("no time format found, trying defaults on: " + item['time_published'])
+            formats = ["%Y-%m-%d %H:%M"]
+            for time_format in formats:
+                try:
+                    time = strptime(item['time_published'],time_format)
+                    break
+                except ValueError:
+                    log.msg("could not parse date using " + time_format)
+
+
+        if time==None:
+            log.msg("time could not be extracted")
+            extracted_time = None
+        else:
+            log.msg("time extracted: Year=" + str(time.tm_year) + " Month=" + str(time.tm_mon) + " Day=" + str(time.tm_mday) + " Hour=" + str(time.tm_hour) + " Min=" + str(time.tm_min))
+            extracted_time = datetime.fromtimestamp(mktime(time))
+
+        return extracted_time
             
     def shorten_summary(self, item):
         if "summary" in item:
