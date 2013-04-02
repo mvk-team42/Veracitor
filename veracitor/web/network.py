@@ -4,8 +4,7 @@ from ..database import *
 import json
 
 from veracitor.web import app
-
-from veracitor.crawler import crawlInterface as ci
+from veracitor.web.crawler import crawl_callback, get_unique_crawl_id
 
 """
 Starts a SUNNY procedure given a source and sink producer.
@@ -36,11 +35,14 @@ def calculate_sunny_value():
                 }
 
             if error['type'] == 'none':
-                # start SUNNY procedure
+                id = get_unique_crawl_id()
+
+
 
                 procedure = {
+                    'message': 'Started SUNNY procedure',
                     'callback_url': '/check_sunny_procedure',
-                    'id': '1337'
+                    'id': id
                 }
         else:
             error = {

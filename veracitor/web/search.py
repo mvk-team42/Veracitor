@@ -4,28 +4,7 @@ from ..database import *
 import json
 
 from veracitor.web import app
-
-import veracitor.crawler.crawlInterface as ci
-
-# crawler variables
-app.crawl_id_counter = 0
-app.crawl_ids = {}
-
-"""
-Callback function for the crawler
-"""
-def crawl_callback(item, id):
-    app.crawl_ids[id] = item
-
-ci.set_callback(crawl_callback)
-
-"""
-Returns a unique crawl procedure  id.
-"""
-def get_unique_crawl_id():
-    id = '#' + str(app.crawl_id_counter)
-    app.crawl_id_counter += 1
-    return id
+from veracitor.web.crawler import crawl_callback, get_unique_crawl_id, get_crawl_id_item
 
 """
 Starts a crawler to crawl the given URL for an entity.
@@ -52,10 +31,8 @@ def request_crawl_procedure():
             if error['type'] == 'none':
                 id = get_unique_crawl_id()
 
-                app.crawl_ids[id] = None
-
                 # start scraping the specified URL
-                ci.scrape_article(f['url'], id)
+                app.ci.scrape_article(f['url'], id)
 
                 procedure = {
                     'message': 'Started crawling %s.' % f['url'],
@@ -97,12 +74,14 @@ def check_crawl_procedure():
                 }
 
             if error['type'] == 'none':
-                if crawl_ids[f['id']]:
+                item = get_crawl_id_item(f['id'])
+
+                if item:
                     procedure = {
                         'message': 'Finished crawling id: %s!' % f['id'],
                         'status': 'done',
                         'id': f['id']
-                        #'item': crawl_ids[f['id']]
+                        #'item': item
                     }
                     # remove the procedure
                     del app.crawl_ids[f['id']]
