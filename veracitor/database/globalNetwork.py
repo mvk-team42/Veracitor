@@ -12,6 +12,11 @@ connect('mydb')
 graph = None
 
 def get_global_network():
+    """Returns a graph containing all the producers currently in 
+    the database with their ratings set on each other.
+    Creates it if it is not already created.
+
+    """
     global graph
     if graph is None:
         graph = build_network_from_db()
@@ -37,7 +42,6 @@ def build_network_from_db():
     # Add all producers' source ratings to the database as edges
     for p2 in producers:
         for s in p2.source_ratings:
-            #graph.add_edges_from([(p2.name, s.source.name)], {s.tag.name: s.rating})
             graph.add_edge(p2.name, s.source.name, {s.tag.name: s.rating})
     
     return graph
@@ -55,21 +59,28 @@ def notify_producer_was_added(producer):
     """
     graph.add_node(producer.name)
     for s in producer.source_ratings:
-        #graph.add_edges_from([(producer.name, s.source.name)], {s.tag.name: s.rating})
         graph.add_edge(producer.name, s.source.name, {s.tag.name: s.rating})
 
 def notify_producer_was_removed(producer):
+    """Deletes a producer from the graph,
+    removes outgoing and incoming edges.
+    """
     try:
+        # edges are removed automatically :)
         graph.remove_node(producer.name)
     except Exception:
+        # Removing nonexistant node is allowed.
         pass
-    # edges are removed automatically :)
+    
 
 
 def notify_producer_was_updated(producer):
+    """Updates the graph with the given producer.
+    
+    """
+    # Possibly cheap/slow implementation.
     notify_producer_was_removed(producer)
     notify_producer_was_added(producer)
-    # add/remove edges corr. to trust-relations
 
 def get_common_info_ratings(producer1, producer2, tags):
     """Returns a list of tuples on the form (info rating rating A,
@@ -88,14 +99,14 @@ def get_common_info_ratings(producer1, producer2, tags):
     for info_1 in p1_info_ratings:
         for info_2 in p2_info_ratings:
             if info_1.information.title == info_2.information.title:
-                if contains_common_tags(info_1.information.tags, tags):
+                if __contains_common_tags(info_1.information.tags, tags):
                     common_info_ratings.append((info_1, info_2,))
                     
    
     return common_info_ratings
 
     
-def contains_common_tags(tags_1, tags_2):
+def __contains_common_tags(tags_1, tags_2):
     for tag in tags_1:
         if tag in tags_2:
             return True
