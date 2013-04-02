@@ -8,7 +8,7 @@ class Xpaths:
         tree = ET.parse(filepath)
         self.root = tree.getroot()
         
-    def get_xpaths(self, field_name, domain):
+    def get_article_xpaths(self, field_name, domain):
         xpaths = self.root.findall("webpage[@domain='"+domain+"']/article-data/"+field_name+"/xpath")
         if len(xpaths) == 0:
             xpaths = self.root.findall("default/article-data/"+field_name+"/xpath") 
@@ -25,3 +25,18 @@ class Xpaths:
         if len(patterns) == 0:
             patterns = self.root.findall("default/article-deny-url/pattern")
         return [pattern.text for pattern in patterns]
+        
+        
+    def get_datetime_formats(self, domain):
+        formats = self.root.findall("webpage[@domain='"+domain+"']/datetime-formats/format")
+        if len(formats) == 0:
+            formats = self.root.findall("default/datetime-formats/format")
+        return [f.text for f in formats]
+        
+        
+    def get_webpage_xpaths(self, field_name, domain):
+        xpaths = self.root.findall("webpage[@domain='"+domain+"']/webpage-data/"+field_name+"/xpath")
+        if len(xpaths) == 0:
+            xpaths = self.root.findall("default/webpage-data/"+field_name+"/xpath") 
+        return [xpath.text for xpath in xpaths]
+        

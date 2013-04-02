@@ -21,7 +21,7 @@ class InformationRating(EmbeddedDocument):
     """
     information = ReferenceField('Information', required=True)
     rating = IntField(required=True)
-
+    
 class Producer(Document):
     """Provides public fields mirroring
     underlying database object.
