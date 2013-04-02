@@ -173,27 +173,27 @@ class TestGlobalNetworkThings(GeneralSetup):
         assert globalNetwork.neighbours(self.prod1) == [self.prod2]
     """
     def test_global_info_ratings(self):
-        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag1])\
+        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag1.name])\
             == [(self.info_rating1, self.info_rating2,)]
-        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag2])\
+        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag2.name])\
             == []
-        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod3.name,[self.tag1, self.tag2])\
+        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod3.name,[self.tag1.name, self.tag2.name])\
             == [(self.info_rating1, self.info_rating1,)]
-        assert globalNetwork.get_common_info_ratings(self.prod2.name, self.prod3.name,[self.tag2])\
+        assert globalNetwork.get_common_info_ratings(self.prod2.name, self.prod3.name,[self.tag2.name])\
             == [(self.info_rating3, self.info_rating4,)]
 
     def test_get_extreme_info_ratings(self):
-        res = globalNetwork.get_extreme_info_ratings(self.prod3.name, [self.tag1, self.tag2])
+        res = globalNetwork.get_extreme_info_ratings(self.prod3.name, [self.tag1.name, self.tag2.name])
         assert self.info_rating4 in res
         assert self.info_rating5 in res
         assert len(res) == 2
     
     def test_get_max_rating_differnce(self):
-        test1 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod4.name, [self.tag1, self.tag2])
+        test1 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod4.name, [self.tag1.name, self.tag2.name])
         assert test1 == -1
-        test2 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag1])
+        test2 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag1.name])
         assert test2 == 2
-        test3 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag2])
+        test3 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag2.name])
         assert test3 == -1
 
 if __name__ == "__main__":
