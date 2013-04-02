@@ -5,6 +5,7 @@ from information import *
 from group import *
 from user import *
 from mongoengine import *
+import extractor
 import math
 from numpy import array
 connect('mydb')
@@ -82,7 +83,7 @@ def notify_producer_was_updated(producer):
     notify_producer_was_removed(producer)
     notify_producer_was_added(producer)
 
-def get_common_info_ratings(producer1, producer2, tags):
+def get_common_info_ratings(producer_name1, producer_name2, tags):
     """Returns a list of tuples on the form (info rating rating A,
     info rating rating B), where both A and B are ratings on the same
     information but A is made by producer1 and B by producer2. Re-
@@ -91,8 +92,8 @@ def get_common_info_ratings(producer1, producer2, tags):
     found.
     
     """    
-    p1_info_ratings = producer1.info_ratings
-    p2_info_ratings = producer2.info_ratings
+    p1_info_ratings = extractor.get_producer(producer_name1).info_ratings
+    p2_info_ratings = extractor.get_producer(producer_name2).info_ratings
     
     common_info_ratings = []
     #Optimize this..
@@ -114,7 +115,7 @@ def __contains_common_tags(tags_1, tags_2):
     return False
 
 
-def get_extreme_info_ratings(producer, tags):
+def get_extreme_info_ratings(producer_name, tags):
     """Returns a list of info ratings who differ from the mean by
     one standard deviation of the specified producer (I.E. ratings that
     are unusually extreme relative to specified producer's ratings).
@@ -122,6 +123,8 @@ def get_extreme_info_ratings(producer, tags):
     specified tags.
 
     """
+    producer = extractor.get_producer(producer_name)
+    
     relevant_info_ratings = []
     relevant_info_ratings_ints = []
     total_sum = 0.0
@@ -146,13 +149,16 @@ def get_extreme_info_ratings(producer, tags):
     
     
 
-def get_max_rating_difference(producer1, producer2, tags):
+def get_max_rating_difference(producer_name1, producer_name2, tags):
     """Returns an int equal to the difference between the two most differ-
     ing ratings between producer1 and producer2.
     If no common info_ratings were found -1 will be returned
     
     """
-    common_info_ratings = get_common_info_ratings(producer1, producer2,tags)
+    producer1 = extractor.get_producer(producer_name1)
+    producer2 = extractor.get_producer(producer_name2)
+
+    common_info_ratings = get_common_info_ratings(producer_name1, producer_name2,tags)
     if len(common_info_ratings) == 0:
         return -1 
 
