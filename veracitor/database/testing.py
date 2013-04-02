@@ -9,7 +9,7 @@ import group
 import extractor
 import datetime
 from dbExceptions import *
-connect('mydb')
+connect('testdb')
 
 graph = None
 
@@ -45,23 +45,67 @@ class GeneralSetup(unittest.TestCase):
         self.info2 = information.Information(title="SvDledare",
                                              url="svd.se/ledare",
                                              references=[self.info1],
-                                             time_punlished=datetime.datetime.now(),
+                                             time_published=datetime.datetime.now(),
                                              tags=[self.tag1, self.tag2])
+        self.info3 = information.Information(title="AftonbladetEntertainment",
+                                             references=[],
+                                             time_published=datetime.datetime.now(),
+                                             tags=[self.tag2])
+
+        self.info4 = information.Information(title="EnDingDingVaerldArticle2",
+                                             references=[],
+                                             time_published=datetime.datetime.now(),
+                                             tags=[self.tag1, self.tag2])
+
         self.prod1 = producer.Producer(name="DN",
                                        type_of="newspaper")
         self.prod2 = producer.Producer(name="SvD",
                                        type_of="newspaper")
+        self.prod3 = producer.Producer(name="Aftonbladet",
+                                       type_of="newspaper")
+        self.prod4 = producer.Producer(name="USSR",
+                                       type_of="propaganda")
+
         self.info_rating1 = producer.InformationRating(rating=4, 
                                                        information=self.info1)
-        self.prod2.info_ratings.append(self.info_rating1)
+        self.info_rating2 = producer.InformationRating(rating=2,
+                                                       information=self.info1)
+        self.info_rating3 = producer.InformationRating(rating=1,
+                                                       information=self.info2)
+        self.info_rating4 = producer.InformationRating(rating=5,
+                                                       information=self.info2)
+        self.info_rating5 = producer.InformationRating(rating=3,
+                                                       information=self.info3)
+        self.info_rating6 = producer.InformationRating(rating=4,
+                                                       information=self.info4)
+        self.info_rating7 = producer.InformationRating(rating=5,
+                                                       information=self.info4)
+
+        self.prod2.save()
+        self.source_rating1 = producer.SourceRating(rating=3,
+                                                    source=self.prod2,
+                                                    tag=self.tag1)
+        
+        self.prod1.info_ratings.append(self.info_rating1)
+        self.prod2.info_ratings.append(self.info_rating2)
+        self.prod2.info_ratings.append(self.info_rating3)
+        self.prod3.info_ratings.append(self.info_rating4)
+        self.prod3.info_ratings.append(self.info_rating5)
+        self.prod3.info_ratings.append(self.info_rating1)
+        self.prod3.info_ratings.append(self.info_rating6)
+        self.prod4.info_ratings.append(self.info_rating7)
+
+        self.prod1.source_ratings.append(self.source_rating1)
         self.group1.save()
         self.info1.save()
         self.info2.save()
-        self.prod1.save()
         self.prod2.save()
+        self.prod1.save()
+        
                                                        
                                                        
     def tearDown(self):
+        globalNetwork.build_network_from_db()
         for t in tag.Tag.objects:
             t.delete()
         for p in producer.Producer.objects:
@@ -72,6 +116,7 @@ class GeneralSetup(unittest.TestCase):
             g.delete()
         for i in information.Information.objects:
             i.delete()
+
 
 class TestTagThings(GeneralSetup):
 
@@ -117,6 +162,37 @@ class TestGroupThings(GeneralSetup):
         assert extractor.contains_group(self.group1.name) == True
         assert extractor.contains_group("Not a group!!") == False
 
+
+class TestGlobalNetworkThings(GeneralSetup):
+    """
+    def test_global_network(self):
+        assert globalNetwork.neighbours(self.prod1) == [self.prod2]
+    """
+    def test_global_info_ratings(self):
+        assert globalNetwork.get_common_info_ratings(self.prod1, self.prod2,[self.tag1])\
+            == [(self.info_rating1, self.info_rating2,)]
+        assert globalNetwork.get_common_info_ratings(self.prod1, self.prod2,[self.tag2])\
+            == []
+        assert globalNetwork.get_common_info_ratings(self.prod1, self.prod3,[self.tag1, self.tag2])\
+            == [(self.info_rating1, self.info_rating1,)]
+        assert globalNetwork.get_common_info_ratings(self.prod2, self.prod3,[self.tag2])\
+            == [(self.info_rating3, self.info_rating4,)]
+
+    def test_get_extreme_info_ratings(self):
+        res = globalNetwork.get_extreme_info_ratings(self.prod3, [self.tag1, self.tag2])
+        assert self.info_rating4 in res
+        assert self.info_rating5 in res
+        assert len(res) == 2
+    
+    def test_get_max_rating_differnce(self):
+        test1 = globalNetwork.get_max_rating_difference(self.prod1, self.prod4, [self.tag1, self.tag2])
+        assert test1 == -1
+        test2 = globalNetwork.get_max_rating_difference(self.prod1, self.prod2, [self.tag1])
+        assert test2 == 2
+        test3 = globalNetwork.get_max_rating_difference(self.prod1, self.prod2, [self.tag2])
+        assert test3 == -1
+
 if __name__ == "__main__":
     unittest.main()
+
 
