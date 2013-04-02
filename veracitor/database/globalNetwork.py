@@ -5,6 +5,7 @@ from information import *
 from group import *
 from user import *
 from mongoengine import *
+import extractor
 import math
 from numpy import array
 connect('mydb')
@@ -12,6 +13,11 @@ connect('mydb')
 graph = None
 
 def get_global_network():
+    """Returns a graph containing all the producers currently in 
+    the database with their ratings set on each other.
+    Creates it if it is not already created.
+
+    """
     global graph
     if graph is None:
         graph = build_network_from_db()
@@ -37,7 +43,6 @@ def build_network_from_db():
     # Add all producers' source ratings to the database as edges
     for p2 in producers:
         for s in p2.source_ratings:
-            #graph.add_edges_from([(p2.name, s.source.name)], {s.tag.name: s.rating})
             graph.add_edge(p2.name, s.source.name, {s.tag.name: s.rating})
     
     return graph
@@ -55,23 +60,30 @@ def notify_producer_was_added(producer):
     """
     graph.add_node(producer.name)
     for s in producer.source_ratings:
-        #graph.add_edges_from([(producer.name, s.source.name)], {s.tag.name: s.rating})
         graph.add_edge(producer.name, s.source.name, {s.tag.name: s.rating})
 
 def notify_producer_was_removed(producer):
+    """Deletes a producer from the graph,
+    removes outgoing and incoming edges.
+    """
     try:
+        # edges are removed automatically :)
         graph.remove_node(producer.name)
     except Exception:
+        # Removing nonexistant node is allowed.
         pass
-    # edges are removed automatically :)
+    
 
 
 def notify_producer_was_updated(producer):
+    """Updates the graph with the given producer.
+    
+    """
+    # Possibly cheap/slow implementation.
     notify_producer_was_removed(producer)
     notify_producer_was_added(producer)
-    # add/remove edges corr. to trust-relations
 
-def get_common_info_ratings(producer1, producer2, tags):
+def get_common_info_ratings(producer_name1, producer_name2, tags):
     """Returns a list of tuples on the form (info rating rating A,
     info rating rating B), where both A and B are ratings on the same
     information but A is made by producer1 and B by producer2. Re-
@@ -80,22 +92,22 @@ def get_common_info_ratings(producer1, producer2, tags):
     found.
     
     """    
-    p1_info_ratings = producer1.info_ratings
-    p2_info_ratings = producer2.info_ratings
+    p1_info_ratings = extractor.get_producer(producer_name1).info_ratings
+    p2_info_ratings = extractor.get_producer(producer_name2).info_ratings
     
     common_info_ratings = []
     #Optimize this..
     for info_1 in p1_info_ratings:
         for info_2 in p2_info_ratings:
             if info_1.information.title == info_2.information.title:
-                if contains_common_tags(info_1.information.tags, tags):
+                if __contains_common_tags(info_1.information.tags, tags):
                     common_info_ratings.append((info_1, info_2,))
                     
    
     return common_info_ratings
 
     
-def contains_common_tags(tags_1, tags_2):
+def __contains_common_tags(tags_1, tags_2):
     for tag in tags_1:
         if tag in tags_2:
             return True
@@ -103,7 +115,7 @@ def contains_common_tags(tags_1, tags_2):
     return False
 
 
-def get_extreme_info_ratings(producer, tags):
+def get_extreme_info_ratings(producer_name, tags):
     """Returns a list of info ratings who differ from the mean by
     one standard deviation of the specified producer (I.E. ratings that
     are unusually extreme relative to specified producer's ratings).
@@ -111,6 +123,8 @@ def get_extreme_info_ratings(producer, tags):
     specified tags.
 
     """
+    producer = extractor.get_producer(producer_name)
+    
     relevant_info_ratings = []
     relevant_info_ratings_ints = []
     total_sum = 0.0
@@ -135,13 +149,16 @@ def get_extreme_info_ratings(producer, tags):
     
     
 
-def get_max_rating_difference(producer1, producer2, tags):
+def get_max_rating_difference(producer_name1, producer_name2, tags):
     """Returns an int equal to the difference between the two most differ-
     ing ratings between producer1 and producer2.
     If no common info_ratings were found -1 will be returned
     
     """
-    common_info_ratings = get_common_info_ratings(producer1, producer2,tags)
+    producer1 = extractor.get_producer(producer_name1)
+    producer2 = extractor.get_producer(producer_name2)
+
+    common_info_ratings = get_common_info_ratings(producer_name1, producer_name2,tags)
     if len(common_info_ratings) == 0:
         return -1 
 
