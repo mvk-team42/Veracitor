@@ -11,6 +11,7 @@ from scrapy.xlib.pydispatch import dispatcher
 from time import time
 from scrapy.exceptions import CloseSpider
 import xml.etree.ElementTree as ET
+from celery import task
 
 from .crawler.spiders.newspaperBankSpider import NewspaperBankSpider
 from .crawler.spiders.metaNewspaperSpider import MetaNewspaperSpider
@@ -46,6 +47,7 @@ def add_newspaper(url, job_id):
     spider.job_id = job_id
     _run_spider(spider)
     
+@task()
 def scrape_article(url, job_id):
     logger.log("blablabla",logger.Level.debug, logger.Area.crawler)
     spider = ArticleSpider(start_urls=url)

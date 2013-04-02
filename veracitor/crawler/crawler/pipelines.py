@@ -107,7 +107,7 @@ class CrawlerPipeline(object):
     def parse_datetime(self, item):
         current_dir = dirname(realpath(__file__))
         xpaths = Xpaths(current_dir + '/webpageXpaths.xml')
-        datetime_format = xpaths.get_xpaths("datetime_format", urlparse(item['url'])[1])
+        datetime_format = xpaths.get_datetime_formats(urlparse(item['url'])[1])
         time = None
 
         if len(datetime_format) > 0:
