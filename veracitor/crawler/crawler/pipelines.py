@@ -82,6 +82,11 @@ class CrawlerPipeline(object):
         for word in special_words:
             item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
 
+        updated_keywords = ["uppdaterad: "]
+        for word in updated_keywords:
+            if word in item["time_published"]:
+                item["time_published"] = item["time_published"].split(word)[1]
+
     # Parse the date from item['time_published'] either using one of the default common formats or a format specified in webpageXpaths.xml
     def parse_datetime(self, item):
         current_dir = dirname(realpath(__file__))
