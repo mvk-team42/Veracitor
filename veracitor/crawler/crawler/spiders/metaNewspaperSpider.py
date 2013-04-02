@@ -37,11 +37,14 @@ class MetaNewspaperSpider(BaseSpider):
         hxs = HtmlXPathSelector(response)
         
         name = self.extract_name(domain, hxs, xpaths)
-        rss_link = self.extract_rss_link(domain, hxs, xpaths)
+        rss_links = self.extract_rss_links(domain, hxs, xpaths)
         description = self.extract_description(domain, hcs, xpaths)
         
         if not already_in_xml:
-            webpages.append(ET.Element("webpage", attrib={'domain':domain, 'name':name, 'rss':rss_link}))
+            new_element = ET.Element("webpage", attrib={'domain':domain, 'name':name})
+            for rss_link in rss_links:
+                new_element.append(ET.Element("rss", text=rss_link))
+            webpages.append(new_element)
             tree.write(xml_file)
         if not extractor.contains_producer(url): #db-method
             new_producer = producer.Producer(name = name,
@@ -60,11 +63,11 @@ class MetaNewspaperSpider(BaseSpider):
                 return names[0].extract().strip()
         return "Failed in meta"
                 
-    def extract_rss_link(self, domain, hxs, xpaths):
+    def extract_rss_links(self, domain, hxs, xpaths):
         for rss_xpath in xpaths.get_webpage_xpaths("rss-link", domain):
             rss_links = hxs.select(rss_xpath)
             if len(rss_links) > 0:
-                return rss_links[0].extract().strip()
+                return [rss_link.extract().strip() for rss_link in rss_links]
         return "Failed in meta"
         
     def extract_description(self, domain, hxs, xpaths):
