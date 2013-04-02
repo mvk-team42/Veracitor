@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
-from ..database import *
-
-import json
 
 from veracitor.web import app
 from veracitor.web.crawler import crawl_callback, get_unique_crawl_id
+
+from ..database import globalNetwork as gn
+from ..algorithms.tidaltrust import compute_trust
+
+import json
 
 """
 Starts a SUNNY procedure given a source and sink producer.
@@ -37,7 +39,7 @@ def calculate_sunny_value():
             if error['type'] == 'none':
                 id = get_unique_crawl_id()
 
-
+                #compute_trust(gn.get_global_network(),
 
                 procedure = {
                     'message': 'Started SUNNY procedure',
