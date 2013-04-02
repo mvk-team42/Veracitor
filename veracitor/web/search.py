@@ -7,14 +7,32 @@ from veracitor.web import app
 
 from veracitor.crawler import crawlInterface as ci
 
+# crawler variables
+crawl_id_counter = 0
+crawl_ids = {}
+
+"""
+Callback function for the crawler
+"""
+def crawl_callback(item, id):
+    crawl_ids[id] = item
+
+"""
+Returns a unique crawl procedure  id.
+"""
+def get_unique_crawl_id():
+    id = crawl_id_counter
+    crawl_id_counter += 1
+    return id
+
 """
 Starts a crawler to crawl the given URL for an entity.
 
 """
-@app.route('/add_entity', methods=['GET','POST'])
-def add_entity():
-
+@app.route('/start_crawl_procedure', methods=['GET','POST'])
+def start_crawl_procedure():
     if request.method == 'POST':
+        procedure = {}
         error = {
             'message' : 'none',
             'type' : 'none'
@@ -25,16 +43,25 @@ def add_entity():
 
             if not f['url']:
                 error = {
-                    'message' : 'No source URL specified.',
-                    'type' : 'no_url'
+                    'message': 'No URL specified.',
+                    'type': 'no_url'
+                }
+
+            if error['type'] == 'none':
+                # start SUNNY procedure
+
+                procedure = {
+                    'message': 'Started crawling %s.' % f['url'],
+                    'callback_url': '/check_crawl_procedure',
+                    'id': get_unique_crawl_id()
                 }
         else:
             error = {
-                'message' : 'Form data error.',
-                'type' : 'form_error'
+                'message': 'Form data error.',
+                'type': 'form_error'
             }
 
-        return json.dumps({ 'error' : error })
+        return json.dumps({ 'error': error, 'procedure': procedure })
 
     return redirect(url_for('index'))
 
