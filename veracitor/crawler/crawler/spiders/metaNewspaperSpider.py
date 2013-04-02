@@ -5,6 +5,7 @@ from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
+from os.path import realpath, dirname
 import xml.etree.ElementTree as ET
 
 from ..xpaths import Xpaths
@@ -24,38 +25,45 @@ class MetaNewspaperSpider(BaseSpider):
         
 
     def parse(self, response):
-        xml_file = "crawler/webpages.xml"
+        current_dir = dirname(realpath(__file__))
+        xml_file = current_dir + '/../webpages.xml'
         tree = ET.parse(xml_file)
         webpages = tree.getroot()
         url = response.url
         domain = url
         already_in_xml = len(webpages.findall("./webpage[@domain='" + domain + "']")) > 0
         
-        Xpaths xpaths = Xpaths()
+        xpaths = Xpaths(current_dir + '/../webpageXpaths.xml')
         hxs = HtmlXPathSelector(response)
         
-        name = self.extract_name(hxs, xpaths)
-        rss_link = self.extract_rss_link(hxs, xpaths)
+        name = self.extract_name(domain, hxs, xpaths).strip()
+        rss_link = self.extract_rss_link(domain, hxs, xpaths)
         
         if not already_in_xml:
             webpages.append(ET.Element("webpage", attrib={'domain':domain, 'name':name, 'rss':rss_link}))
             tree.write(xml_file)
-        if not exists_producer(url): #db-method
-            new_producer = Producer(name = url, description = "No description")
+        if not extractor.contains_producer(url): #db-method
+            new_producer = producer.Producer(name = name,
+                description = "No description",
+                url = url,
+                infos = [],
+                source_ratings = [],
+                info_ratings = [],
+                type_of = "Newspaper")
             new_producer.save()
                            
-    def extract_name(self, hxs, xpaths):
+    def extract_name(self, domain, hxs, xpaths):
         for name_xpath in xpaths.get_webpage_xpaths("name", domain):
-            names = xpaths.select(name_xpath)
+            names = hxs.select(name_xpath)
             if len(names) > 0:
-                return = names[0].extract()
+                return names[0].extract()
         return "Failed in meta"
                 
-    def extract_rss_link(self, hxs, xpaths):
+    def extract_rss_link(self, domain, hxs, xpaths):
         for rss_xpath in xpaths.get_webpage_xpaths("rss-link", domain):
-            rss_links = xpaths.select(rss_xpath)
+            rss_links = hxs.select(rss_xpath)
             if len(rss_links) > 0:
-                return = rss_links[0].extract()
+                return rss_links[0].extract()
         return "Failed in meta"
         
         

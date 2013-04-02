@@ -4,6 +4,8 @@ from veracitor.logger import logger
 
 #run tests
 
+globalNetwork.build_network_from_db()
+
 #ci.addNewspaper("www.svd.se")
 
 def a(item, id):
@@ -18,7 +20,9 @@ logger.log("testing",logger.Level.debug,logger.Area.crawler)
 
 ci.set_callbacks(a,b)
 #ci.scrapeArticle("http://www.dn.se/nyheter/varlden/nordkoreaexpert-varre-an-pa-mycket-lange", "1")
-ci.scrapeArticle("http://www.svd.se/nyheter/inrikes/utbrett-fiskfusk-avslojat_8046058.svd", "1")
+#ci.scrapeArticle("http://www.svd.se/nyheter/inrikes/utbrett-fiskfusk-avslojat_8046058.svd", "1")
+
+ci.addNewspaper("www.dn.se", "1")
 
 
 

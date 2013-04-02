@@ -24,8 +24,8 @@
                 <xpath>//title/text()</xpath>
             </name>
             <rss-link>
-                <xpath>//a[contains(@class, "rss")</xpath>    
-                <xpath>//*[contains(@class, "rss")//a</xpath>   
+                <xpath>//a[contains(@class, "rss")]</xpath>    
+                <xpath>//*[contains(@class, "rss")]//a</xpath>   
             </rss-link>
         </webpage-data>
 
