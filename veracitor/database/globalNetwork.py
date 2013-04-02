@@ -58,11 +58,6 @@ def notify_producer_was_added(producer):
         #graph.add_edges_from([(producer.name, s.source.name)], {s.tag.name: s.rating})
         graph.add_edge(producer.name, s.source.name, {s.tag.name: s.rating})
 
-def notify_information_was_added(information):
-    graph.add_node(information.id)
-    # add edges corr. to trust-relations
-
-
 def notify_producer_was_removed(producer):
     try:
         graph.remove_node(producer.name)
@@ -70,20 +65,11 @@ def notify_producer_was_removed(producer):
         pass
     # edges are removed automatically :)
 
-def notify_information_was_removed(information):
-    graph.remove_node(information.id)
-    # edges are removed automatically :)
 
 def notify_producer_was_updated(producer):
     notify_producer_was_removed(producer)
     notify_producer_was_added(producer)
     # add/remove edges corr. to trust-relations
-
-def notify_information_was_updated(information):
-    pass
-    # add/remove edges corr. to trust-relations
-    
-
 
 def get_common_info_ratings(producer1, producer2, tags):
     """Returns a list of tuples on the form (info rating rating A,
@@ -169,3 +155,17 @@ def get_max_rating_difference(producer1, producer2, tags):
 
 if __name__ == "__main__":
     build_network_from_db()
+
+"""
+def notify_information_was_removed(information):
+
+def notify_information_was_updated(information):
+    pass
+    # add/remove edges corr. to trust-relations
+    
+def notify_information_was_removed(information):
+    graph.remove_node(information.id)
+    # edges are removed automatically :)
+
+
+"""
