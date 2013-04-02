@@ -1,34 +1,46 @@
 """
 The algorithm used for probabilistic logic sampling in SUNNY (as described by Golbeck and Kuter (2010)).
-Computes minimum and maximum probability of success by using a stochastic simulation. Success is in this case defined as being used in the 
-trust evaluation done by SUNNY.
+Computes minimum and maximum probability of success by using a stochastic simulation. Success is in this case defined as being used in the trust evaluation done by SUNNY.
 
 """
 
+import veracitor.database as db
+from veracitor.database import globalNetwork
+import networkx as nx
 import random
-from numpy import array
 import itertools
+from numpy import array
 
 
 
-def sample_bounds(bayesianNetwork, k=100):
+def sample_bounds(bayesianNetwork, k=10):
     """
     # TODO Skriva om parameter-texterna :p
     bayesianNetwork: The nodes to calculate the sample bounds for
     k : Number of times the sampling loops. A higher value (theoretically) decreases the randomness of the sampling 
     
     """
-    # Fast way to iterate k times when an index variable isn't needed according to http://stackoverflow.com/a/2970789/645270 (see comment too)
-    # See simpler alternative below.
-    for _ in itertools.repeat(None, k):
-        print k
-        
-        
-    # Simpler alternative to the above loop 
-    #for _ in range(k):
-        #print k
-    
-    
+    sample_size = 0
+    for _ in range(k):
+        sample_size+=1
+        nodes = bayesianNetwork.node
+        for n in nodes:
+            if not bayesianNetwork.predecessors(n):
+                if not 'decision' in n: 
+                    n['xmin'] = 0
+                    n['xmax'] = 1
+                elif n['decision']:
+                    n['xmin'] = 1
+                    n['xmax'] = 1
+                else: 
+                    n['xmin'] = 0
+                    n['xmax'] = 0
+                    
+            else:
+                print globalNetwork.get_global_network()
+                print nx.to_dict_of_dicts(globalNetwork.get_global_network())
+                globalNetwork.get_common_info_ratings(n, bayesianNetwork.predecessors(n)[0], ['crime'])
+                    
     
     
 def _getRandom():

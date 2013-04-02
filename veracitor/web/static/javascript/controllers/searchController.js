@@ -7,11 +7,13 @@
     thereafter recieve a response with the search results.
     @constructor
  */
-var SearchController = function (view) {
+var SearchController = function (view, controller) {
 
-    /** The time taken to switch between search types in milliseconds. */
+    /** Initializing */
+
+    // The time taken to switch between search types in milliseconds
     var SEARCH_SWITCH_TIME = 50;
-    /** The event key code for the enter key. */
+    // The event key code for the enter key
     var ENTER = 13;
 
     // define enter key press in local search field
@@ -38,11 +40,69 @@ var SearchController = function (view) {
         request_database_search(search_text, search_type, null, null);
     });
 
+    // setup time period slider
+    (function () {
+        var range = {
+            min: 1970,
+            max: 2013,
+            step: 10,
+            range: 0
+        };
+        range.range = range.max - range.min;
+
+        $("#slider").slider({
+            range: true,
+            min: range.min,
+            max: range.max,
+            values: [range.max - 10, range.max],
+            slide: function(event, ui) {
+                $("#time-period").html(ui.values[ 0 ] + " - " + ui.values[ 1 ]);
+            }
+        });
+        $("#time-period").html($("#slider").slider("values", 0 ) +
+                           " - " + $("#slider").slider("values", 1 ));
+
+        var width = parseInt($("#slider-container").css("width"));
+        var labels = $("#slider-labels");
+        labels.css({
+            width: width + "px"
+        });
+
+        // set start step
+        var s = Math.floor(range.min / 10) * 10;
+        while(s < range.min) {
+            s += range.step;
+        }
+
+        var line;
+        var label;
+        for( ; s <= range.max; s += range.step) {
+            label = $("<div>");
+            label.css({
+                position: "absolute",
+                left: (width * (s - range.min) / range.range - 20) + "px"
+            }).html(s);
+
+            line = $("<div>");
+            line.css({
+                position: "absolute",
+                left: "20px",
+                top: "bottom",
+                width: "0px",
+                height: "10px",
+                "border-left": "1px solid #000"
+            });
+            label.append(line);
+
+            labels.append(label);
+        }
+    })();
+
     /**
         Makes a database search request to the server with the specified
         search term. In the case where the user has not specified any
         certain tags or time period (start and end date) the request is made
-        with “empty” fields (except from the required search term).
+        with 'empty' fields (except from the required search term).
      */
     var request_database_search = function (search_term, type, start_date,
                                                 end_date) {
@@ -69,9 +129,9 @@ var SearchController = function (view) {
 
                     // add an event listener for the created button
                     $("#search-add-button").click(function () {
-                        var search_text = $("#search-add-field").val();
+                        var url = $("#search-add-field").val();
 
-                        request_database_add_entity(search_text);
+                        request_crawl_procedure(url);
                     });
                 }
             }
@@ -87,14 +147,19 @@ var SearchController = function (view) {
         started on the server side. The crawler will notify the client
         that a crawler has been started with a callback.
      */
-    var request_database_add_entity = function (search_term) {
-        $.post("/add_entity", {
-            'url' : search_term
+    var request_crawl_procedure = function (url) {
+        $.post("/request_crawl_procedure", {
+            'url' : url
         }, function (data) {
             var response = JSON.parse(data);
 
             if(response.error.type == "none") {
-                $("#search-result").html("<h2>Request succesfully sent to server.</h2>");
+                $("#search-result").html("<h2>" + response.procedure.message + "</h2>");
+
+                controller.watch_callback(function (response) {
+                    $('#search-result').html("<h2>" + response.procedure.message + "</h2>");
+                }, response.procedure.callback_url, response.procedure.id);
+
             } else {
                 $("#search-result").html("<h2>" + response.error.message + "</h2>");
             }

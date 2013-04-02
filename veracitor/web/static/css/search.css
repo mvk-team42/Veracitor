@@ -56,7 +56,7 @@
 
 #search-result table tbody tr.clickable {
     cursor: default;
-    
+
     background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(225,225,225,1) 51%, rgba(246,246,246,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(50%,rgba(241,241,241,1)), color-stop(51%,rgba(225,225,225,1)), color-stop(100%,rgba(246,246,246,1))); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -123,7 +123,7 @@
     width: 40px;
     height: 40px;
     border: 2px solid black;
-    
+
     background: rgb(217,236,239); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(217,236,239,1) 0%, rgba(198,228,232,1) 50%, rgba(183,215,223,1) 51%, rgba(214,232,240,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(217,236,239,1)), color-stop(50%,rgba(198,228,232,1)), color-stop(51%,rgba(183,215,223,1)), color-stop(100%,rgba(214,232,240,1))); /* Chrome,Safari4+ */
@@ -145,3 +145,33 @@
     border-radius: 22px;
 }
 
+/* TIME PERIOD SLIDER */
+#slider-container {
+    width: 400px;
+    margin: 5px 0 10px 0;
+}
+
+#slider {
+    width: 400px;
+    margin: 0 0 0 20px;
+}
+
+#slider-labels {
+    width: 360px;
+    height: 30px;
+    margin: 4px 20px;
+    position: relative;
+
+    font-size: 10pt;
+}
+
+#slider-labels div {
+    width: 40px;
+
+    text-align: center;
+}
+
+#time-period {
+    margin: 5px 0;
+    display: inline-block;
+}
