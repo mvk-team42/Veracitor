@@ -73,7 +73,7 @@ def _getRandom():
     return 42
     
     
-    
+# TODO: Ta bort _stddev och _mean. Flyttade till globalNetwork
 def _stddev(numbers):
     np_array = array(numbers)
     return np_array.std()
