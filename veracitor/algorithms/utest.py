@@ -104,7 +104,7 @@ class TestTidalTrust(unittest.TestCase):
 
     def test_dry_runs(self):
         """
-        (compute_trust) Assert that the function returns the same value as Tidal Trust would (i.e. the correct value)
+        (compute_trust) Returns the same value as Tidal Trust would (i.e. the correct value)
         
         """
         #
@@ -121,19 +121,83 @@ class TestTidalTrust(unittest.TestCase):
         # 1 -> 7 = ((10*8) + 9*6))/(10+9) = 7.052631578947368 
         # (Calculated using python to get the same number of decimals)
         
-        G = _get_weighted_graph()
+        G = _get_badass_graph()
         self.assertEqual(tt.compute_trust(G,1,7)["trust"], 7.052631578947368)
 
-    def test_used_paths(self):
+        # Test trivial (direct edge source->sink)
+        G = nx.DiGraph()
+        G.add_edge(1,2,{"cooking":5})
+        results = tt.compute_trust(G,1,2,tag="cooking")
+        self.assertEqual(results["trust"], 5)
+
+    def test_paths_used(self):
         """
-        (compute_trust) Tests that the used paths returned are the actual used paths
+        (compute_trust) paths_used in results are the actual used paths (if a trust value could be calculated)
         
+        """
+        # Test tagrated
+        G = _get_tagrated_graph()
+        results = tt.compute_trust(G,1,7,tag="cooking")
+        self.assertEqual(results["paths_used"], [[1,2,5,7],[1,4,6,7]])
+
+        # Test badass
+        G = _get_badass_graph()
+        results = tt.compute_trust(G,1,7)
+        self.assertEqual(results["paths_used"], [[1,2,5,7],[1,4,6,7]])
+        
+        # Test small trivial
+        G = nx.DiGraph()
+        G.add_edge(1,2,{"cooking":5})
+        results = tt.compute_trust(G,1,2,tag="cooking")
+        self.assertEqual(results["paths_used"], [[1,2]])
+
+    def test_nodes_used(self):
+        """
+        (compute_trust) nodes_used in results are the actually used nodes
+
+        """
+        # Test badass
+        G = _get_badass_graph()
+        results = tt.compute_trust(G,1,7)
+        list.sort(results["nodes_used"])
+        self.assertEqual(results["nodes_used"], [1,2,4,5,6,7])
+        
+        # Test small trivial
+        G = nx.DiGraph()
+        G.add_edge(1,2,{"cooking":5})
+        results = tt.compute_trust(G,1,2,tag="cooking")
+        list.sort(results["nodes_used"])
+        self.assertEqual(results["nodes_used"], [1,2])
+
+    def test_nodes_unused(self):
+        """
+        (compute_trust) nodes_unused in results are all unused nodes
+        
+        """
+        # Test badass
+        G = _get_badass_graph()
+        results = tt.compute_trust(G,1,7)
+        list.sort(results["nodes_unused"])
+        self.assertEqual(results["nodes_unused"], [0,3,8,9])
+
+        # No unused 
+        G = nx.DiGraph()
+        G.add_edge(1,2,{"cooking":5})
+        results = tt.compute_trust(G,1,2,tag="cooking")
+        list.sort(results["nodes_unused"])
+        self.assertEqual(results["nodes_unused"], [])
+        
+    def test_source_sink_tag_return(self):
+        """
+        (compute_trust) Returns the same source, sink and tag that were put in
+
         """
         G = _get_tagrated_graph()
         results = tt.compute_trust(G,1,7,tag="cooking")
-        print results["threshold"]
-        self.assertEqual(results["paths_used"], [[1,2,5,7],[1,4,6,7]])
-
+        self.assertEqual(results["source"],1)
+        self.assertEqual(results["sink"],7)
+        self.assertEqual(results["tag"],"cooking")
+        
 
 class TestGenerateBN(unittest.TestCase):
     """
@@ -225,16 +289,16 @@ def _get_weighted_graph():
 
 def _get_tagrated_graph():
     Gtags = nx.DiGraph()
-    Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
-                          (1,3,dict(cooking=8, crime=7)),
-                          (1,4,dict(cooking=9, crime=6)),
-                          (2,5,dict(cooking=9, crime=9)),
-                          (3,5,dict(cooking=10, crime=5)),
-                          (3,6,dict(cooking=10, crime=6)),
-                          (4,5,dict(cooking=8, crime=7)),
-                          (4,6,dict(cooking=9, crime=6)),
-                          (5,7,dict(cooking=8, crime=5)),
-                          (6,7,dict(cooking=6, crime=7)),
+    Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4, weight=10)),
+                          (1,3,dict(cooking=8, crime=7, weight=8)),
+                          (1,4,dict(cooking=9, crime=6, weight=9)),
+                          (2,5,dict(cooking=9, crime=9, weight=9)),
+                          (3,5,dict(cooking=10, crime=5, weight=10)),
+                          (3,6,dict(cooking=10, crime=6, weight=10)),
+                          (4,5,dict(cooking=8, crime=7, weight=8)),
+                          (4,6,dict(cooking=9, crime=6, weight=9)),
+                          (5,7,dict(cooking=8, crime=5, weight=8)),
+                          (6,7,dict(cooking=6, crime=7, weight=6)),
                           ])
     return Gtags
 
@@ -256,6 +320,21 @@ def _get_graph_with_cycles():
                                (6,8,11),
                                (8,4,11),
                                ])      
+    return G
+
+def _get_badass_graph():
+    """
+    Same trust as _get_graph_with_cycles between 1 -> 7 but with cycles and useless nodes.    
+
+    """
+    G = _get_graph_with_cycles()
+    G.add_edges_from([
+            (7,1,{"cooking":10}), # edge sink -> source!
+            (7,9,{"cooking":10}), # graph extends beyond sink
+            (9,3,{"cooking":10}), # and back in again
+            (0,1,{"cooking":10}),
+            (1,1,{"cooking":10}), # edge source -> source (ooh)
+            ])
     return G
 
 def _get_random_graph(number_of_nodes, least_number_of_edges):
