@@ -16,7 +16,7 @@ Clone the project.
 Install python, setuptools and dependencies.
 
 To get the app running, install a relatively new version of python2 with setuptools.
-If you use a *NIX based OS, we recommend [pythonbrew]("https://github.com/utahta/pythonbrew") and python 2.7.3.
+If you use a *NIX based OS, we recommend [pythonbrew](https://github.com/utahta/pythonbrew) and python 2.7.3.
 
 Afterwards, either use a virtualenv (ex. pythonbrew venv create team42) or just use pip
 to install the requirements:
@@ -25,7 +25,7 @@ to install the requirements:
 
 ### Step three
 
-Install and setup [mongodb]("http://www.mongodb.org/").
+Install and setup [mongodb](http://www.mongodb.org/).
 
 ### Step four
 
