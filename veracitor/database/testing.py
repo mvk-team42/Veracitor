@@ -106,7 +106,12 @@ class GeneralSetup(unittest.TestCase):
         self.prod2.save()
         self.prod1.save()
         self.prod3.save()
-        self.prod4.save()                                                              
+        self.prod4.save()
+        
+        self.group1.producers.append(self.prod1)
+        self.group1.producers.append(self.prod2)
+        self.group1.producers.append(self.prod3)
+        self.group1.save()
                                                        
     def tearDown(self):
         globalNetwork.build_network_from_db()
@@ -165,7 +170,9 @@ class TestGroupThings(GeneralSetup):
     def test_group_extractor(self):
         assert extractor.contains_group(self.group1.name) == True
         assert extractor.contains_group("Not a group!!") == False
-
+        assert extractor.get_group(self.group1.owner.name, self.group1.name).producers[0]\
+            == self.prod1
+ 
 
 class TestGlobalNetworkThings(GeneralSetup):
     """
