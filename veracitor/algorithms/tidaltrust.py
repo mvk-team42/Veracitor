@@ -34,6 +34,7 @@ def tidal_trust(source, sink, graph, tag):
                "nodes_unused": [],
                "source": source,
                "sink": sink,
+               "tag": tag,
                }
     
     # Remove all edges but the ones with the specific tag so that all_shortest_paths
@@ -136,7 +137,7 @@ def tidal_trust(source, sink, graph, tag):
     
 def get_threshold(paths, graph, tag):
     """
-    Calculates the threshold used to exclude paths in the TidalTrust algorithm. 
+    Calculates the threshold used to exclude paths in the TidalTrust algorihm. 
     Returns the maximum trust of the lowest trust in each individual path
 
     """
