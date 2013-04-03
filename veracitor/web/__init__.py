@@ -2,7 +2,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-import crawler
+import callback
 
 
 try:

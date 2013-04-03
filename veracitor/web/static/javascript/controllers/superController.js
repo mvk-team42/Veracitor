@@ -20,8 +20,6 @@ function SuperController() {
             return function (data) {
                 var response = JSON.parse(data);
 
-                console.log(response);
-
                 if(response.procedure.status == "processing") {
                     setTimeout(watch_callback(f, url, id), CALLBACK_CHECK_TIME);
                 } else {

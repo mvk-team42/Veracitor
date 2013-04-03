@@ -4,7 +4,7 @@ from ..database import *
 import json
 
 from veracitor.web import app
-from veracitor.web.crawler import crawl_callback, get_unique_crawl_id, get_crawl_id_item
+from veracitor.web import callback
 
 """
 Starts a crawler to crawl the given URL for an entity.
@@ -29,7 +29,7 @@ def request_crawl_procedure():
                 }
 
             if error['type'] == 'none':
-                id = get_unique_crawl_id()
+                id = callback.get_unique_id()
 
                 # start scraping the specified URL
                 app.ci.scrape_article(f['url'], id)
@@ -74,7 +74,7 @@ def check_crawl_procedure():
                 }
 
             if error['type'] == 'none':
-                item = get_crawl_id_item(f['id'])
+                item = callback.check_id(f['id'])
 
                 if item:
                     procedure = {
@@ -83,8 +83,6 @@ def check_crawl_procedure():
                         'id': f['id']
                         #'item': item
                     }
-                    # remove the procedure
-                    del app.crawl_ids[f['id']]
                 else:
                     procedure = {
                         'status': 'processing'
