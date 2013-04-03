@@ -4,7 +4,7 @@ import tidaltrust as tt
 import generate_bn as gbn
 from copy import copy, deepcopy
 from random import randint
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 class TestTidalTrust(unittest.TestCase):
     def setup(self):
@@ -33,18 +33,22 @@ class TestTidalTrust(unittest.TestCase):
         # Test for tagrated graph
         G = _get_tagrated_graph()
         Gcopy = deepcopy(G)
-        tt.compute_trust(G, source, sink, tag="cooking")
+        tag = "cooking"
+        tt.compute_trust(G, source, sink, tag=tag)
         self.assertEqual(nx.to_dict_of_dicts(Gcopy),
                          nx.to_dict_of_dicts(G))
         self.assertEqual(7, sink)
         self.assertEqual(1, source)
+        self.assertEqual("cooking", tag)
 
         # Test with decision array
-        tt.compute_trust(G, source, sink, tag="cooking", decision=[5])
+        decision = [5]
+        tt.compute_trust(G, source, sink, tag="cooking", decision=decision)
         self.assertEqual(nx.to_dict_of_dicts(Gcopy),
                          nx.to_dict_of_dicts(G))
         self.assertEqual(7, sink)
         self.assertEqual(1, source)
+        self.assertEqual([5], decision)
         
         
         # Test for graph with cycles
@@ -120,7 +124,7 @@ class TestTidalTrust(unittest.TestCase):
         # (Calculated using python to get the same number of decimals)
         
         G = _get_weighted_graph()
-        self.assertEqual(tt.compute_trust(G,1,7), 7.052631578947368)
+        self.assertEqual(tt.compute_trust(G,1,7)["trust"], 7.052631578947368)
 
 
 class TestGenerateBN(unittest.TestCase):

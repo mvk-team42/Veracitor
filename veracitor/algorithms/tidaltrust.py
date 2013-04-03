@@ -50,10 +50,10 @@ def tidal_trust(source, sink, graph, tag):
         shortest = nx.all_shortest_paths(graph, source=source, target=sink)
         paths_list = list(shortest)
     except nx.exception.NetworkXNoPath:
-        return None
+        return results
     except KeyError:
         # An input node was not in the graph 
-        return None
+        return results
     
     # Add unused nodes (not in shortest path) to results
     path_nodes = set(chain.from_iterable(paths_list))
