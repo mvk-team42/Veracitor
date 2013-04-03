@@ -7,6 +7,7 @@ with some extended functionality.
 import sys
 import networkx as nx
 from copy import deepcopy
+from itertools import chain
 
 def tidal_trust(source, sink, graph, tag):
     """ 
@@ -22,9 +23,18 @@ def tidal_trust(source, sink, graph, tag):
     tag: A tag identifier that defines which attribute in graph should
     be used as trust ratings in the calculation (DiGraph[x][y][tag] = rating)
     
-    Returns None if no trust value could be calculated.
+    Returns: A dict containing the results, with keywords trust, threshold,
+    paths_used, nodes_used, nodes_unused, source, sink.
     
     """
+    results = {"trust": None,
+               "threshold": None,
+               "paths_used": [],
+               "nodes_used": [],
+               "nodes_unused": [],
+               "source": source,
+               "sink": sink,
+               }
     
     # Remove all edges but the ones with the specific tag so that all_shortest_paths
     # gives correct paths. 
@@ -44,7 +54,14 @@ def tidal_trust(source, sink, graph, tag):
         # An input node was not in the graph 
         return None
     
+    # Add unused nodes (not in shortest path) to results
+    path_nodes = set(chain.from_iterable(paths_list))
+    for n in graph.nodes():
+            if n not in path_nodes:
+                results["nodes_unused"].append(n)
+
     threshold = get_threshold(paths_list, graph, tag)
+    results['threshold'] = threshold
     
     queue = []
     # Loop over all nodes in all paths that are not the sink or parents of the sink (leaves)
@@ -54,7 +71,7 @@ def tidal_trust(source, sink, graph, tag):
             if(paths_list[j][i] not in queue):
                 # Add to queue for backwards search
                 queue.append(paths_list[j][i])
-                
+    
     cached_trust = {}
                 
     #Initialize cached_trust for all leaves.
@@ -92,16 +109,30 @@ def tidal_trust(source, sink, graph, tag):
                     denominator = denominator + graph[current_node][s][tag]
         
         if denominator > 0:
+            print denominator
             cached_trust[(current_node, sink)] = numerator / denominator                                
         # Sets trust to -1 if no children could be used (e.g., ratings below threshold)
         else:
             cached_trust[(current_node, sink)] = -1       
+            results["nodes_unused"].append(current_node)
     
     if (source, sink) in cached_trust:
-        return cached_trust[(source, sink)]
-    else:
-        return None
-        
+        results["trust"] = cached_trust[(source, sink)]
+        nodes_used = []
+        # Add used paths to paths_used
+        for p in paths_list:
+            if len(results["nodes_unused"]) > 0:
+                for n in results["nodes_unused"]:
+                    if n not in p:
+                        results["paths_used"].append(p)
+                        nodes_used += p
+            else:
+                results["paths_used"].append(p)
+                nodes_used += p
+                
+        results["nodes_used"] = list(set(nodes_used))
+
+    return results        
     
 def get_threshold(paths, graph, tag):
     """
@@ -143,7 +174,7 @@ def remove_low_rated_paths(paths, threshold, graph):
 def compute_trust(bayesianNetwork, source, sink, decision=None, tag="weight", callback=None):
     """
     Computes the trust between the source and sink (strings) in bayesianNetwork
-    (NetworkX DiGraph) and returns the value as a float.
+    (NetworkX DiGraph).
 
     decision (optional): A list of node identifiers (i.e. names or id's) for
     nodes that are not to be used in the trust calculation.
@@ -157,6 +188,9 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag="weight", ca
     If tag is specified, edges will be tagged with properties, like so:
     DiGraph[1][2][tag_name] = rating.
     Otherwise, the edges will be considered weighted: DiGraph[1][2]["weight"] = rating
+
+    Returns: A dict containing the results, with keywords trust, threshold,
+    paths_used, nodes_used, nodes_unused, source, sink.
 
     """
     #check input
