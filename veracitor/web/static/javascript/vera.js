@@ -117,9 +117,6 @@
             }
         }
 
-        // set focus on the search field
-        $("#local-search-field").focus();
-
         // Add controllers
         controllers.super = new SuperController();
         controllers.search = new SearchController(

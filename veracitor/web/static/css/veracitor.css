@@ -1,45 +1,45 @@
 @import url(http://fonts.googleapis.com/css?family=Titillium+Web:200,400,600);
 
 body {
-	margin: 0px;
-	padding: 0px;
-	width: 100%;
-	height: 100%;
-	
-	font-family: 'Titillium Web';
-	font-size: 14pt;
-    
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+
+    font-family: 'Titillium Web';
+    font-size: 14pt;
+
     background-color: #eee;
 }
 
 /* HEADER */
 
 header {
-	position: relative;
-	height: 80px;
+    position: relative;
+    height: 80px;
     min-width: 800px;
-	overflow: hidden;
-    
-	background-color: #000;
-	color: #fff;
+    overflow: hidden;
+
+    background-color: #000;
+    color: #fff;
 }
 
 header h1 {
-	margin: 0;
-	position: absolute;
-	left: 100px;
-	bottom: 0px;
-    
-	font-size: 26pt;
-	font-weight: 400;
-	color: #eee;
+    margin: 0;
+    position: absolute;
+    left: 100px;
+    bottom: 0px;
+
+    font-size: 26pt;
+    font-weight: 400;
+    color: #eee;
     text-shadow: 1px 1px #888;
 }
 
 header #veracitor-logo {
-	position: absolute;
-	left: 12px;
-	top: 5px;
+    position: absolute;
+    left: 12px;
+    top: 5px;
 }
 
 header a,
@@ -47,40 +47,41 @@ header a:hover,
 header a:active,
 header a:visited,
 header a:link {
-	text-decoration: none;
-	color: #fff;
+    text-decoration: none;
+    color: #fff;
 }
 
 header #menu {
-	margin: 0px;
-	position: absolute;
-	right: 20px;
-	bottom: 0px;
-	height: 50px;
+    margin: 0px;
+    position: absolute;
+    right: 20px;
+    bottom: 0px;
+    height: 50px;
 }
 
 header #menu li {
-	height: 50px;
-	float: left;
-    
-	list-style-type: none;
-	font-size: 20pt;
-	line-height: 50px;
-    
-	background-color: #000;
-    -webkit-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
-    -moz-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
-    box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
+    height: 50px;
+    float: left;
+
+    list-style-type: none;
+    font-size: 20pt;
+    line-height: 50px;
+
+    background-color: #000;
 }
 
 header #menu li a {
-	display: block;
-	padding: 0px 12px;
-	height: 50px;
+    display: block;
+    padding: 0px 12px;
+    height: 50px;
 }
 
 header #menu .active {
-	background-color: #eee;
+    background-color: #eee;
+
+    -webkit-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
+    -moz-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
+    box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
 }
 
 header #menu .active a,
@@ -88,36 +89,36 @@ header #menu .active a:hover,
 header #menu .active a:active,
 header #menu .active a:visited,
 header #menu .active a:link {
-	color: #000;
+    color: #000;
 }
 
 /* FOOTER */
 
 footer {
-	position: absolute;
-	bottom: 0px;
-	left: 0px;
-	width: 100%;
-	height: 35px;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    height: 35px;
     min-width: 800px;
-    
-	overflow: hidden;
-	background-color: #000;
-	color: #fff;
+
+    overflow: hidden;
+    background-color: #000;
+    color: #fff;
 }
 
 footer p {
-	margin: 0px;
-	padding: 0px 0px 0px 15px;
-	font-size: 11pt;
-	line-height: 35px;
+    margin: 0px;
+    padding: 0px 0px 0px 15px;
+    font-size: 11pt;
+    line-height: 35px;
 }
 
 footer #team42-logo {
-	margin: 0px 3px;
-	display: inline-block;
-	vertical-align: middle;
-	height: 20px;
+    margin: 0px 3px;
+    display: inline-block;
+    vertical-align: middle;
+    height: 20px;
 }
 
 footer #login {
@@ -130,19 +131,19 @@ footer #login {
 /* CONTENT */
 
 #content {
-	position: absolute;
-	left: 0px;
-	right: 0px;
-	top: 80px;
-	bottom: 35px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 80px;
+    bottom: 35px;
     min-width: 800px;
-    
-	overflow: hidden;
+
+    overflow: hidden;
 }
 
 .break {
-	height: 20px;
-	display: block;
+    height: 20px;
+    display: block;
 }
 
 hr {
@@ -153,39 +154,39 @@ hr {
 /* VIEW */
 
 .view {
-	width: 100%; height: 100%;
-	position: absolute;
-	left: 0px; top: 0px;
-    
-	background-color: #eee;
+    width: 100%; height: 100%;
+    position: absolute;
+    left: 0px; top: 0px;
+
+    background-color: #eee;
 }
 
 .view h1 {
-	margin: 0px;
-    
-	font-size: 35pt;
-	font-weight: 600;
-	color: #666;
+    margin: 0px;
+
+    font-size: 35pt;
+    font-weight: 600;
+    color: #666;
 }
 
 .view p {
     margin: 10px 0 3px 0;
-    
-    font-size: 14pt;
+
+    font-size: 12pt;
 }
 
 .view .content {
-	position: absolute;
-	left: 0px; right: 0px;
-	top: 0px; bottom: 0px;
-	padding: 20px 55px 30px 55px;
-    
-	overflow-x: hidden;
-	overflow-y: scroll;
+    position: absolute;
+    left: 0px; right: 0px;
+    top: 0px; bottom: 0px;
+    padding: 20px 55px 30px 55px;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
-.view .content::-webkit-scrollbar { 
-    display: none; 
+.view .content::-webkit-scrollbar {
+    display: none;
 }
 
 /* SIDE TAB */
@@ -194,9 +195,9 @@ hr {
     position: absolute;
     top: 0px; bottom: 0px;
     width: 30px; height: 100%;
-    
+
     cursor: pointer;
-    
+
     background-repeat: no-repeat;
     background-position: center;
     background-color: #eee;
@@ -204,11 +205,11 @@ hr {
 
 .view .side-tab p {
     width: 300px;
-    
+
     font-size: 12pt;
     line-height: 30px;
     margin: 0;
-    
+
     -webkit-transform-origin: 0% 100%;
     -moz-transform-origin: 0% 100%;
     transform-origin: 0% 100%;
@@ -219,11 +220,11 @@ hr {
 
 .view .left {
     left: 0px;
-    
+
     border-right: 1px solid rgba(50, 50, 50, 0.1);
     background-image: url(../images/right_arrow.png);
     z-index: 100;
-    
+
     -webkit-box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
     -moz-box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
     box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
@@ -231,7 +232,7 @@ hr {
 
 .view .right {
     right: 0px;
-    
+
     border-left: 1px solid rgba(100, 100, 100, 0.1);
     background-image: url(../images/left_arrow.png);
     z-index: 101;
@@ -249,20 +250,20 @@ label {
 }
 
 label input[type=text] {
-	float: right;
+    float: right;
 }
 
 input {
-	font-family: 'Titillium Web';
-	font-size: 14pt;
-	outline: none;
+    font-family: 'Titillium Web';
+    font-size: 14pt;
+    outline: none;
 }
 
 input[type=text] {
-	width: 400px;
+    width: 400px;
     line-height: 30px;
-	padding: 0px 5px;
-	border: 1px solid #bbb;
+    padding: 0px 5px;
+    border: 1px solid #bbb;
 }
 
 input[type=radio] {
@@ -270,10 +271,10 @@ input[type=radio] {
 }
 
 input[type=button] {
-	line-height: 30px;
-	padding: 0px 10px;
-	border: 1px solid #bbb;
-    
+    line-height: 30px;
+    padding: 0px 10px;
+    border: 1px solid #bbb;
+
     background: rgb(255,255,255); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(225,225,225,1) 51%, rgba(246,246,246,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(50%,rgba(241,241,241,1)), color-stop(51%,rgba(225,225,225,1)), color-stop(100%,rgba(246,246,246,1))); /* Chrome,Safari4+ */
@@ -286,13 +287,13 @@ input[type=button] {
 }
 
 input[type=button]:hover {
-	background-color: #fff;
+    background-color: #fff;
 }
 
 input[type=button]:active {
-	color: #fff;
-	
-	background: rgb(231,231,231); /* Old browsers */
+    color: #fff;
+
+    background: rgb(231,231,231); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(231,231,231,1) 0%, rgba(193,193,193,1) 49%, rgba(206,206,206,1) 50%, rgba(240,240,240,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(231,231,231,1)), color-stop(49%,rgba(193,193,193,1)), color-stop(50%,rgba(206,206,206,1)), color-stop(100%,rgba(240,240,240,1))); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  rgba(231,231,231,1) 0%,rgba(193,193,193,1) 49%,rgba(206,206,206,1) 50%,rgba(240,240,240,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -303,9 +304,9 @@ input[type=button]:active {
 }
 
 input[type=button].active {
-	border: 1px solid #888;
-	
-	background: rgb(231,231,231); /* Old browsers */
+    border: 1px solid #888;
+
+    background: rgb(231,231,231); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(231,231,231,1) 0%, rgba(193,193,193,1) 49%, rgba(206,206,206,1) 50%, rgba(240,240,240,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(231,231,231,1)), color-stop(49%,rgba(193,193,193,1)), color-stop(50%,rgba(206,206,206,1)), color-stop(100%,rgba(240,240,240,1))); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  rgba(231,231,231,1) 0%,rgba(193,193,193,1) 49%,rgba(206,206,206,1) 50%,rgba(240,240,240,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -316,7 +317,7 @@ input[type=button].active {
 }
 
 input:focus {
-	outline: 1px solid #bbb;
+    outline: 1px solid #bbb;
 }
 
 ul.list {
@@ -340,14 +341,14 @@ ul.list li {
 ul.list li .rating {
     display: block;
     float: right;
-    
+
     text-align: center;
     line-height: 28px;
 
     width: 28px;
     height: 28px;
     border: 1px solid black;
-    
+
     background: rgb(217,236,239); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(217,236,239,1) 0%, rgba(198,228,232,1) 50%, rgba(183,215,223,1) 51%, rgba(214,232,240,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(217,236,239,1)), color-stop(50%,rgba(198,228,232,1)), color-stop(51%,rgba(183,215,223,1)), color-stop(100%,rgba(214,232,240,1))); /* Chrome,Safari4+ */
@@ -361,7 +362,7 @@ ul.list li .rating {
     -box-shadow: 0px 1px 2px #000;
     -shadow: 0px 1px 2px #000;
     box-shadow: 0px 1px 2px #999;
-    
+
     -webkit-border-radius: 15px;
     -moz-border-radius: 15px;
     border-radius: 15px;
