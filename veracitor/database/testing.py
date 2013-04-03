@@ -110,8 +110,6 @@ class GeneralSetup(unittest.TestCase):
         self.prod3.save()
         self.prod4.save()
         self.prod5.save()
-        self.prod5.delete()
-        self.prod1.delete()
 
         self.group1.producers.append(self.prod1)
         self.group1.producers.append(self.prod2)
@@ -202,6 +200,10 @@ class TestGlobalNetworkThings(GeneralSetup):
         self.prod_list[35].save()
         assert 1 == 1
         
+    def test_get_overall_difference(self):
+        print globalNetwork.get_overall_difference(self.prod2.name, self.prod3.name,
+                                                    [self.tag1.name, self.tag2.name])\
+                                                    == 3
     def test_global_info_ratings(self):
         assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag1.name])\
             == [(self.info_rating1, self.info_rating2,)]
