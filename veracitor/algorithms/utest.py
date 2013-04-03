@@ -67,16 +67,16 @@ class TestTidalTrust(unittest.TestCase):
         G.add_nodes_from([1,2]) 
        
         # Test when there really is no path to begin with (no edges)
-        self.assertIsNone(tt.compute_trust(G,1,2))
+        self.assertIsNone(tt.compute_trust(G,1,2)["trust"])
 
         # Test when edges have the wrong tag
         G.add_edge(1,2,dict(cooking=4))
-        self.assertIsNone(tt.compute_trust(G,1,2,tag="crime"))
+        self.assertIsNone(tt.compute_trust(G,1,2,tag="crime")["trust"])
         
         # Test when input nodes are not in the graph
-        self.assertIsNone(tt.compute_trust(G,1,5,tag="crime"))
-        self.assertIsNone(tt.compute_trust(G,7,2,tag="crime"))
-        self.assertIsNone(tt.compute_trust(G,10,11,tag="crime"))
+        self.assertIsNone(tt.compute_trust(G,1,5,tag="crime")["trust"])
+        self.assertIsNone(tt.compute_trust(G,7,2,tag="crime")["trust"])
+        self.assertIsNone(tt.compute_trust(G,10,11,tag="crime")["trust"])
 
     def test_raises_exceptions_on_strange_input(self):
         """
