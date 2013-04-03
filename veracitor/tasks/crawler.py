@@ -11,4 +11,4 @@ print app
 def scrape_article(url):
     ci.init_interface()
     ci.scrape_article(url)
-    return
+    return "added article: " + url

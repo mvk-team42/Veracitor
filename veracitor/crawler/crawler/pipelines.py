@@ -111,7 +111,7 @@ class CrawlerPipeline(object):
         datetime_formats = xpaths.get_datetime_formats(domain)
         time = None
         
-        log.msg("first time format: " + str(datetime_formats[0]))
+#        log.msg("first time format: " + str(datetime_formats[0]))
         for time_format in datetime_formats:
             try:
                 time = strptime(item['time_published'],time_format)
@@ -121,7 +121,7 @@ class CrawlerPipeline(object):
                 
                 
                 
-"""
+                """
         if len(datetime_format) > 0:
             log.msg("found time format: " + str(datetime_format[0]))
             time = strptime(item['time_published'],datetime_format[0])
@@ -134,7 +134,7 @@ class CrawlerPipeline(object):
                     break
                 except ValueError:
                     log.msg("could not parse date using " + time_format)
-"""
+                """
 
 
         if time==None:
