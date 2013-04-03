@@ -3,29 +3,50 @@
 {% block content %}
 <h1>Welcome to Veracitor</h1>
 
-<p id="search-info">
-    Perform a local search in the database for sources or publications.
-</p>
+<div id="search-tabs">
+    <div id="search-tabs-head">
+        <div class="search-tab active"><a href="javascript:;">Database search</a></div>
+        <div class="search-tab"><a href="javascript:;">Add a source or information</a></div>
+    </div>
+    <div id="search-tabs-body">
+        <div class="search-tabs-content">
+            <p>Perform a local search in the database for sources or information.</p>
 
-<input type="text" id="local-search-field" name="search-text" />
+            <input type="text" id="database-search-field" name="search-text" />
 
-<input type="radio" name="search-type" value="producer" checked />
+            <div class="search-type">
+                <input class="search-type-radio" type="radio" name="search-type" value="producer" checked />
+                <h2>Search for sources</h2>
 
-<input type="radio" name="search-type" value="information" />
+                <div class="search-type-content">
+                    <form id="search-types">
+                        <label><input type="radio" name="type" value="User" checked />User</label>
+                        <label><input type="radio" name="type" value="newspaper" />Newspaper</label>
+                    </form>
+                </div>
+            </div>
 
-<p>Type:</p>
-<form id="search-types">
-    <label><input type="radio" name="type" value="User" checked />User</label>
-    <label><input type="radio" name="type" value="newspaper" />Newspaper</label>
-</form>
+            <div class="search-type">
+                <input class="search-type-radio" type="radio" name="search-type" value="information" />
+                <h2>Search for information</h2>
 
-<div>Time period: <div id="time-period"></div></div>
-<div id="slider-container">
-    <div id="slider-labels"></div>
-    <div id="slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false"></div>
+                <div class="search-type-content" id="information-search">
+                    <div>Time period: <div id="time-period"></div></div>
+                    <div id="slider-container">
+                        <div id="slider-labels"></div>
+                        <div id="slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false"></div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="button" id="database-search-button" name="search-button" value="Search" />
+        </div>
+        <div class="search-tabs-content" style="display: none;">
+            <input type="text" id="crawler-search-field" name="search-text" />
+            <input type="button" id="crawler-search-button" name="search-button" value="Search" />
+        </div>
+    </div>
 </div>
-
-<input type="button" id="local-search-button" name="search-button" value="Search" />
 
 <h1>Search result</h1>
 

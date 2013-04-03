@@ -16,31 +16,11 @@ var SearchController = function (view, controller) {
     // The event key code for the enter key
     var ENTER = 13;
 
-    // define enter key press in local search field
-    $("#local-search-field").keydown(function (evt) {
-        if(evt.keyCode == ENTER) {
-            // move focus to the local search button
-            $("#local-search-button").focus();
-        }
-    });
-
-    $("input[name=search-button]").click(function (evt) {
-        var search_text = $("input[name=search-text]").val();
-        var t, types, search_type;
-
-        types = $("#search-types input");
-
-        for(t = 0; t < types.length; t ++) {
-            if(types[t].checked) {
-                search_type = types[t].value;
-                break;
-            }
-        }
-
-        request_database_search(search_text, search_type, null, null);
-    });
-
-    // setup time period slider
+    /**
+      Initialize the search tab:
+      - Setup event handlers
+      - Setup time period slider
+     */
     (function () {
         var range = {
             min: 1970,
@@ -96,6 +76,35 @@ var SearchController = function (view, controller) {
 
             labels.append(label);
         }
+
+        /* Event handlers */
+
+        // define enter key press in local search field
+        $("#database-search-field").keydown(function (evt) {
+            if(evt.keyCode == ENTER) {
+                // move focus to the local search button
+                $("#database-search-button").focus();
+            }
+        });
+
+        $("input[name=search-button]").click(function (evt) {
+            var search_text = $("input[name=search-text]").val();
+            var t, types, search_type;
+
+            types = $("#search-types input");
+
+            for(t = 0; t < types.length; t ++) {
+                if(types[t].checked) {
+                    search_type = types[t].value;
+                    break;
+                }
+            }
+
+            request_database_search(search_text, search_type, null, null);
+        });
+
+        // set focus on the database search field
+        $("#database-search-field").focus();
     })();
 
     /**
