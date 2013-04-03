@@ -24,7 +24,7 @@ def tidal_trust(source, sink, graph, tag):
     be used as trust ratings in the calculation (DiGraph[x][y][tag] = rating)
     
     Returns: A dict containing the results, with keywords trust, threshold,
-    paths_used, nodes_used, nodes_unused, source, sink.
+    paths_used, nodes_used, nodes_unused, source, sink, tag.
     
     """
     results = {"trust": None,
@@ -201,15 +201,4 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag="weight", ca
     # Big TODO: Return path used to compute trust? Done somewhere in the middle of the
     # numerator/denominator-calculations?
     return trust_results
-        
-
-
-
-
-
-
-    
-
-
-     
 
