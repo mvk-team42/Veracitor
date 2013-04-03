@@ -20,6 +20,7 @@ def get_global_network():
     """
     global graph
     if graph is None:
+        # Create a new graph.
         graph = build_network_from_db()
     return graph
 
@@ -32,15 +33,15 @@ def build_network_from_db():
     """
 
     global graph
-    # Users not included in graph
+    # Users not included in graph.
     producers = producer.Producer.objects(type_of__ne="User")
     graph = DiGraph()
    
-    # Add all producers in the database as nodes
+    # Add all producers in the database as nodes.
     for p1 in producers:
         graph.add_node(p1.name)
     
-    # Add all producers' source ratings to the database as edges
+    # Add all producers' source ratings to the database as edges.
     for p2 in producers:
         for s in p2.source_ratings:
             graph.add_edge(p2.name, s.source.name, {s.tag.name: s.rating})
@@ -83,6 +84,21 @@ def notify_producer_was_updated(producer):
     notify_producer_was_removed(producer)
     notify_producer_was_added(producer)
 
+def get_overall_difference(producer_name1, producer_name2, tag_names):
+    """Returns the average difference in ratings made by producer_name1 and producer_name2
+    on the same informations. Informations need to contain at least one tag in tag_names.
+    If no common_info_ratings exists -1 will be returned.
+
+    """
+    common_info_ratings = get_common_info_ratings(producer_name1, producer_name2, tag_names)
+    if len(common_info_ratings) == 0:
+        return -1
+    sum_diff_ratings = 0
+    for info_rating_t in common_info_ratings:
+        sum_diff_ratings += math.fabs(info_rating_t[0].rating - info_rating_t[1].rating)
+    avg = sum_diff_ratings/len(common_info_ratings)
+    return avg
+
 def get_common_info_ratings(producer_name1, producer_name2, tag_names):
     """Returns a list of tuples on the form (info rating rating A,
     info rating rating B), where both A and B are ratings on the same
@@ -96,11 +112,15 @@ def get_common_info_ratings(producer_name1, producer_name2, tag_names):
     p2_info_ratings = extractor.get_producer(producer_name2).info_ratings
     
     common_info_ratings = []
-    #Optimize this..
+    # Candidate for later optimization.
     for info_1 in p1_info_ratings:
         for info_2 in p2_info_ratings:
+            # Are these ratings set on the same information?
             if info_1.information.title == info_2.information.title:
+                # Does the information have a tag matching requested tags?
                 if __contains_common_tags(info_1.information.tags, tag_names):
+                    # The ratings are set on the same information and conforms to tags.
+                    # Therefore considered as a common info rating.
                     common_info_ratings.append((info_1, info_2,))
                     
    
@@ -125,6 +145,7 @@ def get_extreme_info_ratings(producer_name, tag_names):
     """
     producer = extractor.get_producer(producer_name)
     
+    # Will contain info ratings set on informations
     relevant_info_ratings = []
     relevant_info_ratings_ints = []
     total_sum = 0.0
