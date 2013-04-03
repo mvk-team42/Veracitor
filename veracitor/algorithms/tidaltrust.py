@@ -8,13 +8,6 @@ import sys
 import networkx as nx
 from copy import deepcopy
 
-# Callback function used in calls to compute_trust
-callback_function
-
-def set_callback(callback):
-    global callback_function
-    callback_function = callback
-
 def tidal_trust(source, sink, graph, tag):
     """ 
     Calculates a trust value between the source and the sink nodes 
@@ -147,10 +140,10 @@ def remove_low_rated_paths(paths, threshold, graph):
     
     return relevant_paths
 
-def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
+def compute_trust(bayesianNetwork, source, sink, decision=None, tag="weight", callback=None):
     """
-    Computes the trust between the source and sink in a NetworkX DiGraph (bayesianNetwork) 
-    and returns the value as a float.
+    Computes the trust between the source and sink (strings) in bayesianNetwork
+    (NetworkX DiGraph) and returns the value as a float.
 
     decision (optional): A list of node identifiers (i.e. names or id's) for
     nodes that are not to be used in the trust calculation.
@@ -158,7 +151,8 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
     tag (optional): A tag name (String). Only edges/ratings under this tag
     will be used in the trust calculation.
     
-    callback (optional): A callback function to be called when the trust has been calculated.
+    callback (optional): A callback function to be called when the trust has been
+    calculated. Should take a dict with the results as parameter.    
 
     If tag is specified, edges will be tagged with properties, like so:
     DiGraph[1][2][tag_name] = rating.
@@ -174,20 +168,16 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None):
     # Ignore nodes as specified by decision
     if decision != None:
         bayesianNetwork.remove_nodes_from(decision)
-    # If no tag is specified, the graph is considered un-tagged and 
-    # the 'weight' attributes of the edges are used as ratings instead.
-    if tag == None:
-        tag = "weight"
-
-
-    trust = tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
+   
+    trust_results = tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
     
-    if callback_function != None:
+    if callback:
         # TODO: Any parameters to the callback function?
-        callback_function()
+        callback(trust_results)
+
     # Big TODO: Return path used to compute trust? Done somewhere in the middle of the
     # numerator/denominator-calculations?
-    return trust
+    return trust_results
         
 
 
