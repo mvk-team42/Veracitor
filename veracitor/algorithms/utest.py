@@ -60,8 +60,6 @@ class TestTidalTrust(unittest.TestCase):
         self.assertEqual(7, sink)
         self.assertEqual(1, source)
 
-
-
     def test_returns_none_when_no_paths(self):
         """
         (compute_trust) Return None when no trust value could be found
@@ -106,7 +104,7 @@ class TestTidalTrust(unittest.TestCase):
 
     def test_dry_runs(self):
         """
-        (compute_trust) Assert that the function returns the same value as Tidal Trust would
+        (compute_trust) Assert that the function returns the same value as Tidal Trust would (i.e. the correct value)
         
         """
         #
@@ -125,6 +123,16 @@ class TestTidalTrust(unittest.TestCase):
         
         G = _get_weighted_graph()
         self.assertEqual(tt.compute_trust(G,1,7)["trust"], 7.052631578947368)
+
+    def test_used_paths(self):
+        """
+        (compute_trust) Tests that the used paths returned are the actual used paths
+        
+        """
+        G = _get_tagrated_graph()
+        results = tt.compute_trust(G,1,7,tag="cooking")
+        print results["threshold"]
+        self.assertEqual(results["paths_used"], [[1,2,5,7],[1,4,6,7]])
 
 
 class TestGenerateBN(unittest.TestCase):

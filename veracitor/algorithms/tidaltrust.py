@@ -45,7 +45,7 @@ def tidal_trust(source, sink, graph, tag):
         raise TypeError("Input graph is probably not a compatible graph object.")
         
     graph.remove_edges_from(remove_list)
-    
+
     try:
         shortest = nx.all_shortest_paths(graph, source=source, target=sink)
         paths_list = list(shortest)
@@ -54,31 +54,34 @@ def tidal_trust(source, sink, graph, tag):
     except KeyError:
         # An input node was not in the graph 
         return results
-    
-    # Add unused nodes (not in shortest path) to results
-    path_nodes = set(chain.from_iterable(paths_list))
-    for n in graph.nodes():
-            if n not in path_nodes:
-                results["nodes_unused"].append(n)
 
     threshold = get_threshold(paths_list, graph, tag)
     results['threshold'] = threshold
+
+    useful_paths = remove_low_rated_paths(paths_list, threshold, graph, tag)
+    results["paths_used"] = useful_paths
+    print useful_paths
+    results["nodes_used"] = list(set(chain.from_iterable(useful_paths)))
+
+    # Add unused nodes (not in shortest path) to results
+    path_nodes = set(chain.from_iterable(useful_paths))
+    results["nodes_unused"] += [n for n in graph.nodes() if n not in path_nodes]
     
     queue = []
     # Loop over all nodes in all paths that are not the sink or parents of the sink (leaves)
     # Possible optimization: merge this loop with the cached_trust loop below
-    for i in reversed(range(len(paths_list[0])-2)):
-        for j in range(len(paths_list)):
-            if(paths_list[j][i] not in queue):
+    for i in reversed(range(len(useful_paths[0])-2)):
+        for j in range(len(useful_paths)):
+            if(useful_paths[j][i] not in queue):
                 # Add to queue for backwards search
-                queue.append(paths_list[j][i])
+                queue.append(useful_paths[j][i])
     
     cached_trust = {}
                 
     #Initialize cached_trust for all leaves.
-    for n in range(len(paths_list)):
+    for n in range(len(useful_paths)):
         # Select predecessors of sink in path n
-        sink_neighbor = paths_list[n][len(paths_list[0])-2]   
+        sink_neighbor = useful_paths[n][len(useful_paths[0])-2]   
         if (sink_neighbor, sink) not in cached_trust:
             cached_trust[(sink_neighbor, sink)] = graph[sink_neighbor][sink][tag]
             
@@ -110,28 +113,16 @@ def tidal_trust(source, sink, graph, tag):
                     denominator = denominator + graph[current_node][s][tag]
         
         if denominator > 0:
-            print denominator
             cached_trust[(current_node, sink)] = numerator / denominator                                
+    
         # Sets trust to -1 if no children could be used (e.g., ratings below threshold)
         else:
             cached_trust[(current_node, sink)] = -1       
             results["nodes_unused"].append(current_node)
+        
     
     if (source, sink) in cached_trust:
         results["trust"] = cached_trust[(source, sink)]
-        nodes_used = []
-        # Add used paths to paths_used
-        for p in paths_list:
-            if len(results["nodes_unused"]) > 0:
-                for n in results["nodes_unused"]:
-                    if n not in p:
-                        results["paths_used"].append(p)
-                        nodes_used += p
-            else:
-                results["paths_used"].append(p)
-                nodes_used += p
-                
-        results["nodes_used"] = list(set(nodes_used))
 
     return results        
     
@@ -155,10 +146,7 @@ def get_threshold(paths, graph, tag):
 
     return threshold
 
-# This function is currently not used (threshold is instead checked in tidal_trust)
-# possible optimization?: use this
-# users beware for this code is old and probably doesn't work
-def remove_low_rated_paths(paths, threshold, graph):
+def remove_low_rated_paths(paths, threshold, graph, tag):
     """
     Removes paths from a list of paths that contains weights below the threshold.
     
@@ -166,9 +154,9 @@ def remove_low_rated_paths(paths, threshold, graph):
     relevant_paths = paths[:]
     for path in paths:
         for i in range(len(path)-2):
-            if graph[path[i]][path[i+1]]['weight'] < threshold:
+            if graph[path[i]][path[i+1]][tag] < threshold:
                relevant_paths.remove(path)
-            break
+            continue
     
     return relevant_paths
 
