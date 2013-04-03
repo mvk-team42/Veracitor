@@ -38,12 +38,14 @@ class MetaNewspaperSpider(BaseSpider):
         
         name = self.extract_name(domain, hxs, xpaths)
         rss_links = self.extract_rss_links(domain, hxs, xpaths)
-        description = self.extract_description(domain, hcs, xpaths)
+        description = self.extract_description(domain, hxs, xpaths)
         
         if not already_in_xml:
             new_element = ET.Element("webpage", attrib={'domain':domain, 'name':name})
             for rss_link in rss_links:
-                new_element.append(ET.Element("rss", text=rss_link))
+                rss = ET.Element("rss")
+                rss.text = rss_link
+                new_element.append(rss)
             webpages.append(new_element)
             tree.write(xml_file)
         if not extractor.contains_producer(url): #db-method

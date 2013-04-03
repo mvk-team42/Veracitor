@@ -107,9 +107,21 @@ class CrawlerPipeline(object):
     def parse_datetime(self, item):
         current_dir = dirname(realpath(__file__))
         xpaths = Xpaths(current_dir + '/webpageXpaths.xml')
-        datetime_format = xpaths.get_datetime_formats(urlparse(item['url'])[1])
+        domain = urlparse(item['url'])[1]
+        datetime_formats = xpaths.get_datetime_formats(domain)
         time = None
-
+        
+        log.msg("first time format: " + str(datetime_formats[0]))
+        for time_format in datetime_formats:
+            try:
+                time = strptime(item['time_published'],time_format)
+                break
+            except ValueError:
+                log.msg("could not parse date using " + time_format)
+                
+                
+                
+"""
         if len(datetime_format) > 0:
             log.msg("found time format: " + str(datetime_format[0]))
             time = strptime(item['time_published'],datetime_format[0])
@@ -122,6 +134,7 @@ class CrawlerPipeline(object):
                     break
                 except ValueError:
                     log.msg("could not parse date using " + time_format)
+"""
 
 
         if time==None:

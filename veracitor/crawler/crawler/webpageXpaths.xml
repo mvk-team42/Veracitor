@@ -27,8 +27,8 @@
                 <xpath>//meta[@name="description"]/@content</xpath>
             </description>
             <rss-link>
-                <xpath>//a[contains(@class, "rss")]</xpath>    
-                <xpath>//*[contains(@class, "rss")]//a</xpath>   
+                <xpath>//a[contains(@class, "rss")]/@href</xpath>    
+                <xpath>//*[contains(@class, "rss")]//a/@href</xpath>   
             </rss-link>
         </webpage-data>
 
@@ -65,8 +65,10 @@
             </time_published>
             
             <datetime-formats>
-                <format>blablabla</format>
+                <format>%Y-%m-%d %H:%M</format>
+                <format>%d %B %Y kl %H:%M</format>
             </datetime-formats>
+            
             
         </article-data>
     </default>
