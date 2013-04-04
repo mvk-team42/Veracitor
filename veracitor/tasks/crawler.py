@@ -1,27 +1,30 @@
+# crawler.py
+# ===========
+# Defines tasks for the crawler.
+
 try:
     from veracitor.tasks.tasks import app
 except:    
-    from tasks import app
+    from tasks import taskmgr
     
 from ..crawler import crawlInterface as ci
 
-print app
 
-@app.task
+@taskmgr.task
 def scrape_article(url):
     ci.init_interface()
     ci.scrape_article(url)
-    return "added article: " + url
+    return "scraped article: " + url
 
 
-@app.task
+@taskmgr.task
 def add_newspaper(url):
     ci.init_interface()
     ci.add_newspaper(url)
-    return
+    return "added newspaper: " + url
 
-@app.task
+@taskmgr.task
 def request_scrape(url):
     ci.init_interface()
     ci.request_scrape(url)
-    return
+    return "requested scrape for: " + url
