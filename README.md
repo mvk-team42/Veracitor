@@ -48,12 +48,6 @@ Use `python start_celery.py` to start the celery daemon.
 The celery worker daemon processes tasks sent out from the web part of
 the application.
 
-Use `python start_celerybeat.py` to start the celerybeat daemon.
-
-The celerybeat daemon ensures that any results/states from the tasks
-are cleaned up according to the settings provided in celeryconf.py .
-
-
-###### Flask dev webserver
+##### Flask dev webserver
 
 Use `python start_webserver.py` to start the dev webserver.

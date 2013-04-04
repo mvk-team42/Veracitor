@@ -5,9 +5,9 @@
 ### NOTE : Celery requires the celerybeat daemon to be running if the results should be
 ###        properly removed from the database.
 
-BROKER_URL = "mongodb://localhost:27017"
+BROKER_URL = u'mongodb://localhost:27017'
 
-CELERY_TASK_RESULT_EXPIRES = 3600
+CELERY_TASK_RESULT_EXPIRES = 1
 CELERY_RESULT_BACKEND = "mongodb"
 
 # Used to store task states and results

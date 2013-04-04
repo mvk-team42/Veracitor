@@ -15,10 +15,10 @@ taskmgr = Celery(main='veracitor.tasks.tasks.taskmgr',
 
 try:
     import os
-    taskmgr.config_from_envvar(os.environ['VERACITOR_CELERY_SETTINGS'])
+    taskmgr.config_from_object("celeryconf")
 except:
     try:
-        taskmgr.config_from_object("celeryconf")
+        taskmgr.config_from_envvar(os.environ['VERACITOR_CELERY_SETTINGS'])
     except:
         raise Error("Unable to load celery configuration.'")
 

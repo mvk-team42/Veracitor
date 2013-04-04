@@ -19,7 +19,7 @@ def runserver():
     else:
         app.run()
 
-import callback
+import jobs
 import utils
 import search
 import network
