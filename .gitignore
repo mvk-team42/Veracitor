@@ -43,8 +43,9 @@ nosetests.xml
 .DS_Store
 *~
 
-# Top secret settings... :)
-veracitor/settings.py
-
 # log-files
 *.log
+
+# celery stuff
+celerybeat-schedule
+celerybeat.pid

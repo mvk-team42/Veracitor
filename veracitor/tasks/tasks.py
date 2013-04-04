@@ -10,22 +10,17 @@ from __future__ import absolute_import
 
 from celery import Celery
 
-taskmgr = Celery('veracitor.tasks.celery',
-             broker='mongodb://localhost',
-             include=['veracitor.tasks.crawler'])
+taskmgr = Celery(main='veracitor.tasks.tasks.taskmgr',
+                 include=['veracitor.tasks.crawler'])
 
-# Celery configuration.
-# @see http://docs.celeryproject.org/en/latest/configuration.html
-# for more information.
-taskmgr.conf.update(
-    CELERY_TASK_RESULT_EXPIRES=3600,
-    CELERY_RESULT_BACKEND = "mongodb",
-    CELERY_MONGODB_BACKEND_SETTINGS = {
-        "host": "localhost",
-        "database": "celery_db",
-        "taskmeta_collection": "veracitor_taskmeta_collection",
-    }
-)
+try:
+    import os
+    taskmgr.config_from_envvar(os.environ['VERACITOR_CELERY_SETTINGS'])
+except:
+    try:
+        taskmgr.config_from_object("celeryconf")
+    except:
+        raise Error("Unable to load celery configuration.'")
 
 if __name__ == '__main__':
     taskmgr.start()

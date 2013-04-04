@@ -2,6 +2,7 @@
 # ===============
 # Starts the celery worker server
 
+
 def start_celery():
     """Starts the celery worker server in a subprocess."""
     import subprocess
