@@ -4,99 +4,99 @@ from ..database import *
 import json
 
 from veracitor.web import app
-from veracitor.web import callback
+# from veracitor.web import callback
 
-"""
-Starts a crawler to crawl the given URL for an entity.
+# """
+# Starts a crawler to crawl the given URL for an entity.
 
-"""
-@app.route('/request_crawl_procedure', methods=['GET','POST'])
-def request_crawl_procedure():
-    if request.method == 'POST':
-        procedure = {}
-        error = {
-            'message' : 'none',
-            'type' : 'none'
-        }
+# """
+# @app.route('/request_crawl_procedure', methods=['GET','POST'])
+# def request_crawl_procedure():
+#     if request.method == 'POST':
+#         procedure = {}
+#         error = {
+#             'message' : 'none',
+#             'type' : 'none'
+#         }
 
-        if request.form:
-            f = request.form
+#         if request.form:
+#             f = request.form
 
-            if not f['url']:
-                error = {
-                    'message': 'No URL specified.',
-                    'type': 'no_url'
-                }
+#             if not f['url']:
+#                 error = {
+#                     'message': 'No URL specified.',
+#                     'type': 'no_url'
+#                 }
 
-            if error['type'] == 'none':
-                id = callback.get_unique_id()
+#             if error['type'] == 'none':
+#                 id = callback.get_unique_id()
 
-                # start scraping the specified URL
-                app.ci.scrape_article(f['url'], id)
+#                 # start scraping the specified URL
+#                 app.ci.scrape_article(f['url'], id)
 
-                procedure = {
-                    'message': 'Started crawling %s.' % f['url'],
-                    'callback_url': '/check_crawl_procedure',
-                    'id': id
-                }
-        else:
-            error = {
-                'message': 'Form data error.',
-                'type': 'form_error'
-            }
+#                 procedure = {
+#                     'message': 'Started crawling %s.' % f['url'],
+#                     'callback_url': '/check_crawl_procedure',
+#                     'id': id
+#                 }
+#         else:
+#             error = {
+#                 'message': 'Form data error.',
+#                 'type': 'form_error'
+#             }
 
-        return json.dumps({ 'error': error, 'procedure': procedure })
+#         return json.dumps({ 'error': error, 'procedure': procedure })
 
-    return redirect(url_for('index'))
+#     return redirect(url_for('index'))
 
-"""
-Handles the connection between the client and its currently
-running SUNNY procedures.
+# """
+# Handles the connection between the client and its currently
+# running SUNNY procedures.
 
-"""
-@app.route('/check_crawl_procedure', methods=['GET','POST'])
-def check_crawl_procedure():
+# """
+# @app.route('/check_crawl_procedure', methods=['GET','POST'])
+# def check_crawl_procedure():
 
-    if request.method == 'POST':
-        procedure = {}
-        error = {
-            'message' : 'none',
-            'type' : 'none'
-        }
+#     if request.method == 'POST':
+#         procedure = {}
+#         error = {
+#             'message' : 'none',
+#             'type' : 'none'
+#         }
 
-        if request.form:
-            f = request.form
+#         if request.form:
+#             f = request.form
 
-            if not f['id']:
-                error = {
-                    'message': 'No id specified.',
-                    'type': 'no_source'
-                }
+#             if not f['id']:
+#                 error = {
+#                     'message': 'No id specified.',
+#                     'type': 'no_source'
+#                 }
 
-            if error['type'] == 'none':
-                item = callback.check_id(f['id'])
+#             if error['type'] == 'none':
+#                 item = callback.check_id(f['id'])
 
-                if item:
-                    procedure = {
-                        'message': 'Finished crawling id: %s!' % f['id'],
-                        'status': 'done',
-                        'id': f['id']
-                        #'item': item
-                    }
-                else:
-                    procedure = {
-                        'status': 'processing'
-                    }
+#                 if item:
+#                     procedure = {
+#                         'message': 'Finished crawling id: %s!' % f['id'],
+#                         'status': 'done',
+#                         'id': f['id']
+#                         #'item': item
+#                     }
+#                 else:
+#                     procedure = {
+#                         'status': 'processing'
+#                     }
 
-        else:
-            error = {
-                'message': 'Form data error.',
-                'type': 'form_error'
-            }
+#         else:
+#             error = {
+#                 'message': 'Form data error.',
+#                 'type': 'form_error'
+#             }
 
-        return json.dumps({ 'error': error, 'procedure': procedure })
+#         return json.dumps({ 'error': error, 'procedure': procedure })
 
-    return redirect(url_for('index'))
+#     return redirect(url_for('index'))
 
 """
 Performs a search in the database for producers that match the given
