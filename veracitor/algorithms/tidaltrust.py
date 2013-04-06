@@ -1,7 +1,11 @@
-""" 
-The TidalTrust algorithm as specified by Jennifer Golbeck (2007),
-with some extended functionality.
+# -*- coding: utf-8 -*-
 
+""" 
+.. module:: tidaltrust
+    :synopsis: The TidalTrust algorithm as specified by Jennifer Golbeck (2007), with some extended functionality.
+
+.. moduleauthor:: Daniel Molin <dmol@kth.se>
+.. moduleauthor:: Martin Runelöv <mrunelov@kth.se>
 """
 
 import sys
@@ -165,21 +169,47 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag="weight", ca
     Computes the trust between the source and sink (strings) in bayesianNetwork
     (NetworkX DiGraph).
 
-    decision (optional): A list of node identifiers (i.e. names or id's) for
-    nodes that are not to be used in the trust calculation.
-
-    tag (optional): A tag name (String). Only edges/ratings under this tag
-    will be used in the trust calculation.
+    If a tag is specified, edges will be considered tagged with properties, like so:
     
-    callback (optional): A callback function to be called when the trust has been
-    calculated. Should take a dict with the results as parameter.    
+    >>> DiGraph[1][2]["cooking"]
+    5
 
-    If tag is specified, edges will be tagged with properties, like so:
-    DiGraph[1][2][tag_name] = rating.
-    Otherwise, the edges will be considered weighted: DiGraph[1][2]["weight"] = rating
+    Otherwise, the edges will be considered weighted:
 
-    Returns: A dict containing the results, with keywords trust, threshold,
-    paths_used, nodes_used, nodes_unused, source, sink.
+    >>> DiGraph[1][2]["weight"]
+    5
+
+    Args:
+       bayesianNetwork (DiGraph): The graph in which trust is to be computed.
+
+       source (str): The name of the source node.
+
+       sink (str): The name of the sink node.
+
+    Kwargs:
+       decision (iterable): A list of node identifiers (i.e. names or id's)
+       for nodes that are not to be used in the trust calculation.
+
+       tag (str): A tag name. Only edges/ratings under this tag will be used
+       in the trust calculation.
+
+       callback (function): A callback function to be called when the trust
+       has been calculated. Should take a dict with the results as parameter.    
+
+    Returns:
+       A dict containing the results, with keywords trust, threshold, paths_used,
+       nodes_used, nodes_unused, source, sink::
+
+          {
+             "trust": (int);
+             "threshold": (int),
+             "paths_used": (list of lists of str),
+             "nodes_used": (list of str),
+             "nodes_unused": (list of str),
+             "source": (str),
+             "sink": (str),
+             "tag": (str),
+          }
 
     """
     #check input
