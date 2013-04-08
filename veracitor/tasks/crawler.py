@@ -11,10 +11,24 @@ from ..crawler import crawlInterface as ci
 
 
 @taskmgr.task
+def anton():
+    import time
+    time.delay(400)
+    return "Yay!"
+
+@taskmgr.task
 def scrape_article(url):
     ci.init_interface()
-    ci.scrape_article(url)
-    return "scraped article: " + url
+    err_msg = ""
+    try:
+        ci.scrape_article(url)
+    except ValueError, err:
+        err_msg = str(err)
+
+    res = "scraped article: " + url
+    if err_msg:
+        res += "\nerr: " + err_msg
+    return res
 
 
 @taskmgr.task

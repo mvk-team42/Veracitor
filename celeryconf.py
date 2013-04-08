@@ -4,6 +4,8 @@
 
 ### NOTE : Celery requires the celerybeat daemon to be running if the results should be
 ###        properly removed from the database.
+###        We have invoked celery with:
+###            celery -A veracitor.tasks.tasks.taskmgr worker -B
 
 BROKER_URL = u'mongodb://localhost:27017'
 
