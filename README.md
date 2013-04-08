@@ -43,7 +43,8 @@ you are in your virtualenv now.
 
 ##### Celery
 
-Use `python start_celery.py` to start the celery daemon.
+Use `celery -A veracitor.tasks.tasks.taskmgr worker -B`
+to start the celery daemon.
 
 The celery worker daemon processes tasks sent out from the web part of
 the application.

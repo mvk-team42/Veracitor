@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, json
 
 from veracitor.web import app
 # from veracitor.web import callback
@@ -6,7 +6,6 @@ from veracitor.web import app
 from ..database import globalNetwork as gn
 from ..algorithms.tidaltrust import compute_trust
 
-import json
 
 # def callback_function(trust):
 #     pass

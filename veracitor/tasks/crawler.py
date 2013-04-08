@@ -3,7 +3,7 @@
 # Defines tasks for the crawler.
 
 try:
-    from veracitor.tasks.tasks import app
+    from veracitor.tasks.tasks import taskmgr
 except:    
     from tasks import taskmgr
     

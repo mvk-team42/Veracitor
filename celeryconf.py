@@ -7,7 +7,7 @@
 
 BROKER_URL = u'mongodb://localhost:27017'
 
-CELERY_TASK_RESULT_EXPIRES = 1
+#CELERY_TASK_RESULT_EXPIRES = 1
 CELERY_RESULT_BACKEND = "mongodb"
 
 # Used to store task states and results

@@ -4,14 +4,13 @@
 # Used to load up celery aswell as to define the taskmgr
 # for the tasks.
 
-
-
 from __future__ import absolute_import
 
 from celery import Celery
 
 taskmgr = Celery(main='veracitor.tasks.tasks.taskmgr',
-                 include=['veracitor.tasks.crawler'])
+                 include=['veracitor.tasks.crawler',
+                          'veracitor.tasks.algorithms'])
 
 try:
     import os
