@@ -17,11 +17,9 @@ def sunny(source, sink, tag, network):
 @taskmgr.task
 def tidaltrust(source, sink, tag):
     # Convert input to unicode
-    print "convert to unicode"
     source = unicode(source)
     sink = unicode(sink)
     tag = unicode(tag)
-    print type(source)
 
     # Get global network
     network = gn.get_global_network()
@@ -29,5 +27,4 @@ def tidaltrust(source, sink, tag):
                           source=source,
                           sink=sink, tag=tag)
 
-    print trust
     return trust
