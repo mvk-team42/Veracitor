@@ -209,7 +209,7 @@ def compute_trust(network, source, sink, decision=None, tag="weight"):
           }
 
     """
-    print "source:", source, "\nsink:", sink, "\nnetwork:", network \
+    print "source:", source, "\nsink:", sink, "\nnetwork:", network, \
         "\nnetwork dict:", str(nx.to_dict_of_dicts(network)), "\ntag:", tag
 
     #check input
