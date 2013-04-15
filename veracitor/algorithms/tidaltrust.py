@@ -55,6 +55,7 @@ def tidal_trust(source, sink, graph, tag):
         shortest = nx.all_shortest_paths(graph, source=source, target=sink)
         paths_list = list(shortest)
     except nx.exception.NetworkXNoPath:
+        print "(tidaltrust) No paths found between %s and %s." % (str(source), str(sink))
         return results
     except KeyError, e:
         # An input node was not in the graph 
