@@ -100,30 +100,65 @@ def request_scrape():
 @app.route("/algorithms/tidal_trust", methods=['GET', 'POST'])
 def tidal_trust():
     """
-    ## /algorithms/tidal_trust ('GET', 'POST')
-    **Description:**
-    
-    **URL-Structure:**
+    Caclulates the trust between source and sink in the global network using
+    the specified tag.
 
-    **Method:**
+    .. note::
+       This is only used when one only wants to use Tidal Trust. I.e., this is
+       not to be used from inside of SUNNY where the tidaltrust module should
+       be used directly.
 
-    **Parameters:**
-    required:
-        **source** = <_string_> - the name of the source node
-        **sink** = <_string_> - the name of the sink node
+       This function/request operates on the global network (but only by
+       reading from it).
 
-    optional:
-        **tag** = <_string_> - @see veracitor.algorithms.tidaltrust#compute_trust
-        **decision** = List of <_string_> - node list with names/ids not to be included
-                                             in the trust calculation.
-    
-    **Returns:**
+    URL Structure:
+       /algorithms/tidal_trust?source=SOURCE&sink=SINK&tag=TAG
 
-    **Errors:**
+    Method:
+       POST
 
-    **Notes:**
+    Parameters:
+       source (str): The name of the source node.
+
+       sink (str): The name of the sink node.
+
+       tag (str): A tag name. Only edges/ratings under this tag will be used
+       in the trust calculation.
+
+    Returns:
+       A dict containing the results, with keywords trust, threshold, paths_used,
+       nodes_used, nodes_unused, source, sink::
+
+          {
+             "trust": (int);
+             "threshold": (int),
+             "paths_used": (list of lists of str),
+             "nodes_used": (list of str),
+             "nodes_unused": (list of str),
+             "source": (str),
+             "sink": (str),
+             "tag": (str),
+          }
+
+    Errors::
+       400 - Bad syntax in request
+       405 - Method not allowed
 
     """
+
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        source = request.form['source']
+        sink = request.form['sink']
+        tag = request.form['tag']
+    except KeyError, AttributeError:
+        abort(400)
+
+    res = algorithms.tidal_trust.delay(source, sink, tag)
+    store_job_result(res)
+    return jsonify(job_id=res.id)
+    
     
 
 @app.route("/algorithms/sunny", methods=['GET', 'POST'])
