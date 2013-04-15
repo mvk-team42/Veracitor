@@ -55,8 +55,9 @@ def tidal_trust(source, sink, graph, tag):
         paths_list = list(shortest)
     except nx.exception.NetworkXNoPath:
         return results
-    except KeyError:
+    except KeyError, e:
         # An input node was not in the graph 
+        print "(tidaltrust) keyerror: %s" % (str(e))
         return results
 
     threshold = get_threshold(paths_list, graph, tag)
@@ -224,6 +225,7 @@ def compute_trust(network, source, sink, decision=None, tag="weight"):
    
     trust_results = tidal_trust(graph=network, source=source, sink=sink, tag=tag)
     
+    print
     
     return trust_results
 
