@@ -99,10 +99,13 @@ if __name__ == "__main__":
         prods[n].save()
 
     for n in G.nodes():
+        print "Node: ", n
         for rated in G[n]:
+            print "\tRated: ", rated
             for tag_name in G[n][rated]:
+                print "\t\tTag: ", tag_name
                 source_rating = producer.SourceRating(rating=G[n][rated][tag_name],
-                                                      source=prods[n],
+                                                      source=prods[rated],
                                                       tag=tags[tag_name])
                 prods[n].source_ratings.append(deepcopy(source_rating))
 
