@@ -164,7 +164,7 @@ def remove_low_rated_paths(paths, threshold, graph, tag):
     
     return relevant_paths
 
-def compute_trust(network, source, sink, decision=None, tag="weight", callback=None):
+def compute_trust(network, source, sink, decision=None, tag="weight"):
     """
     Computes the trust between the source and sink (strings) in network
     (NetworkX DiGraph).
@@ -192,9 +192,6 @@ def compute_trust(network, source, sink, decision=None, tag="weight", callback=N
 
        tag (str): A tag name. Only edges/ratings under this tag will be used
        in the trust calculation.
-
-       callback (function): A callback function to be called when the trust
-       has been calculated. Should take a dict with the results as parameter.    
 
     Returns:
        A dict containing the results, with keywords trust, threshold, paths_used,
@@ -224,11 +221,6 @@ def compute_trust(network, source, sink, decision=None, tag="weight", callback=N
    
     trust_results = tidal_trust(graph=network, source=source, sink=sink, tag=tag)
     
-    if callback:
-        # TODO: Any parameters to the callback function?
-        callback(trust_results)
-
-    # Big TODO: Return path used to compute trust? Done somewhere in the middle of the
-    # numerator/denominator-calculations?
+    
     return trust_results
 
