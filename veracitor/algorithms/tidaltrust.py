@@ -164,9 +164,9 @@ def remove_low_rated_paths(paths, threshold, graph, tag):
     
     return relevant_paths
 
-def compute_trust(bayesianNetwork, source, sink, decision=None, tag="weight", callback=None):
+def compute_trust(network, source, sink, decision=None, tag="weight", callback=None):
     """
-    Computes the trust between the source and sink (strings) in bayesianNetwork
+    Computes the trust between the source and sink (strings) in network
     (NetworkX DiGraph).
 
     If a tag is specified, edges will be considered tagged with properties, like so:
@@ -180,7 +180,7 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag="weight", ca
     5
 
     Args:
-       bayesianNetwork (DiGraph): The graph in which trust is to be computed.
+       network (DiGraph): The graph in which trust is to be computed.
 
        source (str): The name of the source node.
 
@@ -213,16 +213,16 @@ def compute_trust(bayesianNetwork, source, sink, decision=None, tag="weight", ca
 
     """
     #check input
-    if bayesianNetwork == None or source == None or sink == None:
+    if network == None or source == None or sink == None:
         raise TypeError("Input parameters can't be None")
 
-    bayesianNetwork = deepcopy(bayesianNetwork)
+    network = deepcopy(network)
 
     # Ignore nodes as specified by decision
     if decision != None:
-        bayesianNetwork.remove_nodes_from(decision)
+        network.remove_nodes_from(decision)
    
-    trust_results = tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
+    trust_results = tidal_trust(graph=network, source=source, sink=sink, tag=tag)
     
     if callback:
         # TODO: Any parameters to the callback function?
