@@ -4,7 +4,7 @@ import tidaltrust as tt
 import generate_bn as gbn
 from copy import copy, deepcopy
 from random import randint
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 class TestTidalTrust(unittest.TestCase):
     def setup(self):
@@ -33,18 +33,22 @@ class TestTidalTrust(unittest.TestCase):
         # Test for tagrated graph
         G = _get_tagrated_graph()
         Gcopy = deepcopy(G)
-        tt.compute_trust(G, source, sink, tag="cooking")
+        tag = "cooking"
+        tt.compute_trust(G, source, sink, tag=tag)
         self.assertEqual(nx.to_dict_of_dicts(Gcopy),
                          nx.to_dict_of_dicts(G))
         self.assertEqual(7, sink)
         self.assertEqual(1, source)
+        self.assertEqual("cooking", tag)
 
         # Test with decision array
-        tt.compute_trust(G, source, sink, tag="cooking", decision=[5])
+        decision = [5]
+        tt.compute_trust(G, source, sink, tag="cooking", decision=decision)
         self.assertEqual(nx.to_dict_of_dicts(Gcopy),
                          nx.to_dict_of_dicts(G))
         self.assertEqual(7, sink)
         self.assertEqual(1, source)
+        self.assertEqual([5], decision)
         
         
         # Test for graph with cycles
@@ -56,8 +60,6 @@ class TestTidalTrust(unittest.TestCase):
         self.assertEqual(7, sink)
         self.assertEqual(1, source)
 
-
-
     def test_returns_none_when_no_paths(self):
         """
         (compute_trust) Return None when no trust value could be found
@@ -67,16 +69,16 @@ class TestTidalTrust(unittest.TestCase):
         G.add_nodes_from([1,2]) 
        
         # Test when there really is no path to begin with (no edges)
-        self.assertIsNone(tt.compute_trust(G,1,2))
+        self.assertIsNone(tt.compute_trust(G,1,2)["trust"])
 
         # Test when edges have the wrong tag
         G.add_edge(1,2,dict(cooking=4))
-        self.assertIsNone(tt.compute_trust(G,1,2,tag="crime"))
+        self.assertIsNone(tt.compute_trust(G,1,2,tag="crime")["trust"])
         
         # Test when input nodes are not in the graph
-        self.assertIsNone(tt.compute_trust(G,1,5,tag="crime"))
-        self.assertIsNone(tt.compute_trust(G,7,2,tag="crime"))
-        self.assertIsNone(tt.compute_trust(G,10,11,tag="crime"))
+        self.assertIsNone(tt.compute_trust(G,1,5,tag="crime")["trust"])
+        self.assertIsNone(tt.compute_trust(G,7,2,tag="crime")["trust"])
+        self.assertIsNone(tt.compute_trust(G,10,11,tag="crime")["trust"])
 
     def test_raises_exceptions_on_strange_input(self):
         """
@@ -102,7 +104,7 @@ class TestTidalTrust(unittest.TestCase):
 
     def test_dry_runs(self):
         """
-        (compute_trust) Assert that the function returns the same value as Tidal Trust would
+        (compute_trust) Returns the same value as Tidal Trust would (i.e. the correct value)
         
         """
         #
@@ -119,9 +121,83 @@ class TestTidalTrust(unittest.TestCase):
         # 1 -> 7 = ((10*8) + 9*6))/(10+9) = 7.052631578947368 
         # (Calculated using python to get the same number of decimals)
         
-        G = _get_weighted_graph()
-        self.assertEqual(tt.compute_trust(G,1,7), 7.052631578947368)
+        G = _get_badass_graph()
+        self.assertEqual(tt.compute_trust(G,1,7)["trust"], 7.052631578947368)
 
+        # Test trivial (direct edge source->sink)
+        G = nx.DiGraph()
+        G.add_edge(1,2,{"cooking":5})
+        results = tt.compute_trust(G,1,2,tag="cooking")
+        self.assertEqual(results["trust"], 5)
+
+    def test_paths_used(self):
+        """
+        (compute_trust) paths_used in results are the actual used paths (if a trust value could be calculated)
+        
+        """
+        # Test tagrated
+        G = _get_tagrated_graph()
+        results = tt.compute_trust(G,1,7,tag="cooking")
+        self.assertEqual(results["paths_used"], [[1,2,5,7],[1,4,6,7]])
+
+        # Test badass
+        G = _get_badass_graph()
+        results = tt.compute_trust(G,1,7)
+        self.assertEqual(results["paths_used"], [[1,2,5,7],[1,4,6,7]])
+        
+        # Test small trivial
+        G = nx.DiGraph()
+        G.add_edge(1,2,{"cooking":5})
+        results = tt.compute_trust(G,1,2,tag="cooking")
+        self.assertEqual(results["paths_used"], [[1,2]])
+
+    def test_nodes_used(self):
+        """
+        (compute_trust) nodes_used in results are the actually used nodes
+
+        """
+        # Test badass
+        G = _get_badass_graph()
+        results = tt.compute_trust(G,1,7)
+        list.sort(results["nodes_used"])
+        self.assertEqual(results["nodes_used"], [1,2,4,5,6,7])
+        
+        # Test small trivial
+        G = nx.DiGraph()
+        G.add_edge(1,2,{"cooking":5})
+        results = tt.compute_trust(G,1,2,tag="cooking")
+        list.sort(results["nodes_used"])
+        self.assertEqual(results["nodes_used"], [1,2])
+
+    def test_nodes_unused(self):
+        """
+        (compute_trust) nodes_unused in results are all unused nodes
+        
+        """
+        # Test badass
+        G = _get_badass_graph()
+        results = tt.compute_trust(G,1,7)
+        list.sort(results["nodes_unused"])
+        self.assertEqual(results["nodes_unused"], [0,3,8,9])
+
+        # No unused 
+        G = nx.DiGraph()
+        G.add_edge(1,2,{"cooking":5})
+        results = tt.compute_trust(G,1,2,tag="cooking")
+        list.sort(results["nodes_unused"])
+        self.assertEqual(results["nodes_unused"], [])
+        
+    def test_source_sink_tag_return(self):
+        """
+        (compute_trust) Returns the same source, sink and tag that were put in
+
+        """
+        G = _get_tagrated_graph()
+        results = tt.compute_trust(G,1,7,tag="cooking")
+        self.assertEqual(results["source"],1)
+        self.assertEqual(results["sink"],7)
+        self.assertEqual(results["tag"],"cooking")
+        
 
 class TestGenerateBN(unittest.TestCase):
     """
@@ -213,16 +289,16 @@ def _get_weighted_graph():
 
 def _get_tagrated_graph():
     Gtags = nx.DiGraph()
-    Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
-                          (1,3,dict(cooking=8, crime=7)),
-                          (1,4,dict(cooking=9, crime=6)),
-                          (2,5,dict(cooking=9, crime=9)),
-                          (3,5,dict(cooking=10, crime=5)),
-                          (3,6,dict(cooking=10, crime=6)),
-                          (4,5,dict(cooking=8, crime=7)),
-                          (4,6,dict(cooking=9, crime=6)),
-                          (5,7,dict(cooking=8, crime=5)),
-                          (6,7,dict(cooking=6, crime=7)),
+    Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4, weight=10)),
+                          (1,3,dict(cooking=8, crime=7, weight=8)),
+                          (1,4,dict(cooking=9, crime=6, weight=9)),
+                          (2,5,dict(cooking=9, crime=9, weight=9)),
+                          (3,5,dict(cooking=10, crime=5, weight=10)),
+                          (3,6,dict(cooking=10, crime=6, weight=10)),
+                          (4,5,dict(cooking=8, crime=7, weight=8)),
+                          (4,6,dict(cooking=9, crime=6, weight=9)),
+                          (5,7,dict(cooking=8, crime=5, weight=8)),
+                          (6,7,dict(cooking=6, crime=7, weight=6)),
                           ])
     return Gtags
 
@@ -244,6 +320,21 @@ def _get_graph_with_cycles():
                                (6,8,11),
                                (8,4,11),
                                ])      
+    return G
+
+def _get_badass_graph():
+    """
+    Same trust as _get_graph_with_cycles between 1 -> 7 but with cycles and useless nodes.    
+
+    """
+    G = _get_graph_with_cycles()
+    G.add_edges_from([
+            (7,1,{"cooking":10}), # edge sink -> source!
+            (7,9,{"cooking":10}), # graph extends beyond sink
+            (9,3,{"cooking":10}), # and back in again
+            (0,1,{"cooking":10}),
+            (1,1,{"cooking":10}), # edge source -> source (ooh)
+            ])
     return G
 
 def _get_random_graph(number_of_nodes, least_number_of_edges):
