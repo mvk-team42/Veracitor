@@ -14,8 +14,8 @@ def sunny(source, sink, tag, network):
     pass
 
 @taskmgr.task
-def tidaltrust(source, sink, tag, network):
-    trust = compute_trust(bayesianNetwork=network,
+def tidaltrust(source, sink, tag, network, decision=None):
+    trust = compute_trust(network=network,
                           source=source,
-                          sink=sink)
+                          sink=sink, tag=tag,decision=decision)
     return trust
