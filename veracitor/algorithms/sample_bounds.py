@@ -37,15 +37,35 @@ def sample_bounds(bayesianNetwork, k=10):
                     n['xmax'] = 0
                     
             else:
-                print globalNetwork.get_global_network()
-                print nx.to_dict_of_dicts(globalNetwork.get_global_network())
-                globalNetwork.get_common_info_ratings(n, bayesianNetwork.predecessors(n)[0], ['crime'])
+                
+                 # OUTLINE
+                
+                # if difference on extremes exist:
+                #     formula 1 (note that sigma does not mean stddev in
+                #            the formula. See text above formula!)
+                
+                # else:
+                #     formula 2
+                
+                # TODO: Choose weights w1 to w4. Start with the values 
+                # Kuter and Golbeck use: (w1, w2, w3, w4) = (0.7, 0.2, 0.1, 0.8)
+                # (provided the best results in their experiments)
+                
+                #print str(globalNetwork.get_global_network())
+                #print globalNetwork.get_global_network()['DN']
+                #print nx.to_dict_of_dicts(globalNetwork.get_global_network())
+                #globalNetwork.get_common_info_ratings(n, bayesianNetwork.predecessors(n)[0], ['crime'])
+
+                pass
+
+    globaln = globalNetwork.get_global_network()
+    print globalNetwork.get_common_info_ratings("1", "2", ["gardening"])
                     
     
     
 def _getRandom():
     # TODO: Choose a random function       
-    # random() is nicer (shorter), but returns [0,1), meaning it includes 1, which we technically shouldn't.
+    # random() is nicer (shorter), but returns [0,1), meaning it doesn't include 1, which we technically should.
     # But it's about 1 in a billion that uniform(0,1) actually returns 1.
 
     #return random.random
@@ -53,7 +73,7 @@ def _getRandom():
     return 42
     
     
-    
+# TODO: Ta bort _stddev och _mean. Flyttade till globalNetwork
 def _stddev(numbers):
     np_array = array(numbers)
     return np_array.std()
