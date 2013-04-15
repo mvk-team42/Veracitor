@@ -112,7 +112,7 @@ def tidal_trust():
        reading from it).
 
     URL Structure:
-       /algorithms/tidal_trust?source=SOURCE&sink=SINK&tag=TAG&decision=DECISION
+       /algorithms/tidal_trust?source=SOURCE&sink=SINK&tag=TAG
 
     Method:
        POST
@@ -124,9 +124,6 @@ def tidal_trust():
 
        tag (str): A tag name. Only edges/ratings under this tag will be used
        in the trust calculation.
-
-       decision (iterable): A list of node identifiers (names or id's)
-       for nodes that are not to be used in the trust calculation.
 
     Returns:
        A dict containing the results, with keywords trust, threshold, paths_used,
@@ -158,16 +155,10 @@ def tidal_trust():
     except KeyError, AttributeError:
         abort(400)
 
-    try:
-        decision = request.form['decision']
-    except KeyError:
-        decision = None
-
-    res = algorithms.tidaltrust.delay(source, sink, tag, decision=decision)
+    res = algorithms.tidaltrust.delay(source, sink, tag)
     store_job_result(res)
     return jsonify(job_id=res.id)
-    
-    
+
 
 @app.route("/algorithms/sunny", methods=['GET', 'POST'])
 def sunny():

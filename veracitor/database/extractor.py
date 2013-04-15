@@ -12,33 +12,34 @@ connect('mydb')
 
 def get_producer(requested_name):
     extr_producer = producer.Producer.objects(name=requested_name)
-    checkIfEmpty(extr_producer)
+    __checkIfEmpty(extr_producer)
     return extr_producer[0]
     
 def get_user(requested_name):
     extr_user = user.User.objects(name=requested_name)
-    checkIfEmpty(extr_user)
+    __checkIfEmpty(extr_user)
     return extr_user[0]
     
 def get_information(requested_title):
     extr_information = information.Information.objects(title=requested_title)
-    checkIfEmpty(extr_information)
+    __checkIfEmpty(extr_information)
     return extr_information[0]
     
 def get_group(owner_name, group_name):
-    group = group.Group.objects(owner=owner_name, name=group_name)
-    checkIfEmpty(group)
+    extr_owner = get_user(owner_name)
+    extr_group = group.Group.objects(owner=extr_owner, name=group_name)
+    __checkIfEmpty(extr_group)
     return extr_group[0]
     
 def get_tag(requested_name):
     extr_tag = tag.Tag.objects(name=requested_name)
-    checkIfEmpty(extr_tag)
+    __checkIfEmpty(extr_tag)
     return extr_tag[0]
 
 def get_all_tags():
     return tag.Tag.objects()
 
-def checkIfEmpty(extr_list):
+def __checkIfEmpty(extr_list):
     if (len(extr_list) == 0):
         raise NotInDatabase("Item not found")
 

@@ -20,41 +20,43 @@ from .crawler.spiders.newspaperSpider import NewspaperSpider
 from ..logger import logger
 
 
-def set_callback(callback_method):
-    global callback
-    callback = callback_method
+def init_interface():
+    #global callback
+    #callback = callback_method
     dispatcher.connect(item_scraped , signals.item_scraped)
     log.start()
     
     
 def item_scraped(item, response, spider):
     if isinstance(spider, NewspaperBankSpider):
-        add_newspaper(item.url)
+        add_newspaper(item['url']) #, "-1")
+        '''
     if isinstance(spider, ArticleSpider):
-        callback(item, spider.job_id)
+        callback(item) #, spider.job_id)
     if isinstance(spider, MetaNewspaperSpider):
-        callback(item, spider.job_id)
+        callback(item) #, spider.job_id)
     if isinstance(spider, NewspaperSpider):
-        callback(item, spider.job_id)
+        callback(item) #, spider.job_id)
+        '''
 
 
 def create_newspaper_bank():
     _run_spider(NewspaperBankSpider())
 
-def add_newspaper(url, job_id):
+def add_newspaper(url):
     spider = MetaNewspaperSpider(url=url)
-    spider.job_id = job_id
+    #spider.job_id = job_id
     _run_spider(spider)
     
-def scrape_article(url, job_id):
+def scrape_article(url):
     logger.log("blablabla",logger.Level.debug, logger.Area.crawler)
     spider = ArticleSpider(start_urls=url)
-    spider.job_id = job_id
+    #spider.job_id = job_id
     _run_spider(spider)
 
-def request_scrape(newspaper, job_id):
+def request_scrape(newspaper):
     spider = NewspaperSpider(domain=newspaper)
-    spider.job_id = job_id
+    #spider.job_id = job_id
     _run_spider(spider)
 
 def startContinuousScrape():

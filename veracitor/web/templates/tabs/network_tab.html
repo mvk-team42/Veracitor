@@ -6,8 +6,8 @@
     <p><b>Description: </b><span class="description"></span></p>
     <p><b>Source type: </b><span class="type"></span></p>
     <p><b>Tags: </b><span class="tags"></span></p>
-    <p><b>Calculated trust: </b><span class="rating">N/A</span></p>
-    <p><input type="button" value="Calculate trust" /></p>
+    <p><b>Calculated trust: </b><span id="calculated-trust" class="rating">N/A</span></p>
+    <p><input type="button" id="calculate-sunny" value="Calculate trust" /></p>
     <p><b>Your trust level: </b>
         <form>
             <label>1<input type="radio" name="trust" checked="true" /></label>
@@ -22,4 +22,3 @@
 <div id="network-holder">
 </div>
 {% endblock %}
-

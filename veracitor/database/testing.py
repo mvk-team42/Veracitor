@@ -8,6 +8,7 @@ import information
 import group
 import extractor
 import datetime
+import time
 from dbExceptions import *
 connect('testdb')
 
@@ -19,7 +20,7 @@ class GeneralSetup(unittest.TestCase):
 
         self.tearDown()
 
-        graph = globalNetwork.build_network_from_db()
+        self.graph = globalNetwork.build_network_from_db()
 
         self.tag1 = tag.Tag(name="Gardening", 
                             description="Hurrr HURRRRRR")
@@ -67,7 +68,8 @@ class GeneralSetup(unittest.TestCase):
                                        type_of="newspaper")
         self.prod4 = producer.Producer(name="USSR",
                                        type_of="propaganda")
-
+        self.prod5 = producer.Producer(name="FOX",
+                                       type_of="network")
         self.info_rating1 = producer.InformationRating(rating=4, 
                                                        information=self.info1)
         self.info_rating2 = producer.InformationRating(rating=2,
@@ -106,8 +108,27 @@ class GeneralSetup(unittest.TestCase):
         self.prod2.save()
         self.prod1.save()
         self.prod3.save()
-        self.prod4.save()                                                              
-                                                       
+        self.prod4.save()
+        self.prod5.save()
+
+        self.group1.producers.append(self.prod1)
+        self.group1.producers.append(self.prod2)
+        self.group1.producers.append(self.prod3)
+        self.group1.save()
+
+        multi = "Multi"
+        self.prod_list = []
+        for i in range(100):
+            self.prod_list.append(producer.Producer(name=multi+str(i),
+                                               type_of="TestPlaceHolder"))
+            if i > 1:
+                self.prod_list[i].source_ratings.append(producer.SourceRating(rating=1,
+                                                                          tag=self.tag1,
+                                                                          source=self.prod_list[i-1]))
+        for i in range(len(self.prod_list)):
+            self.prod_list[i].save()
+          
+
     def tearDown(self):
         globalNetwork.build_network_from_db()
         for t in tag.Tag.objects:
@@ -165,35 +186,46 @@ class TestGroupThings(GeneralSetup):
     def test_group_extractor(self):
         assert extractor.contains_group(self.group1.name) == True
         assert extractor.contains_group("Not a group!!") == False
-
+        assert extractor.get_group(self.group1.owner.name, self.group1.name).producers[0]\
+            == self.prod1
+        self.assertRaises(Exception, extractor.get_group, "Hurrman", self.group1.name) 
+ 
 
 class TestGlobalNetworkThings(GeneralSetup):
     """
     def test_global_network(self):
         assert globalNetwork.neighbours(self.prod1) == [self.prod2]
     """
+    def test_global_network_performance(self):
+        self.prod_list[35].save()
+        assert 1 == 1
+        
+    def test_get_overall_difference(self):
+        print globalNetwork.get_overall_difference(self.prod2.name, self.prod3.name,
+                                                    [self.tag1.name, self.tag2.name])\
+                                                    == 3
     def test_global_info_ratings(self):
-        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag1])\
+        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag1.name])\
             == [(self.info_rating1, self.info_rating2,)]
-        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag2])\
+        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag2.name])\
             == []
-        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod3.name,[self.tag1, self.tag2])\
+        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod3.name,[self.tag1.name, self.tag2.name])\
             == [(self.info_rating1, self.info_rating1,)]
-        assert globalNetwork.get_common_info_ratings(self.prod2.name, self.prod3.name,[self.tag2])\
+        assert globalNetwork.get_common_info_ratings(self.prod2.name, self.prod3.name,[self.tag2.name])\
             == [(self.info_rating3, self.info_rating4,)]
 
     def test_get_extreme_info_ratings(self):
-        res = globalNetwork.get_extreme_info_ratings(self.prod3.name, [self.tag1, self.tag2])
+        res = globalNetwork.get_extreme_info_ratings(self.prod3.name, [self.tag1.name, self.tag2.name])
         assert self.info_rating4 in res
         assert self.info_rating5 in res
         assert len(res) == 2
     
     def test_get_max_rating_differnce(self):
-        test1 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod4.name, [self.tag1, self.tag2])
+        test1 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod4.name, [self.tag1.name, self.tag2.name])
         assert test1 == -1
-        test2 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag1])
+        test2 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag1.name])
         assert test2 == 2
-        test3 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag2])
+        test3 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag2.name])
         assert test3 == -1
 
 if __name__ == "__main__":

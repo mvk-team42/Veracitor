@@ -56,7 +56,7 @@
 
 #search-result table tbody tr.clickable {
     cursor: default;
-    
+
     background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(225,225,225,1) 51%, rgba(246,246,246,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(50%,rgba(241,241,241,1)), color-stop(51%,rgba(225,225,225,1)), color-stop(100%,rgba(246,246,246,1))); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -123,7 +123,7 @@
     width: 40px;
     height: 40px;
     border: 2px solid black;
-    
+
     background: rgb(217,236,239); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(217,236,239,1) 0%, rgba(198,228,232,1) 50%, rgba(183,215,223,1) 51%, rgba(214,232,240,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(217,236,239,1)), color-stop(50%,rgba(198,228,232,1)), color-stop(51%,rgba(183,215,223,1)), color-stop(100%,rgba(214,232,240,1))); /* Chrome,Safari4+ */
@@ -145,3 +145,122 @@
     border-radius: 22px;
 }
 
+/* TIME PERIOD SLIDER */
+#slider-container {
+    width: 400px;
+    margin: 5px 0 10px 0;
+}
+
+#slider {
+    width: 400px;
+    margin: 0 0 0 20px;
+}
+
+#slider-labels {
+    width: 360px;
+    height: 30px;
+    margin: 4px 20px;
+    position: relative;
+
+    font-size: 10pt;
+}
+
+#slider-labels div {
+    width: 40px;
+
+    text-align: center;
+}
+
+#time-period {
+    margin: 5px 0;
+    display: inline-block;
+}
+
+/* SEARCH TYPE TABS */
+
+#search-tabs {
+    width: 700px;
+    margin: 10px 0;
+
+    -webkit-box-shadow: 0px -5px 6px rgba(50, 50, 50, 0.15);
+    -moz-box-shadow: 0px -5px 6px rgba(150, 50, 50, 0.15);
+    box-shadow: 0px -5px 10px rgba(150, 150, 150, 0.15);
+}
+
+#search-tabs-head {
+    width: 100%;
+    height: 40px;
+
+    /*overflow: hidden;*/
+}
+
+#search-tabs-head .search-tab {
+    width: 50%;
+    height: 100%;
+    float: left;
+
+    background: #ccc;
+    line-height: 40px;
+    text-align: center;
+
+    -webkit-box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
+    -moz-box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
+    box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
+}
+
+#search-tabs-head .search-tab a,
+#search-tabs-head .search-tab a:link,
+#search-tabs-head .search-tab a:active,
+#search-tabs-head .search-tab a:hover,
+#search-tabs-head .search-tab a:focus {
+    width: 100%;
+    height: 100%;
+    float: left;
+
+    text-decoration: none;
+    color: #444;
+}
+
+#search-tabs-head .search-tab.active a {
+    color: #000;
+}
+
+#search-tabs-head .search-tab.active {
+    background: #eee;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+#search-tabs-body {
+
+}
+
+#search-tabs-body .search-tabs-content {
+    padding: 15px 20px;
+    background: #eee;
+}
+
+#search-tabs-body .search-tabs-content .search-type {
+
+}
+
+#search-tabs-body .search-tabs-content .search-type h2 {
+    font-size: 14pt;
+}
+
+#search-tabs-body .search-tabs-content .search-type .search-type-radio {
+    float: left;
+    margin: 10px 10px 0 0;
+}
+
+#search-tabs-body .search-tabs-content .search-type .search-type-content {
+    margin: 0 0 0 20px;
+}
+
+/* DATABASE SEARCH TAB */
+#database-search-button {
+    width: 200px;
+    height: 40px;
+    margin: 20px 0 0 0;
+}

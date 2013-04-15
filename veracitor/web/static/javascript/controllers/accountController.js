@@ -6,9 +6,8 @@
     presented in this view, preferable in text fields to support editing.
     @constructor
  */
-var AccountController = function (view) {
+var AccountController = function (view, controller) {
 
 
 
 };
-
