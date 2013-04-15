@@ -112,7 +112,7 @@ def tidal_trust():
        reading from it).
 
     URL Structure:
-       /algorithms/tidal_trust?source=SOURCE&sink=SINK&tag=TAG
+      ``/algorithms/tidal_trust?source=SOURCE&sink=SINK&tag=TAG``
 
     Method:
        POST
@@ -127,11 +127,12 @@ def tidal_trust():
 
     Returns:
         Upon success, return an object with the job_id, ex::
+
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
-    Errors::
-       400 - Bad syntax in request
-       405 - Method not allowed
+    Errors:
+       * **400** -- Bad syntax in request
+       * **405** -- Method not allowed
 
     """
 
