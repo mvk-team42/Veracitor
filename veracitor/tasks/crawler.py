@@ -19,15 +19,10 @@ def anton():
 @taskmgr.task
 def scrape_article(url):
     ci.init_interface()
-    err_msg = ""
-    try:
-        ci.scrape_article(url)
-    except ValueError, err:
-        err_msg = str(err)
-
+    ci.scrape_article(url)
+    
     res = "scraped article: " + url
-    if err_msg:
-        res += "\nerr: " + err_msg
+    
     return res
 
 

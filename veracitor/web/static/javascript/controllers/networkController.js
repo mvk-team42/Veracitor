@@ -19,6 +19,40 @@ var NetworkController = function (view, controller, visualizer) {
     });
 
     /**
+       Request a TidalTrust value.
+    */
+    window.tt = function request_tidal_trust(source, sink, tag) {
+        $.post('/algorithms/tidal_trust', {
+            'source': source,
+            'sink': sink,
+            'tag': tag
+        }, function (data) {
+            // SUCCESS
+//            var response = JSON.parse(data);
+            console.log("Ok: ", data);
+        })
+        .fail(function (data) {
+            // FAIL
+            console.log("Fail:", data);
+        });
+    }
+    window.job_result = function request_job_result(job_id) {
+
+        $.post('/jobs/job_result', {
+            'job_id': job_id
+        }, function (data) {
+            // SUCCESS
+//            var response = JSON.parse(data);
+            console.log("Ok: ", data);
+        })
+        .fail(function (data) {
+            // FAIL
+            console.log("Fail:", data);
+        });
+    
+    }
+    
+    /**
        Request a SUNNY value.
     */
     function request_sunny_value(source, sink, tag) {

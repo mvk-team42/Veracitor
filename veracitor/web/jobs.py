@@ -11,33 +11,30 @@ import veracitor.tasks.algorithms as algorithms
 
 ### Crawler jobs ###
     
-@app.route('/scrape_article', methods=['POST'])
+@app.route('/jobs/crawler/scrape_article', methods=['POST'])
 def scrape_article():
     """
-    ## /scrape_article (POST)
+    Scrapes an article from a URL and adds it to the database.
 
-    **Description:**
-    Starts a crawling job referrable to via job id.
+    URL Structure:
+        /jobs/crawler/scrape_article
 
-    **URL-Structure:**
-    `/scrape_article?url=<url>`
+    Method:
+        POST
 
-    **Method:**
-    POST
+    Parameters:
+        url (str): A URL to the article which should be scraped.
 
-    **Parameters:**
-    url=<url> a URL-encoded string with the url to be scraped.
+    Returns:
+        Upon success, return an object with the job_id, ex:
+        {"job_id": "ff92-23ad-232a-2334s-23"}
+
+    Result when finished:
+        result (str) : "scraped article: " + url
     
-    **Returns:**
-    Upon success, return an object with the job_id, ex:
-    
-    `{"job_id": "ff92-23ad-232a-2334s-23"}`
-
-    **Errors:**
-    400 - Bad syntax in request
-    405 - Method not allowed
-
-    **Notes:**
+    Errors::
+       400 - Bad syntax in request
+       405 - Method not allowed
 
     """
     if not request.method == 'POST':
@@ -51,68 +48,79 @@ def scrape_article():
     return jsonify(job_id=res.id)
 
 
-@app.route('/add_newspaper', methods=['GET', 'POST'])
+@app.route('/jobs/crawler/add_newspaper', methods=['GET', 'POST'])
 def add_newspaper():
     """
-    ## /add_newspaper ('GET', 'POST')
-    **Description:**
-    Starts a crawl of a newspaper.
-    **URL-Structure:**
 
-    **Method:**
+    Crawls a URL and adds the newspaper to the database.
 
-    **Parameters:**
+    URL Structure:
+        /jobs/crawler/add_newspaper
 
-    **Returns:**
+    Method:
+        POST
 
-    **Errors:**
+    Parameters:
+        url (str): A URL to the newspaper which should be crawled.
 
-    **Notes:**
+    Returns:
+        Upon success, return an object with the job_id, ex:
+        {"job_id": "ff92-23ad-232a-2334s-23"}
+
+    Result when finished:
+        result (str) : "requested scrape for: " + url
+    
+    Errors::
+       400 - Bad syntax in request
+       405 - Method not allowed
 
     """
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        url = request.form['url']
+    except KeyError, AttributeError:
+        abort(400)
+    res = crawler.add_newspaper.delay(url)
+    return jsonify(job_id=res.id)
 
-    pass
 
-
-@app.route('/request_scrape', methods=['GET', 'POST'])
+@app.route('/jobs/crawler/request_scrape', methods=['GET', 'POST'])
 def request_scrape():
     """
-    ## /request_scrape ('GET', 'POST')
-    **Description:**
-    
-    **URL-Structure:**
+    Requests a scrape from 
 
-    **Method:**
+    URL Structure:
+       /jobs/crawler/request_scrape
 
-    **Parameters:**
+    Method:
+       POST
 
-    **Returns:**
+    Parameters:
+       url
 
-    **Errors:**
+    Returns:
+        Upon success, return an object with the job_id, ex::
+        {"job_id": "ff92-23ad-232a-2334s-23"}
 
-    **Notes:**
+    Errors::
+       400 - Bad syntax in request
+       405 - Method not allowed
 
     """
     pass
+
 
 ### Algorithm jobs ###
 
-@app.route("/algorithms/tidal_trust", methods=['GET', 'POST'])
+@app.route("/jobs/algorithms/tidal_trust", methods=['GET', 'POST'])
 def tidal_trust():
     """
-    Caclulates the trust between source and sink in the global network using
+    Calculates the trust between source and sink in the global network using
     the specified tag.
 
-    .. note::
-       This is only used when one only wants to use Tidal Trust. I.e., this is
-       not to be used from inside of SUNNY where the tidaltrust module should
-       be used directly.
-
-       This function/request operates on the global network (but only by
-       reading from it).
-
     URL Structure:
-       /algorithms/tidal_trust?source=SOURCE&sink=SINK&tag=TAG
+       /jobs/algorithms/tidal_trust?source=SOURCE&sink=SINK&tag=TAG
 
     Method:
        POST
@@ -149,7 +157,7 @@ def tidal_trust():
     return jsonify(job_id=res.id)
 
 
-@app.route("/algorithms/sunny", methods=['GET', 'POST'])
+@app.route("/jobs/algorithms/sunny", methods=['GET', 'POST'])
 def sunny():
     """
     ## /algorithms/sunny ('GET', 'POST')
@@ -172,26 +180,29 @@ def sunny():
     
 ### Job statistics ###
     
-@app.route("/job_ids", methods=['POST'])
+@app.route("/jobs/job_ids", methods=['POST'])
 def get_job_ids():
     """
-    ## /get_job_ids ('POST'])
+    Returns a list with the current running jobs.
 
-    **Description:**
-    
-    **URL-Structure:**
+    URL Structure:
+       /jobs/job_ids
 
-    **Method:**
+    Method:
+        POST
 
-    **Parameters:**
+    Parameters:
+        None
 
-    **Returns:**
+    Returns:
+        keys (list): A list with the job_ids of the current jobs running.
 
-    **Errors:**
-
-    **Notes:**
+    Errors::
+       405 - Method not allowed
 
     """
+    if not request.method == 'POST':
+        abort(405)
     try:
         keys = app.results.keys()
     except AttributeError:
@@ -199,8 +210,8 @@ def get_job_ids():
 
     return jsonify(keys=keys)
 
-@app.route("/job_state/<job_id>", methods=['POST'])
-def get_job_state(job_id):
+@app.route("/jobs/job_state", methods=['POST'])
+def get_job_state():
     """
     ## /get_job_state (POST)
     **Description:**
@@ -220,11 +231,16 @@ def get_job_state(job_id):
 
     """
     try:
+        job_id = request.form['job_id']
+    except:
+        abort(404)
+    
+    try:
         return jsonify(state=str(app.results[job_id].state))
     except:
         abort(404)
 
-@app.route("/job_result", methods=['POST'])
+@app.route("/jobs/job_result", methods=['POST'])
 def get_job_result():
     """
     ## /job_result (POST)
