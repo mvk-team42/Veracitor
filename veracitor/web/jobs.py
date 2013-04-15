@@ -155,10 +155,10 @@ def tidal_trust():
     except KeyError, AttributeError:
         abort(400)
 
-
     res = algorithms.tidaltrust.delay(source, sink, tag)
     store_job_result(res)
     return jsonify(job_id=res.id)
+
 
 @app.route("/algorithms/sunny", methods=['GET', 'POST'])
 def sunny():

@@ -1,12 +1,17 @@
-""" 
-The TidalTrust algorithm as specified by Jennifer Golbeck (2007),
-with some extended functionality.
+# -*- coding: utf-8 -*-
 
+""" 
+.. module:: tidaltrust
+    :synopsis: The TidalTrust algorithm as specified by Jennifer Golbeck (2007), with some extended functionality.
+
+.. moduleauthor:: Daniel Molin <dmol@kth.se>
+.. moduleauthor:: Martin Runelöv <mrunelov@kth.se>
 """
 
 import sys
 import networkx as nx
 from copy import deepcopy
+from itertools import chain
 
 def tidal_trust(source, sink, graph, tag):
     """ 
@@ -22,9 +27,19 @@ def tidal_trust(source, sink, graph, tag):
     tag: A tag identifier that defines which attribute in graph should
     be used as trust ratings in the calculation (DiGraph[x][y][tag] = rating)
     
-    Returns None if no trust value could be calculated.
+    Returns: A dict containing the results, with keywords trust, threshold,
+    paths_used, nodes_used, nodes_unused, source, sink, tag.
     
     """
+    results = {"trust": None,
+               "threshold": None,
+               "paths_used": [],
+               "nodes_used": [],
+               "nodes_unused": [],
+               "source": source,
+               "sink": sink,
+               "tag": tag,
+               }
     
     # Remove all edges but the ones with the specific tag so that all_shortest_paths
     # gives correct paths. 
@@ -34,33 +49,43 @@ def tidal_trust(source, sink, graph, tag):
         raise TypeError("Input graph is probably not a compatible graph object.")
         
     graph.remove_edges_from(remove_list)
-    
+
     try:
         shortest = nx.all_shortest_paths(graph, source=source, target=sink)
         paths_list = list(shortest)
     except nx.exception.NetworkXNoPath:
-        return None
+        return results
     except KeyError:
         # An input node was not in the graph 
-        return None
-    
+        return results
+
     threshold = get_threshold(paths_list, graph, tag)
+    results['threshold'] = threshold
+
+    useful_paths = remove_low_rated_paths(paths_list, threshold, graph, tag)
+    results["paths_used"] = useful_paths
+    print useful_paths
+    results["nodes_used"] = list(set(chain.from_iterable(useful_paths)))
+
+    # Add unused nodes (not in shortest path) to results
+    path_nodes = set(chain.from_iterable(useful_paths))
+    results["nodes_unused"] += [n for n in graph.nodes() if n not in path_nodes]
     
     queue = []
     # Loop over all nodes in all paths that are not the sink or parents of the sink (leaves)
     # Possible optimization: merge this loop with the cached_trust loop below
-    for i in reversed(range(len(paths_list[0])-2)):
-        for j in range(len(paths_list)):
-            if(paths_list[j][i] not in queue):
+    for i in reversed(range(len(useful_paths[0])-2)):
+        for j in range(len(useful_paths)):
+            if(useful_paths[j][i] not in queue):
                 # Add to queue for backwards search
-                queue.append(paths_list[j][i])
-                
+                queue.append(useful_paths[j][i])
+    
     cached_trust = {}
                 
     #Initialize cached_trust for all leaves.
-    for n in range(len(paths_list)):
+    for n in range(len(useful_paths)):
         # Select predecessors of sink in path n
-        sink_neighbor = paths_list[n][len(paths_list[0])-2]   
+        sink_neighbor = useful_paths[n][len(useful_paths[0])-2]   
         if (sink_neighbor, sink) not in cached_trust:
             cached_trust[(sink_neighbor, sink)] = graph[sink_neighbor][sink][tag]
             
@@ -93,19 +118,21 @@ def tidal_trust(source, sink, graph, tag):
         
         if denominator > 0:
             cached_trust[(current_node, sink)] = numerator / denominator                                
+    
         # Sets trust to -1 if no children could be used (e.g., ratings below threshold)
         else:
             cached_trust[(current_node, sink)] = -1       
+            results["nodes_unused"].append(current_node)
+        
     
     if (source, sink) in cached_trust:
-        return cached_trust[(source, sink)]
-    else:
-        return None
-        
+        results["trust"] = cached_trust[(source, sink)]
+
+    return results        
     
 def get_threshold(paths, graph, tag):
     """
-    Calculates the threshold used to exclude paths in the TidalTrust algorithm. 
+    Calculates the threshold used to exclude paths in the TidalTrust algorihm. 
     Returns the maximum trust of the lowest trust in each individual path
 
     """
@@ -123,10 +150,7 @@ def get_threshold(paths, graph, tag):
 
     return threshold
 
-# This function is currently not used (threshold is instead checked in tidal_trust)
-# possible optimization?: use this
-# users beware for this code is old and probably doesn't work
-def remove_low_rated_paths(paths, threshold, graph):
+def remove_low_rated_paths(paths, threshold, graph, tag):
     """
     Removes paths from a list of paths that contains weights below the threshold.
     
@@ -134,60 +158,69 @@ def remove_low_rated_paths(paths, threshold, graph):
     relevant_paths = paths[:]
     for path in paths:
         for i in range(len(path)-2):
-            if graph[path[i]][path[i+1]]['weight'] < threshold:
+            if graph[path[i]][path[i+1]][tag] < threshold:
                relevant_paths.remove(path)
-            break
+            continue
     
     return relevant_paths
 
-def compute_trust(bayesianNetwork, source, sink, decision=None, tag=None, callback=None):
+def compute_trust(network, source, sink, decision=None, tag="weight"):
     """
-    Computes the trust between the source and sink in a NetworkX DiGraph (bayesianNetwork) 
-    and returns the value as a float.
+    Computes the trust between the source and sink (strings) in network
+    (NetworkX DiGraph).
 
-    decision (optional): A list of node identifiers (i.e. names or id's) for
-    nodes that are not to be used in the trust calculation.
-
-    tag (optional): A tag name (String). Only edges/ratings under this tag
-    will be used in the trust calculation.
+    If a tag is specified, edges will be considered tagged with properties, like so:
     
-    callback (optional): A callback function to be called when the trust has been calculated.
+    >>> DiGraph[1][2]["cooking"]
+    5
 
-    If tag is specified, edges will be tagged with properties, like so:
-    DiGraph[1][2][tag_name] = rating.
-    Otherwise, the edges will be considered weighted: DiGraph[1][2]["weight"] = rating
+    Otherwise, the edges will be considered weighted:
+
+    >>> DiGraph[1][2]["weight"]
+    5
+
+    Args:
+       network (DiGraph): The graph in which trust is to be computed.
+
+       source (str): The name of the source node.
+
+       sink (str): The name of the sink node.
+
+    Kwargs:
+       decision (iterable): A list of node identifiers (i.e. names or id's)
+       for nodes that are not to be used in the trust calculation.
+
+       tag (str): A tag name. Only edges/ratings under this tag will be used
+       in the trust calculation.
+
+    Returns:
+       A dict containing the results, with keywords trust, threshold, paths_used,
+       nodes_used, nodes_unused, source, sink::
+
+          {
+             "trust": (int);
+             "threshold": (int),
+             "paths_used": (list of lists of str),
+             "nodes_used": (list of str),
+             "nodes_unused": (list of str),
+             "source": (str),
+             "sink": (str),
+             "tag": (str),
+          }
 
     """
     #check input
-    if bayesianNetwork == None or source == None or sink == None:
+    if network == None or source == None or sink == None:
         raise TypeError("Input parameters can't be None")
 
-    bayesianNetwork = deepcopy(bayesianNetwork)
+    network = deepcopy(network)
 
     # Ignore nodes as specified by decision
     if decision != None:
-        bayesianNetwork.remove_nodes_from(decision)
-    # If no tag is specified, the graph is considered un-tagged and 
-    # the 'weight' attributes of the edges are used as ratings instead.
-    if tag == None:
-        tag = "weight"
-
-
-    trust = tidal_trust(graph=bayesianNetwork, source=source, sink=sink, tag=tag)
+        network.remove_nodes_from(decision)
+   
+    trust_results = tidal_trust(graph=network, source=source, sink=sink, tag=tag)
     
-    if callback != None:
-        callback(trust)
-        
-    return trust
-        
-
-
-
-
-
-
     
-
-
-     
+    return trust_results
 
