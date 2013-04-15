@@ -75,21 +75,21 @@ if __name__ == "__main__":
     # The same graph as G (graf1.png) but the weights there are here under "cooking"
     # and the "crime" ratings are kind of random.
     # this is how you add edges to the global graph I think y'all
-    G.add_edges_from([(1,2,dict(cooking=10, crime=4)),
-                      (1,3,dict(cooking=8, crime=7)),
-                      (1,4,dict(cooking=9, crime=6)),
-                      (2,5,dict(cooking=9, crime=9)),
-                      (3,5,dict(cooking=10, crime=5)),
-                      (3,6,dict(cooking=10, crime=6)),
+    G.add_edges_from([("1","2",dict(cooking=10, crime=4)),
+                      ("1","3",dict(cooking=8, crime=7)),
+                      ("1","4",dict(cooking=9, crime=6)),
+                      ("2","5",dict(cooking=9, crime=9)),
+                      ("3","5",dict(cooking=10, crime=5)),
+                      ("3","6",dict(cooking=10, crime=6)),
                       #(3,7,dict(cooking=7)),
-                      (4,5,dict(cooking=8, crime=7)),
-                      (4,6,dict(cooking=9, crime=6)),
-                      (5,7,dict(cooking=8, crime=5)),
-                      (6,7,dict(cooking=6, crime=7)),
-                      (6,8,dict(cooking=5, crime=7)),
-                      (8,4,dict(cooking=5, crime=7)),
-                      (3,2,dict(cooking=5, crime=7)),
-                      (2,1,dict(cooking=5, crime=7)),
+                      ("4","5",dict(cooking=8, crime=7)),
+                      ("4","6",dict(cooking=9, crime=6)),
+                      ("5","7",dict(cooking=8, crime=5)),
+                      ("6","7",dict(cooking=6, crime=7)),
+                      ("6","8",dict(cooking=5, crime=7)),
+                      ("8","4",dict(cooking=5, crime=7)),
+                      ("3","2",dict(cooking=5, crime=7)),
+                      ("2","1",dict(cooking=5, crime=7)),
                       ])
 
     
