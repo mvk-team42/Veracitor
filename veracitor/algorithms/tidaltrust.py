@@ -209,6 +209,9 @@ def compute_trust(network, source, sink, decision=None, tag="weight"):
           }
 
     """
+    print "source:", source, "\nsink:", sink, "\nnetwork:", network \
+        "\nnetwork dict:", str(nx.to_dict_of_dicts(network)), "\ntag:", tag
+
     #check input
     if network == None or source == None or sink == None:
         raise TypeError("Input parameters can't be None")
