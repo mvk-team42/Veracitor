@@ -126,19 +126,8 @@ def tidal_trust():
        in the trust calculation.
 
     Returns:
-       A dict containing the results, with keywords trust, threshold, paths_used,
-       nodes_used, nodes_unused, source, sink::
-
-          {
-             "trust": (int);
-             "threshold": (int),
-             "paths_used": (list of lists of str),
-             "nodes_used": (list of str),
-             "nodes_unused": (list of str),
-             "source": (str),
-             "sink": (str),
-             "tag": (str),
-          }
+        Upon success, return an object with the job_id, ex::
+        {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Errors::
        400 - Bad syntax in request
@@ -159,6 +148,7 @@ def tidal_trust():
     res = algorithms.tidaltrust.delay(source, sink, tag)
     store_job_result(res)
     return jsonify(job_id=res.id)
+
 
 @app.route("/algorithms/sunny", methods=['GET', 'POST'])
 def sunny():
