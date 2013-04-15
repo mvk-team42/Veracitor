@@ -46,6 +46,7 @@ def tidal_trust(source, sink, graph, tag):
     try:
         remove_list = [(x,y) for (x,y) in graph.edges() if tag not in graph[x][y]]
     except AttributeError:
+        print "(tidaltrust) AttributeError"
         raise TypeError("Input graph is probably not a compatible graph object.")
         
     graph.remove_edges_from(remove_list)
