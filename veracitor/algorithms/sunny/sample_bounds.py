@@ -157,6 +157,8 @@ def p_confidence(p1, p2, weights=(0.7, 0.2, 0.1, 0.8)):
        
     """
 
+    ## TODO: use something other than globalNetwork (for example a network
+    ##       sent in by sunny? <@:-)-X--<
     overall_difference = globalNetwork.get_overall_difference(p1, p2, [tag])
     difference_on_extremes = globalNetwork.get_difference_on_extremes(p1, p2, [tag])
     max_difference = globalNetwork.get_max_rating_difference(p1, p2, [tag])
