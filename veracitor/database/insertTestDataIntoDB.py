@@ -69,7 +69,7 @@ if __name__ == "__main__":
     prod2.save()
     prod1.save()
 
-    
+    """
     ### TEST GRAPH
     G = nx.DiGraph()
     # The same graph as G (graf1.png) but the weights there are here under "cooking"
@@ -116,4 +116,4 @@ if __name__ == "__main__":
                                               information=info2)
         prods[n].info_ratings.append(info_rating1)
         prods[n].info_ratings.append(info_rating2)
-        prods[n].save()
+        prods[n].save()"""

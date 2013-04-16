@@ -12,7 +12,7 @@
 var NetworkController = function (view, controller, visualizer) {
 
     // Display something in the network
-    visualizer.visualizeProducerInNetwork(null, -1);
+    //visualizer.visualizeProducerInNetwork(null, -1);
 
     $('#calculate-sunny').click(function (evt) {
         request_sunny_value('SvD', 'DN', 'newspaper');
