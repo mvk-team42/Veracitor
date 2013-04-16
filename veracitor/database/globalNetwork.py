@@ -158,8 +158,12 @@ def get_extreme_info_ratings(producer_name, tag_names):
                 relevant_info_ratings_ints.append(info.rating)
                 total_sum += info.rating
                 break
-    
-    mean = (total_sum)/len(relevant_info_ratings)
+
+    if(len(relevant_info_ratings > 0)):
+           mean = (total_sum)/len(relevant_info_ratings)
+    else:
+        return []
+
 
     extremes = []
     np_array = array(relevant_info_ratings_ints)

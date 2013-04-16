@@ -173,3 +173,8 @@ def p_confidence(p1, p2, weights=(0.7, 0.2, 0.1, 0.8)):
                                    weights[1]*max_difference + \
                                    weights[2]*difference_on_extremes))
     
+
+
+
+
+

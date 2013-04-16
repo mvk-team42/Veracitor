@@ -102,7 +102,7 @@ if __name__ == "__main__":
         for rated in G[n]:
             for tag_name in G[n][rated]:
                 source_rating = producer.SourceRating(rating=G[n][rated][tag_name],
-                                                      source=prods[n],
+                                                      source=prods[rated],
                                                       tag=tags[tag_name])
                 prods[n].source_ratings.append(deepcopy(source_rating))
 
