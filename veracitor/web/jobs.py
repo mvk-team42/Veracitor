@@ -3,6 +3,15 @@
 # Defines job handling via a RESTful api
 # aswell as some utility functions
 
+"""
+.. module:: jobs
+    :synopsis: The REST-API of Veracitor defined by jobs.
+
+.. moduleauthor:: Anton Erholt <aerholt@kth.se>
+.. moduleauthor:: Daniel Molin <dmol@kth.se>
+
+"""
+
 from flask import request, redirect, url_for, render_template, abort, jsonify
 from veracitor.web import app
 
@@ -26,7 +35,7 @@ def scrape_article():
         url (str): A URL to the article which should be scraped.
 
     Returns:
-        Upon success, return an object with the job_id, ex:
+        Upon success, return an object with the job_id, ex::
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
@@ -64,7 +73,7 @@ def add_newspaper():
         url (str): A URL to the newspaper which should be crawled.
 
     Returns:
-        Upon success, return an object with the job_id, ex:
+        Upon success, return an object with the job_id, ex::
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
@@ -120,7 +129,7 @@ def tidal_trust():
     the specified tag.
 
     URL Structure:
-       /jobs/algorithms/tidal_trust?source=SOURCE&sink=SINK&tag=TAG
+       /jobs/algorithms/tidal_trust
 
     Method:
        POST
@@ -136,6 +145,21 @@ def tidal_trust():
     Returns:
         Upon success, return an object with the job_id, ex::
         {"job_id": "ff92-23ad-232a-2334s-23"}
+
+    Result when finished:
+       An object containing the results, with keywords trust, threshold, paths_used,
+       nodes_used, nodes_unused, source, sink::
+    
+          {
+             "trust": (int);
+             "threshold": (int),
+             "paths_used": (list of lists of str),
+             "nodes_used": (list of str),
+             "nodes_unused": (list of str),
+             "source": (str),
+             "sink": (str),
+             "tag": (str),
+          }
 
     Errors::
        400 - Bad syntax in request
@@ -160,20 +184,46 @@ def tidal_trust():
 @app.route("/jobs/algorithms/sunny", methods=['GET', 'POST'])
 def sunny():
     """
-    ## /algorithms/sunny ('GET', 'POST')
-    **Description:**
+    Calculates the trust between source and sink in the global network using
+    the specified tag.
+
+    URL Structure:
+       /jobs/algorithms/sunny
+
+    Method:
+       POST
+
+    Parameters:
+       source (str): The name of the source node.
+
+       sink (str): The name of the sink node.
+
+       tag (str): A tag name. Only edges/ratings under this tag will be used
+       in the trust calculation.
+
+    Returns:
+        Upon success, return an object with the job_id, ex::
+        {"job_id": "ff92-23ad-232a-2334s-23"}
+
+    Result when finished:
+       See :doc:get_job_result
+       An object containing the results, with keywords trust, threshold, paths_used,
+       nodes_used, nodes_unused, source, sink::
     
-    **URL-Structure:**
+          {
+             "trust": (int);
+             "threshold": (int),
+             "paths_used": (list of lists of str),
+             "nodes_used": (list of str),
+             "nodes_unused": (list of str),
+             "source": (str),
+             "sink": (str),
+             "tag": (str),
+          }
 
-    **Method:**
-
-    **Parameters:**
-
-    **Returns:**
-
-    **Errors:**
-
-    **Notes:**
+    Errors::
+       400 - Bad syntax in request
+       405 - Method not allowed
 
     """
     pass
@@ -213,23 +263,32 @@ def get_job_ids():
 @app.route("/jobs/job_state", methods=['POST'])
 def get_job_state():
     """
-    ## /get_job_state (POST)
-    **Description:**
-    
-    **URL-Structure:**
 
-    **Method:**
+    URL Structure:
+       /jobs/job_state
 
-    **Parameters:**
+    Method:
+        POST
 
-    **Returns:**
+    Parameters:
+        job_id (str): The id of the job as a string.
 
-    **Errors:**
-    404 - No job with that id.
-    
-    **Notes:**
+    Returns:
+        See <http://docs.celeryproject.org/en/latest/reference/celery.states.html> for more info.
+        state (str): The job state, defined as at least the following::
+            SUCCESS
+            FAILURE
+            PENDING
+       
+
+    Errors::
+       405 - Method not allowed
+       404 - No job with that id.
+
 
     """
+    if not request.method == 'POST':
+        abort(405)
     try:
         job_id = request.form['job_id']
     except:
@@ -243,22 +302,29 @@ def get_job_state():
 @app.route("/jobs/job_result", methods=['POST'])
 def get_job_result():
     """
-    ## /job_result (POST)
-    **Description:**
-    
-    **URL-Structure:**
 
-    **Method:**
+    URL Structure:
+       /jobs/job_result
 
-    **Parameters:**
+    Method:
+        POST
 
-    **Returns:**
-    An object containing the
-    
-    **Errors:**
-    405 - Method not allowed.
-    404 - No job with that id.
-    406 - Job not ready.
+    Parameters:
+        job_id (str): The id of the job as a string.
+
+    Returns:
+       Whatever the corresponding job said it would return under 'Result upon finish',
+       stored in an object under the key 'result', ex::
+          
+       {
+           "result": "scraped article: http://dn.se/nyheter/artikel"
+       }
+       
+
+    Errors::
+       405 - Method not allowed.
+       404 - No job with that id.
+       406 - Job not ready.
 
     **Notes:**
 
