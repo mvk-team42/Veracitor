@@ -9,6 +9,8 @@
 
 """
 
+from flask import render_template
+
 from veracitor.web import app
 
 

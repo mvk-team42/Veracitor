@@ -26,7 +26,7 @@ def scrape_article():
     """Scrapes an article from a URL and adds it to the database.
 
     URL Structure:
-        /jobs/crawler/scrape_article
+        ``/jobs/crawler/scrape_article``
 
     Method:
         POST
@@ -36,15 +36,16 @@ def scrape_article():
 
     Returns:
         Upon success, returns an object with the job_id, ex::
+        
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
-        result (str) : "scraped article: " + url
+        *result (str)* : "scraped article: " + url
     
-    Errors::
-       400 - Bad syntax in request
-       405 - Method not allowed
-
+    Errors:
+       * **400** -- Bad syntax in request
+       * **405** -- Method not allowed
+    
     """
     if not request.method == 'POST':
         abort(405)
@@ -89,6 +90,7 @@ def add_newspaper():
     except KeyError, AttributeError:
         abort(400)
     res = crawler.add_newspaper.delay(url)
+    store_job_result(res)
     return jsonify(job_id=res.id)
 
 
@@ -113,7 +115,16 @@ def request_scrape():
        405 - Method not allowed
 
     """
-    pass
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        url = request.form['url']
+    except KeyError, AttributeError:
+        abort(400)
+    res = crawler.request_scrape.delay(url)
+    store_job_result(res)
+    return jsonify(job_id=res.id)
+
 
 
 ### Algorithm jobs ###

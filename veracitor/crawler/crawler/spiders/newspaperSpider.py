@@ -15,6 +15,13 @@ from .articleSpider import ArticleSpider
 
 
 class NewspaperSpider(CrawlSpider):
+
+    """
+        Looks for articles everywhere on a given newspaper webpage and when finding one, 
+        uses ArticleSpider's methods to scrape it, and then sends it to pipeline for 
+        further processing.
+    """
+
     name = "newspaper"
     
 

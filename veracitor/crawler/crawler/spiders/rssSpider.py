@@ -14,6 +14,13 @@ from .articleSpider import ArticleSpider
 
 
 class RssSpider(CrawlSpider):
+
+    """
+        Scrapes all articles in given RSS-page (that belongs to a specific newspaper)
+        Constructs Article-items just as ArticleSpider and NewspaperSpider, but probably quicker
+        since all info is neatly organized in XML.
+    """
+
     name = "rss"
    
     def __init__(self, *args, **kwargs):

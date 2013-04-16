@@ -17,7 +17,7 @@ def search_producers():
 
     Method:
         POST
-    
+
     Parameters:
         name (str): The name of a producer.
         type (str): The type of a producer.
@@ -198,3 +198,91 @@ def search_producers():
 
 #     return redirect(url_for('index'))
 
+#     if request.method == 'POST':
+#         error = {
+#             'message' : 'none',
+#             'type' : 'none'
+#         }
+#         html = ''
+
+#         if request.form:
+#             f = request.form
+
+#             data = {}
+
+#             if not f['name']:
+#                 error = {
+#                     'message' : 'No search parameter.',
+#                     'type' : 'no_param'
+#                 }
+#             elif not f['type']:
+#                 error = {
+#                     'message' : 'No type chosen.',
+#                     'type' : 'no_type'
+#                 }
+
+#             if error['type'] == 'none':
+#                 res = extractor.search_producers(possible_prod=f['name'],
+#                                                  type_of=f['type'])
+
+#                 if res:
+#                     data = { 'result' : res }
+#                 else:
+#                     error = {
+#                         'message' : 'Could not find anything.',
+#                         'type' : 'no_result'
+#                     }
+
+#             if not error['type'] == 'none':
+#                 data = { 'error' : error }
+
+#             html = render_template('tabs/search_results.html', data=data)
+#         else:
+#             error = {
+#                 'message' : 'Form data error.',
+#                 'type' : 'form_error'
+#             }
+
+#         return json.dumps({ 'error' : error, 'html' : html })
+
+#     return redirect(url_for('index'))
+
+# """
+# Initializes the web page.
+# """
+# @app.route('/')
+# def index():
+#     veracitor = {
+#         'title' : 'Veracitor',
+#         'tabs' : [
+#             {
+#                 'name' : 'Search',
+#                 'key' : 'search',
+#                 'viewid' : 'search-view',
+#                 'menuid' : 'search-menu',
+#                 'url' : 'tabs/search_tab.html'
+#             },
+#             {
+#                 'name' : 'Network',
+#                 'key' : 'network',
+#                 'viewid' : 'network-view',
+#                 'menuid' : 'network-menu',
+#                 'url' : 'tabs/network_tab.html'
+#             },
+#             {
+#                 'name' : 'Ratings',
+#                 'key' : 'ratings',
+#                 'viewid' : 'ratings-view',
+#                 'menuid' : 'ratings-menu',
+#                 'url' : 'tabs/ratings_tab.html'
+#             },
+#             {
+#                 'name' : 'Account',
+#                 'key' : 'account',
+#                 'viewid' : 'account-view',
+#                 'menuid' : 'account-menu',
+#                 'url' : 'tabs/account_tab.html'
+#             }
+#         ]
+#     }
+#     return render_template('index.html', vera=veracitor)
