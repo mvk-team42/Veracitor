@@ -29,7 +29,9 @@ class NewspaperSpider(CrawlSpider):
         current_dir = dirname(realpath(__file__))
         self.xpaths = Xpaths(current_dir + '/../webpageXpaths.xml')
         domain = kwargs.get('domain')
+        log.msg("crawling domain " + domain)
         self.start_urls = [domain]
+        domain = domain.replace('http://','')
         self.rules = (
             Rule(
                 SgmlLinkExtractor(allow_domains=domain, deny=self.xpaths.get_article_deny_urls(domain)), 
@@ -37,9 +39,10 @@ class NewspaperSpider(CrawlSpider):
             ),
         )
         super(NewspaperSpider, self).__init__()
-        
+
 
     def scrape_article(self, response):
+        log.msg("inside scrape_article")
         if self._is_article(response):
             return ArticleSpider.scrape_article(response)
 
