@@ -1,9 +1,50 @@
 from flask import Flask, render_template, request, redirect, url_for
-from ..database import *
 
 import json
 
 from veracitor.web import app
+from veracitor.web.utils import store_job_result
+import veracitor.tasks.search as search
+
+
+@app.route('/jobs/search/producers')
+def search_producers():
+    """Performs a search in the database for producers that match the
+    given parameters.
+
+    URL Structure:
+        /jobs/search/producers
+
+    Method:
+        POST
+    
+    Parameters:
+        name (str): The name of a producer.
+        type (str): The type of a producer.
+
+    Returns:
+        Upon success, returns an object with the job_id, ex::
+        {"job_id": "ff92-23ad-232a-2334s-23"}
+
+    Result when finished:
+        An object with the producer data found.
+
+    Errors:
+        400 - Bad syntax/No name/type in request
+        405 - Method not allowed
+
+    """
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        name = request.form['name']
+        type_of = request.form['type']
+    except:
+        abort(400)
+    res = search.get_producers.delay(name, type_of)
+    store_job_result(job_id=res.id)
+
+
 # from veracitor.web import callback
 
 # """
@@ -98,100 +139,62 @@ from veracitor.web import app
 
 #     return redirect(url_for('index'))
 
-"""
-Performs a search in the database for producers that match the given
-parameters. The client is returned a JSON object with information
-about possible errors and computed HTML code representing the result
-from the performed search.
-"""
-@app.route('/search_producers', methods=['GET','POST'])
-def search_producers():
 
-    if request.method == 'POST':
-        error = {
-            'message' : 'none',
-            'type' : 'none'
-        }
-        html = ''
+# @app.route('/search_producers', methods=['GET','POST'])
+# def search_producers():
+#     """
+#     Performs a search in the database for producers that match the given
+#     parameters. The client is returned a JSON object with information
+#     about possible errors and computed HTML code representing the result
+#     from the performed search.
+#     """
 
-        if request.form:
-            f = request.form
+#     if request.method == 'POST':
+#         error = {
+#             'message' : 'none',
+#             'type' : 'none'
+#         }
+#         html = ''
 
-            data = {}
+#         if request.form:
+#             f = request.form
 
-            if not f['name']:
-                error = {
-                    'message' : 'No search parameter.',
-                    'type' : 'no_param'
-                }
-            elif not f['type']:
-                error = {
-                    'message' : 'No type chosen.',
-                    'type' : 'no_type'
-                }
+#             data = {}
 
-            if error['type'] == 'none':
-                res = extractor.search_producers(possible_prod=f['name'],
-                                                 type_of=f['type'])
+#             if not f['name']:
+#                 error = {
+#                     'message' : 'No search parameter.',
+#                     'type' : 'no_param'
+#                 }
+#             elif not f['type']:
+#                 error = {
+#                     'message' : 'No type chosen.',
+#                     'type' : 'no_type'
+#                 }
 
-                if res:
-                    data = { 'result' : res }
-                else:
-                    error = {
-                        'message' : 'Could not find anything.',
-                        'type' : 'no_result'
-                    }
+#             if error['type'] == 'none':
+#                 res = extractor.search_producers(possible_prod=f['name'],
+#                                                  type_of=f['type'])
 
-            if not error['type'] == 'none':
-                data = { 'error' : error }
+#                 if res:
+#                     data = { 'result' : res }
+#                 else:
+#                     error = {
+#                         'message' : 'Could not find anything.',
+#                         'type' : 'no_result'
+#                     }
 
-            html = render_template('tabs/search_results.html', data=data)
-        else:
-            error = {
-                'message' : 'Form data error.',
-                'type' : 'form_error'
-            }
+#             if not error['type'] == 'none':
+#                 data = { 'error' : error }
 
-        return json.dumps({ 'error' : error, 'html' : html })
+#             html = render_template('tabs/search_results.html', data=data)
+#         else:
+#             error = {
+#                 'message' : 'Form data error.',
+#                 'type' : 'form_error'
+#             }
 
-    return redirect(url_for('index'))
+#         return json.dumps({ 'error' : error, 'html' : html })
 
-"""
-Initializes the web page.
-"""
-@app.route('/')
-def index():
-    veracitor = {
-        'title' : 'Veracitor',
-        'tabs' : [
-            {
-                'name' : 'Search',
-                'key' : 'search',
-                'viewid' : 'search_view',
-                'menuid' : 'search_menu',
-                'url' : 'tabs/search_tab.html'
-            },
-            {
-                'name' : 'Network',
-                'key' : 'network',
-                'viewid' : 'network_view',
-                'menuid' : 'network_menu',
-                'url' : 'tabs/network_tab.html'
-            },
-            {
-                'name' : 'Ratings',
-                'key' : 'ratings',
-                'viewid' : 'ratings_view',
-                'menuid' : 'ratings_menu',
-                'url' : 'tabs/ratings_tab.html'
-            },
-            {
-                'name' : 'Account',
-                'key' : 'account',
-                'viewid' : 'account_view',
-                'menuid' : 'account_menu',
-                'url' : 'tabs/account_tab.html'
-            }
-        ]
-    }
-    return render_template('index.html', vera=veracitor)
+#     return redirect(url_for('index'))
+
