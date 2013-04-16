@@ -11,7 +11,7 @@ import random
 import itertools
 from numpy import array
 
-
+tag = ""
 
 def sample_bounds(bayesianNetwork, k=10):
     """
@@ -89,7 +89,8 @@ def sample_bounds(bayesianNetwork, k=10):
     
 def _getRandom():
     # TODO: Choose a random function       
-    # random() is nicer (shorter), but returns [0,1), meaning it doesn't include 1, which we technically should.
+    # random() is nicer (shorter), but returns [0,1), meaning it doesn't include 1,
+    # which we technically should.
     # But it's about 1 in a billion that uniform(0,1) actually returns 1.
 
     #return random.random
@@ -105,3 +106,22 @@ def _stddev(numbers):
 def _mean(numbers):
     np_array = array(numbers)
     return np_array.mean()    
+
+def p_confidence(p1, p2, weights=(0.7, 0.2, 0.1, 0.8)):
+    """
+    Implementation of *Equation (1)* from *Kuter, Golbeck 2010*. 
+
+    Args:
+       *p1, p2 (node identifiers)*: The nodes to calculate confidence
+       between.
+
+    Kwargs:
+       *weights (tuple)*: The weights to be used in the equation. Default
+       is the example weights from *Kuter, Golbeck 2010*.
+
+    Returns:
+       Returns the confidence ``P(p1|p2)``.
+       
+    """
+
+    overall_difference = globalNetwork.get_overall_difference(p1, p2, [tag])
