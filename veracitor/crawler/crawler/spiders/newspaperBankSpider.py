@@ -33,7 +33,7 @@ class NewspaperBankSpider(CrawlSpider):
                 
         
         
-        domain = "http://www.listofnewspapers.com"
+        domain = "www.listofnewspapers.com"
 
         self.start_urls = ["http://www.listofnewspapers.com/en/europe/newspapers-in-west-midlands.html"]
         self.rules = (
