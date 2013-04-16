@@ -3,10 +3,10 @@
 import xml.etree.ElementTree as ET
 
 class Xpaths:
-"""
-    Provides access to an XML-file containing xpaths and general info about known webpages. For instance xpaths to different article-attributes
-    such as title, author, summary...
-"""
+    """
+        Provides access to an XML-file containing xpaths and general info about known webpages. For instance xpaths to different article-attributes
+        such as title, author, summary...
+    """
 
     def __init__(self, filepath):
         tree = ET.parse(filepath)
