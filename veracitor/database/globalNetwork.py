@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from networkx import to_dict_of_dicts, DiGraph
 from tag import *
 from producer import *
@@ -7,7 +9,7 @@ from user import *
 from mongoengine import *
 import extractor
 import math
-from numpy import array
+from numpy import array, median
 connect('mydb')
 
 graph = None
@@ -190,6 +192,37 @@ def get_max_rating_difference(producer_name1, producer_name2, tag_names):
            max_diff = diff
 
     return max_diff
+
+def get_difference_on_extremes(p1, p2, tags):
+    """
+    Calcualates the diffence on extremes for two producers (χ(n, n') in
+    *Kuter, Golbeck 2010*).
+
+    Quote from the paper:
+
+    *A decision D(n, e) is considered extreme if it
+    is more than one standard deviation from the mean rating assigned by n.
+    χ(n,n') is computed as the average absolute difference on this set.*
+
+    .. note::
+       "Average absolute difference" is using the median of the extreme-sets
+       as the central tendency, m(X). This is used most often according to 
+       `Wikipedia <http://en.wikipedia.org/wiki/Absolute_deviation>`_.
+
+    """
+    p1_extremes = set([x.rating for x in get_extreme_info_ratings(p1, tags)])
+    p2_extremes = set([x.rating for x in get_extreme_info_ratings(p2, tags)])
+
+    extremes_combined = p1_extremes | p2_extremes
+    extreme_median = median(extremes_combined)
+
+    D = fsum([math.fabs(x-extreme_median) for x in extremes_combined])/len(extremes_combined)
+
+    return D
+
+    
+
+    
 
 if __name__ == "__main__":
     build_network_from_db()
