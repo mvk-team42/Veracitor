@@ -21,7 +21,11 @@ var Visualizer = function () {
         $('#network-graph').cytoscape({
             ready: function () {
                 cy = this;
-
+/*
+                cy.layout({
+                    name: 'arbor'
+                });
+*/
                 // Generate and display a test graph
                 drawGraph(generateData(20, 5, 5));
             },
@@ -67,6 +71,36 @@ var Visualizer = function () {
                     "width": 15,
                     "height": 15
                 })
+/*
+                liveUpdate: true, // whether to show the layout as it's running
+                ready: undefined, // callback on layoutready
+                stop: undefined, // callback on layoutstop
+                maxSimulationTime: 4000, // max length in ms to run the layout
+                fit: true, // fit to viewport
+                padding: [ 50, 50, 50, 50 ], // top, right, bottom, left
+                ungrabifyWhileSimulating: true, // so you can't drag nodes during layout
+
+                // forces used by arbor (use arbor default on undefined)
+                repulsion: undefined,
+                stiffness: undefined,
+                friction: undefined,
+                gravity: true,
+                fps: undefined,
+                precision: undefined,
+
+                // static numbers or functions that dynamically return what these
+                // values should be for each element
+                nodeMass: undefined,
+                edgeLength: undefined,
+
+                stepSize: 1, // size of timestep in simulation
+
+                // function that returns true if the system is stable to indicate
+                // that the layout can be stopped
+                stableEnergy: function( energy ){
+                    var e = energy;
+                    return (e.max <= 0.5) || (e.mean <= 0.3);
+                }*/
         });
     })();
 
@@ -144,32 +178,33 @@ var Visualizer = function () {
     var drawGraph = function (data) {
         var nodes = [];
         var edges = [];
-        var from, to;
+        var from, to, size;
 
         for(from in data) {
-            nodes.push({
-                group: 'nodes',
-                data: {
-                    id: 'n'+from,
-                    weight: 20
-                },
-                position: {
-                    x: Math.random()*1000,
-                    y: Math.random()*1000
-                }
-            });
-
+            size = 0;
             for(to in data[from]) {
                 edges.push({
                     group: 'edges',
                     data: {
                         id: 'n'+from+'-n'+to,
                         source: 'n'+from,
-                        target: 'n'+to,
-                        weight: 20
+                        target: 'n'+to
                     }
                 });
+                size += 1;
             }
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: 'n'+from,
+                    weight: size
+                },
+                position: {
+                    x: Math.random()*500,
+                    y: Math.random()*500
+                }
+            });
         }
 
         cy.add(nodes);

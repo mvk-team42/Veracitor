@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 import json
 
@@ -7,7 +7,7 @@ from veracitor.web.utils import store_job_result
 import veracitor.tasks.search as search
 
 
-@app.route('/jobs/search/producers')
+@app.route('/jobs/search/producers', methods=['GET','POST'])
 def search_producers():
     """Performs a search in the database for producers that match the
     given parameters.
@@ -42,7 +42,8 @@ def search_producers():
     except:
         abort(400)
     res = search.get_producers.delay(name, type_of)
-    store_job_result(job_id=res.id)
+    store_job_result(res)
+    return jsonify(job_id=res.id)
 
 
 # from veracitor.web import callback

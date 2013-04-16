@@ -20,7 +20,7 @@ import veracitor.tasks.crawler as crawler
 import veracitor.tasks.algorithms as algorithms
 
 ### Crawler jobs ###
-    
+
 @app.route('/jobs/crawler/scrape_article', methods=['GET', 'POST'])
 def scrape_article():
     """Scrapes an article from a URL and adds it to the database.
@@ -36,16 +36,16 @@ def scrape_article():
 
     Returns:
         Upon success, returns an object with the job_id, ex::
-        
+
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
         *result (str)* : "scraped article: " + url
-    
+
     Errors:
        * **400** -- Bad syntax in request
        * **405** -- Method not allowed
-    
+
     """
     if not request.method == 'POST':
         abort(405)
@@ -77,7 +77,7 @@ def add_newspaper():
 
     Result when finished:
         result (str) : "requested scrape for: " + url
-    
+
     Errors::
        400 - Bad syntax in request
        405 - Method not allowed
@@ -156,7 +156,7 @@ def tidal_trust():
        An object with an object containing the
        results, with keywords trust, threshold, paths_used,
        nodes_used, nodes_unused, source, sink::
-    
+
        {
           "result":  {
                        "trust": (int),
@@ -218,7 +218,7 @@ def sunny():
        See :doc:get_job_result
        An object containing the results, with keywords trust, threshold, paths_used,
        nodes_used, nodes_unused, source, sink::
-    
+
           {
              "trust": (int);
              "threshold": (int),
@@ -236,9 +236,9 @@ def sunny():
 
     """
     pass
-    
+
 ### Job statistics ###
-    
+
 @app.route("/jobs/job_ids", methods=['POST'])
 def get_job_ids():
     """
@@ -288,7 +288,7 @@ def get_job_state():
             SUCCESS
             FAILURE
             PENDING
-       
+
 
     Errors::
        405 - Method not allowed
@@ -302,7 +302,7 @@ def get_job_state():
         job_id = request.form['job_id']
     except:
         abort(404)
-    
+
     try:
         return jsonify(state=str(app.results[job_id].state))
     except:
@@ -324,11 +324,11 @@ def get_job_result():
     Returns:
        Whatever the corresponding job said it would return under 'Result upon finish',
        stored in an object under the key 'result', ex::
-          
+
        {
            "result": "scraped article: http://dn.se/nyheter/artikel"
        }
-       
+
 
     Errors::
        405 - Method not allowed.
@@ -344,10 +344,9 @@ def get_job_result():
         res = app.results[request.form['job_id']]
     except:
         abort(404)
-    
+
     if not res.ready():
-        abort(406)
+        app.logger.debug(res.result)
+        return jsonify(result={})
     else:
         return jsonify(result=res.result)
-
-

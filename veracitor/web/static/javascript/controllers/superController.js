@@ -8,25 +8,31 @@ function SuperController() {
     var CALLBACK_CHECK_TIME = 500;
 
     /**
-       Check the status of a started job on the server.
+
        @param f The function checking the callback.
-       @param url The URL to check the callback against.
        @param id An id related to the job started on the server.
      */
-    this.watch_callback = function (f, url, id) {
-        $.post(url, {
-            'id' : id
-        }, (function (f, url, id) {
-            return function (data) {
-                var response = JSON.parse(data);
+    this.set_job_callback = function (job_id, callback) {
+        watch_job(job_id, callback);
+    }
 
-                if(response.procedure.status == "processing") {
-                    setTimeout(watch_callback(f, url, id), CALLBACK_CHECK_TIME);
+    /**
+       Check the status of a started job on the server.
+       @param callback The callback function.
+       @param job_id An id related to the job started on the server.
+     */
+    var watch_job = function (job_id, callback) {
+        $.post('/jobs/job_result', {
+            'job_id' : job_id
+        }, (function (job_id, callback) {
+            return function (data, status, jqXHR) {
+                if(jqXHR.status == 200) {
+                    callback(data);
                 } else {
-                    f(response);
+                    setTimeout(watch_job(job_id, callback), CALLBACK_CHECK_TIME);
                 }
             };
-        })(f, url, id))
+        })(job_id, callback))
         .fail(function () {
             $("#search-result").html("<h2>Server error.</h2>");
         });

@@ -23,6 +23,8 @@ def tidaltrust(source, sink, tag):
 
     # Get global network
     network = gn.get_global_network()
+
+    # Calc trust
     trust = compute_trust(network=network,
                           source=source,
                           sink=sink, tag=tag)

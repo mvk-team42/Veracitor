@@ -12,7 +12,8 @@ from ..crawler import crawlInterface as ci
 
 taskmgr = Celery(main='veracitor.tasks.tasks.taskmgr',
                  include=['veracitor.tasks.crawler',
-                          'veracitor.tasks.algorithms'])
+                          'veracitor.tasks.algorithms',
+                          'veracitor.tasks.search'])
 
 try:
     import os
