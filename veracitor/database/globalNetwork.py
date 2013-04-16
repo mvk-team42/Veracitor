@@ -235,9 +235,34 @@ def get_belief_coefficient(p1, p2, tags):
     Calulates σ(n,n') from *Equation (1)* in *Kuter, Golbeck 2010*.
 
     """
-    pass
-
+    overall_difference = get_overall_difference(p1,p2,tags)
+    thetas = [overall_difference]
+    for n in p1.successors():
+        if n != p2:
+            thetas.append(get_overall_difference(p1,n,tags)
+    mean = _mean(thetas)
+    stddev = _stddev(thetas)
     
+    if overall_difference > (mean+stddev):
+        coefficient = -1
+    elif overall_difference < (mean - stddev):
+        coefficient = 1
+    else:
+        # Pearson coefficient based on common info ratings.
+        # It compares two datasets (the common decisions).
+        # Maybe use 'from scipy.stats.stats import pearsonr'                          
+        common_info_ratings = get_common_info_ratings(p1,p2,tags)
+        coefficient = 42
+                                     
+
+
+def _stddev(numbers):
+    np_array = array(numbers)
+    return np_array.std()
+
+def _mean(numbers):
+    np_array = array(numbers)
+    return np_array.mean()                       
 
     
 
