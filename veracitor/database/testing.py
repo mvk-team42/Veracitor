@@ -167,7 +167,7 @@ class TestInformationThings(GeneralSetup):
         
         assert self.info1 in extractor.search_informations("d", [self.tag1],
                                                            date1, date2)
-        assert extractor.contains_information(self.info1.title) == True
+        assert extractor.contains_information(self.info1.url) == True
         assert extractor.contains_information("DEUS EX!!!") == False
         self.assertRaises(Exception, extractor.get_information, "Woo")
                                          
@@ -178,8 +178,8 @@ class TestProducerThings(GeneralSetup):
         assert self.prod2 in extractor.search_producers('d', 'newspaper')
         assert self.prod1 in extractor.search_producers('d', 'newspaper')
         assert self.prod1 not in extractor.search_producers('vd', 'newspaper')
-        assert extractor.contains_producer(self.prod1.name) == True
-        assert extractor.contains_producer("Should not exist!") == False
+        assert extractor.contains_producer_with_name(self.prod1.name) == True
+        assert extractor.contains_producer_with_name("Should not exist!") == False
 
 class TestGroupThings(GeneralSetup):
     

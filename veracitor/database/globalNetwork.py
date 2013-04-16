@@ -1,3 +1,18 @@
+"""
+.. module:: globalNetwork
+    :synopsis: The purpose of the global network is to ease the 
+    accessing of the database through building a NetworkX DiGraph.
+    Defines a set of convenience functions performing tasks related to 
+    traversing the data in the database.
+
+    The nodes of the graph correspond to a producer and consist of 
+    their unique (string) name. The edges correspond to the
+    source_ratings they have defined on each other, with attributes
+    on each edge specifying the actual rating and under which
+    tag.name the rating was set.
+ 
+"""
+
 from networkx import to_dict_of_dicts, DiGraph
 from tag import *
 from producer import *
@@ -13,9 +28,15 @@ connect('mydb')
 graph = None
 
 def get_global_network():
-    """Returns a graph containing all the producers currently in 
+    """
+    Returns a graph containing all the producers currently in 
     the database with their ratings set on each other.
     Creates it if it is not already created.
+    If the graph is not already built a call to this 
+    function will result in a new graph being constructed
+    by calling build_network_from_db().
+
+    Returns: the global network (a NetworkX DiGraph)
 
     """
     global graph
@@ -26,9 +47,15 @@ def get_global_network():
 
 
 def build_network_from_db():
-    """Creates a new graph with data inserted from the database,
-    overwrites the current graph. Only inserts producers into the 
-    database as of now.
+    """
+    Creates a new graph with data inserted from the database,
+    overwrites the current graph. This function will extract all
+    producers from the database and iterate through their source_ratings
+    to build the global network. Therefore, the time to complete running this
+    function depends on the number of producers in the database
+    and the number of ratings they have set on each other.
+
+    Returns: the global network (a NetworkX DiGraph)
 
     """
 
@@ -41,7 +68,9 @@ def build_network_from_db():
     for p1 in producers:
         graph.add_node(p1.name)
     
-    # Add all producers' source ratings to the database as edges.
+    # Add all producers' source ratings to the database as edges,
+    # where the actual rating and corresponding tag is set as an
+    # edge attribute.
     for p2 in producers:
         for s in p2.source_ratings:
             graph.add_edge(p2.name, s.source.name, {s.tag.name: s.rating})
@@ -49,23 +78,55 @@ def build_network_from_db():
     return graph
 
 def get_dictionary_graph():
-    """Returns a python dictionary representation of the graph.
+    """
+    Returns a dictionary representation of the graph using
+    the NetworkX to_dict_of_dicts() function.
+
+    The dictionary would be structured as follows if
+    producer1 has rated producer2, but producer2 hasn't
+    rated anyone.
+
+    {
+        producer1.name: 
+            {producer1.source_rating1.source.name: 
+                {producer1.source_rating1.tag.name: 
+                 producer1.source_rating1.rating}
+            }
+        producer2.name: 
+            { }
+    }
 
     """
     return to_dict_of_dicts(graph)
 
 def notify_producer_was_added(producer):
-    """Adds a new producer into the graph,
+    """
+    Adds a new producer into the graph,
     connects it with existing producers.
+    This should not be called by anything other than
+    the producer.Producer object on a .save() call.
+    Ignore this function if that confuses you. 
 
+    Args:
+        producer (producer.Producer): The producer object
+        to be inserted into the globalNetwork.
     """
     graph.add_node(producer.name)
     for s in producer.source_ratings:
         graph.add_edge(producer.name, s.source.name, {s.tag.name: s.rating})
 
 def notify_producer_was_removed(producer):
-    """Deletes a producer from the graph,
+    """
+    Deletes a producer from the graph,
     removes outgoing and incoming edges.
+    This should not be called by anything other than
+    the producer.Producer object on a .delete() call.
+    Ignore this function if that confuses you.
+    
+    Args:
+        producer (producer.Producer): The producer object
+        to be deleted from the globalNetwork.
+    
     """
     try:
         # edges are removed automatically :)
@@ -77,36 +138,75 @@ def notify_producer_was_removed(producer):
 
 
 def notify_producer_was_updated(producer):
-    """Updates the graph with the given producer.
+    """
+    Updates the graph with the given producer.
+    This should not be called by anything other than
+    the producer.Producer object on a .save() call.
+    Ignore this function if that confuses you.
     
+    Args:
+        producer (producer.Producer): The producer object
+        to be updated in the globalNetwork.
+
     """
     # Possibly cheap/slow implementation.
     notify_producer_was_removed(producer)
     notify_producer_was_added(producer)
 
 def get_overall_difference(producer_name1, producer_name2, tag_names):
-    """Returns the average difference in ratings made by producer_name1 and producer_name2
-    on the same informations. Informations need to contain at least one tag in tag_names.
+    """Returns the average difference in ratings 
+    made by producer_name1 and producer_name2
+    on the same informations. 
+    Informations need to contain at least one tag in tag_names.
     If no common_info_ratings exists -1 will be returned.
 
+    Args:
+        producer_name1 (str): The first producer to consider.
+        
+        producer_name2 (str): The second producer to consider.
+
+        tag_names ([str]): The tags specifying which ratings to consider.
+
+    Returns:
+        A float that is the average value of the difference in rating. 
+        If they have no info ratings in common -1.0 will be returned.
+
     """
-    common_info_ratings = get_common_info_ratings(producer_name1, producer_name2, tag_names)
+    common_info_ratings = get_common_info_ratings(producer_name1, 
+                                                  producer_name2, tag_names)
+    # No info ratings in common?
     if len(common_info_ratings) == 0:
-        return -1
+        return -1.0
     sum_diff_ratings = 0
     for info_rating_t in common_info_ratings:
-        # Increment sum with the difference in opinion of the currently selected info-rating-tuple
+        # Increment sum with the difference in opinion 
+        # of the currently selected info-rating-tuple
         sum_diff_ratings += math.fabs(info_rating_t[0].rating - info_rating_t[1].rating)
     avg = sum_diff_ratings/len(common_info_ratings)
+
     return avg
 
 def get_common_info_ratings(producer_name1, producer_name2, tag_names):
-    """Returns a list of tuples on the form (info rating rating A,
+    """
+    Returns a list of tuples on the form (info rating rating A,
     info rating rating B), where both A and B are ratings on the same
     information but A is made by producer1 and B by producer2. Re-
     turned ratings need to have been set under at least one of the
     specified tags. Returns an empty list if no common ratings are
     found.
+
+    Args:
+        producer_name1 (str): The first producer to consider.
+        
+        producer_name2 (str): The second producer to consider.
+
+        tag_names ([str]): The tags specifying which informations to consider.
+    
+    Returns:
+        Let's say producer 1 has rated dn-ledare with info_rating1.
+                  producer 2 has rated dn-ledare with her own info_rating2.
+        They have both rated with the same tag specified.
+        The return value will be (info_rating1, info_rating2,).
     
     """    
     p1_info_ratings = extractor.get_producer(producer_name1).info_ratings
@@ -143,6 +243,19 @@ def get_extreme_info_ratings(producer_name, tag_names):
     Returned ratings need to have been set under at least one of
     specified tags.
 
+    Args:
+        producer_name (str): The producer to consider.
+
+        tag_names ([str]): The tags specifying which informations to consider.
+
+    Returns: 
+        [producer.InformationRating]. Ignoring tags, let's say a producer
+        has made the ratings 4, 6, 5, 1 and 10. This function would calculate
+        the mean of these (I.E. 5) and the standard deviation of these
+        (2.925747...) and return those info_ratings with a rating that
+        deviates from the mean by the standard deviation. In this
+        case the info_ratings with the ratings 1 and 10 would be returned
+        in a list.
     """
     producer = extractor.get_producer(producer_name)
     
@@ -172,9 +285,23 @@ def get_extreme_info_ratings(producer_name, tag_names):
     
 
 def get_max_rating_difference(producer_name1, producer_name2, tag_names):
-    """Returns an int equal to the difference between the two most differ-
+    """
+    Returns an int equal to the difference between the two most differ-
     ing ratings between producer1 and producer2.
-    If no common info_ratings were found -1 will be returned
+    If no common info_ratings were found -1 will be returned.
+
+    Args:
+        producer_name1 (str): The first producer to consider.
+        
+        producer_name2 (str): The second producer to consider.
+
+        tag_names ([str]): The tags specifying which informations to consider.
+
+    Returns:
+        an int. Producer1 has made the ratings 2 on DNLedare and 4 on SvDLedare.
+                Producer2 has made the ratings 2 on DNLedare and 1 on SvDLedare.
+        They most differ in opinion on SvDLedare, and the returned int will then
+        be 4-1 = 3. SvDLedare need to have at a tag that is also in tag_names.
     
     """
     producer1 = extractor.get_producer(producer_name1)
@@ -195,16 +322,3 @@ def get_max_rating_difference(producer_name1, producer_name2, tag_names):
 if __name__ == "__main__":
     build_network_from_db()
 
-"""
-def notify_information_was_removed(information):
-
-def notify_information_was_updated(information):
-    pass
-    # add/remove edges corr. to trust-relations
-    
-def notify_information_was_removed(information):
-    graph.remove_node(information.id)
-    # edges are removed automatically :)
-
-
-"""

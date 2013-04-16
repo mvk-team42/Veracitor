@@ -1,3 +1,9 @@
+"""
+.. module:: producer
+    :synopsis: The producer module contains classes needed to represent
+    the producer entity model.
+"""
+
 from mongoengine import *  
 #from globalnetwork import *
 import globalNetwork
@@ -23,11 +29,12 @@ class InformationRating(EmbeddedDocument):
     rating = IntField(required=True)
     
 class Producer(Document):
-    """Provides public fields mirroring
-    underlying database object.
-    Call save() to update database
+    """
+    The Producer class inherhits from the mongoengince Document class.
+    It defines fields that in turn defines the producer entity model.
+    Call save() to update database with the producer
+    (inserting it if it is not previously saved).
     or delete() to delete object from the database.
-    
     """
     name = StringField(required=True, unique=True)
     description = StringField()
@@ -39,6 +46,18 @@ class Producer(Document):
     meta = {'allow_inheritance':'On'}
     
     def save(self):
+        """
+        Overrides save() inherhited from Document. 
+        Figures out whether to update the globalNetwork
+        or to insert the saved producer into the globalNetwork.
+        Follows this with the regular save() call in Document. 
+        
+        Raises:
+            GlobalNetworkException: If there is no global network created
+            (and therefore no network to insert or update the saved producer
+            into).
+
+        """
         if globalNetwork.graph is None:
             raise GlobalNetworkException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
@@ -49,6 +68,11 @@ class Producer(Document):
         super(Producer, self).save()
 
     def delete(self):
+        """
+        Overrides delete() inherhited from Document.
+        Begins with trying to delete the producer from the globalNetwork.
+        
+        """
         if globalNetwork.graph is None:
             raise GlobalNetworkException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
