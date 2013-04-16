@@ -232,10 +232,11 @@
 
 }
 
-#search-tabs > .body > .content > .search-type > h2 {
+#search-tabs > .body > .content > .search-type > label {
     margin: 0 0 0 0;
 
     font-size: 14pt;
+    font-weight: 600;
 }
 
 #search-tabs > .body > .content > .search-type > .radio {
@@ -261,7 +262,6 @@
 
 #search-tabs > .result {
     padding: 15px 25px;
-    display: none;
 }
 
 /* DATABASE SEARCH TAB */

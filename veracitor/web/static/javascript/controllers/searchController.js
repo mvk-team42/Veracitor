@@ -126,12 +126,12 @@ var SearchController = function (view, controller) {
         });
 
         // add search type radio source button click event
-        $("#search-type-source > .radio").click(function (evt) {
+        $("#search-type-source .radio").click(function (evt) {
             set_active_search_type(0);
         });
 
         // add search type radio information button click event
-        $("#search-type-information > .radio").click(function (evt) {
+        $("#search-type-information .radio").click(function (evt) {
             set_active_search_type(1);
         });
 
@@ -177,13 +177,14 @@ var SearchController = function (view, controller) {
             'name' : search_term,
             'type' : type
         }, function (data) {
-            var response = JSON.parse(data);
-            console.log(data);
-            var job_id = response['job_id']
-            controller.watch_callback(function (data){
-                var response = JSON.parse(data);
-                $("#search-result").html(response.html);
-            } ,'/jobs/job_result', job_id)
+            var response = data;
+            var job_id = response['job_id'];
+
+            controller.set_job_callback(job_id, function (data) {
+                if (data.result) {
+                    $("#search-result").html('name: ' + data.result.name);
+                }
+            });
 
         })
         .fail(function (data) {

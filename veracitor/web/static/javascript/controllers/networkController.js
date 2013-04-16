@@ -22,7 +22,7 @@ var NetworkController = function (view, controller, visualizer) {
        Request a TidalTrust value.
     */
     window.tt = function request_tidal_trust(source, sink, tag) {
-        $.post('/algorithms/tidal_trust', {
+        $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
             'tag': tag
@@ -49,9 +49,9 @@ var NetworkController = function (view, controller, visualizer) {
             // FAIL
             console.log("Fail:", data);
         });
-    
+
     }
-    
+
     /**
        Request a SUNNY value.
     */
