@@ -90,6 +90,7 @@ def add_newspaper():
     except KeyError, AttributeError:
         abort(400)
     res = crawler.add_newspaper.delay(url)
+    store_job_result(res)
     return jsonify(job_id=res.id)
 
 
@@ -114,7 +115,16 @@ def request_scrape():
        405 - Method not allowed
 
     """
-    pass
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        url = request.form['url']
+    except KeyError, AttributeError:
+        abort(400)
+    res = crawler.request_scrape.delay(url)
+    store_job_result(res)
+    return jsonify(job_id=res.id)
+
 
 
 ### Algorithm jobs ###

@@ -115,14 +115,24 @@ var SearchController = function (view, controller) {
      */
     var request_database_search = function (search_term, type, start_date,
                                                 end_date) {
-        $.post("/search_producers", {
+
+        $("#search-result").html("Searching...")
+        $.post("/jobs/search/producers", {
             'name' : search_term,
             'type' : type
         }, function (data) {
             var response = JSON.parse(data);
+            console.log(data);
+            var job_id = response['job_id']
+            controller.watch_callback(function (data){
+                var response = JSON.parse(data);
+                $("#search-result").html(response.html);
+            } ,'/jobs/job_result', job_id)
 
-            $("#search-result").html(response.html);
-
+        })
+        .fail(function (data) {
+            var response = JSON.parse(data);
+            console.log(data); // TODO
             if(response.error.type != "none") {
                 if(response.error.type == "no_result") {
                     // set focus on the search add text field
@@ -144,8 +154,6 @@ var SearchController = function (view, controller) {
                     });
                 }
             }
-        })
-        .fail(function () {
             $("#search-result").html("<h2>Server error.</h2>");
         });
     };
