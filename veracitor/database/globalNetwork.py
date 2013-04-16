@@ -256,7 +256,7 @@ def get_belief_coefficient(p1, p2, tags):
     thetas = [overall_difference]
     for n in p1.successors():
         if n != p2:
-            thetas.append(get_overall_difference(p1,n,tags)
+            thetas.append(get_overall_difference(p1,n,tags))
     mean = _mean(thetas)
     stddev = _stddev(thetas)
     
