@@ -22,14 +22,14 @@ from ..logger import logger
 
 def init_interface():
     """
-        setup module. Should only be called once [??? Varifrån kommer denna anropas ???]
+        setup module. Should only be called once [??? Varifraon kommer denna anropas ???]
     """
     #global callback
     #callback = callback_method
     dispatcher.connect(item_scraped , signals.item_scraped)
     log.start()
-    
-    
+
+
 def item_scraped(item, response, spider):
     """
         Callback function used internally.
@@ -48,25 +48,25 @@ def item_scraped(item, response, spider):
 
 def create_newspaper_bank():
     """
-        Start a celery task that creates our newspaper bank. 
-        
+        Start a celery task that creates our newspaper bank.
+
         The "newspaper bank" is simply a collection of known newspapers
-        with known information such as attribute-xpaths,that are continuosly 
+        with known information such as attribute-xpaths,that are continuosly
         scraped for new articles
     """
     _run_spider(NewspaperBankSpider())
 
 def add_newspaper(url):
     """
-        Start a celery task that adds newspaper with given base-url to 
+        Start a celery task that adds newspaper with given base-url to
         the "newspaper bank".
-        
+
         example: url for DN=www.dn.se, url for theGuardian=www.guardian.co.uk
     """
     spider = MetaNewspaperSpider(url=url)
     #spider.job_id = job_id
     _run_spider(spider)
-    
+
 def scrape_article(url):
     """
         Start a celery task that scrapes article on given url and adds an Information-object
@@ -88,11 +88,11 @@ def request_scrape(newspaper):
     _run_spider(spider)
 
 def startContinuousScrape():
-    """ 
-        Start a celery task whose job is to loop through the newspaperbank and scrape the 
+    """
+        Start a celery task whose job is to loop through the newspaperbank and scrape the
         newspapers for new articles and, if they're not already stored, store Information-
         objects in the database.
-    
+
     """
     newspaper_urls = []
     xml_file = "crawler/webpages.xml"
@@ -105,12 +105,12 @@ def startContinuousScrape():
             print url
             spider = RssSpider(url="http://www.dn.se/m/rss/senaste-nytt")
             _run_spider(spider)
-            
+
 
 def stopContinuousScrape():
     pass
-    
-    
+
+
 def _run_spider(spider):
     """ private method to reduce boilerplate """
     settings = get_project_settings()
@@ -132,13 +132,13 @@ def _crawl(crawler, spider):
     crawler.crawl(spider)
     crawler.start()
     crawler.stop()
-    
-    
 
-   
-   
-   
-   
-   
+
+
+
+
+
+
+
 if __name__ == "__main__":
-    startContinuousScrape() 
+    startContinuousScrape()
