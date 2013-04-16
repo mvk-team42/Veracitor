@@ -8,18 +8,32 @@ import group
 import tag
 import extractor
 import datetime
+import random
+from networkx import nx
+from copy import deepcopy
 connect('mydb')
 
 if __name__ == "__main__":
     globalNetwork.build_network_from_db()
-    tag1 = tag.Tag(name="Gardening",
+    tag1 = tag.Tag(name="gardening",
                             description="Hurrr HURRRRRR")
     tag1.save()
 
-    tag2 = tag.Tag(name="Cooking",
+    tag2 = tag.Tag(name="cooking",
                             description="Hurrdidurr")
+
     tag2.parent.append(tag1)
     tag2.save()
+
+    tag3 = tag.Tag(name="crime",
+                   description="Durrihuurriii duurr")
+    tag3.save()
+
+    # For adding test graph to database
+    tags = {}
+    tags['gardening'] = tag1
+    tags['cooking'] = tag2
+    tags['crime'] = tag3
 
     user1 = user.User(name="Lasse", password="123")
     user1.save()
@@ -56,3 +70,50 @@ if __name__ == "__main__":
     prod1.save()
 
     
+    ### TEST GRAPH
+    G = nx.DiGraph()
+    # The same graph as G (graf1.png) but the weights there are here under "cooking"
+    # and the "crime" ratings are kind of random.
+    # this is how you add edges to the global graph I think y'all
+    G.add_edges_from([("1","2",dict(cooking=10, crime=4)),
+                      ("1","3",dict(cooking=8, crime=7)),
+                      ("1","4",dict(cooking=9, crime=6)),
+                      ("2","5",dict(cooking=9, crime=9)),
+                      ("3","5",dict(cooking=10, crime=5)),
+                      ("3","6",dict(cooking=10, crime=6)),
+                      #(3,7,dict(cooking=7)),
+                      ("4","5",dict(cooking=8, crime=7)),
+                      ("4","6",dict(cooking=9, crime=6)),
+                      ("5","7",dict(cooking=8, crime=5)),
+                      ("6","7",dict(cooking=6, crime=7)),
+                      ("6","8",dict(cooking=5, crime=7)),
+                      ("8","4",dict(cooking=5, crime=7)),
+                      ("3","2",dict(cooking=5, crime=7)),
+                      ("2","1",dict(cooking=5, crime=7)),
+                      ])
+
+    
+    prods = {}
+    for n in G.nodes():
+        prods[n] = producer.Producer(name=str(n), type_of="testdummy")
+        prods[n].save()
+
+    for n in G.nodes():
+        for rated in G[n]:
+            for tag_name in G[n][rated]:
+                source_rating = producer.SourceRating(rating=G[n][rated][tag_name],
+                                                      source=prods[rated],
+                                                      tag=tags[tag_name])
+                prods[n].source_ratings.append(deepcopy(source_rating))
+
+        prods[n].save()
+
+    # Create random info ratings for all producers
+    for n in G.nodes():
+        info_rating1 = producer.InformationRating(rating=random.randint(1,10),
+                                              information=info1)
+        info_rating2 = producer.InformationRating(rating=random.randint(1,10),
+                                              information=info2)
+        prods[n].info_ratings.append(info_rating1)
+        prods[n].info_ratings.append(info_rating2)
+        prods[n].save()

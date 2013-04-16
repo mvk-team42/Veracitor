@@ -70,7 +70,7 @@ Gtags.add_edges_from([(1,2,dict(cooking=10, crime=4)),
 #nx.draw_spectral(Gtags)
 
 
-#print tt.tidal_trust(graph=G, source=1, sink=7)
+print tt.compute_trust(bayesianNetwork=Gtags, source=1, sink=7, tag="cooking")
 #print "G (ordinary weighted graph): "+str(tt.compute_trust(bayesianNetwork=G, source=1, sink=7, decision=None))
 
 

@@ -84,6 +84,22 @@ def notify_producer_was_updated(producer):
     notify_producer_was_removed(producer)
     notify_producer_was_added(producer)
 
+def get_overall_difference(producer_name1, producer_name2, tag_names):
+    """Returns the average difference in ratings made by producer_name1 and producer_name2
+    on the same informations. Informations need to contain at least one tag in tag_names.
+    If no common_info_ratings exists -1 will be returned.
+
+    """
+    common_info_ratings = get_common_info_ratings(producer_name1, producer_name2, tag_names)
+    if len(common_info_ratings) == 0:
+        return -1
+    sum_diff_ratings = 0
+    for info_rating_t in common_info_ratings:
+        # Increment sum with the difference in opinion of the currently selected info-rating-tuple
+        sum_diff_ratings += math.fabs(info_rating_t[0].rating - info_rating_t[1].rating)
+    avg = sum_diff_ratings/len(common_info_ratings)
+    return avg
+
 def get_common_info_ratings(producer_name1, producer_name2, tag_names):
     """Returns a list of tuples on the form (info rating rating A,
     info rating rating B), where both A and B are ratings on the same

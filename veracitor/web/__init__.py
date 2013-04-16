@@ -1,24 +1,28 @@
 from flask import Flask
 
+# The main flask app object is defined here
 app = Flask(__name__)
 
-import callback
 
-
+# Load app settings
 try:
     app.config.from_envvar('VERACITOR_SETTINGS')
 except:
     app.config.from_pyfile('settings.py')
 
-def runserver(crawlinterface):
-    app.ci = crawlinterface
+
+
+def runserver():
+    "Used to start the webserver."
     if app.config['VERACITOR_PORT']:
         app.run(port=app.config['VERACITOR_PORT'])
     else:
         app.run()
 
 import utils
+import jobs
 import search
-import network
-import ratings
-import account
+#import network
+#import ratings
+#import account
+import index

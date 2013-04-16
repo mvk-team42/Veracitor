@@ -1,19 +1,29 @@
-# tasks.py - used to load up celery
-# authors : Anton Erholt - <antonaut@github>
-
+# tasks.py
+# author(s): Anton Erholt - <antonaut@github>
+# ========
+# Used to load up celery aswell as to define the taskmgr
+# for the tasks.
 
 from __future__ import absolute_import
 
 from celery import Celery
 
-app = Celery('veracitor.tasks.celery',
-                broker='mongodb://localhost',
-                include=['veracitor.tasks.crawler'])
+from ..crawler import crawlInterface as ci
 
-# Optional configuration, see the application user guide.
-# celery.conf.update(
-#     CELERY_TASK_RESULT_EXPIRES=3600,
-#)                              
+taskmgr = Celery(main='veracitor.tasks.tasks.taskmgr',
+                 include=['veracitor.tasks.crawler',
+                          'veracitor.tasks.algorithms'])
+
+try:
+    import os
+    taskmgr.config_from_object("celeryconf")
+except:
+    try:
+        taskmgr.config_from_envvar(os.environ['VERACITOR_CELERY_SETTINGS'])
+    except:
+        raise Error("Unable to load celery configuration.'")
+
+ci.init_interface()
 
 if __name__ == '__main__':
-    celery.start()
+    taskmgr.start()
