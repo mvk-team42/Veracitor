@@ -53,7 +53,7 @@ def get_user(requested_name):
     return extr_user[0]
     
 def get_information(info_url):
-  """
+    """
         Search for an information object specified by URL.
 
         Args:
@@ -71,7 +71,7 @@ def get_information(info_url):
     return extr_information[0]
     
 def get_group(owner_name, group_name):
-   """
+    """
         Search for a group specified by an owner and a group name.
 
         Args:
@@ -110,7 +110,7 @@ def get_tag(requested_name):
     return extr_tag[0]
 
 def get_all_tags():
-     """
+    """
         Fetches all current tag object in the database.
 
         Returns: 
@@ -163,7 +163,7 @@ def contains_producer_with_name(producer_name):
     return len(p) != 0
 
 def contains_producer_with_url(producer_url):
-     """
+    """
         Check if a producer specified by a given url exist in the database.
 
         Args:
@@ -199,7 +199,7 @@ def contains_information(info_url):
         Returns: 
             True if a match was found otherwise False.
     """
-    i = information.Information.objects(title=info_url)
+    i = information.Information.objects(url=info_url)
     return len(i) != 0
 
 def contains_group(group_name):
