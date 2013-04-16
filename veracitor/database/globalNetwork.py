@@ -239,9 +239,11 @@ def get_belief_coefficient(p1, p2, tags):
     thetas = [overall_difference]
     for n in p1.successors():
         if n != p2:
-            thetas.append(get_overall_difference(p1,n,tags)
-    mean = _mean(thetas)
-    stddev = _stddev(thetas)
+            thetas.append(get_overall_difference(p1,n,tags))
+
+    np_array = array(thetas)
+    mean = np_array.mean()
+    stddev = np_array.std()
     
     if overall_difference > (mean+stddev):
         coefficient = -1
@@ -250,10 +252,21 @@ def get_belief_coefficient(p1, p2, tags):
     else:
         # Pearson coefficient based on common info ratings.
         # It compares two datasets (the common decisions).
-        # Maybe use 'from scipy.stats.stats import pearsonr'                          
+        # Maybe use 'from scipy.stats.stats import pearsonr'
+
         common_info_ratings = get_common_info_ratings(p1,p2,tags)
-        coefficient = 42
-                                     
+        sum_p1 = sum([x for (x,y) in common_info_ratings])
+        sum_p2 = sum([y for (x,y) in common_info_ratings])
+        sum_p1_p2 = sum([x*y for (x,y) in common_info_ratings])
+        sum_p1_squared = sum(
+                    [x**2 for (x,y) in common_info_ratings])
+        sum_p2_squared = sum(
+                    [y**2 for (x,y) in common_info_ratings])
+        n = len(common_info_ratings)
+        coefficient = (n*sum_p1_p2 - sum_p1*sum_p2)/ \
+                          (math.sqrt((n*sum_p1_squared-(n*(sum_p1)**2))(n*sum_p2_squared - (n*(sum_p2)**2))))
+    
+    return coefficient
 
 
 def _stddev(numbers):
