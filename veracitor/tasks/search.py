@@ -14,10 +14,11 @@ from ..database import *
 def get_producers(name, type_of):
     res = extractor.search_producers(possible_prod=name,
                                      type_of=type_of)
+
     if res:
         return {
-            result: {
-                name: res.name
+            'result' : {
+                name: res[0].name
             }
         }
     else:

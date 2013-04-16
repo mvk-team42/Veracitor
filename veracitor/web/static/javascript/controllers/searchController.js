@@ -107,7 +107,7 @@ var SearchController = function (view, controller) {
 
             switch(active_search_type) {
                 case 0:
-                request_database_search(search_text, "Producer", null, null);
+                request_database_search(search_text, "User", null, null);
                 break;
 
                 case 1:
