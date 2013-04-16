@@ -342,11 +342,10 @@ def get_job_result():
         abort(405)
     try:
         res = app.results[request.form['job_id']]
-    except:
+    except Exception, err:
         abort(404)
 
     if not res.ready():
-        app.logger.debug(res.result)
         return jsonify(result={})
     else:
         return jsonify(result=res.result)

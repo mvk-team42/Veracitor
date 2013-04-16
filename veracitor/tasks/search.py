@@ -1,6 +1,6 @@
-# algorithms.py
+# search.py
 # ===========
-# Defines tasks for the algorithms.
+# Defines tasks for searching.
 
 try:
     from veracitor.tasks.tasks import taskmgr
@@ -9,17 +9,17 @@ except:
 
 from ..database import *
 
+from celery.utils.log import get_task_logger
+
+
+logger = get_task_logger(__name__)
 
 @taskmgr.task
 def get_producers(name, type_of):
     res = extractor.search_producers(possible_prod=name,
                                      type_of=type_of)
-
+    logger.info('res: %s', str(res))
     if res:
-        return {
-            'result' : {
-                name: res[0].name
-            }
-        }
+        return {'name': res[0].name}
     else:
         return {}
