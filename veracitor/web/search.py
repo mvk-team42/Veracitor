@@ -6,6 +6,9 @@ from veracitor.web import app
 from veracitor.web.utils import store_job_result
 import veracitor.tasks.search as search
 
+@app.route('/debug')
+def debug():
+    raise TypeError('Y U NO liek teh-bug?')
 
 @app.route('/jobs/search/producers', methods=['GET','POST'])
 def search_producers():
