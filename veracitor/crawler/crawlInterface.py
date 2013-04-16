@@ -99,12 +99,16 @@ def startContinuousScrape():
     tree = ET.parse(xml_file)
     webpages = tree.getroot().findall("./webpage")
     for webpage in webpages:
-        newspaper_urls.append(webpage.get("url"))
+        newspaper_urls.append(webpage.get("domain"))
     while (True):
         for url in newspaper_urls:
             print url
-            spider = RssSpider(url="http://www.dn.se/m/rss/senaste-nytt")
-            _run_spider(spider)
+            
+            print tree.getroot().findall("//webpage[@domain="+url+"]/rss")
+            
+            #for rss_link in rss_links:
+            #    spider = RssSpider(url="http://www.dn.se/m/rss/senaste-nytt")
+            #_run_spider(spider)
             
 
 def stopContinuousScrape():
