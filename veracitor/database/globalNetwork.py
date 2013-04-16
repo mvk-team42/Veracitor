@@ -200,9 +200,9 @@ def get_difference_on_extremes(p1, p2, tags):
 
     Quote from the paper:
 
-    *A decision D(n, e) is considered extreme if it
-    is more than one standard deviation from the mean rating assigned by n.
-    χ(n,n') is computed as the average absolute difference on this set.*
+    *A decision D(n, e) is considered extreme if it is more than one
+    standard deviation from the mean rating assigned by n. χ(n,n') is
+    computed as the average absolute difference on this set.*
 
     .. note::
        "Average absolute difference" is using the median of the extreme-sets
@@ -228,6 +228,14 @@ def get_difference_on_extremes(p1, p2, tags):
         len(extremes_combined)
 
     return D
+
+
+def get_belief_coefficient(p1, p2, tags):
+    """
+    Calulates σ(n,n') from *Equation (1)* in *Kuter, Golbeck 2010*.
+
+    """
+    pass
 
     
 
