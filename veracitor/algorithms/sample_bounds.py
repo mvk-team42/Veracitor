@@ -20,9 +20,10 @@ def sample_bounds(bayesianNetwork, k=10):
     k : Number of times the sampling loops. A higher value (theoretically) decreases the randomness of the sampling 
     
     """
-    sample_size = 0
+
+    xmin_counter = 0
+    xmax_counter = 0
     for _ in range(k):
-        sample_size+=1
         nodes = bayesianNetwork.node
         for n in nodes:
             if not bayesianNetwork.predecessors(n):
@@ -37,7 +38,25 @@ def sample_bounds(bayesianNetwork, k=10):
                     n['xmax'] = 0
                     
             else:
-                
+                parents = bayesianNetwork.predecessors(n)
+                probability_set = get_probability_set(bayesianNetwork, n)
+                rand = random.random()
+                if rand <= min(set):
+                    bayesianNetwork[n]['xmin'] = 1
+                    xmin_counter+=1
+                else:
+                    bayesianNetwork[n]['xmin'] = 0
+                if rand <= max(set):
+                    bayesianNetwork[n]['xmax'] = 1
+                    xmax_counter+=1
+                else:
+                    bayesianNetwork[n]['xmax'] = 0
+
+    
+    min_total = xmin_counter/k
+    max_total = xmax_counter/k
+    return (min_total,max_total)
+
                  # OUTLINE
                 
                 # if difference on extremes exist:
@@ -75,17 +94,26 @@ def sample_bounds(bayesianNetwork, k=10):
                 # of probabilities for B and C.
 
 
-                #print str(globalNetwork.get_global_network())
-                #print globalNetwork.get_global_network()['DN']
-                #print nx.to_dict_of_dicts(globalNetwork.get_global_network())
-                #globalNetwork.get_common_info_ratings(n, bayesianNetwork.predecessors(n)[0], ['crime'])
+def get_probability_set(network, node):
+    """
+    TODO
 
-                pass
-
-    globaln = globalNetwork.get_global_network()
-    print globalNetwork.get_common_info_ratings("1", "2", ["gardening"])
-                    
-    
+    """
+    set = set()
+    variants = [[[n, True],[n, False]] for n in network.nodes()]
+    permutations = list(itertools.product(*variants))
+    for p in permutations:
+        product = 1
+        for (n,xmax) in p:
+            p_value = p_confidence(node,n)
+            if xmax:
+                m1 = network[n]['xmax']
+                m2 = network[n]['xmin']
+            else:
+                m1 = network[n]['xmin']
+                m2 = network[n]['xmax']
+            product = product*(1-(m1*p_value + m2*(1-p_value)))
+        set.add(1-product)
     
 def _getRandom():
     # TODO: Choose a random function       
