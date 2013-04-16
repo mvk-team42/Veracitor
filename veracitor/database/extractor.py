@@ -52,12 +52,12 @@ def get_user(requested_name):
     __checkIfEmpty(extr_user)
     return extr_user[0]
     
-def get_information(requested_title):
+def get_information(info_url):
   """
-        Search for an information object specified by a given title.
+        Search for an information object specified by URL.
 
         Args:
-            requested_name (str): The title of the requested information object.
+            url (str): The URL of the requested information object.
 
         Returns: 
             The requested information object.
@@ -66,7 +66,7 @@ def get_information(requested_title):
             NotInDataBase: The information object couldn't be found 
                            in the database.
     """
-    extr_information = information.Information.objects(title=requested_title)
+    extr_information = information.Information.objects(url=info_url)
     __checkIfEmpty(extr_information)
     return extr_information[0]
     
@@ -148,7 +148,7 @@ def search_producers(possible_prod, type_of):
     #(?i) - case insensitive
     return producer.Producer.objects(name=re.compile('(?i)'+possible_prod), type_of=type_of)
 
-def contains_producer(producer_name):
+def contains_producer_with_name(producer_name):
     """
         Check if a producer specified by name exist in the database.
 
@@ -160,6 +160,19 @@ def contains_producer(producer_name):
 
     """
     p = producer.Producer.objects(name=producer_name)
+    return len(p) != 0
+
+def contains_producer_with_url(producer_url):
+     """
+        Check if a producer specified by a given url exist in the database.
+
+        Args:
+            producer_url (str): URL of the requested producer.
+
+        Returns: 
+            True if a match was found otherwise False.
+    """
+    p = producer.Producer.objects(url=producer_url)
     return len(p) != 0
 
 def contains_user(user_name):
@@ -175,18 +188,18 @@ def contains_user(user_name):
     u = user.User.objects(name=user_name)
     return len(u) != 0
 
-def contains_information(info_title):
+def contains_information(info_url):
     """
-        Check if an information object specified by title exist
-        the database.
+        Check if an information object specified by URL exist
+        in the database.
 
         Args:
-            info_title (str): The title of the information object.
+            url (str): The URL of the information object.
 
         Returns: 
             True if a match was found otherwise False.
     """
-    i = information.Information.objects(title=info_title)
+    i = information.Information.objects(title=info_url)
     return len(i) != 0
 
 def contains_group(group_name):
