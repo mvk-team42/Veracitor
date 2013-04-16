@@ -14,6 +14,12 @@ from .articleSpider import ArticleSpider
 
 
 class NewspaperBankSpider(CrawlSpider):
+
+    """
+        Crawls webpages containing lists of newspapers and adds them to our "newspaper bank"
+    """
+
+
     name = "newspaperBank"
 
     def __init__(self, *args, **kwargs):

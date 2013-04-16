@@ -15,6 +15,12 @@ from ....database import *
 
 
 class MetaNewspaperSpider(BaseSpider):
+    """
+        Crawls meta information about newspaper webpage
+        
+        The newspaper base url is given (without http) as kwarg in __init__
+    """
+
     name = "metaNewspaper"
     
 

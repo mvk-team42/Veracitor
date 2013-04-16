@@ -11,6 +11,13 @@ from ..items import ArticleItem, ArticleLoader
 
 
 class ArticleSpider(BaseSpider):
+
+    """
+        Crawls a number of articles. (Mostly just one)
+        
+        The article-urls are given as kwargs in __init__
+    """
+
     name = "article"
 
     def __init__(self, *args, **kwargs):
