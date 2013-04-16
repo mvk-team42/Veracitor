@@ -24,12 +24,13 @@ class CrawlerPipeline(object):
         self.articles = []
         #dispatcher.connect(self.print_info, signals.spider_closed)
 
-    def process_item(self, item, spider):
-    
+    def process_item(self, item, spider): 
+        """
+            is called after an item is returned from some spider.
+            Different things happen depending on the spider.
+        """
         if isinstance(spider, NewspaperBankSpider):
             return item
-    
-    
         self.fix_fields(item)
         #self.print_if_unknown(item)
         self.articles.append(item)
@@ -39,6 +40,9 @@ class CrawlerPipeline(object):
         return item
         
     def add_to_database(self, item):
+        """
+            Add database object corresponding to the item
+        """
         log.msg("add_to_database")
         if extractor.contains_information(item["title"]):
             pass #return #already in database
@@ -61,6 +65,12 @@ class CrawlerPipeline(object):
                 break
         
     def fix_fields(self, item):
+        """
+            Before: the attributes in item are very "raw". Scraped directly from website.
+            
+            After: the attributes are trimmed, summary is shortened, time_published is converted to
+            db-friendly format.
+        """
         self.fix_time_published(item)
         self.shorten_summary(item)
         for field in ArticleItem.fields.iterkeys():

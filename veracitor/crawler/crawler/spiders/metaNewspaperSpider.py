@@ -15,6 +15,12 @@ from ....database import *
 
 
 class MetaNewspaperSpider(BaseSpider):
+    """
+        Crawls meta information about newspaper webpage
+        
+        The newspaper base url is given (without http) as kwarg in __init__
+    """
+
     name = "metaNewspaper"
     
 
@@ -50,7 +56,7 @@ class MetaNewspaperSpider(BaseSpider):
             tree.write(xml_file)
         if not extractor.contains_producer(url): #db-method
             new_producer = producer.Producer(name = name,
-                description = "No description",
+                description = description,
                 url = url,
                 infos = [],
                 source_ratings = [],

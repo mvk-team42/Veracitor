@@ -95,6 +95,7 @@ def get_overall_difference(producer_name1, producer_name2, tag_names):
         return -1
     sum_diff_ratings = 0
     for info_rating_t in common_info_ratings:
+        # Increment sum with the difference in opinion of the currently selected info-rating-tuple
         sum_diff_ratings += math.fabs(info_rating_t[0].rating - info_rating_t[1].rating)
     avg = sum_diff_ratings/len(common_info_ratings)
     return avg
