@@ -22,7 +22,7 @@ class ArticleSpider(BaseSpider):
 
     def __init__(self, *args, **kwargs):
         super(ArticleSpider, self).__init__(*args, **kwargs)
-        self.start_urls = kwargs.get('start_urls').split(',')
+        self.start_urls = [kwargs.get('start_url')]
 
     def parse(self, response):
        return ArticleSpider.scrape_article(response)

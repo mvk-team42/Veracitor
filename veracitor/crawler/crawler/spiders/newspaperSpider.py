@@ -29,7 +29,7 @@ class NewspaperSpider(CrawlSpider):
         current_dir = dirname(realpath(__file__))
         self.xpaths = Xpaths(current_dir + '/../webpageXpaths.xml')
         domain = kwargs.get('domain')
-        self.start_urls = ["http://" + domain]
+        self.start_urls = [domain]
         self.rules = (
             Rule(
                 SgmlLinkExtractor(allow_domains=domain, deny=self.xpaths.get_article_deny_urls(domain)), 
