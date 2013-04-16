@@ -67,7 +67,6 @@ def tidal_trust(source, sink, graph, tag):
 
     useful_paths = remove_low_rated_paths(paths_list, threshold, graph, tag)
     results["paths_used"] = useful_paths
-    print useful_paths
     results["nodes_used"] = list(set(chain.from_iterable(useful_paths)))
 
     # Add unused nodes (not in shortest path) to results
@@ -212,9 +211,7 @@ def compute_trust(network, source, sink, decision=None, tag="weight"):
           }
 
     """
-    print "source:", source, "\nsink:", sink, "\nnetwork:", network, \
-        "\nnetwork dict:", str(nx.to_dict_of_dicts(network)), "\ntag:", tag
-
+  
     #check input
     if network == None or source == None or sink == None:
         raise TypeError("Input parameters can't be None")
@@ -226,8 +223,6 @@ def compute_trust(network, source, sink, decision=None, tag="weight"):
         network.remove_nodes_from(decision)
    
     trust_results = tidal_trust(graph=network, source=source, sink=sink, tag=tag)
-    
-    print
     
     return trust_results
 
