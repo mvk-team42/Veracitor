@@ -14,7 +14,7 @@ import itertools
 from numpy import array
 import math
 
-tag = ""
+tag = "crime"
 
 def sample_bounds(bayesianNetwork, k=10):
     """
@@ -30,30 +30,30 @@ def sample_bounds(bayesianNetwork, k=10):
         nodes = bayesianNetwork.node
         for n in nodes:
             if not bayesianNetwork.predecessors(n):
-                if not 'decision' in n: 
-                    n['xmin'] = 0
-                    n['xmax'] = 1
+                if not 'decision' in nodes[n]: 
+                    nodes[n]['xmin'] = 0
+                    nodes[n]['xmax'] = 1
                 elif n['decision']:
-                    n['xmin'] = 1
-                    n['xmax'] = 1
+                    nodes[n]['xmin'] = 1
+                    nodes[n]['xmax'] = 1
                 else: 
-                    n['xmin'] = 0
-                    n['xmax'] = 0
+                    nodes[n]['xmin'] = 0
+                    nodes[n]['xmax'] = 0
                     
             else:
                 parents = bayesianNetwork.predecessors(n)
                 probability_set = get_probability_set(bayesianNetwork, n)
                 rand = random.random()
                 if rand <= min(set):
-                    bayesianNetwork[n]['xmin'] = 1
+                    nodes[n]['xmin'] = 1
                     xmin_counter+=1
                 else:
-                    bayesianNetwork[n]['xmin'] = 0
+                    nodes[n]['xmin'] = 0
                 if rand <= max(set):
-                    bayesianNetwork[n]['xmax'] = 1
+                    nodes[n]['xmax'] = 1
                     xmax_counter+=1
                 else:
-                    bayesianNetwork[n]['xmax'] = 0
+                    nodes[n]['xmax'] = 0
 
     
     min_total = xmin_counter/k
@@ -105,16 +105,17 @@ def get_probability_set(network, node):
     probabilities = set()
     variants = [[[n, True],[n, False]] for n in network.nodes()]
     permutations = list(itertools.product(*variants))
+    nodes = network.node
     for p in permutations:
         product = 1
         for (n,xmax) in p:
             p_value = p_confidence(node,n)
             if xmax:
-                m1 = network[n]['xmax']
-                m2 = network[n]['xmin']
+                m1 = nodes[n]['xmax']
+                m2 = nodes[n]['xmin']
             else:
-                m1 = network[n]['xmin']
-                m2 = network[n]['xmax']
+                m1 = nodes[n]['xmin']
+                m2 = nodes[n]['xmax']
             product = product*(1-(m1*p_value + m2*(1-p_value)))
         probabilities.add(1-product)
 
@@ -158,7 +159,7 @@ def p_confidence(p1, p2, weights=(0.7, 0.2, 0.1, 0.8)):
     """
 
     overall_difference = globalNetwork.get_overall_difference(p1, p2, [tag])
-    difference_on_extremes = globalNetwork.get_difference_on_extremes(p1, p2 [tag])
+    difference_on_extremes = globalNetwork.get_difference_on_extremes(p1, p2, [tag])
     max_difference = globalNetwork.get_max_rating_difference(p1, p2, [tag])
     belief_coefficient = globalNetwork.get_belief_coefficient(p1, p2, [tag])
 
