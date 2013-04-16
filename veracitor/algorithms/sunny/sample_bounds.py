@@ -14,7 +14,7 @@ import itertools
 from numpy import array
 import math
 
-tag = "crime"
+tag = "cooking"
 
 def sample_bounds(bayesianNetwork, k=10):
     """
@@ -26,10 +26,11 @@ def sample_bounds(bayesianNetwork, k=10):
 
     xmin_counter = 0
     xmax_counter = 0
+    # TODO backwards BFS to set attributes in correct order
     for _ in range(k):
         nodes = bayesianNetwork.node
         for n in nodes:
-            if not bayesianNetwork.predecessors(n):
+            if not bayesianNetwork.successors(n):
                 if not 'decision' in nodes[n]: 
                     nodes[n]['xmin'] = 0
                     nodes[n]['xmax'] = 1
@@ -41,7 +42,7 @@ def sample_bounds(bayesianNetwork, k=10):
                     nodes[n]['xmax'] = 0
                     
             else:
-                parents = bayesianNetwork.predecessors(n)
+                parents = bayesianNetwork.successors(n)
                 probability_set = get_probability_set(bayesianNetwork, n)
                 rand = random.random()
                 if rand <= min(set):
@@ -162,6 +163,11 @@ def p_confidence(p1, p2, weights=(0.7, 0.2, 0.1, 0.8)):
     difference_on_extremes = globalNetwork.get_difference_on_extremes(p1, p2, [tag])
     max_difference = globalNetwork.get_max_rating_difference(p1, p2, [tag])
     belief_coefficient = globalNetwork.get_belief_coefficient(p1, p2, [tag])
+
+    print "overall_difference: " + str(overall_difference)
+    print "diff on extremes: " + str(difference_on_extremes)
+    print "max_difference " + str(max_difference)
+    print "belief_coefficient: " + str(belief_coefficient)
 
     if difference_on_extremes is None:
         return belief_coefficient * \
