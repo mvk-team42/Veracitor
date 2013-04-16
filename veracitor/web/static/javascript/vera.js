@@ -46,7 +46,7 @@
         /** Side tab dom element */
         var sideTab;
 
-        activeTab = 0;
+        activeTab = 1;
 
         vera.dom = {};
 

@@ -18,9 +18,10 @@
 #network-holder {
 	position: absolute;
 	left: 500px;
-	right: 60px;
 	top: 30px;
-	bottom: 20px;
+
+    width: 600px; height: 400px;
+
 	background-color: #fff;
 	-webkit-box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
 	-moz-box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
@@ -35,4 +36,3 @@
 #account .content p input[type=text] {
     margin-right: 40px;
 }
-

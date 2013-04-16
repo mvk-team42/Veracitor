@@ -11,20 +11,64 @@
  */
 var Visualizer = function () {
 
-    var sigRoot = document.getElementById('network-holder');
-    var sigInst = sigma.init(sigRoot);
-    
-    sigInst.drawingProperties({
-        defaultLabelColor: '#ccc',
-        font: 'Arial',
-        edgeColor: 'source',
-        defaultEdgeType: 'curve'
-    }).graphProperties({
-        minNodeSize: 0.5,
-        maxNodeSize: 10,
-        minEdgeSize: 1,
-        maxEdgeSize: 1,
-    });
+    var holder = document.getElementById('network-holder');
+    var cy;
+
+    /**
+       Initialize the visualizer; Initialize cytoscape.
+     */
+    (function () {
+        $('#network-graph').cytoscape({
+            ready: function () {
+                cy = this;
+
+                // Generate and display a test graph
+                drawGraph(generateData(20, 5, 5));
+            },
+            style: cytoscape.stylesheet()
+                .selector("node")
+                .css({
+                    "content": "data(id)",
+                    "shape": "data(shape)",
+                    "border-width": 3,
+                    "background-color": "#DDD",
+                    "border-color": "#555"
+                })
+                .selector("edge")
+                .css({
+                    "width": "mapData(weight, 0, 100, 1, 4)",
+                    "target-arrow-shape": "triangle",
+                    "source-arrow-shape": "circle",
+                    "line-color": "#444"
+                })
+                .selector(":selected")
+                .css({
+                    "background-color": "#000",
+                    "line-color": "#000",
+                    "source-arrow-color": "#000",
+                    "target-arrow-color": "#000"
+                })
+                .selector(".ui-cytoscape-edgehandles-source")
+                .css({
+                    "border-color": "#5CC2ED",
+                    "border-width": 3
+                })
+                .selector(".ui-cytoscape-edgehandles-target, node.ui-cytoscape-edgehandles-preview")
+                .css({
+                    "background-color": "#5CC2ED"
+                })
+                .selector("edge.ui-cytoscape-edgehandles-preview")
+                .css({
+                    "line-color": "#5CC2ED"
+                })
+                .selector("node.ui-cytoscape-edgehandles-preview, node.intermediate")
+                .css({
+                    "shape": "rectangle",
+                    "width": 15,
+                    "height": 15
+                })
+        });
+    })();
 
     /**
         Creates an interactive visualization network of the trust ratings
@@ -38,10 +82,8 @@ var Visualizer = function () {
      */
     this.visualizeProducerInNetwork = function (sourceNode, depth) {
         // TODO
-        // Generate and display a test graph
-        drawGraph(generateData(40, 5, 5));
     };
-    
+
     /**
         Visualizes the given trust network.
      */
@@ -100,25 +142,40 @@ var Visualizer = function () {
         @param data The data, on the form specified by the function generateData.
      */
     var drawGraph = function (data) {
-        var i, j;
+        var nodes = [];
+        var edges = [];
+        var from, to;
 
-        for(i in data) {
-            sigInst.addNode(i, {
-                label: 'Node ' + i,
-                color: '#ff0000',
-                x: Math.random(),
-                y: Math.random()
+        for(from in data) {
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: 'n'+from,
+                    weight: 20
+                },
+                position: {
+                    x: Math.random()*1000,
+                    y: Math.random()*1000
+                }
             });
-        }
-        
-        for(i in data) {
-            for(j in data[i]) {
-                sigInst.addEdge("Edge " + i + "-" + j, i, j);
+
+            for(to in data[from]) {
+                edges.push({
+                    group: 'edges',
+                    data: {
+                        id: 'n'+from+'-n'+to,
+                        source: 'n'+from,
+                        target: 'n'+to,
+                        weight: 20
+                    }
+                });
             }
         }
-        
-        sigInst.draw();
+
+        cy.add(nodes);
+        cy.add(edges);
+
+        cy.fit(cy.nodes());
     }
 
 };
-

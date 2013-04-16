@@ -167,29 +167,29 @@ def index():
             {
                 'name' : 'Search',
                 'key' : 'search',
-                'viewid' : 'search_view',
-                'menuid' : 'search_menu',
+                'viewid' : 'search-view',
+                'menuid' : 'search-menu',
                 'url' : 'tabs/search_tab.html'
             },
             {
                 'name' : 'Network',
                 'key' : 'network',
-                'viewid' : 'network_view',
-                'menuid' : 'network_menu',
+                'viewid' : 'network-view',
+                'menuid' : 'network-menu',
                 'url' : 'tabs/network_tab.html'
             },
             {
                 'name' : 'Ratings',
                 'key' : 'ratings',
-                'viewid' : 'ratings_view',
-                'menuid' : 'ratings_menu',
+                'viewid' : 'ratings-view',
+                'menuid' : 'ratings-menu',
                 'url' : 'tabs/ratings_tab.html'
             },
             {
                 'name' : 'Account',
                 'key' : 'account',
-                'viewid' : 'account_view',
-                'menuid' : 'account_menu',
+                'viewid' : 'account-view',
+                'menuid' : 'account-menu',
                 'url' : 'tabs/account_tab.html'
             }
         ]
