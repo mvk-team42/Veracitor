@@ -43,9 +43,12 @@ class CrawlerPipeline(object):
         """
             Add database object corresponding to the item
         """
-        log.msg("add_to_database")
+        #log.msg("add_to_database")
         if extractor.contains_information(item["url"]):
+            log.msg(item["url"] + " already in database")
             return #already in database
+        log.msg("extractor returns " + str(extractor.contains_information(item["url"])))
+        log.msg(item["url"] + " is new, adding to database")
         info = information.Information(
                             title = item["title"],
                             summary = item["summary"],
