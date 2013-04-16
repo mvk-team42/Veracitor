@@ -195,8 +195,8 @@ def get_max_rating_difference(producer_name1, producer_name2, tag_names):
 
 def get_difference_on_extremes(p1, p2, tags):
     """
-    Calcualates the diffence on extremes for two producers (χ(n, n') in
-    *Kuter, Golbeck 2010*).
+    Calcualates the diffence on extremes for two producers' info ratings
+    (χ(n, n') in *Kuter, Golbeck 2010*).
 
     Quote from the paper:
 
@@ -217,9 +217,26 @@ def get_difference_on_extremes(p1, p2, tags):
 
        *- Daniel Molin*
 
+    Args:
+       *p1, p2 (unicode)*: The input producers.
+       
+       *tags (list of unicodes)*: The list of tag names to consider when
+       finding info ratings.
+
+    Returns:
+       χ(p1, p2) = average absolute difference of the extreme ratings by the
+       input producers.
+
+       *None* if no extremes could be found for one or
+       both of the producers.
+
     """
     p1_extremes = set([x.rating for x in get_extreme_info_ratings(p1, tags)])
     p2_extremes = set([x.rating for x in get_extreme_info_ratings(p2, tags)])
+
+    if len(p1_extremes) == 0 or len(p2_extremes) == 0:
+        # No extremes to compare, return None
+        return None
 
     extremes_combined = p1_extremes | p2_extremes
     extreme_median = median(list(extremes_combined))
@@ -244,7 +261,7 @@ def get_belief_coefficient(p1, p2, tags):
     np_array = array(thetas)
     mean = np_array.mean()
     stddev = np_array.std()
-    
+
     if overall_difference > (mean+stddev):
         coefficient = -1
     elif overall_difference < (mean - stddev):

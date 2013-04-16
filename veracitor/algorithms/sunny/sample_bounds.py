@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 The algorithm used for probabilistic logic sampling in SUNNY (as described by Golbeck and Kuter (2010)).
 Computes minimum and maximum probability of success by using a stochastic simulation. Success is in this case defined as being used in the trust evaluation done by SUNNY.
@@ -10,6 +12,7 @@ import networkx as nx
 import random
 import itertools
 from numpy import array
+import math
 
 tag = ""
 
@@ -99,7 +102,7 @@ def get_probability_set(network, node):
     TODO
 
     """
-    set = set()
+    probabilities = set()
     variants = [[[n, True],[n, False]] for n in network.nodes()]
     permutations = list(itertools.product(*variants))
     for p in permutations:
@@ -113,7 +116,9 @@ def get_probability_set(network, node):
                 m1 = network[n]['xmin']
                 m2 = network[n]['xmax']
             product = product*(1-(m1*p_value + m2*(1-p_value)))
-        set.add(1-product)
+        probabilities.add(1-product)
+
+    return probabilities
     
 def _getRandom():
     # TODO: Choose a random function       
@@ -153,3 +158,17 @@ def p_confidence(p1, p2, weights=(0.7, 0.2, 0.1, 0.8)):
     """
 
     overall_difference = globalNetwork.get_overall_difference(p1, p2, [tag])
+    difference_on_extremes = globalNetwork.get_difference_on_extremes(p1, p2 [tag])
+    max_difference = globalNetwork.get_max_rating_difference(p1, p2, [tag])
+    belief_coefficient = globalNetwork.get_belief_coefficient(p1, p2, [tag])
+
+    if difference_on_extremes is None:
+        return belief_coefficient * \
+            math.fabs(1 - 2 * (weights[3]*overall_difference + \
+                                   (1 - weights[3])*max_difference)) 
+    else:
+        return belief_coefficient* \
+            math.fabs(1 - 2 * (weights[0]*overall_difference + \
+                                   weights[1]*max_difference + \
+                                   weights[2]*difference_on_extremes))
+    

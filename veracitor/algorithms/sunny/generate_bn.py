@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 The algorithm for generating a probabilistic network, given a trust network, graph, and two
 nodes, source and sink (as described by Golbeck and Kuter (2010))
