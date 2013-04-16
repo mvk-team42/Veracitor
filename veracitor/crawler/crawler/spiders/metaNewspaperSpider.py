@@ -43,7 +43,7 @@ class MetaNewspaperSpider(BaseSpider):
         hxs = HtmlXPathSelector(response)
         
         name = self.extract_name(domain, hxs, xpaths)
-        if name=="":
+        if name=="" or extractor.contains_producer_with_name(name):
             name = url
 
         rss_links = self.extract_rss_links(domain, hxs, xpaths)
