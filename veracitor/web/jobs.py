@@ -89,6 +89,7 @@ def add_newspaper():
     except KeyError, AttributeError:
         abort(400)
     res = crawler.add_newspaper.delay(url)
+    store_job_result(res)
     return jsonify(job_id=res.id)
 
 
