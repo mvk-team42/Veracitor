@@ -19,9 +19,10 @@ def runserver():
     else:
         app.run()
 
-import jobs
 import utils
+import jobs
 import search
-import network
-import ratings
-import account
+#import network
+#import ratings
+#import account
+import index
