@@ -209,14 +209,23 @@ def get_difference_on_extremes(p1, p2, tags):
        as the central tendency, m(X). This is used most often according to 
        `Wikipedia <http://en.wikipedia.org/wiki/Absolute_deviation>`_.
 
+    .. note::
+       It's not obvious what set(s) Kuter and Golbeck are referring to when
+       talking about the average absolute difference. Hopefully I made the 
+       right decision when calculating the AAD for the combined set of 
+       extreme ratings, that is AAD(p1_extremes UNION p2_extremes).
+
+       *- Daniel Molin*
+
     """
     p1_extremes = set([x.rating for x in get_extreme_info_ratings(p1, tags)])
     p2_extremes = set([x.rating for x in get_extreme_info_ratings(p2, tags)])
 
     extremes_combined = p1_extremes | p2_extremes
-    extreme_median = median(extremes_combined)
+    extreme_median = median(list(extremes_combined))
 
-    D = fsum([math.fabs(x-extreme_median) for x in extremes_combined])/len(extremes_combined)
+    D = fsum([math.fabs(x-extreme_median) for x in extremes_combined])/ \
+        len(extremes_combined)
 
     return D
 
