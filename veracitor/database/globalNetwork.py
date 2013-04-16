@@ -219,12 +219,15 @@ def get_difference_on_extremes(p1, p2, tags):
 
     Args:
        *p1, p2 (unicode)*: The input producers.
+       
        *tags (list of unicodes)*: The list of tag names to consider when
        finding info ratings.
 
     Returns:
-       χ(n, n') = average absolute difference of the extreme ratings by the
-       input producers, or *None* if no extremes could be found for one or
+       χ(p1, p2) = average absolute difference of the extreme ratings by the
+       input producers.
+
+       *None* if no extremes could be found for one or
        both of the producers.
 
     """
