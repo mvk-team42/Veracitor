@@ -290,8 +290,8 @@ def get_belief_coefficient(p1, p2, tags):
             sum_p2_squared = sum(
                 [y.rating**2 for (x,y) in common_info_ratings])
         
-            coefficient = (n*sum_p1_p2 - sum_p1*sum_p2)/ \
-                (math.sqrt((n*sum_p1_squared-((sum_p1)**2))*(n*sum_p2_squared - ((sum_p2)**2))))
+            coefficient = float((n*sum_p1_p2 - sum_p1*sum_p2))/ \
+                float((math.sqrt((n*sum_p1_squared-((sum_p1)**2))*(n*sum_p2_squared - ((sum_p2)**2)))))
         else:
             coefficient = 0
 
