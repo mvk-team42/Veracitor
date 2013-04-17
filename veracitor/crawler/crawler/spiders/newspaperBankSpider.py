@@ -10,6 +10,7 @@ from urlparse import urlparse
 from ..xpaths import Xpaths
 from ..items import ArticleItem, ArticleLoader, ProducerItem
 from .articleSpider import ArticleSpider
+from .metaNewspaperSpider import MetaNewspaperSpider
 
 
 
@@ -50,4 +51,4 @@ class NewspaperBankSpider(CrawlSpider):
         
     def parse_webpage_link(self, response):
         log.msg("found link")
-        return ProducerItem(url = response.url)
+        MetaNewspaperSpider.scrape_meta(response)
