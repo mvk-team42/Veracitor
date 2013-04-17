@@ -18,12 +18,13 @@ def a(item, id):
 
 #ci.set_callback(a)
 ci.init_interface()
+#ci.test_rss("http://penguin-news.com/index.php?format=feed&type=rss")
 #ci.startContinuousScrape()
-ci.create_newspaper_bank()
-#ci.add_newspaper("www.dn.se")
+#ci.create_newspaper_bank()
+#ci.add_newspaper("www.penguin-news.com")
 #ci.scrape_article("http://www.dn.se/nyheter/varlden/nordkoreaexpert-varre-an-pa-mycket-lange", "1")
 #ci.scrape_article("http://www.svd.se/nyheter/inrikes/utbrett-fiskfusk-avslojat_8046058.svd", "1")
-#ci.request_scrape("www.dn.se")
+ci.request_scrape("www.penguin-news.com")
 #ci.create_newspaper_bank()
 
 

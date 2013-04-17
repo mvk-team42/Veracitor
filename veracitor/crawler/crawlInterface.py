@@ -109,12 +109,20 @@ def startContinuousScrape():
 
         rss_links = tree.getroot().findall("./webpage[@domain='"+url+"']/rss")
 
+        spider_has_run = False  # om rss failar ska man koera request_scrape
         for rss_link in rss_links:
-            spider = RssSpider(url=httpify(rss_link.text))
-            _run_spider(spider)
-        if len(rss_links) == 0:
-            log.msg("No rss links found for " + url)
+            if not rss_link.text == None:
+                spider = RssSpider(url=httpify(rss_link.text))
+                _run_spider(spider)
+                spider_has_run = True
+                log.msg("Rss link found")
+
+        if not spider_has_run:
             request_scrape(url)
+
+def test_rss(url):
+    spider = RssSpider(url=httpify(url))
+    _run_spider(spider)
 
 
 def _run_spider(spider):
@@ -127,12 +135,6 @@ def _run_spider(spider):
     p = Process(target=_crawl,args=[crawler,spider])
     p.start()
     p.join()
-    #settings = get_project_settings()
-    #crawler = Crawler(settings)
-    #crawler.configure()
-    #crawler.crawl(spider)
-    #crawler.start()
-    #reactor.run()
 
 def _crawl(crawler, spider):
     crawler.crawl(spider)
