@@ -36,7 +36,6 @@ class NewspaperBankSpider(CrawlSpider):
         
         domain = "www.listofnewspapers.com"
 
-        self.start_urls = ["http://www.listofnewspapers.com/en/europe/newspapers-in-west-midlands.html"]
         self.rules = (
             Rule(
                 SgmlLinkExtractor(restrict_xpaths = "//li[@class='linewspapers']", deny_domains=domain),
