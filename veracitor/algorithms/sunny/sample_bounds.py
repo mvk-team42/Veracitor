@@ -23,16 +23,15 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
     """
     The main function in the sampling procedure. 
 
-    bayesianNetwork: The nodes to calculate the sample bounds for
+    bayesianNetwork : The nodes to calculate the sample bounds for
+
     k : Number of sampling iterations. A higher value (theoretically) decreases the randomness of the sampling.
 
     source : The source node from SUNNY.
 
     sink : The sink node from SUNNY. Used to topologically sort the network
     
-    TODO...vad fan returnerar den då? i SUNNY vill den bara
-    ha source node counters...se 8:8 och 8:9 i SUNNY-rapporten
-    Returns: A tuple containing the lower and upper bounds
+    Returns: A tuple containing the lower and upper bounds for the source node
     """
 
     xmin_counters = {}
@@ -77,20 +76,6 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
     max_total_source = xmax_counters[source]/k
     return (min_total_source,max_total_source)
 
-                 # OUTLINE
-                
-                # if difference on extremes exist:
-                #     formula 1 (note that sigma does not mean stddev in
-                #            the formula. See text above formula!)
-                
-                # else:
-                #     formula 2
-                
-                # TODO: Choose weights w1 to w4. Start with the values 
-                # Kuter and Golbeck use: (w1, w2, w3, w4) = (0.7, 0.2, 0.1, 0.8)
-                # (provided the best results in their experiments)
-                
-
                 # Probability set:
                 # Calculate probability of all possible scenarios
                 # for all parents. e.g. if you have two parents,
@@ -116,7 +101,7 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
 
 def get_probability_set(network, node):
     """
-    TODO
+    Calculates the set of possible probabilites of 'node' for being true. 
 
     """
     probabilities = set()
@@ -138,16 +123,6 @@ def get_probability_set(network, node):
 
     return probabilities
     
-    
-# TODO: Ta bort _stddev och _mean. Flyttade till globalNetwork
-def _stddev(numbers):
-    np_array = array(numbers)
-    return np_array.std()
-
-def _mean(numbers):
-    np_array = array(numbers)
-    return np_array.mean()    
-
 def p_confidence(p1, p2, weights=(0.7, 0.2, 0.1, 0.8)):
     """
     Implementation of *Equation (1)* from *Kuter, Golbeck 2010*. 
