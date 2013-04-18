@@ -11,7 +11,7 @@ connect('mydb')
 
 class SourceRating(EmbeddedDocument):
     """
-    The SourceRating class inherhits from the mongoengine
+    The SourceRating class inherits from the mongoengine
     EmbeddedDocument class. Is only meant to be used as a field value
     inside the Producer class. Defines fields describing a rating made 
     by one producer (the owner of a specific instance) on another producer
@@ -24,7 +24,7 @@ class SourceRating(EmbeddedDocument):
     
 class InformationRating(EmbeddedDocument):
     """
-    The InformationRating class inherhits from the mongoengine
+    The InformationRating class inherits from the mongoengine
     EmbeddedDocument class. Is only meant to be used as a field value
     inside the Producer class. Defines fields describing a rating made 
     by one producer (the owner of a specific instance) on an information
@@ -36,11 +36,13 @@ class InformationRating(EmbeddedDocument):
     
 class Producer(Document):
     """
-    The Producer class inherhits from the mongoengince Document class.
-    It defines fields that in turn defines the producer entity model.
+    The Producer class inherits from the mongoengince Document class.
+    It defines needed to represent to producer entity model.
     Call save() to update database with the producer
     (inserting it if it is not previously saved).
     or delete() to delete object from the database.
+    The name field uniquely identifies a producer in the database.
+
     """
     name = StringField(required=True, unique=True)
     description = StringField()
@@ -49,6 +51,7 @@ class Producer(Document):
     source_ratings = ListField(EmbeddedDocumentField(SourceRating))
     info_ratings = ListField(EmbeddedDocumentField(InformationRating))
     type_of = StringField(required=True)
+    # To allow the User class to inherhit from this.
     meta = {'allow_inheritance':'On'}
     
     def save(self):
