@@ -7,4 +7,6 @@
         <rss>http://www.dn.se/ledare-rss</rss>
         <rss>http://www.dn.se/kultur-rss</rss>
     </webpage>
+    <webpage domain="http://www.svd.se" name="SVD">
+    </webpage>
 </webpages>

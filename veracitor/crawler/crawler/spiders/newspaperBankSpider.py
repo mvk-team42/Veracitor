@@ -10,6 +10,7 @@ from urlparse import urlparse
 from ..xpaths import Xpaths
 from ..items import ArticleItem, ArticleLoader, ProducerItem
 from .articleSpider import ArticleSpider
+from .metaNewspaperSpider import MetaNewspaperSpider
 
 
 
@@ -33,9 +34,8 @@ class NewspaperBankSpider(CrawlSpider):
                 
         
         
-        domain = "http://www.listofnewspapers.com"
+        domain = "www.listofnewspapers.com"
 
-        self.start_urls = ["http://www.listofnewspapers.com/en/europe/newspapers-in-west-midlands.html"]
         self.rules = (
             Rule(
                 SgmlLinkExtractor(restrict_xpaths = "//li[@class='linewspapers']", deny_domains=domain),
@@ -50,4 +50,4 @@ class NewspaperBankSpider(CrawlSpider):
         
     def parse_webpage_link(self, response):
         log.msg("found link")
-        return ProducerItem(url = response.url)
+        MetaNewspaperSpider.scrape_meta(response)
