@@ -5,7 +5,7 @@
 function SuperController() {
 
     // The time interval between callback checks
-    var CALLBACK_CHECK_TIME = 500;
+    var CALLBACK_CHECK_TIME = 100;
 
     /**
 
@@ -29,13 +29,47 @@ function SuperController() {
                 if(jqXHR.status == 200) {
                     callback(data);
                 } else {
-                    setTimeout(watch_job(job_id, callback), CALLBACK_CHECK_TIME);
+                    setTimeout(function () {
+                        watch_job(job_id, callback);
+                    }, CALLBACK_CHECK_TIME);
                 }
             };
         })(job_id, callback))
         .fail(function () {
             $("#search-result").html("<h2>Server error.</h2>");
         });
+    }
+
+    /**
+       Request a TidalTrust value.
+    */
+    window.tt = function request_tidal_trust(source, sink, tag) {
+        $.post('/jobs/algorithms/tidal_trust', {
+            'source': source,
+            'sink': sink,
+            'tag': tag
+        }, function (data) {
+            // SUCCESS
+            console.log("Ok: ", data);
+        })
+        .fail(function (data) {
+            // FAIL
+            console.log("Fail:", data);
+        });
+    }
+    window.job_result = function request_job_result(job_id) {
+
+        $.post('/jobs/job_result', {
+            'job_id': job_id
+        }, function (data) {
+            // SUCCESS
+            console.log("Ok: ", data);
+        })
+        .fail(function (data) {
+            // FAIL
+            console.log("Fail:", data);
+        });
+
     }
 
 }

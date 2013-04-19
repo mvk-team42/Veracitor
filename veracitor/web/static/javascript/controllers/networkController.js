@@ -19,59 +19,21 @@ var NetworkController = function (view, controller, visualizer) {
     });
 
     /**
-       Request a TidalTrust value.
-    */
-    window.tt = function request_tidal_trust(source, sink, tag) {
-        $.post('/jobs/algorithms/tidal_trust', {
-            'source': source,
-            'sink': sink,
-            'tag': tag
-        }, function (data) {
-            // SUCCESS
-//            var response = JSON.parse(data);
-            console.log("Ok: ", data);
-        })
-        .fail(function (data) {
-            // FAIL
-            console.log("Fail:", data);
-        });
-    }
-    window.job_result = function request_job_result(job_id) {
-
-        $.post('/jobs/job_result', {
-            'job_id': job_id
-        }, function (data) {
-            // SUCCESS
-//            var response = JSON.parse(data);
-            console.log("Ok: ", data);
-        })
-        .fail(function (data) {
-            // FAIL
-            console.log("Fail:", data);
-        });
-
-    }
-
-    /**
        Request a SUNNY value.
     */
     function request_sunny_value(source, sink, tag) {
-        $.post('/calculate_sunny_value', {
+         $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
             'tag': tag
         }, function (data) {
-            var response = JSON.parse(data);
+            var job_id = data['job_id'];
 
-            if(response.error.type == 'none') {
-                $('#calculated-trust').html(response.procedure.trust);
+            controller.set_job_callback(job_id, function (data) {
+                console.log(data.result);
 
-                controller.watch_callback(function (response) {
-                    //$('#calculated-trust').html(response.procedure.trust);
-                }, response.procedure.callback_url, response.procedure.id);
-            } else {
-                $('#search-result').html('<h2>' + response.error.message + '</h2>');
-            }
+                $('#calculated-trust').html(data.result.trust);
+            });
         })
         .fail(function () {
             $('#search-result').html('<h2>Server error.</h2>');

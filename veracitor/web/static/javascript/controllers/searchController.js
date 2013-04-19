@@ -177,15 +177,11 @@ var SearchController = function (view, controller) {
             'name' : search_term,
             'type' : type
         }, function (data) {
-            var response = data;
-            var job_id = response['job_id'];
+            var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                if (data.result) {
-                    $("#search-result").html('name: ' + data.result.name);
-                }
+                $('#search-result').html('name: ' + data.result.name);
             });
-
         })
         .fail(function (data) {
             var response = JSON.parse(data);

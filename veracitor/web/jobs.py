@@ -12,7 +12,8 @@
 
 """
 
-from flask import request, redirect, url_for, render_template, abort, jsonify
+from flask import request, redirect, url_for, render_template, abort, jsonify,\
+    make_response
 from veracitor.web import app
 from veracitor.web.utils import store_job_result
 
@@ -329,7 +330,9 @@ def get_job_result():
            "result": "scraped article: http://dn.se/nyheter/artikel"
        }
 
-
+    Success::
+       200 - OK (job done)
+       204 - No Content (job not done)
     Errors::
        405 - Method not allowed.
        404 - No job with that id.
@@ -346,6 +349,6 @@ def get_job_result():
         abort(404)
 
     if not res.ready():
-        return jsonify(result={})
+        return make_response('', 204)
     else:
         return jsonify(result=res.result)
