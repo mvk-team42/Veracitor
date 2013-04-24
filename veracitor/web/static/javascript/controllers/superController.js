@@ -7,12 +7,11 @@ function SuperController() {
     // The time interval between callback checks
     var CALLBACK_CHECK_TIME = 100;
 
-    (function () {
-        this.search = new SearchController(this);
-        this.network = new NetworkController(this, new Visualizer());
-        this.ratings = new RatingsController(this);
-        this.account = new AccountController(this);
-    })();
+    // Setup controllers
+    this.search = new SearchController(this);
+    this.network = new NetworkController(this, new Visualizer());
+    this.ratings = new RatingsController(this);
+    this.account = new AccountController(this);
 
     /**
 
