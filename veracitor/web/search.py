@@ -26,8 +26,9 @@ def search_producers():
         type (str): The type of a producer.
 
     Returns:
-        Upon success, returns an object with the job_id, ex::
+        Upon success, returns an object with the job_id, ex:
         {"job_id": "ff92-23ad-232a-2334s-23"}
+        {"job_id": "baad-f00d-dead-beefs-15"}
 
     Result when finished:
         An object with the producer data found.

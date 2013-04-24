@@ -336,7 +336,6 @@ def get_job_result():
     Errors::
        405 - Method not allowed.
        404 - No job with that id.
-       406 - Job not ready.
 
     **Notes:**
 

@@ -24,17 +24,15 @@ function SuperController() {
     var watch_job = function (job_id, callback) {
         $.post('/jobs/job_result', {
             'job_id' : job_id
-        }, (function (job_id, callback) {
-            return function (data, status, jqXHR) {
-                if(jqXHR.status == 200) {
-                    callback(data);
-                } else {
-                    setTimeout(function () {
-                        watch_job(job_id, callback);
-                    }, CALLBACK_CHECK_TIME);
-                }
-            };
-        })(job_id, callback))
+        }, function (data, status, jqXHR) {
+            if(jqXHR.status == 200) {
+                callback(data);
+            } else {
+                setTimeout(function () {
+                    watch_job(job_id, callback);
+                }, CALLBACK_CHECK_TIME);
+            }
+        })
         .fail(function () {
             $("#search-result").html("<h2>Server error.</h2>");
         });

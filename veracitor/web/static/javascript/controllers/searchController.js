@@ -180,7 +180,8 @@ var SearchController = function (view, controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                $('#search-result').html('name: ' + data.result.name);
+                console.log(data);
+                $('#search-result').html(data.html);
             });
         })
         .fail(function (data) {

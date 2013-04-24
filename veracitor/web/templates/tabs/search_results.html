@@ -1,28 +1,16 @@
-{% if data.error %}
-    <h2>{{ data.error.message }}</h2>
-
-    {% if data.error.type == 'no_result' %}
-        <p>Add a producer from a given URL.</p>
-
-        <input type="text" id="search-add-field" />
-
-        <input type="button" id="search-add-button" value="Add" />
-    {% endif %}
-{% else %}
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-            </tr>
-        </head>
-        <tbody>
-        {% for r in data.result %}
-            <tr>
-                <td>{{ r._data.name }}</td>
-                <td>{{ r.type_ }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+    </tr>
+</head>
+<tbody>
+  {% for d in data %}
+  <tr>
+    <td>{{ d._data.name }}</td>
+    <td>{{ d.type_ }}</td>
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
