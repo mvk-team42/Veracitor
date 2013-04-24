@@ -7,7 +7,7 @@
     thereafter recieve a response with the search results.
     @constructor
  */
-var SearchController = function (view, controller) {
+var SearchController = function (controller) {
 
     /** Initializing */
 
@@ -182,6 +182,14 @@ var SearchController = function (view, controller) {
             controller.set_job_callback(job_id, function (data) {
                 console.log(data);
                 $('#search-result').html(data.html);
+
+                $('#search-result .row').click(function (evt) {
+                    var name = $(this).find('.name').html();
+                    var type = $(this).find('.type').html();
+
+                    switch_to_tab('network');
+                    controller.visualize_producer_in_network(name);
+                });
             });
         })
         .fail(function (data) {

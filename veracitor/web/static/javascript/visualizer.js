@@ -23,7 +23,7 @@ var Visualizer = function () {
                 cy = this;
 
                 // Generate and display a test graph
-                drawGraph(generateData(20, 5, 5));
+                draw_graph(generate_data(20, 5, 5));
             },
             style: cytoscape.stylesheet()
                 .selector("node")
@@ -80,14 +80,14 @@ var Visualizer = function () {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
-    this.visualizeProducerInNetwork = function (sourceNode, depth) {
+    this.visualize_producer_in_network = function (sourceNode, depth) {
         // TODO
     };
 
     /**
         Visualizes the given trust network.
      */
-    this.visualizeTrustNetwork = function (network) {
+    this.visualize_trust_network = function (network) {
         // TODO
     };
 
@@ -97,7 +97,7 @@ var Visualizer = function () {
         @param tags The number of tag objects.
         @param maxNodes The maximum number of connections for one node (?).
      */
-    var generateData = function (nodes, tags, maxNodes) {
+    var generate_data = function (nodes, tags, maxNodes) {
         var i, j, k,
             my_nodes, my_tags,
             rnd_nodes, rnd_tags,
@@ -141,7 +141,7 @@ var Visualizer = function () {
         Draws a graph representation given the data.
         @param data The data, on the form specified by the function generateData.
      */
-    var drawGraph = function (data) {
+    var draw_graph = function (data) {
         var nodes = [];
         var edges = [];
         var from, to, size;

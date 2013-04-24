@@ -9,13 +9,8 @@
     the “rated list” when a rating is set.
     @constructor
  */
-var RatingsController = function (view, controller) {
+var RatingsController = function (controller) {
 
-    /**
-        Displays the given producer in the NetworkView.
-     */
-    this.showProducerInNetwork = function (producer) {
-        // TODO
-    };
+
 
 };
