@@ -9,7 +9,6 @@ except:
 
 from ..database import *
 
-from flask import render_template
 from celery.utils.log import get_task_logger
 
 
@@ -21,11 +20,9 @@ def get_producers(name, type_of):
                                      type_of=type_of)
     logger.info('res: %s', str(res))
 
-    html = render_template('tabs/search_results.html', data=res)
-
     if res:
         return {
-            'html': html
+            'data': res
         }
     else:
         return {}
