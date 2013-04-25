@@ -29,17 +29,21 @@ def parseGTD(filepath, **kwargs):
     acts = acts[1:] #Labels on first row
     for act in acts:
         acturl = GTD_INCIDENT_URL + act["id"]
-        if not extractor.contains_producer_with_name(act["source"]): #db-method
-                new_producer = producer.Producer(name = act["source"],
-                    description = "No description.",
-                    url = None,
-                    infos = [],
-                    source_ratings = [],
-                    info_ratings = [],
-                    type_of = "Unknown")
-                new_producer.save()
+        raw_sources = [act["source1"], act["source2"], act["source3"]]
+        for source in raw_sources:
+            # hur blir det om source == None?
+            #TODO gör koppling mellan GTD och denna source
+            if not extractor.contains_producer_with_name(source): #db-method
+                    new_producer = producer.Producer(name = source,
+                        description = "No description. (found through GTD)",
+                        url = None,
+                        infos = [],
+                        source_ratings = [],
+                        info_ratings = [],
+                        type_of = "Unknown")
+                    new_producer.save()
+
         if not extractor.contains_information(acturl):
-            raw_sources = [act["source1"], act["source2"], act["source3"]]
             new_information = information.Information(url = acturl),
                 title = "GTD Entry",
                 summary = act["summary"],
