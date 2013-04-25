@@ -19,7 +19,7 @@ def a(item, id):
 #ci.set_callback(a)
 ci.init_interface()
 #ci.test_rss("http://penguin-news.com/index.php?format=feed&type=rss")
-#ci.startContinuousScrape()
+#ci.start_continuous_scrape()
 #ci.create_newspaper_bank()
 #ci.add_newspaper("www.penguin-news.com")
 #ci.scrape_article("http://www.dn.se/nyheter/varlden/nordkoreaexpert-varre-an-pa-mycket-lange", "1")
