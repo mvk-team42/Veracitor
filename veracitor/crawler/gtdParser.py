@@ -1,16 +1,21 @@
 import openpyxl.reader.excel
 import openpyxl.workbook as workbook
 from pprint import pprint
+from time import strptime
+from ..database import *
 
-
+GTD_INCIDENT_URL = "http://www.start.umd.edu/gtd/search/IncidentSummary.aspx?gtdid="
 
 column_names = {
+    "A":"id",
     "B":"year",
     "C":"month",
     "D":"day",
     "I":"country",
     "S":"summary",
-    "DP":"source",
+    "DP":"source1",
+    "DQ":"source2",
+    "DR":"source3",
     "AD":"attacktype",
     "BA":"attacker",
     "AL":"target",
@@ -21,7 +26,27 @@ def parseGTD(filepath, **kwargs):
     workbook = openpyxl.reader.excel.load_workbook(filepath, use_iterators=True)
     sheet = workbook.get_active_sheet()
     acts = _parse_sheet(sheet, **kwargs)
-    return acts[1:] #Labels on first row
+    acts = acts[1:] #Labels on first row
+    for act in acts:
+        acturl = GTD_INCIDENT_URL + act["id"]
+        if not extractor.contains_producer_with_name(act["source"]): #db-method
+                new_producer = producer.Producer(name = act["source"],
+                    description = "No description.",
+                    url = None,
+                    infos = [],
+                    source_ratings = [],
+                    info_ratings = [],
+                    type_of = "Unknown")
+                new_producer.save()
+        if not extractor.contains_information(acturl):
+            raw_sources = [act["source1"], act["source2"], act["source3"]]
+            new_information = information.Information(url = acturl),
+                title = "GTD Entry",
+                summary = act["summary"],
+                time_published = strptime(act["year"]+"-"+act["mont"]+"-"+act["day"],"%Y-"),
+                tags = ["Terrorism"],
+                publishers = ["GTD"] + [_strip_source(src) for src in raw_sources if src != None],
+                references =  [])
 
 
 """ 
@@ -44,6 +69,11 @@ def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
         if print_acts:
             print act
     return acts
+    
+def _strip_source(source):
+    source = source.split('"')[-1]
+    source = source.split(',')[0]
+    return source
     
     
 if __name__ == "__main__":
