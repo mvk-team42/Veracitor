@@ -21,8 +21,10 @@ def get_producers(name, type_of):
     logger.info('res: %s', str(res))
 
     if res:
+        producers = [{'name' : r.name, 'type' : r.type_of} for r in res]
+        
         return {
-            'data': res
+            'data': producers
         }
     else:
         return {}
