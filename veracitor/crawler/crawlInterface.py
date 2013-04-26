@@ -88,7 +88,7 @@ def request_scrape(newspaper_url):
     #spider.job_id = job_id
     _run_spider(spider)
 
-def startContinuousScrape():
+def start_continuous_scrape():
     """
         Start a celery task whose job is to loop through the newspaperbank and scrape the
         newspapers for new articles and, if they're not already stored, store Information-
