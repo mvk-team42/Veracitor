@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 """
-..module::extractor
-    :synopsis: Specifies functionality to communicate with a database which
-           	   uses MongoDB.
+.. module:: extractor
+     :synopsis: Specifies functionality to communicate with a database which uses MongoDB.
 
+.. moduleauthor:: Alfred Krappman <krappman@kth.se>
+.. moduleauthor:: Fredrik Öman <frdo@kth.se>
 """
 
 

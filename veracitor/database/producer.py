@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: producer
-    :synopsis: The producer module contains classes needed to represent
-    the producer entity model.
+    :synopsis: The producer module contains classes needed to represent the producer entity model.
+
+.. moduleauthor:: Alfred Krappman <krappman@kth.se>
+.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
 """
 
 from mongoengine import *  

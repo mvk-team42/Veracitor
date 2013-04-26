@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: user
-    :synopsis: The user module contains classes needed to represent
-    the user entity model.
+    :synopsis: The user module contains classes needed to represent the user entity model.
+
+.. moduleauthor:: Alfred Krappman <krappman@kth.se>
+.. moduleauthor:: Fredrik Öman <frdo@kth.se>
 """
 
 from mongoengine import *

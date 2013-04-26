@@ -1,16 +1,19 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: globalNetwork
-    :synopsis: The purpose of the global network is to ease the 
-    accessing of the database through building a NetworkX DiGraph.
-    Defines a set of convenience functions performing tasks related to 
-    traversing the data in the database.
+    :synopsis: The purpose of the global network is to ease the accessing of the database through building a NetworkX DiGraph. Defines a set of convenience functions performing tasks related to traversing the data in the database.
 
-    The nodes of the graph correspond to a producer and consist of 
-    their unique (string) name. The edges correspond to the
-    source_ratings they have defined on each other, with attributes
-    on each edge specifying the actual rating and under which
-    tag.name the rating was set.
- 
+
+The purpose of the global network is to ease the accessing of the database through building a NetworkX DiGraph. Defines a set of convenience functions performing tasks related to traversing the data in the database.
+
+The nodes of the graph correspond to a producer and consist of 
+their unique (string) name. The edges correspond to the
+source_ratings they have defined on each other, with attributes
+on each edge specifying the actual rating and under which
+tag.name the rating was set.
+
+.. moduleauthor:: Alfred Krappman <krappman@kth.se>
+.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
 """
 
 from networkx import to_dict_of_dicts, DiGraph
