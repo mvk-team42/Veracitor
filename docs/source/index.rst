@@ -13,6 +13,8 @@ Contents:
 
    algorithms
    web
+   database
+   crawler
 
 Indices and tables
 ==================

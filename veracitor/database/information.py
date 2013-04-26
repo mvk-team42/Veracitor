@@ -1,13 +1,22 @@
+"""
+.. module:: information
+    :synopsis: The information module contains the Information class
+    needed to represent the information entity model.
+"""
+
 from mongoengine import *
 import tag
 
 
 class Information(Document):
-    """Provides public fields mirroring
-    underlying database object.
-    Call save() to update database
-    or delete() to delete object from the database.
+    """
+    The Information class inherits from the mongoengine Document class.
+    It defines fields needed to represent the information entity model.
+    Call save() to update database with the information
+    inserting it if it is not previously saved).
+    or delete() to delete it from the database.
     
+    The url uniquely identifies an information in the database.
     """
     title = StringField(required=True)
     summary = StringField()
