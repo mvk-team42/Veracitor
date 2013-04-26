@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+
+""" 
+.. module:: crawlInterface
+    :synopsis: The interface for the webcrawler package
+
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 from multiprocessing import Process
 from twisted.internet import reactor
 from scrapy.signalmanager import SignalManager
