@@ -15,16 +15,16 @@
             <input type="text" id="database-search-field" />
 
             <div id="search-type-source" class="search-type">
-                <label><input class="radio" type="radio" name="search-type" value="producer" checked />Search for sources</label>
+                <label><input class="radio" type="radio" name="search_type" value="producer" checked />Search for sources</label>
 
                 <div class="content">
                     <div class="overlay">
                     </div>
-                    <form id="search-types">
+                    <form class="search-types">
                         <label for="search-type-producer">Producers</label>
-                        <input type="checkbox" id="search-type-producer" value="Producer" checked />
+                        <input type="radio" name="source_type" value="Producer" checked />
                         <label for="search-type-user">Users</label>
-                        <input type="checkbox" id="search-type-user" value="User" />
+                        <input type="radio" name="source_type" value="User" />
                     </form>
                 </div>
             </div>

@@ -11,8 +11,8 @@
     };
 
     // physics variables
-    var mass = 10, constraint = 8000, friction = 100, length = 200, pullforce = 10000;
-    var settle = 15, threshold = 0.00001, curlen, amount, update;
+    var mass = 1, constraint = 400, friction = 100, length = 1;
+    var settle = 15, threshold = 0.01;
 
     // forces acting on each node
     var node_forces = {};
@@ -23,13 +23,26 @@
         this.options = $$.util.extend(true, {}, defaults, options);
     };
 
+    var time;
+    var iterations;
+
     EqualizerLayout.prototype.run = function () {
         var options = this.options;
         var cy = options.cy;
         var i;
 
+        cy.nodes().each(function (i, node) {
+            node.position({
+                'x': Math.random(),
+                'y': Math.random()
+            });
+        });
+
         for(i = 0; i < 1; i += 1) {
+            time = 0;
+            iterations = 0;
             equalize_graph(cy);
+            console.log('average: ' + time/iterations + ' ms/node, total time: ' + time + ' ms');
         }
 
         // trigger layoutready when each node has had its position set at least once
@@ -48,76 +61,75 @@
 
     var equalize_graph = function (cy) {
         cy.edges().each(function (i, edge) {
-            equalize_edge(edge);
+            equalize_edge(cy, edge);
         });
 
         cy.nodes().each(function (i, node) {
+            var t = new Date().getTime();
             equalize_node(node);
+            time += new Date().getTime() - t;
+            iterations += 1;
         });
     };
 
     var equalize_node = function (node) {
-        var fx = node_forces[node];
-        var fy = node_forces[node];
+        var x = node.position('x');
+        var y = node.position('y');
+        var fx = node_forces[node.data('id')].fx;
+        var fy = node_forces[node.data('id')].fy;
 
-        if(xv > threshold) {
-            xv -= xv * settle * time.delta;
-            if(xv < 0) {
-                xv = 0
-            }
-        } else if(xv < -threshold) {
-            xv -= xv * settle * time.delta;
-            if(xv > 0) {
-                xv = 0
-            }
-        }
-        if(yv > threshold) {
-            yv -= yv * settle * time.delta;
-            if(yv < 0) {
-                yv = 0
-            }
-        } else if(yv < -threshold) {
-            yv -= yv * settle * time.delta;
-            if(yv > 0) {
-                yv = 0
-            }
-        }
+        //console.log('fx: ' + fx + ', fy: ' + fy);
 
-        xv += (fx / mass) * time.delta;
-        yv += (fy / mass) * time.delta;
+        x -= fx / mass;
+        y -= fy / mass;
 
-        fx = 0;
-        fy = 0;
+        node.position({
+            'x': x,
+            'y': y
+        });
 
-        x += xv * time.delta;
-        y += yv * time.delta;
+        /*
+        if(fx > threshold) {
+            x -= fx / mass;
+        } else if(fx < -threshold) {
+            x += fx / mass;
+        }*/
+    };
 
-        this.setXY(x, y);
-    }
+    var equalize_edge = function (cy, edge) {
+        var source = cy.filter('node[id="' + edge.data('source') + '"]')[0];
+        var target = cy.filter('node[id="' + edge.data('target') + '"]')[0];
 
-    var equalize_edge = function (edge) {
         var fx, fy;
-        var dx = c1.getX() - c2.getX();
-        var dy = c1.getY() - c2.getY();
+        var dx = source.position('x') - target.position('x');
+        var dy = source.position('y') - target.position('y');
         var d = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
         if(d !== 0) {
-            fx = -(dx / d) * (d - len) * constraint;
-            fy = -(dy / d) * (d - len) * constraint;
-            c1.applyForce(fx, fy);
-            c2.applyForce(-fx, -fy);
+            fx = -(dx / d) * (d - length) * constraint;
+            fy = -(dy / d) * (d - length) * constraint;
+            apply_force(source.data('id'), fx, fy);
+            apply_force(target.data('id'), -fx, -fy);
 
+            /*
             fx = -(c1.getXV() - c2.getXV()) * friction;
             fy = -(c1.getYV() - c2.getYV()) * friction;
             c1.applyForce(fx, fy);
-            c2.applyForce(-fx, -fy);
+            c2.applyForce(-fx, -fy);*/
         }
+    };
 
-        l.setAttributeNS(null, "x1", c1.getX());
-        l.setAttributeNS(null, "y1", c1.getY());
-        l.setAttributeNS(null, "x2", c2.getX());
-        l.setAttributeNS(null, "y2", c2.getY());
-    }
+    var apply_force = function (node, fx, fy) {
+        if (typeof(node_forces[node]) === 'undefined') {
+            node_forces[node] = {
+                'fx': fx,
+                'fy': fy
+            };
+        } else {
+            node_forces[node].fx += fx;
+            node_forces[node].fy += fy;
+        }
+    };
 
     // register the layout
     $$('layout', 'equalizer', EqualizerLayout);

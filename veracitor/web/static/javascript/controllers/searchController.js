@@ -107,7 +107,11 @@ var SearchController = function (controller) {
 
             switch(active_search_type) {
                 case 0:
-                request_database_search(search_text, "User", null, null);
+                    var value = $("#search-type-source input[name='source_type']:checked").val();
+                    if (value === 'Producer') {
+                        value = '';
+                    }
+                    request_database_search(search_text, value, null, null);
                 break;
 
                 case 1:
@@ -180,15 +184,30 @@ var SearchController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                console.log(data);
-                $('#search-result').html(data.html);
+                var table = $('<table>')
+                    .append($('<thead>')
+                            .append($('<tr>')
+                                    .append($('<th>').html('Name'))
+                                    .append($('<th>').html('Type'))));
+                var body = $('<tbody>');
 
-                $('#search-result .row').click(function (evt) {
+                for (var i in data.result.data) {
+                    body.append($('<tr>').addClass('result')
+                                .append($('<td>').addClass('name')
+                                        .html(data.result.data[i].name))
+                                .append($('<td>').addClass('type')
+                                        .html(data.result.data[i].type)));
+                }
+
+                table.append(body);
+                $('#search-result').html(table);
+
+                $('#search-result .result').click(function (evt) {
                     var name = $(this).find('.name').html();
                     var type = $(this).find('.type').html();
 
-                    switch_to_tab('network');
-                    controller.visualize_producer_in_network(name);
+                    controller.switch_to_tab('network');
+                    controller.network.visualize_producer_in_network(name);
                 });
             });
         })
