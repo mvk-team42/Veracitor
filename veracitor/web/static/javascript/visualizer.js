@@ -12,7 +12,7 @@
 var Visualizer = function () {
 
     var holder = document.getElementById('network-holder');
-    var cy;
+    window.cy;
 
     /**
        Initialize the visualizer; Initialize cytoscape.
@@ -178,7 +178,7 @@ var Visualizer = function () {
 
         cy.fit(cy.nodes());
         cy.layout({
-            name: 'random'
+            name: 'equalizer'
         });
     }
 
