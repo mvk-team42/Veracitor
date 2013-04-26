@@ -79,7 +79,7 @@ def parseGTD(filepath, **kwargs):
             GTD.save()
 
         if not extractor.contains_information(act_url):
-            #add...
+            #TODO lägg till information i GTDs information list eller??????nej inforatings e väl för artiklar från andra källor?
             new_information = information.Information(url = act_url),
                 title = "GTD Entry",
                 summary = act["summary"],
