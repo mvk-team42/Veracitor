@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: information
-    :synopsis: The information module contains the Information class
-    needed to represent the information entity model.
+    :synopsis: The information module contains the Information class needed to represent the information entity model.
+
+.. moduleauthor:: Alfred Krappman <krappman@kth.se>
+.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
 """
 
 from mongoengine import *

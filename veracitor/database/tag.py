@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 """
 .. module:: information
-    :synopsis: The tag module contains the Tag class
-    needed to represent the tag entity model.
+    :synopsis: The tag module contains the Tag class needed to represent the tag entity model.
+
+.. moduleauthor:: Alfred Krappman <krappman@kth.se>
+.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
 """
 
 from mongoengine import *
