@@ -24,16 +24,16 @@ def get_producer(requested_name):
 
         Args:
             requested_name (str): The name of the requested producer.
-        Returns: 
+        Returns:
             The requested producer object.
         Raises:
             NotInDataBase: The producer couldn't be found in the database.
-            
+
 	"""
     extr_producer = producer.Producer.objects(name=requested_name)
     __checkIfEmpty(extr_producer)
     return extr_producer[0]
-    
+
 def get_user(requested_name):
     """
         Search for a user specified by a given name.
@@ -41,17 +41,17 @@ def get_user(requested_name):
         Args:
             requested_name (str): The name of the requested user.
 
-        Returns: 
+        Returns:
             The requested user object.
 
         Raises:
             NotInDataBase: The user couldn't be found in the database.
-            
+
     """
     extr_user = user.User.objects(name=requested_name)
     __checkIfEmpty(extr_user)
     return extr_user[0]
-    
+
 def get_information(info_url):
     """
         Search for an information object specified by URL.
@@ -59,17 +59,17 @@ def get_information(info_url):
         Args:
             url (str): The URL of the requested information object.
 
-        Returns: 
+        Returns:
             The requested information object.
 
         Raises:
-            NotInDataBase: The information object couldn't be found 
+            NotInDataBase: The information object couldn't be found
                            in the database.
     """
     extr_information = information.Information.objects(url=info_url)
     __checkIfEmpty(extr_information)
     return extr_information[0]
-    
+
 def get_group(owner_name, group_name):
     """
         Search for a group specified by an owner and a group name.
@@ -78,19 +78,19 @@ def get_group(owner_name, group_name):
             owner_name (str): The name of the owner of the requested group.
             group_name (str): The name of the requested group.
 
-        Returns: 
+        Returns:
             The requested group object.
 
         Raises:
             NotInDataBase: If the owner does not exist or if no such group
                            could be found it the database.
-            
+
     """
     extr_owner = get_user(owner_name)
     extr_group = group.Group.objects(owner=extr_owner, name=group_name)
     __checkIfEmpty(extr_group)
     return extr_group[0]
-    
+
 def get_tag(requested_name):
     """
         Search for a tag specified by a given name.
@@ -98,7 +98,7 @@ def get_tag(requested_name):
         Args:
             requested_name (str): The name of the requested tag.
 
-        Returns: 
+        Returns:
             The requested tag object.
 
         Raises:
@@ -113,7 +113,7 @@ def get_all_tags():
     """
         Fetches all current tag object in the database.
 
-        Returns: 
+        Returns:
             A list of all the current tag objects in the database.
 
     """
@@ -123,7 +123,7 @@ def __checkIfEmpty(extr_list):
     """
         Used by all get methods to check if query resulted in a empty list and
         raises a exception if that was the case.
-        
+
         Args:
             extr_list (list): The list to be checked.
         Raises:
@@ -136,7 +136,7 @@ def __checkIfEmpty(extr_list):
 def search_producers(possible_prod, type_of):
     """
         Searches the database for producers whose name includes a specified
-        name and whose type exactly matches a specified type. 
+        name and whose type exactly matches a specified type.
 
         Args:
             possible_prod (str): A string that partly matches a name of a
@@ -146,7 +146,10 @@ def search_producers(possible_prod, type_of):
             A list of zero or more producer objects.
     """
     #(?i) - case insensitive
-    return producer.Producer.objects(name=re.compile('(?i)'+possible_prod), type_of=type_of)
+    if type_of:
+        return producer.Producer.objects(name=re.compile('(?i)'+possible_prod), type_of=type_of)
+    else:
+        return producer.Producer.objects(name=re.compile('(?i)'+possible_prod))
 
 def contains_producer_with_name(producer_name):
     """
@@ -155,7 +158,7 @@ def contains_producer_with_name(producer_name):
         Args:
             requested_name (str): The name of the producer.
 
-        Returns: 
+        Returns:
             True if a match was found otherwise False.
 
     """
@@ -169,7 +172,7 @@ def contains_producer_with_url(producer_url):
         Args:
             producer_url (str): URL of the requested producer.
 
-        Returns: 
+        Returns:
             True if a match was found otherwise False.
     """
     p = producer.Producer.objects(url=producer_url)
@@ -182,7 +185,7 @@ def contains_user(user_name):
         Args:
             requested_name (str): The name of the user.
 
-        Returns: 
+        Returns:
             True if a match was found otherwise False.
     """
     u = user.User.objects(name=user_name)
@@ -196,7 +199,7 @@ def contains_information(info_url):
         Args:
             url (str): The URL of the information object.
 
-        Returns: 
+        Returns:
             True if a match was found otherwise False.
     """
     i = information.Information.objects(url=info_url)
@@ -210,7 +213,7 @@ def contains_group(group_name):
         Args:
             info_title (str): The title of the information object.
 
-        Returns: 
+        Returns:
             True if a match was found otherwise False.
     """
     g = group.Group.objects(name=group_name)
@@ -223,7 +226,7 @@ def contains_tag(tag_name):
         Args:
             info_title (str): The name of the requested tag.
 
-        Returns: 
+        Returns:
             True if a match was found otherwise False.
     """
     t = tag.Tag.objects(name=tag_name)
@@ -242,7 +245,7 @@ def search_informations(possible_info, tags, startD, endD):
             startD (datetime.Date): Lower bound of the time frame.
             endD (datetime.Date): Upper bound of the time frame.
 
-        Returns: 
+        Returns:
             A list of zero or more information objects.
     """
     infos = information.Information.objects(title=re.compile('(?i)'+possible_info),
