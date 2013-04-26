@@ -51,8 +51,20 @@ var NetworkController = function (controller, visualizer) {
         entire network will be visualized).
      */
     this.visualize_producer_in_network = function (source_node, depth) {
-        $('#network-info-view .title').html(source_node);
-        visualizer.visualize_producer_in_network(source_node, depth);
+        $.post("/jobs/search/producers", {
+            'name' : source_node,
+            'type' : ''
+        }, function (data) {
+            var job_id = data['job_id'];
+
+            controller.set_job_callback(job_id, function (data) {
+                console.log(data);
+                $('#network-info-view .title').html(data.name);
+                visualizer.visualize_producer_in_network(data.name, depth);
+            });
+        }).fail(function (data) {
+            console.log(data);
+        });
     };
 
     /**
