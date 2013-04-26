@@ -45,6 +45,8 @@ class Producer(Document):
 
     """
     name = StringField(required=True, unique=True)
+    first_name = StringField();
+    last_name = StringField();
     description = StringField()
     url = StringField()
     infos = ListField(ReferenceField('Information'))

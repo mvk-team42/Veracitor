@@ -27,7 +27,7 @@ class Tag(Document):
     parent = ListField(ReferenceField('self'))
     valid_strings = ListField(StringField())
 
-    #!!! inte säker på vad den här ska vara bra för !!!
+    #!!! not sure what this is supposed to be used for !!!
     def __eq__(self, other):
         """
         Compares an instance of the Tag class with another Tag instance.
