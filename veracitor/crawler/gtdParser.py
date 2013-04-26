@@ -4,10 +4,10 @@ from pprint import pprint
 from time import strptime
 from ..database import *
 
-GTD_INCIDENT_URL = "http://www.start.umd.edu/gtd/search/IncidentSummary.aspx?gtdid="
-GTD_PRODUCER_NAME = "GTD"
+_GTD_INCIDENT_URL = "http://www.start.umd.edu/gtd/search/IncidentSummary.aspx?gtdid="
+_GTD_PRODUCER_NAME = "GTD"
 
-column_names = {
+_column_names = {
     "A":"id",
     "B":"year",
     "C":"month",
@@ -24,7 +24,7 @@ column_names = {
 
 def add_GTD_to_database():
     new_producer = producer.Producer(
-            name = GTD_PRODUCER_NAME,
+            name = _GTD_PRODUCER_NAME,
             description = "Global Terrorism Database",
             url = "http://www.start.umd.edu/gtd/",
             infos = [],
@@ -42,12 +42,12 @@ def parseGTD(filepath, **kwargs):
     terrorism_tag = safe_get_tag("Terrorism")
 
     for act in acts:
-        act_url = GTD_INCIDENT_URL + act["id"]
+        act_url = _GTD_INCIDENT_URL + act["id"]
         act_tag = safe_get_tag(act["attacktype"])
 
         sources = [ _strip_source(src) for src in [act["source1"], act["source2"], act["source3"]] if src != None]
 
-        GTD = extractor.get_producer(GTD_PRODUCER_NAME)
+        GTD = extractor.get_producer(_GTD_PRODUCER_NAME)
 
         for source in sources:
             # hur blir det om source == None?
@@ -110,11 +110,11 @@ def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
         for cell in row:
             if limit_number_rows > 0 and cell.row > limit_number_rows:
                 return acts
-            if cell.column in column_names:
+            if cell.column in _column_names:
                 if cell.internal_value == None:
-                    act[column_names[cell.column]] = None
+                    act[_column_names[cell.column]] = None
                 else:
-                    act[column_names[cell.column]] = unicode(cell.internal_value)
+                    act[_column_names[cell.column]] = unicode(cell.internal_value)
         acts.append(act)
         if print_acts:
             print act
