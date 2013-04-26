@@ -5,6 +5,7 @@ import json
 from veracitor.web import app
 from veracitor.web.utils import store_job_result
 import veracitor.tasks.search as search
+log = app.logger.debug
 
 @app.route('/debug')
 def debug():
@@ -43,6 +44,8 @@ def search_producers():
     try:
         name = request.form['name']
         type_of = request.form['type']
+        if type_of == '':
+            type_of = None
     except:
         abort(400)
     res = search.get_producers.delay(name, type_of)

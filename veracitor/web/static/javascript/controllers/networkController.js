@@ -51,6 +51,7 @@ var NetworkController = function (controller, visualizer) {
         entire network will be visualized).
      */
     this.visualize_producer_in_network = function (source_node, depth) {
+        $('#network-info-view .title').html(source_node);
         visualizer.visualize_producer_in_network(source_node, depth);
     };
 

@@ -8,8 +8,6 @@
  */
 (function () {
 
-    /** The current visible tab. */
-    var active_tab;
     /** The super controller */
     var controller;
 
@@ -41,9 +39,12 @@
         /** Side tab dom element */
         var side_tab;
 
-        active_tab = 1;
+        var active_tab = 1;
 
         vera.dom = {};
+
+        // Add the super controller and its sub controllers
+        controller = new SuperController(vera);
 
         for(tab = 0; tab < vera.tabs.length; tab ++) {
             key = vera.tabs[tab].key;
@@ -57,7 +58,7 @@
             vera.dom[key].index = parseInt(tab);
 
             // Add click events
-            vera.dom[key].menu.click(menu_click);
+            vera.dom[key].menu.click(controller.menu_click);
 
             // Set the active tab and initialize the tab positions
             if(tab == active_tab) {
@@ -84,9 +85,11 @@
                 side_tab.find("p").html(vera.tabs[tab - 1].name);
 
                 // Simulates a click in the menu
-                side_tab.click(function () {
-                    switch_to_tab_index(tab - 1);
-                });
+                side_tab.click((function (tab) {
+                    return function () {
+                        controller.switch_to_tab_index(tab);
+                    };
+                })(tab - 1));
             }
 
             // Get the right tab side
@@ -100,97 +103,16 @@
                 side_tab.find("p").html(vera.tabs[tab + 1].name);
 
                 // Simulates a click in the menu
-                side_tab.click(function () {
-                    switch_to_tab_index(tab + 1);
-                });
+                side_tab.click((function (tab) {
+                    return function () {
+                        controller.switch_to_tab_index(tab);
+                    };
+                })(tab + 1));
             }
         }
-
-        // Add controllers
-        controller = new SuperController();
     }
-    // Run this function when the document has loaded
+
+    // Initialize when the document has loaded
     $(document).ready(init);
-
-    /**
-        Handles the event fired when a menu tab is clicked.
-        If the current visible tab is to the left of the clicked
-        tab it will be animated out from the screen to the left,
-        otherwise to the right.
-        The clicked tab will be animated in to the screen, following
-        the motion of the previous visible tab.
-        @name Vera#menu_click
-        @function
-        @param {Event} evt The fired event.
-     */
-    var menu_click = function (evt) {
-        /** A key in the vera.dom object of tab objects. */
-        var tab;
-        /** The index of the clicked tab. */
-        var clickedTab;
-
-        clickedTab = 0;
-
-        // Retrieve the index of the clicked tab
-        for(tab in vera.dom) {
-            if(vera.dom[tab].menu[0] == evt.currentTarget) {
-                clickedTab = vera.dom[tab].index;
-            }
-        }
-
-        for(tab in vera.dom) {
-
-            if(vera.dom[tab].index == clickedTab) {
-                vera.dom[tab].menu.addClass(CLASSES.ACTIVE);
-
-                // Animate the clicked tab to the center of the screen
-                vera.dom[tab].view.animate({
-                    'left' : VIEW_POS.CENTER
-                }, TAB_SWITCH_TIME, null);
-
-            } else if(vera.dom[tab].index == active_tab) {
-                vera.dom[tab].menu.removeClass(CLASSES.ACTIVE);
-
-                // Animate the previous visible tab out of the screen
-                vera.dom[tab].view.animate({
-                    'left' : (vera.dom[tab].index < clickedTab) ?
-                            VIEW_POS.LEFT : VIEW_POS.RIGHT
-                }, TAB_SWITCH_TIME, null);
-
-            } else {
-                vera.dom[tab].menu.removeClass(CLASSES.ACTIVE);
-
-                // Move the tab relative to the clicked tab
-                vera.dom[tab].view.css({
-                    'left' : (vera.dom[tab].index < clickedTab) ?
-                            VIEW_POS.LEFT : VIEW_POS.RIGHT
-                });
-            }
-        }
-
-        active_tab = clickedTab;
-
-        return false;
-    }
-
-    /**
-        Switches to the tab with the given index.
-        @param tabIndex The index of the target tab.
-     */
-    var switch_to_tab_index = function (tabIndex) {
-        if(tabIndex >= 0 && tabIndex < vera.tabs.length) {
-            vera.dom[vera.tabs[tabIndex].key].menu.click();
-        }
-    }
-
-    /**
-        Switches to the tab with the given name.
-        @param tab The name of the target tab.
-     */
-    var switch_to_tab = function (tab) {
-        if(typeof(vera.dom[tab]) !== 'undefined') {
-            vera.dom[tab].menu.click();
-        }
-    }
 
 })();

@@ -178,7 +178,7 @@ var Visualizer = function () {
 
         cy.fit(cy.nodes());
         cy.layout({
-            name: 'equalizer'
+            name: 'random'
         });
     }
 
