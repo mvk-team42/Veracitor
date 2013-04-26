@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+
+""" 
+.. module:: crawlInterface
+    :synopsis: The interface for the webcrawler package
+
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 from multiprocessing import Process
 from twisted.internet import reactor
 from scrapy.signalmanager import SignalManager
@@ -23,7 +33,12 @@ from ..logger import logger
 
 def init_interface():
     """
-        setup module. Should only be called once [??? Varifraon kommer denna anropas ???]
+    Setup module. Should only be called once.
+
+    Connects signals and starts the scrapy logger.
+
+    Returns:
+        None
     """
     #global callback
     #callback = callback_method
@@ -33,7 +48,7 @@ def init_interface():
 
 def _item_scraped(item, response, spider):
     """
-        Callback function used internally.
+    Callback function used internally.
     """
     if isinstance(spider, NewspaperBankSpider):
         add_newspaper(_httpify(item['url'])) #, "-1")
@@ -49,20 +64,27 @@ def _item_scraped(item, response, spider):
 
 def create_newspaper_bank():
     """
-        Start a celery task that creates our newspaper bank.
+    Start a celery task that creates our newspaper bank.
 
-        The "newspaper bank" is simply a collection of known newspapers
-        with known information such as attribute-xpaths,that are continuosly
-        scraped for new articles
+    The "newspaper bank" is simply a collection of known newspapers
+    with known information such as attribute-xpaths,that are continuosly
+    scraped for new articles.
+
+    Returns:
+        None
     """
     _run_spider(NewspaperBankSpider())
 
 def add_newspaper(url):
     """
-        Start a celery task that adds newspaper with given base-url to
-        the "newspaper bank".
+    Start a celery task that adds newspaper with given base-url to
+    the "newspaper bank".
 
-        example: url for DN=www.dn.se, url for theGuardian=www.guardian.co.uk
+    Args:
+        url (str): The base-url for the source to be added. Example url for DN=www.dn.se, url for theGuardian=www.guardian.co.uk .
+
+    Returns:
+        None
     """
     spider = MetaNewspaperSpider(url=_httpify(url))
     #spider.job_id = job_id
@@ -70,8 +92,14 @@ def add_newspaper(url):
 
 def scrape_article(url):
     """
-        Start a celery task that scrapes article on given url and adds an Information-object
-        to database.
+    Start a celery task that scrapes article on given url and adds an Information-object
+    to database.
+
+    Args:
+        url (str): The url for the article to be added.
+
+    Returns:
+        None
     """
     #logger.log("blablabla",logger.Level.debug, logger.Area.crawler)
     spider = ArticleSpider(start_url=_httpify(url))
@@ -80,9 +108,15 @@ def scrape_article(url):
 
 def request_scrape(newspaper_url):
     """
-        Start a celery task that searches the webpage of given newspaper for articles,
-        scrapes the articles found (if they're not already stored) and adds Information-objects
-        to database.
+    Start a celery task that searches the webpage of given newspaper for articles,
+    scrapes the articles found (if they're not already stored) and adds Information-objects
+    to database.
+
+    Args:
+        newspaper_url (str): The base-url of the newspaper that is to be scraped.
+
+    Returns:
+        None
     """
     spider = NewspaperSpider(domain=_httpify(newspaper_url))
     #spider.job_id = job_id
@@ -90,9 +124,12 @@ def request_scrape(newspaper_url):
 
 def start_continuous_scrape():
     """
-        Start a celery task whose job is to loop through the newspaperbank and scrape the
-        newspapers for new articles and, if they're not already stored, store Information-
-        objects in the database.
+    Start a celery task whose job is to loop through the newspaperbank and scrape the
+    newspapers for new articles and, if they're not already stored, store Information-
+    objects in the database.
+
+    Returns:
+        None
 
     """
     current_dir = dirname(realpath(__file__))
