@@ -27,16 +27,16 @@ def init_interface():
     """
     #global callback
     #callback = callback_method
-    dispatcher.connect(item_scraped , signals.item_scraped)
+    dispatcher.connect(_item_scraped , signals.item_scraped)
     log.start()
 
 
-def item_scraped(item, response, spider):
+def _item_scraped(item, response, spider):
     """
         Callback function used internally.
     """
     if isinstance(spider, NewspaperBankSpider):
-        add_newspaper(httpify(item['url'])) #, "-1")
+        add_newspaper(_httpify(item['url'])) #, "-1")
         '''
     if isinstance(spider, ArticleSpider):
         callback(item) #, spider.job_id)
@@ -64,7 +64,7 @@ def add_newspaper(url):
 
         example: url for DN=www.dn.se, url for theGuardian=www.guardian.co.uk
     """
-    spider = MetaNewspaperSpider(url=httpify(url))
+    spider = MetaNewspaperSpider(url=_httpify(url))
     #spider.job_id = job_id
     _run_spider(spider)
 
@@ -74,7 +74,7 @@ def scrape_article(url):
         to database.
     """
     #logger.log("blablabla",logger.Level.debug, logger.Area.crawler)
-    spider = ArticleSpider(start_url=httpify(url))
+    spider = ArticleSpider(start_url=_httpify(url))
     #spider.job_id = job_id
     _run_spider(spider)
 
@@ -84,7 +84,7 @@ def request_scrape(newspaper_url):
         scrapes the articles found (if they're not already stored) and adds Information-objects
         to database.
     """
-    spider = NewspaperSpider(domain=httpify(newspaper_url))
+    spider = NewspaperSpider(domain=_httpify(newspaper_url))
     #spider.job_id = job_id
     _run_spider(spider)
 
@@ -112,7 +112,7 @@ def start_continuous_scrape():
         spider_has_run = False  # om rss failar ska man koera request_scrape
         for rss_link in rss_links:
             if not rss_link.text == None:
-                spider = RssSpider(url=httpify(rss_link.text))
+                spider = RssSpider(url=_httpify(rss_link.text))
                 _run_spider(spider)
                 spider_has_run = True
                 log.msg("Rss link found")
@@ -121,7 +121,7 @@ def start_continuous_scrape():
             request_scrape(url)
 
 def test_rss(url):
-    spider = RssSpider(url=httpify(url))
+    spider = RssSpider(url=_httpify(url))
     _run_spider(spider)
 
 
@@ -143,7 +143,7 @@ def _crawl(crawler, spider):
 
 
 
-def httpify(url):
+def _httpify(url):
     if url.startswith("http://"):
         return url
     return "http://" + url
