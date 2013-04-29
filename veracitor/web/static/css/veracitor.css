@@ -145,7 +145,7 @@ footer #login {
     position: absolute;
     left: 0px;
     right: 0px;
-    top: 80px;
+    top: 50px;
     bottom: 35px;
     min-width: 800px;
 
@@ -173,7 +173,6 @@ hr {
     left: 30px; right: 30px;
     top: 0px; bottom: 0px;
     padding: 0px 20px 0px 20px;
-    /*padding: 20px 25px 30px 25px;*/
 
     overflow: auto;
 }

@@ -202,7 +202,7 @@ var SearchController = function (controller) {
                                     .append($('<td>').addClass('name')
                                             .html(data.result.data[i].name))
                                     .append($('<td>').addClass('type')
-                                            .html(data.result.data[i].type)));
+                                            .html(data.result.data[i].type_of)));
                     }
 
                     table.append(body);
