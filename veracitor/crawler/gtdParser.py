@@ -70,19 +70,9 @@ def _save_act_in_gtd_object(act,gtd_producer):
             sources.append(source)
         else:
             source = extractor.get_producer(source_string)
-
-        source_rating1 = producer.SourceRating(
-                rating = 5,
-                tag = terrorism_tag,
-                source = source)
-
-        source_rating2 = producer.SourceRating(
-                rating = 5,
-                tag = act_tag,
-                source = source)
-
-        # Borde kolla innan!!!!!
-        gtd_producer.source_ratings += [source_rating1,source_rating2]
+            
+        gtd_producer.rate_source(source, terrorism_tag, 5)
+        gtd_producer.rate_source(source, act_tag, 5)
 
     information = None
     if not extractor.contains_information(act_url):
