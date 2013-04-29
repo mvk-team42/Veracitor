@@ -70,24 +70,14 @@ def _save_act_in_gtd_object(act,gtd_producer):
             sources.append(source)
         else:
             source = extractor.get_producer(source_string)
-
-        source_rating1 = producer.SourceRating(
-                rating = 5,
-                tag = terrorism_tag,
-                source = source)
-
-        source_rating2 = producer.SourceRating(
-                rating = 5,
-                tag = act_tag,
-                source = source)
-
-        # Borde kolla innan!!!!!
-        gtd_producer.source_ratings += [source_rating1,source_rating2]
+            
+        gtd_producer.rate_source(source, terrorism_tag, 5)
+        gtd_producer.rate_source(source, act_tag, 5)
 
     information = None
     if not extractor.contains_information(act_url):
         #TODO lägg till information i GTDs information list
-        information = information.Information(url = act_url),
+        information = information.Information(url = act_url,
             title = "GTD Entry",
             summary = act["summary"],
             time_published = strptime(act["year"]+"-"+act["mont"]+"-"+act["day"],"%Y-"),
