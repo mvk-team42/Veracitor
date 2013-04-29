@@ -11,6 +11,43 @@
  */
 var RatingsController = function (controller) {
 
+    /**
+       Initialize the ratings tab:
+       - Setup event handlers 
+    */
+    (function () {
 
+        add_event_handlers();
+
+    })();
+
+
+     /**
+       Add event handlers to the ratings view.
+     */
+    function add_event_handlers() {
+	//TODO
+    }
+
+
+    /**
+       Makes a database request to the server. 
+       Fetches all groups that the current user has.
+    */
+    var request_groups = function(user_id) {
+	//TODO Make job call.
+	//See searchController for example.
+    }
+
+
+    /**
+       Makes a database request to the server.
+       Fetches information objects, optionally 
+       filtered by tag.
+       TODO: Any more filters?
+    */
+    var request_information_objects = function(tag) {
+	//TODO: Implement.
+    }
 
 };
