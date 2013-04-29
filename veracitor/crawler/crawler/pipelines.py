@@ -7,6 +7,7 @@ from datetime import date
 from os.path import dirname, realpath
 from urlparse import urlparse
 from time import strptime, mktime
+import re
 
 from .items import ArticleItem
 from .xpaths import Xpaths
@@ -49,15 +50,27 @@ class CrawlerPipeline(object):
             return #already in database
         log.msg("extractor returns " + str(extractor.contains_information(item["url"])))
         log.msg(item["url"] + " is new, adding to database")
+            
+        #utgår från att item["tags"] är en sträng med space-separerade tags, t.ex. "bombs kidnapping cooking"
+        tag_strings = re.sub("[^\w]", " ",  item["tags"]).split()
+        tags = [extractor.get_tag_create_if_needed(tag_str) for tag_str in tag_strings]
+        
+        #utgår från att item["publishers"] är en sträng med space-separerade publishers, t.ex. "DN SVD NYT"
+        publisher_strings = re.sub("[^\w]", " ",  item["publishers"]).split()
+        publishers = [extractor.get_producer_create_if_needed(pub_str, "newspaper") for pub_str in tag_strings]
+        
         info = information.Information(
                             title = item["title"],
                             summary = item["summary"],
                             url = item["url"],
                             time_published = self.parse_datetime(item),
-                            tags = [],
-                            publishers = [], #item["publishers"],
+                            tags = tags,
+                            publishers = publishers,
                             references = [],
                        )
+        for publisher in publishers:
+            publisher.infos.append(info)
+            publisher.save()
         info.save()       
                                                      
         

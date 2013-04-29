@@ -18,6 +18,9 @@ var SearchController = function (controller) {
 
     var active_search_type = 0;
 
+    // Array of source results
+    var search_results = [];
+
     /**
       Initialize the search tab:
       - Setup event handlers
@@ -184,31 +187,36 @@ var SearchController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                var table = $('<table>')
-                    .append($('<thead>')
-                            .append($('<tr>')
-                                    .append($('<th>').html('Name'))
-                                    .append($('<th>').html('Type'))));
-                var body = $('<tbody>');
+                if (data.result.data.length > 0) {
+                    search_result = data.result.data;
 
-                for (var i in data.result.data) {
-                    body.append($('<tr>').addClass('result')
-                                .append($('<td>').addClass('name')
-                                        .html(data.result.data[i].name))
-                                .append($('<td>').addClass('type')
-                                        .html(data.result.data[i].type)));
+                    var table = $('<table>')
+                        .append($('<thead>')
+                                .append($('<tr>')
+                                        .append($('<th>').html('Name'))
+                                        .append($('<th>').html('Type'))));
+                    var body = $('<tbody>');
+
+                    for (var i in search_result) {
+                        body.append($('<tr>').addClass('result clickable')
+                                    .append($('<td>').addClass('name')
+                                            .html(data.result.data[i].name))
+                                    .append($('<td>').addClass('type')
+                                            .html(data.result.data[i].type)));
+                    }
+
+                    table.append(body);
+                    $('#search-result').html(table);
+
+                    $('#search-result .result').click(function (evt) {
+                        var prod = search_result[$('#search-result .result').index()];
+
+                        console.log(prod);
+
+                        controller.network.visualize_producer_in_network(prod, -1);
+                        controller.switch_to_tab('network');
+                    });
                 }
-
-                table.append(body);
-                $('#search-result').html(table);
-
-                $('#search-result .result').click(function (evt) {
-                    var name = $(this).find('.name').html();
-                    var type = $(this).find('.type').html();
-
-                    controller.switch_to_tab('network');
-                    controller.network.visualize_producer_in_network(name);
-                });
             });
         })
         .fail(function (data) {

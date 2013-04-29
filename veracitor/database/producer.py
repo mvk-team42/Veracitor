@@ -59,6 +59,10 @@ class Producer(Document):
     # To allow the User class to inherhit from this.
     meta = {'allow_inheritance':'On'}
     
+    #TODO implement. Should overwrite earlier ratings on same tag/source
+    def rate_source(source, tag, rating):
+        pass
+    
     def save(self):
         """
         Overrides save() inherhited from Document. 

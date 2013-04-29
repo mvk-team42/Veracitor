@@ -23,10 +23,13 @@ def get_producers(name, type_of):
     if res:
         producers = []
         for r in res:
-            source_ratings = [{ 'name' : s.source.name,
-                                'rating': s.rating }
+            source_ratings = [{'name' : s.source.name,
+                               'tag' : s.source.tag.name,
+                               'rating': s.rating }
                               for s in r.source_ratings]
             producers.append({'name' : r.name,
+                              'description' : r.description,
+                              'url' : r.url,
                               'type_of' : r.type_of,
                               'source_ratings' : source_ratings})
 

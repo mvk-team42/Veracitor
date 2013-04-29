@@ -246,21 +246,19 @@ hr {
     z-index: 101;
 }
 
+/* TABLE */
+
+table {
+    border-collapse: collapse;
+}
+
+table td {
+    padding: 5px 10px;
+
+    border: 1px solid #000;
+}
+
 /* INPUT */
-/*
-.checkbox {
-    margin-right:5px;
-    padding: 0 2px;
-}
-
-label {
-    line-height: 32px;
-}
-
-label input[type=text] {
-    float: right;
-}
-*/
 
 input {
     font-family: 'Titillium Web';

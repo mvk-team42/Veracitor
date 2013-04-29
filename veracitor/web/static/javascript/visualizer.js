@@ -21,9 +21,6 @@ var Visualizer = function () {
         $('#network-graph').cytoscape({
             ready: function () {
                 cy = this;
-
-                // Generate and display a test graph
-                draw_graph(generate_data(20, 5, 5));
             },
             style: cytoscape.stylesheet()
                 .selector("node")
@@ -80,8 +77,43 @@ var Visualizer = function () {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
-    this.visualize_producer_in_network = function (sourceNode, depth) {
-        // TODO
+    this.visualize_producer_in_network = function (prod, depth) {
+        var nodes = [];
+        var edges = [];
+
+        nodes.push({
+            group: 'nodes',
+            data: {
+                id: prod.name
+            }
+        });
+
+        for(var i in prod.source_ratings) {
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: prod.source_ratings[i].name
+                }
+            });
+
+            edges.push({
+                group: 'edges',
+                data: {
+                    id: prod.name + '-' + prod.source_ratings[i].name,
+                    source: prod.name,
+                    target: prod.source_ratings[i].name
+                }
+            });
+        }
+
+        cy.elements().remove();
+        cy.add(nodes);
+        cy.add(edges);
+
+        cy.fit(cy.nodes());
+        cy.layout({
+            name: 'random'
+        });
     };
 
     /**
