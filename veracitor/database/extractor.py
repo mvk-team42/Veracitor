@@ -35,6 +35,21 @@ def get_producer(requested_name):
     extr_producer = producer.Producer.objects(name=requested_name)
     __checkIfEmpty(extr_producer)
     return extr_producer[0]
+    
+    
+def producer_create_if_needed(requested_name, type_if_new):
+	try:
+		return get_producer(requested_name)
+	except NotInDatabase:
+		new_producer = producer.Producer(
+		            name = requested_name,
+		            description = "",
+		            url = "",
+		            infos = [],
+		            source_ratings = [],
+		            type_of = type_if_new)
+		new_producer.save()
+		return new_producer
 
 def get_user(requested_name):
     """
