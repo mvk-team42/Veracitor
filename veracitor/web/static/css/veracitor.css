@@ -16,7 +16,7 @@ body {
 
 header {
     position: relative;
-    height: 80px;
+    height: 50px;
     min-width: 800px;
     overflow: hidden;
 
@@ -40,6 +40,7 @@ header #veracitor-logo {
     position: absolute;
     left: 12px;
     top: 5px;
+    height: 50px;
 }
 
 header a,
@@ -56,16 +57,16 @@ header #menu {
     position: absolute;
     right: 20px;
     bottom: 0px;
-    height: 50px;
+    height: 40px;
 }
 
 header #menu li {
-    height: 50px;
+    height: 100%;
     float: left;
 
     list-style-type: none;
     font-size: 20pt;
-    line-height: 50px;
+    line-height: 40px;
 
     background-color: #000;
 }
@@ -73,15 +74,15 @@ header #menu li {
 header #menu li a {
     display: block;
     padding: 0px 12px;
-    height: 50px;
+    height: 100%;
 }
 
 header #menu .active {
     background-color: #eee;
 
-    -webkit-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
+/*    -webkit-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
     -moz-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
-    box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
+    box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);*/
 }
 
 header #menu .active a,
