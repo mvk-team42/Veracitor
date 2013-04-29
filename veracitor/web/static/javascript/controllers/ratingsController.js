@@ -50,4 +50,15 @@ var RatingsController = function (controller) {
 	//TODO: Implement.
     }
 
+
+    //TODO. Nåt sånt?
+    function set_producer_reliability_rating(producer_id) {
+   
+    }
+
+    //TODO. Nåt sånt?
+    function set_information_credibility_rating(information_id) {
+
+    }
+
 };
