@@ -9,17 +9,18 @@
 
 """
 
-from flask import render_template
+from flask import render_template, url_for
 
 from veracitor.web import app
 
+#app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='images/favicon.ico'))
 
 @app.route('/')
 def index():
     """
     Initializes the web page.
     """
-
+    
     veracitor = {
         'title' : 'Veracitor',
         'tabs' : [
@@ -53,4 +54,5 @@ def index():
             }
         ]
     }
+    app.vera = veracitor
     return render_template('index.html', vera=veracitor)
