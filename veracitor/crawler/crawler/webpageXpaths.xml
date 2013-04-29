@@ -83,10 +83,14 @@
 
 
 
-    <webpage domain="www.dn.se">
+    <webpage domain="www.dn.se" name="DN">
         <datetime_format>
             <xpath>%Y-%m-%d %H:%M</xpath>
         </datetime_format>
+
+        <rss-urls>
+            <rss>http://www.dn.se/toppnyheter-rss</rss>
+        </rss-urls>
 
         <article-paths>
             <qualification>
