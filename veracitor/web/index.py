@@ -54,5 +54,4 @@ def index():
             }
         ]
     }
-    app.vera = veracitor
     return render_template('index.html', vera=veracitor)

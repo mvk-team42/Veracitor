@@ -34,7 +34,7 @@ def login():
         else:
             session.user = user
             
-        return render_template("index.html", vera=app.vera)
+        return redirect(url_for("index"))
 
 
 
@@ -44,6 +44,6 @@ def login():
 def logout():
     session.pop("username", None)
     session.error = ""
-    redirect("index.html", vera=app.vera)
+    redirect(url_for("index"))
     
     
