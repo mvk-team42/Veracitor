@@ -84,15 +84,19 @@ def _save_act_in_gtd_object(act,gtd_producer):
         # Borde kolla innan!!!!!
         gtd_producer.source_ratings += [source_rating1,source_rating2]
 
+    information = None
     if not extractor.contains_information(act_url):
         #TODO lägg till information i GTDs information list
-        new_information = information.Information(url = act_url),
+        information = information.Information(url = act_url),
             title = "GTD Entry",
             summary = act["summary"],
             time_published = strptime(act["year"]+"-"+act["mont"]+"-"+act["day"],"%Y-"),
             tags = [terrorism_tag, act_tag],
             publishers = [gtd_producer] + sources,
             references =  [])
+        information.save()
+        
+    gtd_producer.infos += information
 
 def safe_get_tag(name):
     try:
