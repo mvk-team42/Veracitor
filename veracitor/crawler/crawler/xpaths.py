@@ -11,6 +11,9 @@ class Xpaths:
     def __init__(self, filepath):
         tree = ET.parse(filepath)
         self.root = tree.getroot()
+
+    def get_all_webpage_domains(self):
+        return self.root.findall("webpage/@domain")
         
     def get_article_xpaths(self, field_name, domain):
         """
@@ -65,6 +68,9 @@ class Xpaths:
         if len(xpaths) == 0:
             xpaths = self.root.findall("default/webpage-paths/"+field_name+"/xpath") 
         return [xpath.text for xpath in xpaths]
-        
-        
-        
+
+    def get_rss_urls(self, domain):
+        """
+        """
+        urls = self.root.findall("webpage[@domain='"+domain+"']/rss-urls/url")
+        return [url.text for url in urls if url.text != None]
