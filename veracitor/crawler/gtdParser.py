@@ -77,7 +77,7 @@ def _save_act_in_gtd_object(act,gtd_producer):
     information = None
     if not extractor.contains_information(act_url):
         #TODO lägg till information i GTDs information list
-        information = information.Information(url = act_url),
+        information = information.Information(url = act_url,
             title = "GTD Entry",
             summary = act["summary"],
             time_published = strptime(act["year"]+"-"+act["mont"]+"-"+act["day"],"%Y-"),
