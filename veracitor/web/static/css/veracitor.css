@@ -16,7 +16,7 @@ body {
 
 header {
     position: relative;
-    height: 80px;
+    height: 50px;
     min-width: 800px;
     overflow: hidden;
 
@@ -40,6 +40,7 @@ header #veracitor-logo {
     position: absolute;
     left: 12px;
     top: 5px;
+    height: 50px;
 }
 
 header a,
@@ -56,16 +57,16 @@ header #menu {
     position: absolute;
     right: 20px;
     bottom: 0px;
-    height: 50px;
+    height: 40px;
 }
 
 header #menu li {
-    height: 50px;
+    height: 100%;
     float: left;
 
     list-style-type: none;
     font-size: 20pt;
-    line-height: 50px;
+    line-height: 40px;
 
     background-color: #000;
 }
@@ -73,15 +74,15 @@ header #menu li {
 header #menu li a {
     display: block;
     padding: 0px 12px;
-    height: 50px;
+    height: 100%;
 }
 
 header #menu .active {
     background-color: #eee;
 
-    -webkit-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
+/*    -webkit-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
     -moz-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
-    box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
+    box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);*/
 }
 
 header #menu .active a,
@@ -144,7 +145,7 @@ footer #login {
     position: absolute;
     left: 0px;
     right: 0px;
-    top: 80px;
+    top: 50px;
     bottom: 35px;
     min-width: 800px;
 
@@ -171,8 +172,7 @@ hr {
     position: absolute;
     left: 30px; right: 30px;
     top: 0px; bottom: 0px;
-    padding: 0px 20px 0px 20px;
-    /*padding: 20px 25px 30px 25px;*/
+    padding: 10px 20px;
 
     overflow: auto;
 }
@@ -246,6 +246,23 @@ hr {
     z-index: 101;
 }
 
+/* LOGIN */
+
+#login label {
+    font-size: 12pt;
+}
+
+#login input[type=text], #login input[type=password] {
+    font-size: 12pt;
+
+    color: #fff;
+    background: none;
+
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #fff;
+}
+
 /* TABLE */
 
 table {
@@ -261,20 +278,9 @@ table td {
 /* INPUT */
 
 input {
+    padding: 2px 5px;
+
     font-family: 'Titillium Web';
-    font-size: 14pt;
-    outline: none;
-}
-
-input[type=text] {
-    width: 400px;
-    line-height: 30px;
-    padding: 0px 5px;
-    border: 1px solid #bbb;
-}
-
-input[type=radio] {
-    margin-right: 10px;
 }
 
 input[type=button] {
@@ -321,10 +327,6 @@ input[type=button].active {
     background: -ms-linear-gradient(top,  rgba(231,231,231,1) 0%,rgba(193,193,193,1) 49%,rgba(206,206,206,1) 50%,rgba(240,240,240,1) 100%); /* IE10+ */
     background: linear-gradient(to bottom,  rgba(231,231,231,1) 0%,rgba(193,193,193,1) 49%,rgba(206,206,206,1) 50%,rgba(240,240,240,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e7e7e7', endColorstr='#f0f0f0',GradientType=0 ); /* IE6-9 */
-}
-
-input:focus {
-    outline: 1px solid #bbb;
 }
 
 /* RESULT, SOURCE RATINGS */

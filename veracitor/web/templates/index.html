@@ -57,10 +57,8 @@
 		<p>2013 team 42 <img id="team42-logo" src="{{ url_for('static', filename='images/pc.png') }}" /> {{ vera.title }}</p>
 
                 {% if session.user %}
-                <p id="login">Logged in as <b>{{ session.user.name }}</b>.</p>
-                <button value="logout"
-                        onClick="window.location.assign({
-                url_for('logout') })">
+                <p id="login">Logged in as <b>{{ session.user.name }}</b>.
+                <button type="button"><a href="{{ url_for('logout') }}">logout</button></p>
                 {% else %}
                 {% if session.error %}
                 <p class="error">{{ session.error }}</p>

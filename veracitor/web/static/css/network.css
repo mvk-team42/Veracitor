@@ -19,10 +19,8 @@
 
 #network-holder {
 	position: absolute;
-	left: 500px;
+	left: 420px; right: 20px;
 	top: 30px;
-
-    width: 700px;
 
 	background-color: #fff;
 	-webkit-box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
