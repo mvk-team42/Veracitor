@@ -20,7 +20,7 @@ def index():
     """
     Initializes the web page.
     """
-
+    
     veracitor = {
         'title' : 'Veracitor',
         'tabs' : [
@@ -54,4 +54,5 @@ def index():
             }
         ]
     }
+    app.vera = veracitor
     return render_template('index.html', vera=veracitor)

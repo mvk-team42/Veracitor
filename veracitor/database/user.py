@@ -36,11 +36,14 @@ class User(producer.Producer):
 
     The name field uniquely identifies a user in the database.
     """
-    password = StringField(required=True)
     time_joined = DateTimeField()
     group_ratings = ListField(EmbeddedDocumentField(GroupRating))
     groups = ListField(ReferenceField('Group'))
     type_of = "User"
+    password = StringField(required=True)
+    pw_hash = StringField()
+    email = StringField()
+    
     
 
     

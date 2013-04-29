@@ -133,26 +133,20 @@ def start_continuous_scrape():
 
     """
     current_dir = dirname(realpath(__file__))
+    xml_file = current_dir + "/crawler/webpageXpaths.xml"
+    xpaths = Xpaths(xml_file)
 
-    newspaper_urls = []
-    xml_file = current_dir + "/crawler/webpages.xml"
-    tree = ET.parse(xml_file)
-    webpages = tree.getroot().findall("./webpage")
-    for webpage in webpages:
-        newspaper_urls.append(webpage.get("domain"))
-    # while (True):
+    newspaper_urls = xpaths.get_all_webpage_domains()
+
     for url in newspaper_urls:
         log.msg(url)
 
-        rss_links = tree.getroot().findall("./webpage[@domain='"+url+"']/rss")
-
         spider_has_run = False  # om rss failar ska man koera request_scrape
-        for rss_link in rss_links:
-            if not rss_link.text == None:
-                spider = RssSpider(url=_httpify(rss_link.text))
-                _run_spider(spider)
-                spider_has_run = True
-                log.msg("Rss link found")
+        for rss_url in xpaths.get_rss_urls(url):
+            spider = RssSpider(url=_httpify(rss_url))
+            _run_spider(spider)
+            spider_has_run = True
+            log.msg("Rss link found")
 
         if not spider_has_run:
             request_scrape(url)
