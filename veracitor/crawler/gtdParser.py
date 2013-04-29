@@ -49,7 +49,7 @@ def parseGTD(filepath, **kwargs):
         
 def _save_act_in_gtd_object(act,gtd_producer):
     act_url = _GTD_INCIDENT_URL + act["id"]
-    act_tag = safe_get_tag(act["attacktype"])
+    act_tag = _safe_get_tag(act["attacktype"])
     source_strings = [ _strip_source(src) for src in [act["source1"], act["source2"], act["source3"]] if src != None]
     sources = []
 
@@ -98,7 +98,7 @@ def _save_act_in_gtd_object(act,gtd_producer):
         
     gtd_producer.infos += information
 
-def safe_get_tag(name):
+def _safe_get_tag(name):
     try:
         return extractor.get_tag(name)
     except:
@@ -137,7 +137,7 @@ def _strip_source(source):
     
     
 if __name__ == "__main__":
-    global terrorism_tag = safe_get_tag("Terrorism")
+    global terrorism_tag = _safe_get_tag("Terrorism")
     add_GTD_to_database()
     add_terrorism_tag()
     acts = parseGTD('Downloads/globalterrorismdb_1012dist.xlsx', limit_number_rows = 4)
