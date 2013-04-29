@@ -13,7 +13,7 @@ def login():
     """
     
     """
-    if "username" in session:
+    if "user" in session:
         return redirect(url_for('index'))
 
     error = None
@@ -30,20 +30,18 @@ def login():
             if not user.password == request.form['password']:
                 error = "Wrong password."
         if error:
-            session.error = error
+            session['error'] = error
         else:
-            session.user = user
+            session['user'] = user
             
         return redirect(url_for("index"))
 
 
 
-
-
 @app.route("/logout")
 def logout():
-    session.pop("username", None)
-    session.error = ""
-    redirect(url_for("index"))
+    session.pop("user", None)
+    session.pop("error", None)
+    return redirect(url_for("index"))
     
     
