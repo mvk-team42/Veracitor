@@ -50,21 +50,13 @@ var NetworkController = function (controller, visualizer) {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
-    this.visualize_producer_in_network = function (source_node, depth) {
-        $.post("/jobs/search/producers", {
-            'name' : source_node,
-            'type' : ''
-        }, function (data) {
-            var job_id = data['job_id'];
+    this.visualize_producer_in_network = function (prod, depth) {
+        $('#network-info-view .title').html(prod.name);
+        $('#network-info-view .description').html(prod.description);
+        $('#network-info-view .url').html(prod.url);
+        $('#network-info-view .type').html(prod.type_of);
 
-            controller.set_job_callback(job_id, function (data) {
-                console.log(data);
-                $('#network-info-view .title').html(data.name);
-                visualizer.visualize_producer_in_network(data.name, depth);
-            });
-        }).fail(function (data) {
-            console.log(data);
-        });
+        visualizer.visualize_producer_in_network(prod, depth);
     };
 
     /**
