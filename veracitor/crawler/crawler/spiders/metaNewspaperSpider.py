@@ -36,7 +36,7 @@ class MetaNewspaperSpider(BaseSpider):
     @staticmethod
     def scrape_meta(response):
         current_dir = dirname(realpath(__file__))
-        xml_file = current_dir + '/../webpages.xml'
+        xml_file = current_dir + '/../webpageXpaths.xml'
         tree = ET.parse(xml_file)
         webpages = tree.getroot()
         url = response.url
@@ -50,17 +50,26 @@ class MetaNewspaperSpider(BaseSpider):
         if name=="" or extractor.contains_producer_with_name(name):
             name = url
 
-        rss_links = MetaNewspaperSpider.extract_rss_links(domain, hxs, xpaths)
+        rss_urls = MetaNewspaperSpider.extract_rss_urls(domain, hxs, xpaths)
         description = MetaNewspaperSpider.extract_description(domain, hxs, xpaths)
         
+        webpage = None
+
+        if already_in_xml:   # Get element and remove existing url-links
+            webpage = webpages.find("webpage[@domain='"+domain"']")
+            webpage.remove(webpage.find("rss-urls"))
+        else:  # Create new element
+            webpage = ET.Element("webpage", attrib={'domain':domain, 'name':name})
+        rss_urls_tag = ET.Element("rss-urls")
+        for rss_url in rss_urls:  # Add all urls to rss-urls element
+            rss = ET.Element("rss")
+            rss.text = rss_url
+            rss_urls_tag.append(rss)
+        webpage.append(rss_urls_tag)  # Append rss-urls to webpage element
         if not already_in_xml:
-            new_element = ET.Element("webpage", attrib={'domain':domain, 'name':name})
-            for rss_link in rss_links:
-                rss = ET.Element("rss")
-                rss.text = rss_link
-                new_element.append(rss)
-            webpages.append(new_element)
-            tree.write(xml_file)
+            webpages.append(webpage)
+        tree.write(xml_file)
+
         if not extractor.contains_producer_with_url(url): #db-method
             new_producer = producer.Producer(name = name,
                 description = description,
@@ -80,7 +89,7 @@ class MetaNewspaperSpider(BaseSpider):
         return ""
 
     @staticmethod
-    def extract_rss_links(domain, hxs, xpaths):
+    def extract_rss_urls(domain, hxs, xpaths):
         for rss_xpath in xpaths.get_webpage_xpaths("rss-link", domain):
             rss_links = hxs.select(rss_xpath)
             if len(rss_links) > 0:
