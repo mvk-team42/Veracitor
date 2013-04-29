@@ -110,6 +110,19 @@ def get_tag(requested_name):
     extr_tag = tag.Tag.objects(name=requested_name)
     __checkIfEmpty(extr_tag)
     return extr_tag[0]
+    
+def get_tag_create_if_needed(requested_name):
+	try:
+		return get_tag(requested_name)
+	except NotInDatabase:
+		new_tag = tag.Tag(
+			name = requested_name,
+			description = "",
+			parent = [],
+			valid_strings = [requested_name]
+			)
+		new_tag.save()
+		return new_tag
 
 def get_all_tags():
     """
