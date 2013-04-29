@@ -21,23 +21,11 @@ class Xpaths:
             domain should be a base url of the webpage (without http://) such as www.guardian.co.uk or www.dn.se ... if 
             domain is not found in file, default value will be used.
         """
-        xpaths = self.root.findall("webpage[@domain='"+domain+"']/article-data/"+field_name+"/xpath")
+        xpaths = self.root.findall("webpage[@domain='"+domain+"']/article-paths/"+field_name+"/xpath")
         if len(xpaths) == 0:
             xpaths = self.root.findall("default/article-data/"+field_name+"/xpath") 
         return [xpath.text for xpath in xpaths]
 
-    def get_article_qualification_xpaths(self, domain):
-        """
-            Get an array of xpath-strings that should be found on a webpage for it to be classified as an article.
-            
-            domain should be a base url of the webpage (without http://) such as www.guardian.co.uk or www.dn.se ... if 
-            domain is not found in file, default value will be used.
-        """
-        xpaths = self.root.findall("webpage[@domain='"+domain+"']/article-qualification/xpath")
-        if len(xpaths) == 0:
-            xpaths = self.root.findall("default/article-qualification/xpath")   
-        return [xpath.text for xpath in xpaths]
-        
     def get_article_deny_urls(self, domain):
         """
             Get an array of url-strings that if contained in a url, stops spiders, that are looking for articles, from visiting it.
@@ -73,9 +61,9 @@ class Xpaths:
             domain should be a base url of the webpage (without http://) such as www.guardian.co.uk or www.dn.se ... if 
             domain is not found in file, default value will be used.
         """
-        xpaths = self.root.findall("webpage[@domain='"+domain+"']/webpage-data/"+field_name+"/xpath")
+        xpaths = self.root.findall("webpage[@domain='"+domain+"']/webpage-paths/"+field_name+"/xpath")
         if len(xpaths) == 0:
-            xpaths = self.root.findall("default/webpage-data/"+field_name+"/xpath") 
+            xpaths = self.root.findall("default/webpage-paths/"+field_name+"/xpath") 
         return [xpath.text for xpath in xpaths]
         
         

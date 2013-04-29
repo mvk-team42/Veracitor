@@ -49,7 +49,7 @@ class NewspaperSpider(CrawlSpider):
     def _is_article(self, response):
         domain = urlparse(response.url)[1]
         hxs = HtmlXPathSelector(response)
-        for xpath in self.xpaths.get_article_qualification_xpaths(domain):
+        for xpath in self.xpaths.get_article_xpaths("qualification",domain):
             if len(hxs.select(xpath)) > 0:
                 return True
         return False

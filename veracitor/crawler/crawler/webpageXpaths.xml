@@ -2,15 +2,6 @@
 <webpages>
 
     <default>
-        <article-qualification>
-            <xpath>//*[@id="article"]</xpath>
-            <xpath>//meta[@content="article"]</xpath>
-            <xpath>//*[contains(@class,'article')]</xpath>
-            <xpath>//*[@id="article-content"]</xpath>
-            <xpath>//*[contains(@class,'articlePage')]</xpath>
-            <xpath>//*[contains(@role,'article')]</xpath>
-        </article-qualification>
-        
         <article-deny-url>
             <pattern>blog</pattern>
             <pattern>webtv</pattern>
@@ -18,8 +9,16 @@
             <pattern>fragesport</pattern>
             <pattern>quiz</pattern>
         </article-deny-url>
+
+        <datetime-formats>
+            <format>%Y-%m-%d %H:%M</format>
+            <format>%d %B %Y kl %H:%M</format>
+        </datetime-formats>
+
+        <rss-urls>
+        </rss-urls>
         
-        <webpage-data>
+        <webpage-paths>
             <name>
                 <xpath>//title/text()</xpath>
             </name>
@@ -30,9 +29,18 @@
                 <xpath>//a[contains(@class, "rss")]/@href</xpath>    
                 <xpath>//*[contains(@class, "rss")]//a/@href</xpath>   
             </rss-link>
-        </webpage-data>
+        </webpage-paths>
 
-        <article-data>
+        <article-paths>
+            <qualification>
+                <xpath>//*[@id="article"]</xpath>
+                <xpath>//meta[@content="article"]</xpath>
+                <xpath>//*[contains(@class,'article')]</xpath>
+                <xpath>//*[@id="article-content"]</xpath>
+                <xpath>//*[contains(@class,'articlePage')]</xpath>
+                <xpath>//*[contains(@role,'article')]</xpath>
+            </qualification>
+        
             <title>
                 <xpath>//*[@id="article-content"]//h1//text()</xpath>
                 <xpath>//*[@id="main"]//h1//text()</xpath>
@@ -67,14 +75,7 @@
                 <xpath>//*[contains(@class, "article-metadata")]//*[contains(@class, "publishdate")]//text()</xpath>
                 <xpath>//*[contains(@class, "pubtime")]//text()</xpath>
             </time_published>
-            
-            <datetime-formats>
-                <format>%Y-%m-%d %H:%M</format>
-                <format>%d %B %Y kl %H:%M</format>
-            </datetime-formats>
-            
-            
-        </article-data>
+        </article-paths>
     </default>
 
 
@@ -83,13 +84,16 @@
 
 
     <webpage domain="www.dn.se">
-        <article-qualification>
-            <xpath>//div[@id="article"]</xpath>
-            <xpath>//meta[@content="article"]</xpath>
-            <xpath>//div/p[@class="header"]</xpath>
-        </article-qualification>
+        <datetime_format>
+            <xpath>%Y-%m-%d %H:%M</xpath>
+        </datetime_format>
 
-        <article-data>
+        <article-paths>
+            <qualification>
+                <xpath>//div[@id="article"]</xpath>
+                <xpath>//meta[@content="article"]</xpath>
+                <xpath>//div/p[@class="header"]</xpath>
+            </qualification>
 
             <title>
                 <xpath>//*[@id="article-content"]//h1/text()</xpath>
@@ -108,44 +112,36 @@
             <time_published>
                 <xpath>//*[@id="article-content"]/p/text()</xpath>
             </time_published>
-
-            <datetime_format>
-                <xpath>%Y-%m-%d %H:%M</xpath>
-            </datetime_format>
-
-        </article-data>
+        </article-paths>
     </webpage>
     
     
     
     <webpage domain="www.guardian.co.uk">
-        <article-qualification>
-            <xpath>//div[contains(@class,'article')]</xpath>
-        </article-qualification>
-
-        <article-data>
-        </article-data>
+        <article-paths>
+            <qualification>
+                <xpath>//div[contains(@class,'article')]</xpath>
+            </qualification>
+        </article-paths>
     </webpage>
     
     
     
      <webpage domain="www.svd.se">
-        <article-qualification>
-            <xpath>//div[contains(@id,'article-content')]</xpath>
-        </article-qualification>
-
-        <article-data>
-        </article-data>
+        <article-paths>
+            <qualification>
+                <xpath>//div[contains(@id,'article-content')]</xpath>
+            </qualification>
+        </article-paths>
     </webpage>
     
     
     
     <webpage domain="www.nytimes.com">
-        <article-qualification>
-            <xpath>//div[contains(@id,'article')]</xpath>
-        </article-qualification>
-
-        <article-data>
+        <article-paths>
+            <qualification>
+                <xpath>//div[contains(@id,'article')]</xpath>
+            </qualification>
 
             <title>
                 <xpath>//h1[contains(@class,"articleHeadline")]/nyt_headline/text()</xpath>
@@ -159,35 +155,33 @@
                 <xpath>//*[contains(@class, "dateline")]/text()</xpath>
             </time_published>
 
-        </article-data>
+        </article-paths>
     </webpage>
     
     
     
     <webpage domain="www.dailymail.co.uk">
-        <article-qualification>
-            <xpath>//div[contains(@class,'articlePage')]</xpath>
-        </article-qualification>
-
-        <article-data>
+        <article-paths>
+            <qualification>
+                <xpath>//div[contains(@class,'articlePage')]</xpath>
+            </qualification>
 
             <summary>
                 <xpath>//*[contains(@class, "article-text")]//li[1]/font/text()</xpath>
                 <xpath>//*[contains(@class, "article-text")]//li[1]/text()</xpath>
             </summary>
 
-        </article-data>
+        </article-paths>
     </webpage>
     
     
     
     <webpage domain="timesofindia.indiatimes.com">
-        <article-qualification>
-            <xpath>//*[contains(@class,'article')]</xpath>
-        </article-qualification>
-
-        <article-data>
-        </article-data>
+        <article-paths>
+            <qualification>
+                <xpath>//*[contains(@class,'article')]</xpath>
+            </qualification>
+        </article-paths>
     </webpage>
 </webpages>
 
