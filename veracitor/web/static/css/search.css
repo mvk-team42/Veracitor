@@ -29,13 +29,19 @@
     height: 100%;
     float: left;
 
-    background: #ccc;
+    font-size: 16pt;
+    font-weight: 400;
     line-height: 40px;
     text-align: center;
+    background: #ccc;
 
     -webkit-box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
     -moz-box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
     box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
+}
+
+#search-tabs > .head > .tab > a {
+    color: #fff;
 }
 
 #search-tabs > .head > .tab.active {
@@ -45,21 +51,12 @@
     box-shadow: none;
 }
 
-#search-tabs > .head > .tab.active a {
-    color: #000;
-}
-
-#search-tabs > .head > .tab a,
-#search-tabs > .head > .tab a:active,
-#search-tabs > .head > .tab a:focus,
-#search-tabs > .head > .tab a:hover,
-#search-tabs > .head > .tab a:link {
-    width: 100%;
-    height: 100%;
-    float: left;
-
+#search-tabs > .head > .tab > a:active,
+#search-tabs > .head > .tab > a:focus,
+#search-tabs > .head > .tab > a:hover,
+#search-tabs > .head > .tab > a:link {
     text-decoration: none;
-    color: #444;
+    color: #000;
 }
 
 /* SEARCH TYPE BODY */
@@ -67,6 +64,19 @@
 #search-tabs > .body > .content {
     padding: 15px 25px 25px 25px;
     background: #fff;
+}
+
+#search-tabs > .body > .content > input[type=text] {
+    width: 100%;
+
+    font-size: 12pt;
+}
+
+#search-tabs > .body > .content > input[type=button] {
+    width: 100%;
+
+    font-size: 14pt;
+    font-weight: 600;
 }
 
 #search-tabs > .body > .content > .search-type {
