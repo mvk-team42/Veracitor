@@ -1,6 +1,122 @@
 /* SEARCH VIEW */
 
+/* SEARCH TYPE TABS */
+
+.search-column {
+    width: 600px;
+    float: left;
+
+    background: #fff;
+
+    -webkit-box-shadow: 0px -5px 6px rgba(50, 50, 50, 0.15);
+    -moz-box-shadow: 0px -5px 6px rgba(150, 50, 50, 0.15);
+    box-shadow: 0px -5px 10px rgba(150, 150, 150, 0.15);
+}
+
+#search-tabs {
+    margin: 0 20px 20px 0;
+}
+
+/* SEARCH TYPE HEAD */
+
+#search-tabs > .head {
+    width: 100%;
+    height: 40px;
+}
+
+#search-tabs > .head > .tab {
+    width: 50%;
+    height: 100%;
+    float: left;
+
+    background: #ccc;
+    line-height: 40px;
+    text-align: center;
+
+    -webkit-box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
+    -moz-box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
+    box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
+}
+
+#search-tabs > .head > .tab.active {
+    background: #fff;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+#search-tabs > .head > .tab.active a {
+    color: #000;
+}
+
+#search-tabs > .head > .tab a,
+#search-tabs > .head > .tab a:active,
+#search-tabs > .head > .tab a:focus,
+#search-tabs > .head > .tab a:hover,
+#search-tabs > .head > .tab a:link {
+    width: 100%;
+    height: 100%;
+    float: left;
+
+    text-decoration: none;
+    color: #444;
+}
+
+/* SEARCH TYPE BODY */
+
+#search-tabs > .body > .content {
+    padding: 15px 25px 25px 25px;
+    background: #fff;
+}
+
+#search-tabs > .body > .content > .search-type {
+
+}
+
+#search-tabs > .body > .content > .search-type > label {
+    margin: 0 0 0 0;
+
+    font-size: 14pt;
+    font-weight: 600;
+}
+
+#search-tabs > .body > .content > .search-type > .radio {
+    float: left;
+    margin: 10px 10px 0 0;
+}
+
+#search-tabs > .body > .content > .search-type > .content {
+    padding: 0 0 10px 35px;
+    position: relative;
+}
+
+#search-tabs > .body > .content > .search-type > .content > .overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    background: rgba(255,255,255,0.6);
+    z-index: 100;
+}
+
+#search-tabs > .result {
+    padding: 15px 25px;
+}
+
+/* DATABASE SEARCH TAB */
+#database-search-button {
+    width: 200px;
+    height: 40px;
+    margin: 20px 0 0 0;
+}
+
 /* SEARCH RESULT */
+
+#search-result-content > .body {
+    padding: 10px 20px 10px 20px;
+}
 
 #search-result p {
     margin: 10px 0;
@@ -162,111 +278,4 @@
 #time-period {
     margin: 5px 0;
     display: inline-block;
-}
-
-/* SEARCH TYPE TABS */
-
-#search-tabs {
-    width: 700px;
-
-    background: #fff;
-
-    -webkit-box-shadow: 0px -5px 6px rgba(50, 50, 50, 0.15);
-    -moz-box-shadow: 0px -5px 6px rgba(150, 50, 50, 0.15);
-    box-shadow: 0px -5px 10px rgba(150, 150, 150, 0.15);
-}
-
-/* SEARCH TYPE HEAD */
-
-#search-tabs > .head {
-    width: 100%;
-    height: 40px;
-}
-
-#search-tabs > .head > .tab {
-    width: 50%;
-    height: 100%;
-    float: left;
-
-    background: #ccc;
-    line-height: 40px;
-    text-align: center;
-
-    -webkit-box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
-    -moz-box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
-    box-shadow: inset 0px -6px 6px rgba(50, 50, 50, 0.15);
-}
-
-#search-tabs > .head > .tab.active {
-    background: #fff;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-}
-
-#search-tabs > .head > .tab.active a {
-    color: #000;
-}
-
-#search-tabs > .head > .tab a,
-#search-tabs > .head > .tab a:active,
-#search-tabs > .head > .tab a:focus,
-#search-tabs > .head > .tab a:hover,
-#search-tabs > .head > .tab a:link {
-    width: 100%;
-    height: 100%;
-    float: left;
-
-    text-decoration: none;
-    color: #444;
-}
-
-/* SEARCH TYPE BODY */
-
-#search-tabs > .body > .content {
-    padding: 15px 25px 25px 25px;
-    background: #fff;
-}
-
-#search-tabs > .body > .content > .search-type {
-
-}
-
-#search-tabs > .body > .content > .search-type > label {
-    margin: 0 0 0 0;
-
-    font-size: 14pt;
-    font-weight: 600;
-}
-
-#search-tabs > .body > .content > .search-type > .radio {
-    float: left;
-    margin: 10px 10px 0 0;
-}
-
-#search-tabs > .body > .content > .search-type > .content {
-    padding: 0 0 10px 35px;
-    position: relative;
-}
-
-#search-tabs > .body > .content > .search-type > .content > .overlay {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    background: rgba(255,255,255,0.6);
-    z-index: 100;
-}
-
-#search-tabs > .result {
-    padding: 15px 25px;
-}
-
-/* DATABASE SEARCH TAB */
-#database-search-button {
-    width: 200px;
-    height: 40px;
-    margin: 20px 0 0 0;
 }

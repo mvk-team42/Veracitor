@@ -10,6 +10,14 @@ try:
 except:
     app.config.from_pyfile('settings.py')
 
+# Create NetworkModel
+try:
+    from veracitor.database import *
+    app.NetworkModel = globalNetwork.build_network_from_db()
+except:
+    import sys
+    print "Can't build NetworkModel"
+    sys.exit(-1)
 
 
 def runserver():

@@ -3,14 +3,14 @@
 {% block content %}
 <h1>Welcome to Veracitor</h1>
 
-<div id="search-tabs">
+<div id="search-tabs" class="search-column">
     <div class="head">
         <div id="database-search-tab" class="tab"><a href="javascript:;">Database search</a></div>
         <div id="add-entity-tab" class="tab"><a href="javascript:;">Add a source or information</a></div>
     </div>
     <div class="body">
         <div id="database-search-content" class="content">
-            <p>Perform a local search in the database for sources or information.</p>
+            <p>Perform a local search in the database for sources and information.</p>
 
             <input type="text" id="database-search-field" />
 
@@ -22,15 +22,15 @@
                     </div>
                     <form class="search-types">
                         <label for="search-type-producer">Producers</label>
-                        <input type="radio" name="source_type" value="Producer" checked />
+                        <input type="radio" name="source_type" id="search-type-producer" value="Producer" checked />
                         <label for="search-type-user">Users</label>
-                        <input type="radio" name="source_type" value="User" />
+                        <input type="radio" name="source_type" id="search-type-user" value="User" />
                     </form>
                 </div>
             </div>
 
             <div id="search-type-information" class="search-type">
-                <label><input class="radio" type="radio" name="search-type" value="information" />Search for information</label>
+                <label><input class="radio" type="radio" name="search_type" value="information" />Search for information</label>
 
                 <div class="content" id="information-search">
                     <div class="overlay">
@@ -50,7 +50,9 @@
             <input type="button" id="crawler-search-button" name="search-button" value="Search" />
         </div>
     </div>
-    <div class="result">
+</div>
+<div id="search-result-content"  class="search-column">
+    <div class="body">
         <h1>Search result</h1>
 
         <div id="search-result"></div>
