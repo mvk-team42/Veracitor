@@ -56,7 +56,7 @@ class MetaNewspaperSpider(BaseSpider):
         webpage = None
 
         if already_in_xml:   # Get element and remove existing url-links
-            webpage = webpages.find("webpage[@domain='"+domain"']")
+            webpage = webpages.find("webpage[@domain='"+domain+"']")
             webpage.remove(webpage.find("rss-urls"))
         else:  # Create new element
             webpage = ET.Element("webpage", attrib={'domain':domain, 'name':name})
