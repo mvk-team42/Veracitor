@@ -8,7 +8,7 @@ from scrapy import log
 from urlparse import urlparse
 from os.path import realpath, dirname
 
-from ..xpaths import Xpaths
+from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader
 from .articleSpider import ArticleSpider
 
@@ -27,14 +27,14 @@ class NewspaperSpider(CrawlSpider):
 
     def __init__(self, *args, **kwargs):
         current_dir = dirname(realpath(__file__))
-        self.xpaths = Xpaths(current_dir + '/../webpageXpaths.xml')
+        self.meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
         domain = kwargs.get('domain')
         log.msg("crawling domain " + domain)
         self.start_urls = [domain]
         domain = domain.replace('http://','')
         self.rules = (
             Rule(
-                SgmlLinkExtractor(allow_domains=domain, deny=self.xpaths.get_article_deny_urls(domain)), 
+                SgmlLinkExtractor(allow_domains=domain, deny=self.meta.get_article_deny_urls(domain)), 
                 callback="scrape_article"
             ),
         )
@@ -49,7 +49,7 @@ class NewspaperSpider(CrawlSpider):
     def _is_article(self, response):
         domain = urlparse(response.url)[1]
         hxs = HtmlXPathSelector(response)
-        for xpath in self.xpaths.get_article_xpaths("qualification",domain):
+        for xpath in self.meta.get_article_xpaths("qualification",domain):
             if len(hxs.select(xpath)) > 0:
                 return True
         return False

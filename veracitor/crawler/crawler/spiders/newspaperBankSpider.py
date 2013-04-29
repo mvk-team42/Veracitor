@@ -7,7 +7,7 @@ from scrapy.contrib.loader.processor import TakeFirst
 from scrapy import log
 from urlparse import urlparse
 
-from ..xpaths import Xpaths
+from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader, ProducerItem
 from .articleSpider import ArticleSpider
 from .metaNewspaperSpider import MetaNewspaperSpider

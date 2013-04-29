@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as ET
 
-class Xpaths:
+class WebpageMeta:
     """
         Provides access to an XML-file containing xpaths and general info about known webpages. For instance xpaths to different article-attributes
         such as title, author, summary...

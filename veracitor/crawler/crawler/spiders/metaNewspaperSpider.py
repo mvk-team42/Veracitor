@@ -8,7 +8,7 @@ from urlparse import urlparse
 from os.path import realpath, dirname
 import xml.etree.ElementTree as ET
 
-from ..xpaths import Xpaths
+from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader
 from .articleSpider import ArticleSpider
 from ....database import *
@@ -36,22 +36,22 @@ class MetaNewspaperSpider(BaseSpider):
     @staticmethod
     def scrape_meta(response):
         current_dir = dirname(realpath(__file__))
-        xml_file = current_dir + '/../webpageXpaths.xml'
+        xml_file = current_dir + '/../webpageMeta.xml'
         tree = ET.parse(xml_file)
         webpages = tree.getroot()
         url = response.url
         domain = url
         already_in_xml = len(webpages.findall("./webpage[@domain='" + domain + "']")) > 0
         
-        xpaths = Xpaths(current_dir + '/../webpageXpaths.xml')
+        meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
         hxs = HtmlXPathSelector(response)
         
-        name = MetaNewspaperSpider.extract_name(domain, hxs, xpaths)
+        name = MetaNewspaperSpider.extract_name(domain, hxs, meta)
         if name=="" or extractor.contains_producer_with_name(name):
             name = url
 
-        rss_urls = MetaNewspaperSpider.extract_rss_urls(domain, hxs, xpaths)
-        description = MetaNewspaperSpider.extract_description(domain, hxs, xpaths)
+        rss_urls = MetaNewspaperSpider.extract_rss_urls(domain, hxs, meta)
+        description = MetaNewspaperSpider.extract_description(domain, hxs, meta)
         
         webpage = None
 
@@ -81,24 +81,24 @@ class MetaNewspaperSpider(BaseSpider):
             new_producer.save()
 
     @staticmethod
-    def extract_name(domain, hxs, xpaths):
-        for name_xpath in xpaths.get_webpage_xpaths("name", domain):
+    def extract_name(domain, hxs, meta):
+        for name_xpath in meta.get_webpage_xpaths("name", domain):
             names = hxs.select(name_xpath)
             if len(names) > 0:
                 return names[0].extract().strip()
         return ""
 
     @staticmethod
-    def extract_rss_urls(domain, hxs, xpaths):
-        for rss_xpath in xpaths.get_webpage_xpaths("rss-link", domain):
+    def extract_rss_urls(domain, hxs, meta):
+        for rss_xpath in meta.get_webpage_xpaths("rss-link", domain):
             rss_links = hxs.select(rss_xpath)
             if len(rss_links) > 0:
                 return [rss_link.extract().strip() for rss_link in rss_links]
         return []
 
     @staticmethod
-    def extract_description(domain, hxs, xpaths):
-        for description_xpath in xpaths.get_webpage_xpaths("description", domain):
+    def extract_description(domain, hxs, meta):
+        for description_xpath in meta.get_webpage_xpaths("description", domain):
             descriptions = hxs.select(description_xpath)
             if len(descriptions) > 0:
                 return descriptions[0].extract().strip()

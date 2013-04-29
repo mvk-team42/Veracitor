@@ -10,7 +10,7 @@ from time import strptime, mktime
 import re
 
 from .items import ArticleItem
-from .xpaths import Xpaths
+from .webpageMeta import WebpageMeta
 from .spiders.newspaperBankSpider import NewspaperBankSpider
 from .spiders.newspaperSpider import NewspaperSpider
 from .spiders.metaNewspaperSpider import MetaNewspaperSpider
@@ -132,9 +132,9 @@ class CrawlerPipeline(object):
     # Parse the date from item['time_published'] either using one of the default common formats or a format specified in webpageXpaths.xml
     def parse_datetime(self, item):
         current_dir = dirname(realpath(__file__))
-        xpaths = Xpaths(current_dir + '/webpageXpaths.xml')
+        meta = WebpageMeta(current_dir + '/webpageMeta.xml')
         domain = urlparse(item['url'])[1]
-        datetime_formats = xpaths.get_datetime_formats(domain)
+        datetime_formats = meta.get_datetime_formats(domain)
         time = None
         
 #        log.msg("first time format: " + str(datetime_formats[0]))

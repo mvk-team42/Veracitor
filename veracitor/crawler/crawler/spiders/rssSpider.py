@@ -9,7 +9,7 @@ from pprint import pprint
 from scrapy.http import Request
 from os.path import realpath, dirname
 
-from ..xpaths import Xpaths
+from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader
 from .articleSpider import ArticleSpider
 
@@ -51,10 +51,10 @@ class RssSpider(CrawlSpider):
         
     def extract_author_from_link(self, response):
         current_dir = dirname(realpath(__file__))
-        xpaths = Xpaths(current_dir + '/../webpageXpaths.xml')
+        meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
         domain = urlparse(response.url)[1]
         hxs = HtmlXPathSelector(response)
-        for xpath in xpaths.get_article_xpaths("publishers", domain):
+        for xpath in meta.get_article_xpaths("publishers", domain):
                 author = hxs.select(xpath).extract()
                 if len(author) > 0 and author[0].strip() != "":
                     response.meta["item"]["publishers"] = author[0]

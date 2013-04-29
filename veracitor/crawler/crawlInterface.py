@@ -28,6 +28,7 @@ from .crawler.spiders.metaNewspaperSpider import MetaNewspaperSpider
 from .crawler.spiders.rssSpider import RssSpider
 from .crawler.spiders.articleSpider import ArticleSpider
 from .crawler.spiders.newspaperSpider import NewspaperSpider
+from .crawler.webpageMeta import WebpageMeta
 from ..logger import logger
 
 
@@ -133,16 +134,16 @@ def start_continuous_scrape():
 
     """
     current_dir = dirname(realpath(__file__))
-    xml_file = current_dir + "/crawler/webpageXpaths.xml"
-    xpaths = Xpaths(xml_file)
+    xml_file = current_dir + "/crawler/webpageMeta.xml"
+    meta = WebpageMeta(xml_file)
 
-    newspaper_urls = xpaths.get_all_webpage_domains()
+    newspaper_urls = meta.get_all_webpage_domains()
 
     for url in newspaper_urls:
         log.msg(url)
 
         spider_has_run = False  # om rss failar ska man koera request_scrape
-        for rss_url in xpaths.get_rss_urls(url):
+        for rss_url in meta.get_rss_urls(url):
             spider = RssSpider(url=_httpify(rss_url))
             _run_spider(spider)
             spider_has_run = True

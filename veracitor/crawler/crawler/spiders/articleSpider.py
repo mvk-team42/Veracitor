@@ -6,7 +6,7 @@ from urlparse import urlparse
 from os.path import realpath, dirname
 from scrapy import log
 
-from ..xpaths import Xpaths
+from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader
 
 
@@ -30,14 +30,14 @@ class ArticleSpider(BaseSpider):
     @staticmethod
     def scrape_article(response):
         current_dir = dirname(realpath(__file__))
-        xpaths = Xpaths(current_dir + '/../webpageXpaths.xml')
+        meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
         domain = urlparse(response.url)[1]
         loader = ArticleLoader(item=ArticleItem(), response=response)
         
         
         for field in ArticleItem.fields.iterkeys():
             #log.msg("field: " + field)
-            for xpath in xpaths.get_article_xpaths(field, domain):
+            for xpath in meta.get_article_xpaths(field, domain):
                 loader.add_xpath(field, xpath)
         loader.add_value("url", response.url)
                 
