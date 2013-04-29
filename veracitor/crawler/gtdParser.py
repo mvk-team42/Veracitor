@@ -39,56 +39,66 @@ def parseGTD(filepath, **kwargs):
     sheet = workbook.get_active_sheet()
     acts = _parse_sheet(sheet, **kwargs)
     acts = acts[1:] #Labels on first row
-    terrorism_tag = safe_get_tag("Terrorism")
+    
+    GTD = extractor.get_producer(_GTD_PRODUCER_NAME)
 
     for act in acts:
-        act_url = _GTD_INCIDENT_URL + act["id"]
-        act_tag = safe_get_tag(act["attacktype"])
+        _save_act_in_gtd_object(act,GTD)
+    
+    GTD.save()
+        
+def _save_act_in_gtd_object(act,gtd_producer):
+    act_url = _GTD_INCIDENT_URL + act["id"]
+    act_tag = _safe_get_tag(act["attacktype"])
+    source_strings = [ _strip_source(src) for src in [act["source1"], act["source2"], act["source3"]] if src != None]
+    sources = []
 
-        sources = [ _strip_source(src) for src in [act["source1"], act["source2"], act["source3"]] if src != None]
+    for source_string in source_strings:
+        # hur blir det om source == None?
+        #TODO gör koppling mellan GTD och denna source
+        source = None
+        if not extractor.contains_producer_with_name(source_string): #db-method
+            source = producer.Producer(name = source_string,
+                description = "No description. (found through GTD)",
+                url = None,
+                infos = [],
+                source_ratings = [],
+                info_ratings = [],
+                type_of = "Unknown")
+                
+            source.save()
+            sources.append(source)
+        else:
+            source = extractor.get_producer(source_string)
 
-        GTD = extractor.get_producer(_GTD_PRODUCER_NAME)
+        source_rating1 = producer.SourceRating(
+                rating = 5,
+                tag = terrorism_tag,
+                source = source)
 
-        for source in sources:
-            # hur blir det om source == None?
-            #TODO gör koppling mellan GTD och denna source
-            if not extractor.contains_producer_with_name(source): #db-method
-                    new_producer = producer.Producer(name = source,
-                        description = "No description. (found through GTD)",
-                        url = None,
-                        infos = [],
-                        source_ratings = [],
-                        info_ratings = [],
-                        type_of = "Unknown")
-                    new_producer.save()
+        source_rating2 = producer.SourceRating(
+                rating = 5,
+                tag = act_tag,
+                source = source)
 
+        # Borde kolla innan!!!!!
+        gtd_producer.source_ratings += [source_rating1,source_rating2]
 
-            source_rating1 = producer.SourceRating(
-                    rating = 5,
-                    tag = terrorism_tag,
-                    source = source)
+    information = None
+    if not extractor.contains_information(act_url):
+        #TODO lägg till information i GTDs information list
+        information = information.Information(url = act_url),
+            title = "GTD Entry",
+            summary = act["summary"],
+            time_published = strptime(act["year"]+"-"+act["mont"]+"-"+act["day"],"%Y-"),
+            tags = [terrorism_tag, act_tag],
+            publishers = [gtd_producer] + sources,
+            references =  [])
+        information.save()
+        
+    gtd_producer.infos += information
 
-            source_rating2 = producer.SourceRating(
-                    rating = 5,
-                    tag = act_tag,
-                    source = source)
-
-            # Borde kolla innan!!!!!
-            GTD.source_ratings += [source_rating1,source_rating2]
-
-            GTD.save()
-
-        if not extractor.contains_information(act_url):
-            #add...
-            new_information = information.Information(url = act_url),
-                title = "GTD Entry",
-                summary = act["summary"],
-                time_published = strptime(act["year"]+"-"+act["mont"]+"-"+act["day"],"%Y-"),
-                tags = [terrorism_tag, act_tag],
-                publishers = ["GTD"] + sources,
-                references =  [])
-
-def safe_get_tag(name):
+def _safe_get_tag(name):
     try:
         return extractor.get_tag(name)
     except:
@@ -127,6 +137,7 @@ def _strip_source(source):
     
     
 if __name__ == "__main__":
+    global terrorism_tag = _safe_get_tag("Terrorism")
     add_GTD_to_database()
     add_terrorism_tag()
     acts = parseGTD('Downloads/globalterrorismdb_1012dist.xlsx', limit_number_rows = 4)

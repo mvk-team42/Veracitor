@@ -47,6 +47,10 @@
                 <xpath>//*[contains(@class, "Ingress")]//child::text()</xpath>
                 <xpath>//article//text()</xpath>
             </summary>
+            
+            <tags>
+                <xpath>//meta[contains(@property,"article:tag")]/@content</xpath>    
+            </tags>
 
             <publishers>
                 <xpath>//*[@id="content"]//*[contains(@class,"contributor")]//text()</xpath>
