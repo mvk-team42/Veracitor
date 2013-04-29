@@ -30,6 +30,8 @@ def runserver():
 import utils
 import jobs
 import search
+import crawler
+import algorithm
 #import network
 #import ratings
 #import account
