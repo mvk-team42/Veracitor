@@ -68,6 +68,9 @@ class CrawlerPipeline(object):
                             publishers = publishers,
                             references = [],
                        )
+        for publisher in publishers:
+            publisher.infos.append(info)
+            publisher.save()
         info.save()       
                                                      
         
