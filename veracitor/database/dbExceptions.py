@@ -4,7 +4,7 @@
 
 """
 
-class GlobalNetworkException(Exception):
+class NetworkModelException(Exception):
     """
     Exception to be used when an error occurs in the global network.
 

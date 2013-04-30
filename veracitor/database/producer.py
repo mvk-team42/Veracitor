@@ -8,10 +8,10 @@
 """
 
 from mongoengine import *  
-import globalNetwork
+import networkModel
 import tag
 import information
-from dbExceptions import GlobalNetworkException
+from dbExceptions import NetworkModelException
 connect('mydb')
 
 class Producer(Document):
@@ -69,45 +69,45 @@ class Producer(Document):
     def save(self):
         """
         Overrides save() inherhited from Document. 
-        Figures out whether to update the globalNetwork
-        or to insert the saved producer into the globalNetwork.
+        Figures out whether to update the networkModel
+        or to insert the saved producer into the networkModel.
         Follows this with the regular save() call in Document. 
         
         Raises:
-            GlobalNetworkException: If there is no global network created
+            NetworkModelException: If there is no global network created
             (and therefore no network to insert or update the saved producer
             into).
 
         """
-        if globalNetwork.graph is None:
-            raise GlobalNetworkException("There is no Global Network created!")
+        if networkModel.graph is None:
+            raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
-            globalNetwork.notify_producer_was_added(self)
+            networkModel.notify_producer_was_added(self)
         else:
-            globalNetwork.notify_producer_was_updated(self)
+            networkModel.notify_producer_was_updated(self)
         
         super(Producer, self).save()
 
     def delete(self):
         """
         Overrides delete() inherhited from Document.
-        Begins with trying to delete the producer from the globalNetwork.
+        Begins with trying to delete the producer from the networkModel.
         Is idempotent, meaning that it can be called multiple times without
-        damage done. If the producer isn't present in the globalNetwork
+        damage done. If the producer isn't present in the networkModel
         or the database nothing is changed.
 
         Raises:
 
-            GlobalNetworkException: If there is no global network created
+            NetworkModelException: If there is no global network created
             (and therefore no network to delete the producer from).
         
         """
-        if globalNetwork.graph is None:
-            raise GlobalNetworkException("There is no Global Network created!")
+        if networkModel.graph is None:
+            raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
             return
         else:
-            globalNetwork.notify_producer_was_removed(self)
+            networkModel.notify_producer_was_removed(self)
             
         super(Producer, self).delete()
 
