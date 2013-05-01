@@ -14,9 +14,19 @@ var NetworkController = function (controller, visualizer) {
     // Display something in the network
     //visualizer.visualizeProducerInNetwork(null, -1);
 
-    $('#calculate-sunny').click(function (evt) {
-        request_sunny_value('SvD', 'DN', 'newspaper');
-    });
+    (function () {
+        $('#calculate-sunny').click(function (evt) {
+            request_sunny_value('SvD', 'DN', 'newspaper');
+        });
+
+        var width = $('#network-info-view').width();
+
+        $('#network-info-view').resizable({
+            minWidth: width,
+            maxWidth: width,
+            containment: '#network-holder > .top > .left'
+        });
+    })();
 
     /**
        Request a SUNNY value.

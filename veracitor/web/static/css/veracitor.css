@@ -269,6 +269,13 @@ table {
     border-collapse: collapse;
 }
 
+
+table th {
+    padding: 5px 10px;
+
+    text-align: left;
+}
+
 table td {
     padding: 5px 10px;
 

@@ -9,33 +9,93 @@
     border: 1px solid #bbb;
 }
 
-/* NETWORK INFO */
-
-#network-info-view {
-    width: 400px;
-}
-
-/* NETWORK GRAPH */
+/* NETWORK HOLDER */
 
 #network-holder {
 	position: absolute;
-	left: 420px; right: 20px;
-	top: 30px;
+	left: 0; right: 0;
+	top: 0; bottom: 0;
+}
 
-	background-color: #fff;
-	-webkit-box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
-	-moz-box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
-	box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
+#network-holder > .top {
+    position: absolute;
+    left: 0; right: 0;
+    top: 0; bottom: 100px;
+}
+
+#network-holder > .top > .left {
+    position: absolute;
+    left: 0;
+    top: 0; bottom: 0;
+    width: 300px;
+
+    overflow-y: scroll;
+
+    border-right: 1px solid #666;
+}
+
+#network-holder > .top > .right {
+    position: absolute;
+    left: 300px; right: 0;
+    top: 0; bottom: 0;
+}
+
+#network-holder > .bottom {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 0;
+    height: 100px;
+
+    overflow: auto;
+
+    border-top: 1px solid #666;
+}
+
+#network-info-view {
+    width: 100%;
+    height: 300px;
+
+    overflow: hidden;
+
+    border-bottom: 1px solid #666;
+}
+
+#network-info-view > .body {
+    padding: 5px 10px;
+}
+
+#network-info-view > .body h1 {
+    margin: 0;
+
+    font-size: 20pt;
+}
+
+#network-info-view > .body p {
+    margin: 0;
 }
 
 #network-graph {
-	width: 100%;
-	height: 400px;
+    width: 100%;
+    height: 100%;
 }
 
 #network-toolbox {
     width: 100%;
-    height: 300px;
+}
 
-    border: 1px solid #666;
+#network-relation-view {
+    width: 100%;
+    height: 100%;
+}
+
+#network-relation-view > .source {
+    width: 50%;
+
+    float: left;
+}
+
+#network-relation-view > .target {
+    width: 50%;
+
+    float: left;
 }

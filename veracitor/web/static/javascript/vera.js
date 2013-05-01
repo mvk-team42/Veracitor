@@ -39,7 +39,7 @@
         /** Side tab dom element */
         var side_tab;
 
-        var active_tab = 0;
+        var active_tab = 1;
 
         vera.dom = {};
 

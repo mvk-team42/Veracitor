@@ -187,7 +187,7 @@ var SearchController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                if (data.result.data.length > 0) {
+                if (data.result.data) {
                     search_result = data.result.data;
 
                     var table = $('<table>')
@@ -216,6 +216,8 @@ var SearchController = function (controller) {
                         controller.network.visualize_producer_in_network(prod, -1);
                         controller.switch_to_tab('network');
                     });
+                } else {
+                    $('#search-result').html('<h2>Nothing found</h2><p>Click the <i>Add a source or information</i> tab to add what you were looking for to the database.</p>');
                 }
             });
         })
