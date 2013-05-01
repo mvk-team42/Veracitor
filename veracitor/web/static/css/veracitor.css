@@ -7,7 +7,7 @@ body {
     height: 100%;
 
     font-family: 'Titillium Web';
-    font-size: 14pt;
+    font-size: 12pt;
 
     background-color: #eee;
 }
@@ -231,11 +231,7 @@ hr {
 
     border-right: 1px solid rgba(50, 50, 50, 0.1);
     background-image: url(../images/right_arrow.png);
-    z-index: 100;
-
-    -webkit-box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
-    -moz-box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
-    box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
+    z-index: 1000;
 }
 
 .view > .right {
