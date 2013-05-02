@@ -48,6 +48,8 @@ class Producer(Document):
     or delete() to delete object from the database.
     The name field uniquely identifies a producer in the database.
 
+    
+
     """
     name = StringField(required=True, unique=True)
     first_name = StringField();
@@ -92,7 +94,7 @@ class Producer(Document):
         for s_rating in self.source_ratings:
            if(s_rating.source == req_source and s_rating.tag == req_tag):
                 return s_rating.rating
-        return -1; 
+        return -1 
             
     def get_info_rating(self, req_info):
         for i_rating in self.info_ratings:
@@ -108,13 +110,13 @@ class Producer(Document):
         Follows this with the regular save() call in Document. 
         
         Raises:
-            networkModelException: If there is no global network created
+            NetworkModelException: If there is no global network created
             (and therefore no network to insert or update the saved producer
             into).
 
         """
         if networkModel.graph is None:
-            raise networkModelException("There is no Global Network created!")
+            raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
             networkModel.notify_producer_was_added(self)
         else:
@@ -132,12 +134,12 @@ class Producer(Document):
 
         Raises:
 
-            networkModelException: If there is no global network created
+            NetworkModelException: If there is no global network created
             (and therefore no network to delete the producer from).
         
         """
         if networkModel.graph is None:
-            raise networkModelException("There is no Global Network created!")
+            raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
             return
         else:
