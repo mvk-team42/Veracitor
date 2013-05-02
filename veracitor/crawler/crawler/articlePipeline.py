@@ -90,7 +90,7 @@ def remove_words_from_time_published(article):
     
 def replace_words_in_time_published(article):
     special_words = ["idag", "i dag", "today"]
-    pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") "|" re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
+    pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") + "|" + re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
     article["time_published"] = pattern.sub(date.today().isoformat(), article["time_published"])        
     
     #for word in special_words:

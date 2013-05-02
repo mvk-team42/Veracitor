@@ -11,7 +11,7 @@ from urlparse import urlparse
 from time import strptime, mktime
 import re
 
-from .items import ArticleItem
+from .items import ArticleItem, ProducerItem
 from .webpageMeta import WebpageMeta
 from .spiders.newspaperBankSpider import NewspaperBankSpider
 from .spiders.newspaperSpider import NewspaperSpider
@@ -20,8 +20,8 @@ from .spiders.articleSpider import ArticleSpider
 from .spiders.rssSpider import RssSpider
 from ...database import *
 from ...logger import *
-import .articlePipeline
-import .producerPipeline
+from .articlePipeline import *
+from .producerPipeline import *
 
 class CrawlerPipeline(object):
 
@@ -35,9 +35,9 @@ class CrawlerPipeline(object):
             Different things happen depending on the spider.
         """
         if isinstance(item, ArticleItem):
-            return articlePipeline.process_article(item, spider)
+            return process_article(item, spider)
         if isinstance(item, ProducerItem):
-            return producerPipeline.process_producer(item, spider)
+            return process_producer(item, spider)
         raise Exception("Item type not recognized!")
         
         
@@ -116,7 +116,7 @@ class CrawlerPipeline(object):
         
     def replace_words_in_time_published(self, item):
         special_words = ["idag", "i dag", "today"]
-        pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") "|" re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
+        pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") + "|" + re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
         item["time_published"] = pattern.sub(date.today().isoformat(), item["time_published"])        
         
         #for word in special_words:

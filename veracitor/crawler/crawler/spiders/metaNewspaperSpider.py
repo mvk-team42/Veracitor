@@ -7,6 +7,7 @@ from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
 from os.path import realpath, dirname
 import xml.etree.ElementTree as ET
+from scrapy.log import *
 
 from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ProducerItem, ArticleLoader
@@ -25,27 +26,27 @@ class MetaNewspaperSpider(BaseSpider):
     
 
     def __init__(self, *args, **kwargs):
-        url = domain = kwargs.get('url')
+        url = kwargs.get('url')
         self.start_urls = [url]
         super(MetaNewspaperSpider, self).__init__()
         
 
     def parse(self, response):
-        MetaNewspaperSpider.scrape_meta(response)
+        return MetaNewspaperSpider.scrape_meta(response)
 
     @staticmethod
     def scrape_meta(response):
     
         producer_item = ProducerItem()
-        
+
         current_dir = dirname(realpath(__file__))
         meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
         hxs = HtmlXPathSelector(response)
-        producer_item["name"] = MetaNewspaperSpider.extract_name(domain, hxs, meta)
-        producer_item["rss_urls"] = MetaNewspaperSpider.extract_rss_urls(domain, hxs, meta)
-        producer_item["description"] = MetaNewspaperSpider.extract_description(domain, hxs, meta)
+        producer_item["name"] = MetaNewspaperSpider.extract_name(response.url, hxs, meta)
+        producer_item["rss_urls"] = MetaNewspaperSpider.extract_rss_urls(response.url, hxs, meta)
+        producer_item["description"] = MetaNewspaperSpider.extract_description(response.url, hxs, meta)
         producer_item["url"] = response.url
-        
+
         return producer_item
          
          
