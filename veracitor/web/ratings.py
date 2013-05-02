@@ -37,6 +37,24 @@ def get_user():
     try:
         user_id = request.form['user_id']
         userObj = extractor.get_user(user_id)
+
+        source_ratings = [{'name' : s.source.name,
+                           'tag' : s.tag.name,
+                           'rating': s.rating }
+                          for s in userObj.source_ratings]
+
+        groups = [{'name' : g.name,
+                   'description' : g.description,
+                   'owner' : g.owner,
+                   'producers' : [p.name for p in g.producers]}
+                  for g in userObj.groups]
+
+        userDict = {'name' : userObj.name,
+                    'description' : userObj.description,
+                    'type_of' : userObj.type_of,
+                    'source_ratings' : source_ratings,
+                    'groups' : groups})
+
     except NotInDatabase:
         return "not in databaseteafw"
     except:
