@@ -24,6 +24,24 @@ from veracitor.database import user, group, information, extractor
 
 import veracitor.tasks.ratings as ratings
 
+
+@app.route('/ratings')
+def ratings():
+    """
+    Initializes the ratings tab
+
+    """
+    # TODO Session-hantering. tror 'session'-variabeln är global
+    # och isf funkar nåt sånt här. FRÅGA ANTON!
+        if "user" not in session:
+        return redirect(url_for('login')) 
+        # Tror 'login' är url för att posta login. 
+        # Köra på 'index' istället kanske?
+    else:
+        user_data = get_user()
+        return render_template('ratings_tab.html', vera=user_data)
+        
+
 @app.route('/jobs/ratings/user', methods=['GET', 'POST'])
 def get_user():
     """Gets the specified user from the database.
@@ -142,19 +160,3 @@ def rate_group():
         abort(400)
 
     # TODO: Render json
-
-@app.route('/ratings')
-def ratings():
-    """
-    Initializes the ratings tab
-
-    """
-    # TODO Session-hantering. tror 'session'-variabeln är global
-    # och isf funkar nåt sånt här. FRÅGA ANTON!
-        if "user" not in session:
-        return redirect(url_for('login')) 
-        # Tror 'login' är url för att posta login. 
-        # Köra på 'index' istället kanske?
-    else:
-        user_data = get_user()
-        return render_template('ratings_tab.html', vera=user_data)
