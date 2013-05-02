@@ -106,7 +106,7 @@ class CrawlerPipeline(object):
         
     def replace_words_in_time_published(self, item):
         special_words = ["idag", "i dag", "today"]
-        pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today"), re.IGNORECASE)
+        pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") "|" re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
         item["time_published"] = pattern.sub(date.today().isoformat(), item["time_published"])        
         
         #for word in special_words:
