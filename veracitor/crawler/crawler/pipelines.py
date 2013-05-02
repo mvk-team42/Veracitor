@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
@@ -57,7 +59,7 @@ class CrawlerPipeline(object):
         
         #utgår från att item["publishers"] är en sträng med space-separerade publishers, t.ex. "DN SVD NYT"
         publisher_strings = re.sub("[^\w]", " ",  item["publishers"]).split()
-        publishers = [extractor.get_producer_create_if_needed(pub_str, "newspaper") for pub_str in tag_strings]
+        publishers = [extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in tag_strings]
         
         info = information.Information(
                             title = item["title"],
@@ -68,11 +70,10 @@ class CrawlerPipeline(object):
                             publishers = publishers,
                             references = [],
                        )
+        info.save()       
         for publisher in publishers:
             publisher.infos.append(info)
             publisher.save()
-        info.save()       
-                                                     
         
     def print_if_unknown(self, article):
         for field in ArticleItem.fields.iterkeys():

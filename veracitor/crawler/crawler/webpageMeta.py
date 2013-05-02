@@ -26,7 +26,7 @@ class WebpageMeta:
         """
         xpaths = self.root.findall("webpage[@domain='"+domain+"']/article-paths/"+field_name+"/xpath")
         if len(xpaths) == 0:
-            xpaths = self.root.findall("default/article-data/"+field_name+"/xpath") 
+            xpaths = self.root.findall("default/article-paths/"+field_name+"/xpath") 
         return [xpath.text for xpath in xpaths]
 
     def get_article_deny_urls(self, domain):
