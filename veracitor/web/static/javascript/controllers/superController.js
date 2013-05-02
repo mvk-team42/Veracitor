@@ -25,7 +25,7 @@ function SuperController(vera) {
 
     // Setup controllers
     this.search = new SearchController(this);
-    this.network = new NetworkController(this, new Visualizer());
+    this.network = new NetworkController(this);
     this.ratings = new RatingsController(this);
     this.account = new AccountController(this);
 

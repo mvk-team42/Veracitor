@@ -6,6 +6,50 @@ from veracitor.web import app
 from ..database import globalNetwork as gn
 from ..algorithms.tidaltrust import compute_trust
 
+@app.route('/jobs/network/neighbors', methods=['GET','POST'])
+def get_neighbors():
+    """Returns the neighbors to the given source producer at
+    the given depth.
+
+    URL Structure:
+        /jobs/network/neighbors
+
+    Method:
+        POST
+
+    Parameters:
+        name (str): The name of the source producer.
+        depth (int): The neighbour depth.
+
+    Returns:
+        Upon success, returns an object with the job_id, ex:
+        {"job_id": "baad-f00d-dead-beefs-15"}
+
+    Result when finished:
+        An object with the producer data found.
+
+    Errors:
+        400 - Bad syntax/No name/type in request
+        405 - Method not allowed
+
+    """
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        name = request.form['name']
+        depth = request.form['depth']
+    except:
+        abort(400)
+
+    neighbors = gn.neighbors(name) + gn.predecessors(name)
+
+    return {
+        'neighbors': neighbors
+    }
+
+#    res = search.get_producers.delay(name, type_of)
+#    store_job_result(res)
+#    return jsonify(job_id=res.id)
 
 # def callback_function(trust):
 #     pass

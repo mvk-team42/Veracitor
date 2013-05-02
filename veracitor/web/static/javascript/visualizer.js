@@ -9,7 +9,20 @@
     specific producer.
     @constructor
  */
-var Visualizer = function () {
+var Visualizer = function (controller) {
+
+    var color = {
+        node: {
+            select: {
+                background: '#f66',
+                border: '#f00'
+            },
+            unselect: {
+                background: '#ddd',
+                border: '#555'
+            }
+        }
+    };
 
     var holder = document.getElementById('network-holder');
     window.cy;
@@ -21,6 +34,8 @@ var Visualizer = function () {
         $('#network-graph').cytoscape({
             ready: function () {
                 cy = this;
+
+                cy.on('click', 'node', node_click_event);
             },
             style: cytoscape.stylesheet()
                 .selector("node")
@@ -28,8 +43,8 @@ var Visualizer = function () {
                     "content": "data(id)",
                     "shape": "data(shape)",
                     "border-width": 3,
-                    "background-color": "#DDD",
-                    "border-color": "#555"
+                    "background-color": color.node.unselect.background,
+                    "border-color": color.node.unselect.border
                 })
                 .selector("edge")
                 .css({
@@ -109,6 +124,8 @@ var Visualizer = function () {
         cy.elements().remove();
         cy.add(nodes);
         cy.add(edges);
+
+        cy.nodes('[id="' + prod.name + '"]').click();
 
         cy.fit(cy.nodes());
         cy.layout({
@@ -212,6 +229,26 @@ var Visualizer = function () {
         cy.layout({
             name: 'random'
         });
-    }
+    };
+
+    var node_click_event = function (evt) {
+        var node = this;
+
+        controller.display_producer_information({
+            name: node.id()
+        });
+
+        cy.nodes().each(function (i, n) {
+            n.css({
+                'background-color': color.node.unselect.background,
+                'border-color': color.node.unselect.border
+            });
+        });
+
+        node.css({
+            'background-color': color.node.select.background,
+            'border-color': color.node.select.border
+        });
+    };
 
 };
