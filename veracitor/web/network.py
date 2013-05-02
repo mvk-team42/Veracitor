@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, json
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 from veracitor.web import app
 # from veracitor.web import callback
 
-from ..database import globalNetwork as gn
+from ..database import extractor, networkModel as nm
 from ..algorithms.tidaltrust import compute_trust
 
 @app.route('/jobs/network/neighbors', methods=['GET','POST'])
@@ -41,11 +41,35 @@ def get_neighbors():
     except:
         abort(400)
 
-    neighbors = gn.neighbors(name) + gn.predecessors(name)
+    # TODO fix the global network...
+    gn = nm.build_network_from_db()
 
-    return {
-        'neighbors': neighbors
-    }
+    neighbors = [[name]]
+    neighbors_set = []
+
+    for i in range(0, int(depth)):
+        neighbors.append([])
+        for node in neighbors[i]:
+            neighbors[i+1].append(gn.neighbors(node) + gn.predecessors(node))
+
+    neighbors = list(set(neighbors))
+    neighbors.remove(name)
+
+    data = {}
+
+    for node in neighbors:
+        prod = extractor.get_producer(node)
+        source_ratings = [{'name' : s.source.name,
+                           'tag' : s.tag.name,
+                           'rating': s.rating }
+                          for s in prod.source_ratings]
+        data[node] = {'name' : prod.name,
+                      'description' : prod.description,
+                      'url' : prod.url,
+                      'type_of' : prod.type_of,
+                      'source_ratings' : source_ratings}
+
+    return jsonify(neighbors=data)
 
 #    res = search.get_producers.delay(name, type_of)
 #    store_job_result(res)

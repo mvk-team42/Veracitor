@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # ratings.py
 # ===========
 # Defines tasks for ratings.
@@ -27,13 +29,14 @@ def get_user(user_id):
 
 @taskmgr.task
 def get_information_objects(tag):
-    #Använda denna med possible_info = tom sträng
-    # för att matcha alla med viss tag?
+    #AnvÃ¤nda denna med possible_info = tom strÃ¤ng
+    # fÃ¶r att matcha alla med viss tag?
     # Och den tar emot tag-objekt fortfarande, eller strings? dokumentation antyder objekt..
     #res = extractor.get_informations()
+    pass
 
 def get_information_object(possible_info, tag):
-    # Samma här. sök efter info-objekt. behövs
+    # Samma hÃ¤r. sÃ¶k efter info-objekt. behÃ¶vs
     # tag-objekt?
     #res = extractor.get_informations()
-    
+    pass

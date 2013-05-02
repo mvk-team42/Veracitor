@@ -5,7 +5,7 @@ import datetime
 
 def generate_test_data():
 
-    gn = globalNetwork.get_global_network()
+    nm = networkModel.get_global_network()
 
     trust = extractor.get_tag_create_if_needed("Trust")
 

@@ -209,7 +209,7 @@ var SearchController = function (controller) {
                     $('#search-result').html(table);
 
                     $('#search-result .result').click(function (evt) {
-                        var prod = search_result[$('#search-result .result').index()];
+                        var prod = search_result[$(this).index()];
 
                         controller.network.visualize_producer_in_network(prod, -1);
                         controller.switch_to_tab('network');

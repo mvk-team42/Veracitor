@@ -60,13 +60,15 @@ var NetworkController = function (controller) {
         entire network will be visualized).
      */
     this.visualize_producer_in_network = function (prod, depth) {
+        var network_controller = this;
+
         $.post('/jobs/network/neighbors', {
             'name': prod.name,
             'depth': depth
         }, function (data) {
             console.log(data);
 
-            this.display_producer_information(prod);
+            network_controller.display_producer_information(prod);
 
             visualizer.visualize_producer_in_network(prod, depth);
         }).fail(function (data) {
