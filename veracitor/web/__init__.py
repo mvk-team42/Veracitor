@@ -10,6 +10,14 @@ try:
 except:
     app.config.from_pyfile('settings.py')
 
+# Create NetworkModel
+try:
+    from veracitor.database import *
+    app.NetworkModel = globalNetwork.build_network_from_db()
+except:
+    import sys
+    print "Can't build NetworkModel"
+    sys.exit(-1)
 
 
 def runserver():
@@ -19,9 +27,13 @@ def runserver():
     else:
         app.run()
 
-import jobs
 import utils
+import jobs
 import search
-import network
-import ratings
-import account
+import crawler
+import algorithm
+import login
+#import network
+#import ratings
+#import account
+import index

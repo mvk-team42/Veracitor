@@ -1,12 +1,22 @@
+# -*- coding: utf-8 -*-
+"""
+.. module:: group
+    :synopsis: The group module contains the Group class needed to represent the group entity model.
+
+.. moduleauthor:: Alfred Krappman <krappman@kth.se>
+.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
+"""
+
 from mongoengine import *
 
 connect('mydb')
 
 class Group(Document):
-    """Provides public fields mirroring
-    underlying database object.
-    Call save() to update database
-    or delete() to delete object from the database.
+    """
+    The Group class inherhits from the mongoenginde Document class.
+    Group defines fields that defines a group containing producers and
+    a user owner. Call save() to update database with the group or delete()
+    to delete from the database.
     
     """
     name = StringField(required=True) 

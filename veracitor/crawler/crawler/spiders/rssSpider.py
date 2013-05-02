@@ -7,17 +7,25 @@ from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
 from pprint import pprint
 from scrapy.http import Request
+from os.path import realpath, dirname
 
-from ..xpaths import Xpaths
+from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader
 from .articleSpider import ArticleSpider
 
 
 class RssSpider(CrawlSpider):
+
+    """
+        Scrapes all articles in given RSS-page (that belongs to a specific newspaper)
+        Constructs Article-items just as ArticleSpider and NewspaperSpider, but probably quicker
+        since all info is neatly organized in XML.
+    """
+
     name = "rss"
    
     def __init__(self, *args, **kwargs):
-        self.xpaths = Xpaths('crawler/webpages.xml')
+        #self.xpaths = Xpaths(current_dir + '/../webpages.xml')
         self.start_urls = [kwargs.get('url')]
         super(RssSpider, self).__init__()
         
@@ -42,10 +50,11 @@ class RssSpider(CrawlSpider):
 
         
     def extract_author_from_link(self, response):
-        xpaths = Xpaths('crawler/webpageXpaths.xml')
+        current_dir = dirname(realpath(__file__))
+        meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
         domain = urlparse(response.url)[1]
         hxs = HtmlXPathSelector(response)
-        for xpath in xpaths.get_xpaths("publishers", domain):
+        for xpath in meta.get_article_xpaths("publishers", domain):
                 author = hxs.select(xpath).extract()
                 if len(author) > 0 and author[0].strip() != "":
                     response.meta["item"]["publishers"] = author[0]

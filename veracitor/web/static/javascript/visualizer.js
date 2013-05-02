@@ -11,20 +11,61 @@
  */
 var Visualizer = function () {
 
-    var sigRoot = document.getElementById('network-holder');
-    var sigInst = sigma.init(sigRoot);
-    
-    sigInst.drawingProperties({
-        defaultLabelColor: '#ccc',
-        font: 'Arial',
-        edgeColor: 'source',
-        defaultEdgeType: 'curve'
-    }).graphProperties({
-        minNodeSize: 0.5,
-        maxNodeSize: 10,
-        minEdgeSize: 1,
-        maxEdgeSize: 1,
-    });
+    var holder = document.getElementById('network-holder');
+    window.cy;
+
+    /**
+       Initialize the visualizer; Initialize cytoscape.
+     */
+    (function () {
+        $('#network-graph').cytoscape({
+            ready: function () {
+                cy = this;
+            },
+            style: cytoscape.stylesheet()
+                .selector("node")
+                .css({
+                    "content": "data(id)",
+                    "shape": "data(shape)",
+                    "border-width": 3,
+                    "background-color": "#DDD",
+                    "border-color": "#555"
+                })
+                .selector("edge")
+                .css({
+                    "width": "mapData(weight, 0, 100, 1, 4)",
+                    "target-arrow-shape": "triangle",
+                    "source-arrow-shape": "circle",
+                    "line-color": "#444"
+                })
+                .selector(":selected")
+                .css({
+                    "background-color": "#000",
+                    "line-color": "#000",
+                    "source-arrow-color": "#000",
+                    "target-arrow-color": "#000"
+                })
+                .selector(".ui-cytoscape-edgehandles-source")
+                .css({
+                    "border-color": "#5CC2ED",
+                    "border-width": 3
+                })
+                .selector(".ui-cytoscape-edgehandles-target, node.ui-cytoscape-edgehandles-preview")
+                .css({
+                    "background-color": "#5CC2ED"
+                })
+                .selector("edge.ui-cytoscape-edgehandles-preview")
+                .css({
+                    "line-color": "#5CC2ED"
+                })
+                .selector("node.ui-cytoscape-edgehandles-preview, node.intermediate")
+                .css({
+                    "shape": "rectangle",
+                    "width": 15,
+                    "height": 15
+                })
+        });
+    })();
 
     /**
         Creates an interactive visualization network of the trust ratings
@@ -36,16 +77,49 @@ var Visualizer = function () {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
-    this.visualizeProducerInNetwork = function (sourceNode, depth) {
-        // TODO
-        // Generate and display a test graph
-        drawGraph(generateData(40, 5, 5));
+    this.visualize_producer_in_network = function (prod, depth) {
+        var nodes = [];
+        var edges = [];
+
+        nodes.push({
+            group: 'nodes',
+            data: {
+                id: prod.name
+            }
+        });
+
+        for(var i in prod.source_ratings) {
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: prod.source_ratings[i].name
+                }
+            });
+
+            edges.push({
+                group: 'edges',
+                data: {
+                    id: prod.name + '-' + prod.source_ratings[i].name,
+                    source: prod.name,
+                    target: prod.source_ratings[i].name
+                }
+            });
+        }
+
+        cy.elements().remove();
+        cy.add(nodes);
+        cy.add(edges);
+
+        cy.fit(cy.nodes());
+        cy.layout({
+            name: 'random'
+        });
     };
-    
+
     /**
         Visualizes the given trust network.
      */
-    this.visualizeTrustNetwork = function (network) {
+    this.visualize_trust_network = function (network) {
         // TODO
     };
 
@@ -55,7 +129,7 @@ var Visualizer = function () {
         @param tags The number of tag objects.
         @param maxNodes The maximum number of connections for one node (?).
      */
-    var generateData = function (nodes, tags, maxNodes) {
+    var generate_data = function (nodes, tags, maxNodes) {
         var i, j, k,
             my_nodes, my_tags,
             rnd_nodes, rnd_tags,
@@ -99,26 +173,45 @@ var Visualizer = function () {
         Draws a graph representation given the data.
         @param data The data, on the form specified by the function generateData.
      */
-    var drawGraph = function (data) {
-        var i, j;
+    var draw_graph = function (data) {
+        var nodes = [];
+        var edges = [];
+        var from, to, size;
 
-        for(i in data) {
-            sigInst.addNode(i, {
-                label: 'Node ' + i,
-                color: '#ff0000',
-                x: Math.random(),
-                y: Math.random()
+        for(from in data) {
+            size = 0;
+            for(to in data[from]) {
+                edges.push({
+                    group: 'edges',
+                    data: {
+                        id: 'n'+from+'-n'+to,
+                        source: 'n'+from,
+                        target: 'n'+to
+                    }
+                });
+                size += 1;
+            }
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: 'n'+from,
+                    weight: size
+                },
+                position: {
+                    x: 0,
+                    y: 0
+                }
             });
         }
-        
-        for(i in data) {
-            for(j in data[i]) {
-                sigInst.addEdge("Edge " + i + "-" + j, i, j);
-            }
-        }
-        
-        sigInst.draw();
+
+        cy.add(nodes);
+        cy.add(edges);
+
+        cy.fit(cy.nodes());
+        cy.layout({
+            name: 'random'
+        });
     }
 
 };
-

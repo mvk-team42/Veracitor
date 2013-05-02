@@ -2,7 +2,18 @@ from scrapy.item import Item, Field
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst, Compose, Join
 
+"""
+
+The data crawled from the web is stored as objects of these Item-classes before being put into the database.
+Items can be created entirely manually from outside this module, or using an "Item-loader"
+
+"""
+
 class ArticleItem(Item):
+    """
+    Crawler-item representing a newspaper article.
+    Corresponds to "Information" in database.
+    """
     title = Field()
     summary = Field()
     publishers = Field()
@@ -35,6 +46,9 @@ class ArticleItem(Item):
 
 
 class ArticleLoader(XPathItemLoader):
+    """
+    Used for easier construction of ArticleItem
+    """
     default_output_processor = TakeFirst()
     time_published_out = Join()
     summary_out = Join()
@@ -42,6 +56,10 @@ class ArticleLoader(XPathItemLoader):
     
     
 class ProducerItem(Item):
+    """
+    Crawler-item representing a producer(newspaper).
+    Corresponds to "Producer" in database.
+    """
     name = Field()
     description = Field()
     url = Field()

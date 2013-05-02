@@ -9,30 +9,106 @@
     border: 1px solid #bbb;
 }
 
-/* NETWORK */
-
-#network-info-view {
-    width: 400px;
-}
+/* NETWORK HOLDER */
 
 #network-holder {
 	position: absolute;
-	left: 500px;
-	right: 60px;
-	top: 30px;
-	bottom: 20px;
-	background-color: #fff;
-	-webkit-box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
-	-moz-box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
-	box-shadow: 5px 5px 11px rgba(50, 50, 50, 0.25);
+	left: 0; right: 0;
+	top: 0; bottom: 0;
+}
+
+#network-holder > .top {
+    position: absolute;
+    left: 0; right: 0;
+    top: 0; bottom: 100px;
+}
+
+#network-holder > .top > .left {
+    position: absolute;
+    left: 0;
+    top: 0; bottom: 0;
+    width: 300px;
+
+    overflow-y: scroll;
+}
+
+#network-holder > .top > .right {
+    position: absolute;
+    left: 300px; right: 0;
+    top: 0; bottom: 0;
+}
+
+#network-holder > .bottom {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 0;
+    height: 100px;
+
+    overflow: auto;
+
+    border-top: 1px solid #666;
+}
+
+#network-info-view {
+    width: 100%;
+    height: 200px;
+
+    overflow: hidden;
+
+    border-bottom: 1px solid #666;
+}
+
+#network-info-view > .body {
+    padding: 5px 10px;
+}
+
+#network-info-view > .body h1 {
+    margin: 0;
+
+    font-size: 20pt;
+}
+
+#network-info-view > .body p {
+    margin: 2px 0;
 }
 
 #network-graph {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
-#account .content p input[type=text] {
-    margin-right: 40px;
+#network-toolbox {
+    width: 100%;
 }
 
+#network-toolbox > .body {
+    padding: 5px 10px;
+}
+
+#network-relation-view {
+    width: 100%;
+    height: 100%;
+}
+
+#network-relation-view > .source {
+    width: 50%; height: 100%;
+
+    float: left;
+    z-index: 2;
+
+    -webkit-box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
+    -moz-box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
+    box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
+}
+
+#network-relation-view > .target {
+    width: 50%; height: 100%;
+
+    float: left;
+    z-index: 1;
+}
+
+#network-relation-view > .source > .body,
+#network-relation-view > .target > .body {
+    padding: 5px 10px;
+}

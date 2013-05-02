@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
@@ -7,9 +9,10 @@ from datetime import date
 from os.path import dirname, realpath
 from urlparse import urlparse
 from time import strptime, mktime
+import re
 
 from .items import ArticleItem
-from .xpaths import Xpaths
+from .webpageMeta import WebpageMeta
 from .spiders.newspaperBankSpider import NewspaperBankSpider
 from .spiders.newspaperSpider import NewspaperSpider
 from .spiders.metaNewspaperSpider import MetaNewspaperSpider
@@ -24,12 +27,13 @@ class CrawlerPipeline(object):
         self.articles = []
         #dispatcher.connect(self.print_info, signals.spider_closed)
 
-    def process_item(self, item, spider):
-    
+    def process_item(self, item, spider): 
+        """
+            is called after an item is returned from some spider.
+            Different things happen depending on the spider.
+        """
         if isinstance(spider, NewspaperBankSpider):
             return item
-    
-    
         self.fix_fields(item)
         #self.print_if_unknown(item)
         self.articles.append(item)
@@ -39,20 +43,37 @@ class CrawlerPipeline(object):
         return item
         
     def add_to_database(self, item):
-        log.msg("add_to_database")
-        if extractor.contains_information(item["title"]):
-            pass #return #already in database
+        """
+            Add database object corresponding to the item
+        """
+        #log.msg("add_to_database")
+        if extractor.contains_information(item["url"]):
+            log.msg(item["url"] + " already in database")
+            return #already in database
+        log.msg("extractor returns " + str(extractor.contains_information(item["url"])))
+        log.msg(item["url"] + " is new, adding to database")
+            
+        #utgar fran att item["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
+        tag_strings = re.sub("[^\w]", " ",  item["tags"]).split()
+        tags = [extractor.get_tag_create_if_needed(tag_str) for tag_str in tag_strings]
+        
+        #utgår från att item["publishers"] är en sträng med space-separerade publishers, t.ex. "DN SVD NYT"
+        publisher_strings = re.sub("[^\w]", " ",  item["publishers"]).split()
+        publishers = [extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in tag_strings]
+        
         info = information.Information(
                             title = item["title"],
                             summary = item["summary"],
                             url = item["url"],
                             time_published = self.parse_datetime(item),
-                            tags = [],
-                            publishers = [], #item["publishers"],
+                            tags = tags,
+                            publishers = publishers,
                             references = [],
                        )
         info.save()       
-                                                     
+        for publisher in publishers:
+            publisher.infos.append(info)
+            publisher.save()
         
     def print_if_unknown(self, article):
         for field in ArticleItem.fields.iterkeys():
@@ -61,6 +82,12 @@ class CrawlerPipeline(object):
                 break
         
     def fix_fields(self, item):
+        """
+            Before: the attributes in item are very "raw". Scraped directly from website.
+            
+            After: the attributes are trimmed, summary is shortened, time_published is converted to
+            db-friendly format.
+        """
         self.fix_time_published(item)
         self.shorten_summary(item)
         for field in ArticleItem.fields.iterkeys():
@@ -79,8 +106,11 @@ class CrawlerPipeline(object):
         
     def replace_words_in_time_published(self, item):
         special_words = ["idag", "i dag", "today"]
-        for word in special_words:
-            item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
+        pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") "|" re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
+        item["time_published"] = pattern.sub(date.today().isoformat(), item["time_published"])        
+        
+        #for word in special_words:
+        #    item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
 
         #replace swedish months with english
         months_in_swedish = {"januari":"january",
@@ -106,9 +136,9 @@ class CrawlerPipeline(object):
     # Parse the date from item['time_published'] either using one of the default common formats or a format specified in webpageXpaths.xml
     def parse_datetime(self, item):
         current_dir = dirname(realpath(__file__))
-        xpaths = Xpaths(current_dir + '/webpageXpaths.xml')
+        meta = WebpageMeta(current_dir + '/webpageMeta.xml')
         domain = urlparse(item['url'])[1]
-        datetime_formats = xpaths.get_datetime_formats(domain)
+        datetime_formats = meta.get_datetime_formats(domain)
         time = None
         
 #        log.msg("first time format: " + str(datetime_formats[0]))

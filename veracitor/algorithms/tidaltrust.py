@@ -46,6 +46,7 @@ def tidal_trust(source, sink, graph, tag):
     try:
         remove_list = [(x,y) for (x,y) in graph.edges() if tag not in graph[x][y]]
     except AttributeError:
+        print "(tidaltrust) AttributeError"
         raise TypeError("Input graph is probably not a compatible graph object.")
         
     graph.remove_edges_from(remove_list)
@@ -54,9 +55,11 @@ def tidal_trust(source, sink, graph, tag):
         shortest = nx.all_shortest_paths(graph, source=source, target=sink)
         paths_list = list(shortest)
     except nx.exception.NetworkXNoPath:
+        print "(tidaltrust) No paths found between %s and %s." % (str(source), str(sink))
         return results
-    except KeyError:
+    except KeyError, e:
         # An input node was not in the graph 
+        print "(tidaltrust) keyerror: %s" % (str(e))
         return results
 
     threshold = get_threshold(paths_list, graph, tag)
@@ -64,7 +67,6 @@ def tidal_trust(source, sink, graph, tag):
 
     useful_paths = remove_low_rated_paths(paths_list, threshold, graph, tag)
     results["paths_used"] = useful_paths
-    print useful_paths
     results["nodes_used"] = list(set(chain.from_iterable(useful_paths)))
 
     # Add unused nodes (not in shortest path) to results
@@ -209,6 +211,7 @@ def compute_trust(network, source, sink, decision=None, tag="weight"):
           }
 
     """
+  
     #check input
     if network == None or source == None or sink == None:
         raise TypeError("Input parameters can't be None")
@@ -220,7 +223,6 @@ def compute_trust(network, source, sink, decision=None, tag="weight"):
         network.remove_nodes_from(decision)
    
     trust_results = tidal_trust(graph=network, source=source, sink=sink, tag=tag)
-    
     
     return trust_results
 

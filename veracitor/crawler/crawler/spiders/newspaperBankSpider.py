@@ -7,13 +7,20 @@ from scrapy.contrib.loader.processor import TakeFirst
 from scrapy import log
 from urlparse import urlparse
 
-from ..xpaths import Xpaths
+from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader, ProducerItem
 from .articleSpider import ArticleSpider
+from .metaNewspaperSpider import MetaNewspaperSpider
 
 
 
 class NewspaperBankSpider(CrawlSpider):
+
+    """
+        Crawls webpages containing lists of newspapers and adds them to our "newspaper bank"
+    """
+
+
     name = "newspaperBank"
 
     def __init__(self, *args, **kwargs):
@@ -27,9 +34,8 @@ class NewspaperBankSpider(CrawlSpider):
                 
         
         
-        domain = "http://www.listofnewspapers.com"
+        domain = "www.listofnewspapers.com"
 
-        self.start_urls = ["http://www.listofnewspapers.com/en/europe/newspapers-in-west-midlands.html"]
         self.rules = (
             Rule(
                 SgmlLinkExtractor(restrict_xpaths = "//li[@class='linewspapers']", deny_domains=domain),
@@ -44,4 +50,4 @@ class NewspaperBankSpider(CrawlSpider):
         
     def parse_webpage_link(self, response):
         log.msg("found link")
-        return ProducerItem(url = response.url)
+        MetaNewspaperSpider.scrape_meta(response)

@@ -2,34 +2,175 @@
    The master/super controller of the Veracitor web site.
    @constructor
 */
-function SuperController() {
+function SuperController(vera) {
+
+    // The current visible tab
+    var active_tab;
+
+    /** CSS classes. */
+    var CLASSES = {
+        'ACTIVE' : 'active'
+    };
+    /** CSS view positions. */
+    var VIEW_POS = {
+        'CENTER' : '0px',
+        'LEFT' : '-100%',
+        'RIGHT' : '100%'
+    };
 
     // The time interval between callback checks
-    var CALLBACK_CHECK_TIME = 500;
+    var CALLBACK_CHECK_TIME = 100;
+    // The time taken to switch from one tab to another in milliseconds
+    var TAB_SWITCH_TIME = 300;
+
+    // Setup controllers
+    this.search = new SearchController(this);
+    this.network = new NetworkController(this, new Visualizer());
+    this.ratings = new RatingsController(this);
+    this.account = new AccountController(this);
+
+    /**
+        Handles the event fired when a menu tab is clicked.
+        If the current visible tab is to the left of the clicked
+        tab it will be animated out from the screen to the left,
+        otherwise to the right.
+        The clicked tab will be animated in to the screen, following
+        the motion of the previous visible tab.
+        @name Vera#menu_click
+        @function
+        @param {Event} evt The fired event.
+     */
+    this.menu_click = function (evt) {
+        /** A key in the vera.dom object of tab objects. */
+        var tab;
+        /** The index of the clicked tab. */
+        var clickedTab;
+
+        clickedTab = 0;
+
+        // Retrieve the index of the clicked tab
+        for(tab in vera.dom) {
+            if(vera.dom[tab].menu[0] == evt.currentTarget) {
+                clickedTab = vera.dom[tab].index;
+            }
+        }
+
+        for(tab in vera.dom) {
+
+            if(vera.dom[tab].index == clickedTab) {
+                vera.dom[tab].menu.addClass(CLASSES.ACTIVE);
+
+                // Animate the clicked tab to the center of the screen
+                vera.dom[tab].view.animate({
+                    'left' : VIEW_POS.CENTER
+                }, TAB_SWITCH_TIME, null);
+
+            } else if(vera.dom[tab].index == active_tab) {
+                vera.dom[tab].menu.removeClass(CLASSES.ACTIVE);
+
+                // Animate the previous visible tab out of the screen
+                vera.dom[tab].view.animate({
+                    'left' : (vera.dom[tab].index < clickedTab) ?
+                            VIEW_POS.LEFT : VIEW_POS.RIGHT
+                }, TAB_SWITCH_TIME, null);
+
+            } else {
+                vera.dom[tab].menu.removeClass(CLASSES.ACTIVE);
+
+                // Move the tab relative to the clicked tab
+                vera.dom[tab].view.css({
+                    'left' : (vera.dom[tab].index < clickedTab) ?
+                            VIEW_POS.LEFT : VIEW_POS.RIGHT
+                });
+            }
+        }
+
+        active_tab = clickedTab;
+
+        return false;
+    }
+
+    /**
+        Switches to the tab with the given index.
+        @param tabIndex The index of the target tab.
+     */
+    this.switch_to_tab_index = function (tabIndex) {
+        if(tabIndex >= 0 && tabIndex < vera.tabs.length) {
+            vera.dom[vera.tabs[tabIndex].key].menu.click();
+        }
+    }
+
+    /**
+        Switches to the tab with the given name.
+        @param tab The name of the target tab.
+     */
+    this.switch_to_tab = function (tab) {
+        if(typeof(vera.dom[tab]) !== 'undefined') {
+            vera.dom[tab].menu.click();
+        }
+    }
+
+    /**
+
+       @param f The function checking the callback.
+       @param id An id related to the job started on the server.
+     */
+    this.set_job_callback = function (job_id, callback) {
+        watch_job(job_id, callback);
+    }
 
     /**
        Check the status of a started job on the server.
-       @param f The function checking the callback.
-       @param url The URL to check the callback against.
-       @param id An id related to the job started on the server.
+       @param callback The callback function.
+       @param job_id An id related to the job started on the server.
      */
-    this.watch_callback = function (f, url, id) {
-        $.post(url, {
-            'id' : id
-        }, (function (f, url, id) {
-            return function (data) {
-                var response = JSON.parse(data);
-
-                if(response.procedure.status == "processing") {
-                    setTimeout(watch_callback(f, url, id), CALLBACK_CHECK_TIME);
-                } else {
-                    f(response);
-                }
-            };
-        })(f, url, id))
+    var watch_job = function (job_id, callback) {
+        $.post('/jobs/job_result', {
+            'job_id' : job_id
+        }, function (data, status, jqXHR) {
+            if(jqXHR.status == 200) {
+                callback(data);
+            } else {
+                setTimeout(function () {
+                    watch_job(job_id, callback);
+                }, CALLBACK_CHECK_TIME);
+            }
+        })
         .fail(function () {
             $("#search-result").html("<h2>Server error.</h2>");
         });
+    }
+
+    /**
+       Request a TidalTrust value.
+    */
+    window.tt = function request_tidal_trust(source, sink, tag) {
+        $.post('/jobs/algorithms/tidal_trust', {
+            'source': source,
+            'sink': sink,
+            'tag': tag
+        }, function (data) {
+            // SUCCESS
+            console.log("Ok: ", data);
+        })
+        .fail(function (data) {
+            // FAIL
+            console.log("Fail:", data);
+        });
+    }
+    window.job_result = function request_job_result(job_id) {
+
+        $.post('/jobs/job_result', {
+            'job_id': job_id
+        }, function (data) {
+            // SUCCESS
+            console.log("Ok: ", data);
+        })
+        .fail(function (data) {
+            // FAIL
+            console.log("Fail:", data);
+        });
+
     }
 
 }

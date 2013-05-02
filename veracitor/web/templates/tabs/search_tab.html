@@ -3,34 +3,38 @@
 {% block content %}
 <h1>Welcome to Veracitor</h1>
 
-<div id="search-tabs">
-    <div id="search-tabs-head">
-        <div class="search-tab active"><a href="javascript:;">Database search</a></div>
-        <div class="search-tab"><a href="javascript:;">Add a source or information</a></div>
+<div id="search-tabs" class="search-column">
+    <div class="head">
+        <div id="database-search-tab" class="tab"><a href="javascript:;">Database search</a></div>
+        <div id="add-entity-tab" class="tab"><a href="javascript:;">Add a source or information</a></div>
     </div>
-    <div id="search-tabs-body">
-        <div class="search-tabs-content">
-            <p>Perform a local search in the database for sources or information.</p>
+    <div class="body">
+        <div id="database-search-content" class="content">
+            <p>Perform a local search in the database for sources and information.</p>
 
-            <input type="text" id="database-search-field" name="search-text" />
+            <input type="text" id="database-search-field" />
 
-            <div class="search-type">
-                <input class="search-type-radio" type="radio" name="search-type" value="producer" checked />
-                <h2>Search for sources</h2>
+            <div id="search-type-source" class="search-type">
+                <label><input class="radio" type="radio" name="search_type" value="producer" checked />Search for sources</label>
 
-                <div class="search-type-content">
-                    <form id="search-types">
-                        <label><input type="radio" name="type" value="User" checked />User</label>
-                        <label><input type="radio" name="type" value="newspaper" />Newspaper</label>
+                <div class="content">
+                    <div class="overlay">
+                    </div>
+                    <form class="search-types">
+                        <label for="search-type-producer">Producers</label>
+                        <input type="radio" name="source_type" id="search-type-producer" value="Producer" checked />
+                        <label for="search-type-user">Users</label>
+                        <input type="radio" name="source_type" id="search-type-user" value="User" />
                     </form>
                 </div>
             </div>
 
-            <div class="search-type">
-                <input class="search-type-radio" type="radio" name="search-type" value="information" />
-                <h2>Search for information</h2>
+            <div id="search-type-information" class="search-type">
+                <label><input class="radio" type="radio" name="search_type" value="information" />Search for information</label>
 
-                <div class="search-type-content" id="information-search">
+                <div class="content" id="information-search">
+                    <div class="overlay">
+                    </div>
                     <div>Time period: <div id="time-period"></div></div>
                     <div id="slider-container">
                         <div id="slider-labels"></div>
@@ -39,17 +43,19 @@
                 </div>
             </div>
 
-            <input type="button" id="database-search-button" name="search-button" value="Search" />
+            <input type="button" id="database-search-button" value="Search" />
         </div>
-        <div class="search-tabs-content" style="display: none;">
+        <div id="add-entity-content" class="content">
             <input type="text" id="crawler-search-field" name="search-text" />
             <input type="button" id="crawler-search-button" name="search-button" value="Search" />
         </div>
     </div>
 </div>
+<div id="search-result-content"  class="search-column">
+    <div class="body">
+        <h1>Search result</h1>
 
-<h1>Search result</h1>
-
-<div id="search-result"></div>
-
+        <div id="search-result"></div>
+    </div>
+</div>
 {% endblock %}

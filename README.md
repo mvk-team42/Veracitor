@@ -2,9 +2,28 @@ Veracitor
 =========
 
 An application that studies the trust in a network of users, sources
-and articles
+and articles.
 
-# Get it running (development mode)
+
+# Source & documentation
+
+### Source
+Veracitor source is split into several packages inside the main package.
+The following package-structure is kept:
+
+    \veracitor
+             \_web
+             \_crawler
+             \_algorithms
+             \_tasks
+             \_database
+
+### Documentation
+
+The entire project is documented on a per-package level.
+
+
+# Installation
 
 ### Step one
 

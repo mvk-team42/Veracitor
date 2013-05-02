@@ -7,7 +7,7 @@
     thereafter recieve a response with the search results.
     @constructor
  */
-var SearchController = function (view, controller) {
+var SearchController = function (controller) {
 
     /** Initializing */
 
@@ -16,13 +16,27 @@ var SearchController = function (view, controller) {
     // The event key code for the enter key
     var ENTER = 13;
 
+    var active_search_type = 0;
+
+    // Array of source results
+    var search_results = [];
+
     /**
       Initialize the search tab:
       - Setup event handlers
       - Setup time period slider
      */
     (function () {
-        var range = {
+        initialize_time_period_slider();
+
+        add_event_handlers();
+    })();
+
+    /**
+       Initialize the time period slider.
+     */
+    function initialize_time_period_slider() {
+     var range = {
             min: 1970,
             max: 2013,
             step: 10,
@@ -68,17 +82,20 @@ var SearchController = function (view, controller) {
                 position: "absolute",
                 left: "20px",
                 top: "bottom",
-                width: "0px",
+                width: "1px",
                 height: "10px",
-                "border-left": "1px solid #000"
+                background: "#000"
             });
             label.append(line);
 
             labels.append(label);
         }
+    }
 
-        /* Event handlers */
-
+    /**
+       Add event handlers to the search view.
+     */
+    function add_event_handlers() {
         // define enter key press in local search field
         $("#database-search-field").keydown(function (evt) {
             if(evt.keyCode == ENTER) {
@@ -87,25 +104,72 @@ var SearchController = function (view, controller) {
             }
         });
 
-        $("input[name=search-button]").click(function (evt) {
-            var search_text = $("input[name=search-text]").val();
-            var t, types, search_type;
+        // search button click event
+        $("#database-search-button").click(function (evt) {
+            var search_text = $("#database-search-field").val();
 
-            types = $("#search-types input");
+            switch(active_search_type) {
+                case 0:
+                    var value = $("#search-type-source input[name='source_type']:checked").val();
+                    if (value === 'Producer') {
+                        value = '';
+                    }
+                    request_database_search(search_text, value, null, null);
+                break;
 
-            for(t = 0; t < types.length; t ++) {
-                if(types[t].checked) {
-                    search_type = types[t].value;
-                    break;
-                }
+                case 1:
+                break;
             }
-
-            request_database_search(search_text, search_type, null, null);
         });
+
+        // database search tab click event
+        $("#database-search-tab").click(function (evt) {
+            set_active_tab(0);
+        });
+
+        // add entity tab click event
+        $("#add-entity-tab").click(function (evt) {
+            set_active_tab(1);
+        });
+
+        // add search type radio source button click event
+        $("#search-type-source .radio").click(function (evt) {
+            set_active_search_type(0);
+        });
+
+        // add search type radio information button click event
+        $("#search-type-information .radio").click(function (evt) {
+            set_active_search_type(1);
+        });
+
+        set_active_tab(0);
+        set_active_search_type(active_search_type);
 
         // set focus on the database search field
         $("#database-search-field").focus();
-    })();
+    }
+
+    /**
+       Sets the nth tab and content to be active/visible.
+     */
+    function set_active_tab(n) {
+        $("#search-tabs > .head > .tab").removeClass("active");
+        $("#search-tabs > .head > .tab:eq(" + n + ")").addClass("active");
+
+        $("#search-tabs > .body > .content").css("display", "none");
+        $("#search-tabs > .body > .content:eq(" + n + ")").css("display", "block");
+    }
+
+    /**
+       Sets the nth search type to be active.
+     */
+    function set_active_search_type(n) {
+        var active_tab = $("#search-tabs > .body > .content:eq(0)");
+        active_search_type = n;
+
+        active_tab.find(".search-type > .content > .overlay").css("display", "block");
+        active_tab.find(".search-type:eq(" + n + ") > .content > .overlay").css("display", "none");
+    }
 
     /**
         Makes a database search request to the server with the specified
@@ -115,14 +179,51 @@ var SearchController = function (view, controller) {
      */
     var request_database_search = function (search_term, type, start_date,
                                                 end_date) {
-        $.post("/search_producers", {
+        $("#search-result").html("Searching...")
+        $.post("/jobs/search/producers", {
             'name' : search_term,
             'type' : type
         }, function (data) {
+            var job_id = data['job_id'];
+
+            controller.set_job_callback(job_id, function (data) {
+                if (data.result.data) {
+                    search_result = data.result.data;
+
+                    var table = $('<table>')
+                        .append($('<thead>')
+                                .append($('<tr>')
+                                        .append($('<th>').html('Name'))
+                                        .append($('<th>').html('Type'))));
+                    var body = $('<tbody>');
+
+                    for (var i in search_result) {
+                        body.append($('<tr>').addClass('result clickable')
+                                    .append($('<td>').addClass('name')
+                                            .html(data.result.data[i].name))
+                                    .append($('<td>').addClass('type')
+                                            .html(data.result.data[i].type_of)));
+                    }
+
+                    table.append(body);
+                    $('#search-result').html(table);
+
+                    $('#search-result .result').click(function (evt) {
+                        var prod = search_result[$('#search-result .result').index()];
+
+                        console.log(prod);
+
+                        controller.network.visualize_producer_in_network(prod, -1);
+                        controller.switch_to_tab('network');
+                    });
+                } else {
+                    $('#search-result').html('<h2>Nothing found</h2><p>Click the <i>Add a source or information</i> tab to add what you were looking for to the database.</p>');
+                }
+            });
+        })
+        .fail(function (data) {
             var response = JSON.parse(data);
-
-            $("#search-result").html(response.html);
-
+            console.log(data); // TODO
             if(response.error.type != "none") {
                 if(response.error.type == "no_result") {
                     // set focus on the search add text field
@@ -144,8 +245,6 @@ var SearchController = function (view, controller) {
                     });
                 }
             }
-        })
-        .fail(function () {
             $("#search-result").html("<h2>Server error.</h2>");
         });
     };

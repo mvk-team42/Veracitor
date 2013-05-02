@@ -9,39 +9,68 @@
     well as tools to alter the visualization of the network.
     @constructor
  */
-var NetworkController = function (view, controller, visualizer) {
+var NetworkController = function (controller, visualizer) {
 
-    // Display something in the network
-    visualizer.visualizeProducerInNetwork(null, -1);
+    (function () {
+        $('#calculate-sunny').click(function (evt) {
+            request_sunny_value('SvD', 'DN', 'newspaper');
+        });
 
-    $('#calculate-sunny').click(function (evt) {
-        request_sunny_value('SvD', 'DN', 'newspaper');
-    });
+        var width = $('#network-info-view').width();
+
+        $('#network-info-view').resizable({
+            minWidth: width,
+            maxWidth: width,
+            containment: '#network-holder > .top > .left'
+        });
+    })();
 
     /**
        Request a SUNNY value.
     */
     function request_sunny_value(source, sink, tag) {
-        $.post('/calculate_sunny_value', {
+         $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
             'tag': tag
         }, function (data) {
-            var response = JSON.parse(data);
+            var job_id = data['job_id'];
 
-            if(response.error.type == 'none') {
-                $('#calculated-trust').html(response.procedure.trust);
+            controller.set_job_callback(job_id, function (data) {
+                console.log(data.result);
 
-                controller.watch_callback(function (response) {
-                    //$('#calculated-trust').html(response.procedure.trust);
-                }, response.procedure.callback_url, response.procedure.id);
-            } else {
-                $('#search-result').html('<h2>' + response.error.message + '</h2>');
-            }
+                $('#calculated-trust').html(data.result.trust);
+            });
         })
         .fail(function () {
             $('#search-result').html('<h2>Server error.</h2>');
         });
     }
+
+    /**
+        Creates an interactive visualization network of the trust ratings
+        directly or indirectly associated with the given Producer (source
+        node) within the GlobalNetwork. Only nodes that have a trust
+        relation with the source node at a maximum of depth nodes away
+        from the source node will be visualized. If -1 is input as depth
+        there will be no restrictions as to how close a node has to be to
+        the source node in order to be part of the visualization (that is the
+        entire network will be visualized).
+     */
+    this.visualize_producer_in_network = function (prod, depth) {
+        $('#network-info-view .title').html(prod.name);
+        $('#network-info-view .description').html(prod.description);
+        $('#network-info-view .url').html($('<a>').attr('href', prod.url).html(prod.url));
+        $('#network-info-view .type').html(prod.type_of);
+
+        visualizer.visualize_producer_in_network(prod, depth);
+    };
+
+    /**
+        Visualizes the given trust network.
+     */
+    this.visualize_trust_network = function (network) {
+        visualizer.visualize_trust_network(network);
+    };
 
 }
