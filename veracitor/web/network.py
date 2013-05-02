@@ -1,3 +1,6 @@
+
+import itertools
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 from veracitor.web import app
@@ -44,16 +47,19 @@ def get_neighbors():
     # TODO fix the global network...
     gn = nm.build_network_from_db()
 
-    neighbors = [[name]]
-    neighbors_set = []
+    neighbors = []
+    neighbor_queue = [name]
 
-    for i in range(0, int(depth)):
-        neighbors.append([])
-        for node in neighbors[i]:
-            neighbors[i+1].append(gn.neighbors(node) + gn.predecessors(node))
+    #for i in range(0, int(depth)):
+    while neighbor_queue:
+        new_queue = []
+        for node in neighbor_queue:
+            if not node in neighbors:
+                neighbors.append(node)
+                new_queue.append(gn.neighbors(node) + gn.predecessors(node))
+        neighbor_queue = new_queue
 
-    neighbors = list(set(neighbors))
-    neighbors.remove(name)
+    #neighbors = list(set(itertools.chain.from_iterable(neighbors)))
 
     data = {}
 
@@ -69,7 +75,7 @@ def get_neighbors():
                       'type_of' : prod.type_of,
                       'source_ratings' : source_ratings}
 
-    return jsonify(neighbors=data)
+    return jsonify(neighbors=data,debug=neighbors)
 
 #    res = search.get_producers.delay(name, type_of)
 #    store_job_result(res)

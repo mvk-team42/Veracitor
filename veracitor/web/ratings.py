@@ -44,7 +44,7 @@ def get_user():
         abort(400)
 
     return "snopp"
-    
+
 
 
 @app.route('/jobs/ratings/rate_producer', methods=['GET', 'POST'])
@@ -107,4 +107,3 @@ def rate_group():
         abort(400)
 
     # TODO: Render json
-    
