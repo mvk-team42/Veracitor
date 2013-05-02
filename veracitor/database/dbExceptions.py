@@ -18,3 +18,11 @@ class NotInDatabase(Exception):
     
     """
     pass
+
+class AlreadyExists(Exception):
+    """
+    Exception to be used when trying to add a duplicate of something
+    that is meant to be unique.
+    
+    """
+    pass

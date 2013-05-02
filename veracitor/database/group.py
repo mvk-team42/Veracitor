@@ -22,7 +22,7 @@ class Group(Document):
     name = StringField(required=True) 
     description = StringField()
     owner = ReferenceField(('User'), required=True)
-    tags = ListField(ReferenceField('Tag'), required=True)
+    #tags = ListField(ReferenceField('Tag'), required=True)
     producers = ListField(ReferenceField('Producer'))
     time_created = DateTimeField(required=True)
     
