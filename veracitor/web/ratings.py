@@ -1,5 +1,18 @@
 # -*- coding: utf-8 -*-
 
+# ratings.py
+# ========
+
+"""
+.. module:: ratings
+    :synopsis: Defines server logic for the ratings tab
+
+.. moduleauthor:: Martin Runelöv <mrunelov@kth.se>
+.. moduleauthor:: Daniel Molin <dmol@kth.se>
+
+"""
+
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 import json
@@ -130,6 +143,7 @@ def rate_group():
 
     # TODO: Render json
 
+@app.route('/ratings')
 def ratings():
     """
     Initializes the ratings tab
