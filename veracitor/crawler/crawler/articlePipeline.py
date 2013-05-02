@@ -40,10 +40,13 @@ def add_to_database(article):
     #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
     tag_strings = re.sub("[^\w]", " ",  article["tags"]).split()
     tags = [extractor.get_tag_create_if_needed(tag_str) for tag_str in tag_strings]
-    
+
+    # lägg till urlen artikeln är på
+
     #utgår från att article["publishers"] är en sträng med space-separerade publishers, t.ex. "DN SVD NYT"
     publisher_strings = re.sub("[^\w]", " ",  article["publishers"]).split()
-    publishers = [extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in tag_strings]
+    log.msg("pubStrings: " + str(tag_strings))
+    publishers = [extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in publisher_strings]
     
     info = information.Information(
                         title = article["title"],
@@ -56,6 +59,7 @@ def add_to_database(article):
                    )
     info.save()       
     for publisher in publishers:
+        log.msg("publisher name: " + publisher.name)
         publisher.infos.append(info)
         publisher.save()
     
@@ -74,7 +78,7 @@ def fix_fields(article):
     """
     fix_time_published(article)
     shorten_summary(article)
-    for field in Articlearticle.fields.iterkeys():
+    for field in ArticleItem.fields.iterkeys():
         fix_field(article, field)  
             
 def fix_time_published(article):
@@ -90,7 +94,7 @@ def remove_words_from_time_published(article):
     
 def replace_words_in_time_published(article):
     special_words = ["idag", "i dag", "today"]
-    pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") "|" re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
+    pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") + "|" + re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
     article["time_published"] = pattern.sub(date.today().isoformat(), article["time_published"])        
     
     #for word in special_words:
@@ -152,4 +156,3 @@ def fix_field(article, field):
                 article[field] = article[field].strip().replace("\n", "")
                 return
         article[field] = "unknown"
-        
