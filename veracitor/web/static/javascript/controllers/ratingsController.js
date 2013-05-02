@@ -13,7 +13,7 @@ var RatingsController = function (controller) {
 
     /**
        Initialize the ratings tab:
-       - Setup event handlers 
+       - Setup event handlers
     */
     (function () {
 
@@ -21,8 +21,14 @@ var RatingsController = function (controller) {
 
     })();
 
+    /**
+       This function is called by the super controller when the tab is opened.
+     */
+    this.on_tab_active = function () {
 
-     /**
+    };
+
+    /**
        Add event handlers to the ratings view.
      */
     function add_event_handlers() {
@@ -48,7 +54,7 @@ var RatingsController = function (controller) {
 
 
     /**
-       Makes a database request to the server. 
+       Makes a database request to the server.
        Fetches all groups that the current user has.
     */
     var request_groups = function(user_id) {
@@ -56,11 +62,11 @@ var RatingsController = function (controller) {
 	    'user_id' : user_id
 	}, function (data) {
 	    var job_id = data['job_id'];
-	    
+
 	    controller.set_job_callback(job_id, function (data) {
 		if(data.result.data.length > 0) {
 		    search_result = data.result.data;
-		    
+
 		    //var table = etc etc
 		    // see searchController...
 		    //Fill tables with result
@@ -70,7 +76,7 @@ var RatingsController = function (controller) {
     }
 
     /**
-       Makes a database request to the server. 
+       Makes a database request to the server.
        Fetches a specific group that the current user has
     */
     var request_group = function(user_name,group_name ) {
@@ -79,11 +85,11 @@ var RatingsController = function (controller) {
 	    'group_name' : group_name
 	}, function (data) {
 	    var job_id = data['job_id'];
-	    
+
 	    controller.set_job_callback(job_id, function (data) {
 		if(data.result.data.length > 0) {
 		    search_result = data.result.data;
-		    
+
 		    //var table = etc etc
 		    // see searchController...
 		    //Fill tables with result
@@ -95,7 +101,7 @@ var RatingsController = function (controller) {
 
     /**
        Makes a database request to the server.
-       Fetches information objects, optionally 
+       Fetches information objects, optionally
        filtered by tag.
        TODO: Any more filters?
     */
@@ -106,7 +112,7 @@ var RatingsController = function (controller) {
 
     //TODO. Nåt sånt?
     function set_producer_reliability_rating(producer_id) {
-   
+
     }
 
     //TODO. Nåt sånt?

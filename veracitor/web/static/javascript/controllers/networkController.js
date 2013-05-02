@@ -13,19 +13,12 @@ var NetworkController = function (controller) {
 
     var visualizer = new Visualizer(this);
 
-    (function () {
-        $('#calculate-sunny').click(function (evt) {
-            request_sunny_value('SvD', 'DN', 'newspaper');
-        });
+    /**
+       This function is called by the super controller when the tab is opened.
+     */
+    this.on_tab_active = function () {
 
-        var width = $('#network-info-view').width();
-
-        $('#network-info-view').resizable({
-            minWidth: width,
-            maxWidth: width,
-            containment: '#network-holder > .top > .left'
-        });
-    })();
+    };
 
     /**
        Request a SUNNY value.
@@ -66,11 +59,9 @@ var NetworkController = function (controller) {
             'name': prod.name,
             'depth': depth
         }, function (data) {
-            console.log(data);
-
             network_controller.display_producer_information(prod);
 
-            visualizer.visualize_producer_in_network(prod, depth);
+            visualizer.visualize_producer_in_network(prod, data.neighbors, depth);
         }).fail(function (data) {
             console.log(data);
         });

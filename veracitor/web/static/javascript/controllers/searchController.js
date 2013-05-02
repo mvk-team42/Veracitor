@@ -33,6 +33,13 @@ var SearchController = function (controller) {
     })();
 
     /**
+       This function is called by the super controller when the tab is opened.
+     */
+    this.on_tab_active = function () {
+
+    };
+
+    /**
        Initialize the time period slider.
      */
     function initialize_time_period_slider() {
