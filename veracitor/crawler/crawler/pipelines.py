@@ -148,24 +148,6 @@ class CrawlerPipeline(object):
                 break
             except ValueError:
                 log.msg("could not parse date using " + time_format)
-                
-                
-                
-                """
-        if len(datetime_format) > 0:
-            log.msg("found time format: " + str(datetime_format[0]))
-            time = strptime(item['time_published'],datetime_format[0])
-        else:
-            log.msg("no time format found, trying defaults on: " + item['time_published'])
-            formats = ["%Y-%m-%d %H:%M","%d %B %Y kl %H:%M"]
-            for time_format in formats:
-                try:
-                    time = strptime(item['time_published'],time_format)
-                    break
-                except ValueError:
-                    log.msg("could not parse date using " + time_format)
-                """
-
 
         if time==None:
             log.msg("time could not be extracted")
