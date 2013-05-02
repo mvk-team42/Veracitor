@@ -25,7 +25,7 @@ def login():
         else:
             try:
                 user = extractor.get_user(request.form['username'])
-            except NotInDataBase:
+            except:
                 error = "No user with that username."
             if not user.password == request.form['password']:
                 error = "Wrong password."
