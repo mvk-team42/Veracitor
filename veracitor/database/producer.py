@@ -8,8 +8,10 @@
 """
 
 from mongoengine import *  
-import globalNetwork
-from dbExceptions import GlobalNetworkException
+import networkModel
+import tag
+import information
+from dbExceptions import NetworkModelException
 connect('mydb')
 
 class SourceRating(EmbeddedDocument):
@@ -46,6 +48,8 @@ class Producer(Document):
     or delete() to delete object from the database.
     The name field uniquely identifies a producer in the database.
 
+    
+
     """
     name = StringField(required=True, unique=True)
     first_name = StringField();
@@ -60,57 +64,101 @@ class Producer(Document):
     meta = {'allow_inheritance':'On'}
     
     #TODO implement. Should overwrite earlier ratings on same tag/source
-    def rate_source(source, tag, rating):
-        pass
+    def rate_source(self, source_to_rate, considered_tag, rating):
+        found = False
+        for s_rating in self.source_ratings:
+            if(s_rating.source == source_to_rate and\
+               s_rating.tag == considered_tag):
+                s_rating.rating = rating
+                found = True
+        if(not found):
+            new_rating = SourceRating(source=source_to_rate, 
+                                      tag=considered_tag, 
+                                      rating=rating)
+            self.source_ratings.append(new_rating)
+        
+
+    def rate_information(self, info_to_rate, rating):
+        found = False
+        for i_rating in self.info_ratings:
+            if(i_rating.information == info_to_rate):
+                i_rating.rating = rating
+                found = True
+        if(not found):
+            new_rating = InformationRating(information=info_to_rate,
+                                           rating=rating)
+            self.info_ratings.append(new_rating)
+    
+
+    def get_source_rating(self, req_source, req_tag):
+        for s_rating in self.source_ratings:
+           if(s_rating.source == req_source and s_rating.tag == req_tag):
+                return s_rating.rating
+        return -1 
+            
+    def get_info_rating(self, req_info):
+        for i_rating in self.info_ratings:
+            if(i_rating.information == req_info):
+                return i_rating.rating
+        return -1
     
     def save(self):
         """
         Overrides save() inherhited from Document. 
-        Figures out whether to update the globalNetwork
-        or to insert the saved producer into the globalNetwork.
+        Figures out whether to update the networkModel
+        or to insert the saved producer into the networkModel.
         Follows this with the regular save() call in Document. 
         
         Raises:
-            GlobalNetworkException: If there is no global network created
+            NetworkModelException: If there is no global network created
             (and therefore no network to insert or update the saved producer
             into).
 
         """
-        if globalNetwork.graph is None:
-            raise GlobalNetworkException("There is no Global Network created!")
+        if networkModel.graph is None:
+            raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
-            globalNetwork.notify_producer_was_added(self)
+            networkModel.notify_producer_was_added(self)
         else:
-            globalNetwork.notify_producer_was_updated(self)
+            networkModel.notify_producer_was_updated(self)
         
         super(Producer, self).save()
 
     def delete(self):
         """
         Overrides delete() inherhited from Document.
-        Begins with trying to delete the producer from the globalNetwork.
+        Begins with trying to delete the producer from the networkModel.
         Is idempotent, meaning that it can be called multiple times without
-        damage done. If the producer isn't present in the globalNetwork
+        damage done. If the producer isn't present in the networkModel
         or the database nothing is changed.
 
         Raises:
 
-            GlobalNetworkException: If there is no global network created
+            NetworkModelException: If there is no global network created
             (and therefore no network to delete the producer from).
         
         """
-        if globalNetwork.graph is None:
-            raise GlobalNetworkException("There is no Global Network created!")
+        if networkModel.graph is None:
+            raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
             return
         else:
-            globalNetwork.notify_producer_was_removed(self)
+            networkModel.notify_producer_was_removed(self)
             
         super(Producer, self).delete()
 
 if __name__ == "__main__":
-    globalNetwork.build_network_from_db()
-    newP = Producer(name="ABC", type_of="MediaNetwork")
-    newP.save()
-    print globalNetwork.getDictionaryGraph()
-    newP.delete()
+    p1 = Producer(name="fax", type_of="mule")
+    p2 = Producer(name="fux", type_of="donkey")
+    t1 = tag.Tag(name="gardening")
+    p1.rate_source(p2, t1, 5)
+    p1.rate_source(p2, t1, 4)
+    #p1.rate_source(p2, "hgurur", 1)
+    print p1.source_ratings
+    print p1.get_source_rating(p2, t1)
+    print information.Information
+    i1 = information.Information(name="korre", url="seaweed.com")
+    p1.rate_information(i1, 2)
+    print p1.get_source_rating(p2, t1)
+    print p1.get_info_rating(i1)
+    

@@ -1,7 +1,7 @@
 import unittest
 import networkx as nx
 import tidaltrust as tt
-import generate_bn as gbn
+from sunny import generate_bn as gbn
 from copy import copy, deepcopy
 from random import randint
 #import matplotlib.pyplot as plt

@@ -353,8 +353,16 @@ ul.list li {
 }
 
 ul.list li .rating {
-    display: block;
     float: right;
+}
+
+div.rating {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+ul.list li .rating, div.rating {
+    display: block;
 
     text-align: center;
     line-height: 28px;

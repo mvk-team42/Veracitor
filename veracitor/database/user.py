@@ -12,7 +12,7 @@ import producer
 
 class GroupRating(EmbeddedDocument):
     """ Defines a object structure used by
-    User to store user specific group rating 
+    User to store user specific group rating.
     
     """
     group = ReferenceField('Group', required=True)
@@ -31,7 +31,7 @@ class User(producer.Producer):
     (which in turn inherhits from the mongoengine document class).
     Adds user-specific fields. Hard-codes the producer type_of field to
     'User'. Call save() to update database with the user
-    (inserting it if it is not previously saved).
+    (inserting it if it is not previously saved)
     or delete() to delete it from the database.
 
     The name field uniquely identifies a user in the database.
@@ -43,8 +43,30 @@ class User(producer.Producer):
     password = StringField(required=True)
     pw_hash = StringField()
     email = StringField()
-    
-    
 
+    def rate_group(self, group_to_rate, rating):
+        found = False
+        for g_rating in self.group_ratings:
+            if(g_rating.group == group_to_rate):
+                g_rating.rating = rating
+        if(not found):
+            new_rating = GroupRating(group=group_to_rate,
+                                     rating=rating)
+            self.group_ratings.append(new_rating)
+    
+    def get_group_rating(self, req_group):
+        for g_rating in self.group_ratings:
+            if(g_rating.group == req_group):
+                return g_rating.rating
+        return -1
+    
+    
+    
+if __name__ == "__main__":
+    u1 = User(name="hurse", password="hursefood")
+    p1 = Producer(name="fax", type_of="mule")
+    g1 = Group()
+    g1.producers.add(p1)
+    
     
     
