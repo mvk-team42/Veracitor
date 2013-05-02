@@ -15,6 +15,8 @@
 	position: absolute;
 	left: 0; right: 0;
 	top: 0; bottom: 0;
+
+    overflow: hidden;
 }
 
 #network-holder > .top {
@@ -27,14 +29,17 @@
     position: absolute;
     left: 0;
     top: 0; bottom: 0;
-    width: 300px;
+    width: 400px;
 
-    overflow-y: scroll;
+    overflow: auto;
+    z-index: 1;
+
+    border-right: 1px solid #666;
 }
 
 #network-holder > .top > .right {
     position: absolute;
-    left: 300px; right: 0;
+    left: 400px; right: 0;
     top: 0; bottom: 0;
 }
 
@@ -44,18 +49,11 @@
     bottom: 0;
     height: 100px;
 
-    overflow: auto;
-
     border-top: 1px solid #666;
 }
 
 #network-info-view {
     width: 100%;
-    height: 200px;
-
-    overflow: hidden;
-
-    border-bottom: 1px solid #666;
 }
 
 #network-info-view > .body {
@@ -73,12 +71,17 @@
 }
 
 #network-graph {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
+
+    overflow: hidden;
+
+    background: #fff;
 }
 
 #network-toolbox {
     width: 100%;
+
+    border-top: 1px solid #666;
 }
 
 #network-toolbox > .body {
@@ -94,21 +97,22 @@
     width: 50%; height: 100%;
 
     float: left;
-    z-index: 2;
-
-    -webkit-box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
-    -moz-box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
-    box-shadow: 3px 0px 11px rgba(50, 50, 50, 0.15);
 }
 
 #network-relation-view > .target {
     width: 50%; height: 100%;
 
     float: left;
-    z-index: 1;
 }
 
-#network-relation-view > .source > .body,
+#network-relation-view > .source > .body {
+    height: 100%;
+    padding: 5px 10px;
+
+    border-right: 1px solid #666;
+}
+
 #network-relation-view > .target > .body {
+    height: 100%;
     padding: 5px 10px;
 }

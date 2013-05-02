@@ -4,10 +4,11 @@ import itertools
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 from veracitor.web import app
-# from veracitor.web import callback
 
 from ..database import extractor, networkModel as nm
 from ..algorithms.tidaltrust import compute_trust
+
+log = app.logger.debug
 
 @app.route('/jobs/network/neighbors', methods=['GET','POST'])
 def get_neighbors():
@@ -55,8 +56,9 @@ def get_neighbors():
         new_queue = []
         for node in neighbor_queue:
             if not node in neighbors:
+                log(node)
                 neighbors.append(node)
-                new_queue.append(gn.neighbors(node) + gn.predecessors(node))
+                new_queue = new_queue + gn.successors(node) + gn.predecessors(node)
         neighbor_queue = new_queue
 
     #neighbors = list(set(itertools.chain.from_iterable(neighbors)))
