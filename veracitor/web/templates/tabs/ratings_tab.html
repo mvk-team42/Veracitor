@@ -36,7 +36,7 @@
     </tr>
 </head>
 <tbody>
-  {% for producer in rated-producers  %}
+  {% for producer in source_ratings  %}
     <tr class='row' style="text-align:center;">
     <td class='name'>{{ producer.name  }}</td>
     <td class='rating'>
@@ -53,7 +53,7 @@
      <label for "producers">Producer:</label>
     <select name="producers" id="producers">
     {% if session.user  %}
-    {% for producer in rated-producers  %}
+    {% for producer in source_ratings  %}
       <option value="{{ producer.name  }}">{{ producer.name  }}
     {% endfor  %}
     </select>
@@ -72,7 +72,7 @@
       </tr>
 </head>
 <tbody>
-  {% for information in rated-information  %}
+  {% for information in info_ratings  %}
   <tr class='row' style="text-align:center;">
     <td class='name'>{{ information.title  }}</td>
     <td class='rating'>

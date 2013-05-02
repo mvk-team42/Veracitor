@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 import json
 
+from flask import render_template
 from veracitor.web import app
 from veracitor.web.utils import store_job_result
 from veracitor.database import user, group, information, extractor
@@ -126,3 +127,14 @@ def rate_group():
 
     # TODO: Render json
     
+
+
+
+def ratings():
+    """
+    Initializes the ratings tab
+    
+    """
+    user_data = get_user()
+    
+    return render_template('ratings_tab.html', vera=user_data)
