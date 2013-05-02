@@ -43,6 +43,9 @@ def get_user():
                            'rating': s.rating }
                           for s in userObj.source_ratings]
 
+        info_ratings = [{'title':ir.information.title,
+                                'rating':ir.rating} for ir in userObj.info_ratings]
+
         groups = [{'name' : g.name,
                    'description' : g.description,
                    'owner' : g.owner,
@@ -53,7 +56,9 @@ def get_user():
                     'description' : userObj.description,
                     'type_of' : userObj.type_of,
                     'source_ratings' : source_ratings,
-                    'groups' : groups})
+                    'groups' : groups,
+                    'group_ratings' : [{'group':gr.group, 'rating':gr.rating} for gr in userObj.group_ratings],
+                    'info_ratings' : info_ratings}
 
     except NotInDatabase:
         return "not in databaseteafw"
