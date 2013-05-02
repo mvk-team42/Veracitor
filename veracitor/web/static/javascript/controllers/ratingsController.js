@@ -26,15 +26,6 @@ var RatingsController = function (controller) {
        Add event handlers to the ratings view.
      */
     function add_event_handlers() {
-	$("#filter-producers").click(function(evt) {
-	    alert('Filter producers handled in ratingsController!');
-	    return false;
-	});
-
-	$("#filter-information").click(function(evt) {
-	    
-	    alert("Filter info handled in ratingsController!");
-	});
 
 	$("#information-table td").click(function(evt) {
 	    alert("Information table row clicked!");
@@ -44,8 +35,14 @@ var RatingsController = function (controller) {
 	    alert("Producer table row clicked!");
 	});
 
-	$("#add-group").click(function(evt) {
-	    alert("Add group pressed!");
+	$("#new-group").click(function(evt) {
+	   // $('#new-group-form').css('display','block');
+	    $('#new-group').css('display','none');
+	    $('#new-group-form').fadeIn();
+	});
+
+	$('#create-group').click(function(evt) {
+	    alert("plz create group :(");
 	});
     }
 

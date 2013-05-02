@@ -6,12 +6,6 @@
 <div class="table">
 	<div class="left" style="float:left; margin-right: 200px">
 	<h2>Producers</h2>
-
-	<p>
-	  <input type="text" />
-	  <input type="button" value="Search producers"/>
-	</p>
-	<form id="filter-producers-form">
 	  <label for="tags">Tag:</label>
 	  <select name="tags" id="tags">
 	    <option value="crime">Crime</option>
@@ -20,36 +14,51 @@
 	  <br/>
 	  <label for="groups">Group:</label>
 	  <select name="groups" id="groups">
-	    <option value="newspapers">Newspapers</option>
-	    <option value="random">Random</option>
+	    {% for group in groups  %}
+	    <option value="{{ group.name }}">{{ group.name  }}</option>
+	    {% endfor  %}
 	  </select>
-	  <input type="button" value="Add group" id="add-group"/>
+	  <input type="button" value="Rate group" id="rate-group"/>
 	  <br/>
-	  <input type="button" value="Filter" id="filter-producers"/>
-	</form>
+	  <div id="new-group-form" style="display:none; float: left;">
+	    <form id="new-group-form">
+	      <input id="name" type="text" placeholder="Group name"/>
+	      <input type="button" value="Create group" id="create-group"/>
+	    </form>
+	  </div>
+	  <input type="button" value="+ New group" id="new-group"/>
+	  <br/>
 <table style="width:260px" id="producer-table">
   <thead>
     <tr>
       <th>Name</th>
-      <th>Group</th>
       <th>Credibility rating</th>
     </tr>
 </head>
 <tbody>
-  <tr class='row' style="text-align:center;">
-    <td class='name'>Bla</td>
-    <td class='type'>Bla</td>
+  {% for producer in rated-producers  %}
+    <tr class='row' style="text-align:center;">
+    <td class='name'>{{ producer.name  }}</td>
     <td class='rating'>
-      <div class="rating">5</div>
+      <div class="rating">{{ producer.rating  }}</div>
     </td>
-  </tr>
+    </tr>
+  {% endfor  %}
 </tbody>
 </table>
 </div>
 
 <div class="right" style="float: left; width:200px">   
   <h2>Information</h2>
-  <form id="filter-information-form">
+     <label for "producers">Producer:</label>
+    <select name="producers" id="producers">
+<!--  
+    {% if session.user  %}
+    {% for producer in rated-producers  %}
+      <option value="{{ producer.name  }}">{{ producer.name  }}
+    {% endfor  %}
+-->
+    </select>
     <label for="tags">Tag:</label>
     <select name="tags" id="tags">
       <option value="crime">Crime</option>
@@ -57,21 +66,19 @@
     </select>
     <br/>
     <input type="button" value="Filter" id="filter-information"/>
-  </form>
   <table style="width:240px" id="information-table">
     <thead>
       <tr>
 	<th>Name</th>
-	<th>Group</th>
 	<th>Factual rating</th>
       </tr>
 </head>
 <tbody>
+  {% for information in rated-information  %}
   <tr class='row' style="text-align:center;">
-    <td class='name'>Bla</td>
-    <td class='type'>Bla</td>
+    <td class='name'>{{ information.title  }}</td>
     <td class='rating'>
-      <div class="rating">3</div>
+      <div class="rating">{{ information.rating  }}</div>
     </td>
   </tr>
 </tbody>
