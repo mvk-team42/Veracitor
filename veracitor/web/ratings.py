@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 import json
 
+from flask import render_template
 from veracitor.web import app
 from veracitor.web.utils import store_job_result
 from veracitor.database import user, group, information, extractor
@@ -37,15 +38,36 @@ def get_user():
     try:
         user_id = request.form['user_id']
         userObj = extractor.get_user(user_id)
+
+        source_ratings = [{'name' : s.source.name,
+                           'tag' : s.tag.name,
+                           'rating': s.rating }
+                          for s in userObj.source_ratings]
+
+        info_ratings = [{'title':ir.information.title,
+                                'rating':ir.rating} for ir in userObj.info_ratings]
+
+        groups = [{'name' : g.name,
+                   'description' : g.description,
+                   'owner' : g.owner,
+                   'producers' : [p.name for p in g.producers]}
+                  for g in userObj.groups]
+
+        userDict = {'name' : userObj.name,
+                    'description' : userObj.description,
+                    'type_of' : userObj.type_of,
+                    'source_ratings' : source_ratings,
+                    'groups' : groups,
+                    'group_ratings' : [{'group':gr.group, 'rating':gr.rating} for gr in userObj.group_ratings],
+                    'info_ratings' : info_ratings}
+
     except NotInDatabase:
         return "not in databaseteafw"
     except:
         return "bajs"
         abort(400)
 
-    return "snopp"
-
-
+    return jsonify(user=userDict)
 
 @app.route('/jobs/ratings/rate_producer', methods=['GET', 'POST'])
 def rate_producer():
@@ -107,3 +129,12 @@ def rate_group():
         abort(400)
 
     # TODO: Render json
+
+def ratings():
+    """
+    Initializes the ratings tab
+
+    """
+    user_data = get_user()
+
+    return render_template('ratings_tab.html', vera=user_data)
