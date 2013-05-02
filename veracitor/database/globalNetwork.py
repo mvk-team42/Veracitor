@@ -16,6 +16,7 @@ tag.name the rating was set.
 .. moduleauthor:: Fredrik Öman <frdo@kth.se> 
 """
 
+
 from networkx import to_dict_of_dicts, DiGraph
 from tag import *
 from producer import *
@@ -25,7 +26,7 @@ from user import *
 from mongoengine import *
 import extractor
 import math
-from numpy import array
+from numpy import array, median
 connect('mydb')
 
 graph = None
@@ -273,8 +274,12 @@ def get_extreme_info_ratings(producer_name, tag_names):
                 relevant_info_ratings_ints.append(info.rating)
                 total_sum += info.rating
                 break
-    
-    mean = (total_sum)/len(relevant_info_ratings)
+
+    if(len(relevant_info_ratings) > 0):
+           mean = (total_sum)/len(relevant_info_ratings)
+    else:
+        return []
+
 
     extremes = []
     np_array = array(relevant_info_ratings_ints)
@@ -321,6 +326,117 @@ def get_max_rating_difference(producer_name1, producer_name2, tag_names):
            max_diff = diff
 
     return max_diff
+
+def get_difference_on_extremes(p1, p2, tags):
+    """
+    Calcualates the diffence on extremes for two producers' info ratings
+    (χ(n, n') in *Kuter, Golbeck 2010*).
+
+    Quote from the paper:
+
+    *A decision D(n, e) is considered extreme if it is more than one
+    standard deviation from the mean rating assigned by n. χ(n,n') is
+    computed as the average absolute difference on this set.*
+
+    .. note::
+       "Average absolute difference" is using the median of the extreme-sets
+       as the central tendency, m(X). This is used most often according to 
+       `Wikipedia <http://en.wikipedia.org/wiki/Absolute_deviation>`_.
+
+    .. note::
+       It's not obvious what set(s) Kuter and Golbeck are referring to when
+       talking about the average absolute difference. Hopefully I made the 
+       right decision when calculating the AAD for the combined set of 
+       extreme ratings, that is AAD(p1_extremes UNION p2_extremes).
+
+       *- Daniel Molin*
+
+    Args:
+       *p1, p2 (unicode)*: The input producers.
+       
+       *tags (list of unicodes)*: The list of tag names to consider when
+       finding info ratings.
+
+    Returns:
+       χ(p1, p2) = average absolute difference of the extreme ratings by the
+       input producers.
+
+       *None* if no extremes could be found for one or
+       both of the producers.
+
+    """
+    p1_extremes = set([x.rating for x in get_extreme_info_ratings(p1, tags)])
+    p2_extremes = set([x.rating for x in get_extreme_info_ratings(p2, tags)])
+
+    if len(p1_extremes) == 0 or len(p2_extremes) == 0:
+        # No extremes to compare, return None
+        return None
+
+    extremes_combined = p1_extremes | p2_extremes
+    extreme_median = median(list(extremes_combined))
+
+    D = fsum([math.fabs(x-extreme_median) for x in extremes_combined])/ \
+        len(extremes_combined)
+
+    return D
+
+
+def get_belief_coefficient(p1, p2, tags):
+    """
+    Calulates σ(n,n') from *Equation (1)* in *Kuter, Golbeck 2010*.
+
+    """
+    get_global_network()
+    overall_difference = get_overall_difference(p1,p2,tags)
+    thetas = [overall_difference]
+    for n in graph.successors(p1):
+        if n != p2:
+            thetas.append(get_overall_difference(p1,n,tags))
+
+    np_array = array(thetas)
+    mean = np_array.mean()
+    stddev = np_array.std()
+
+    if overall_difference > (mean+stddev):
+        coefficient = -1
+    elif overall_difference < (mean - stddev):
+        coefficient = 1
+    else:
+        # Pearson coefficient based on common info ratings.
+        # It compares two datasets (the common decisions).
+        # Maybe use 'from scipy.stats.stats import pearsonr'
+
+        common_info_ratings = get_common_info_ratings(p1,p2,tags)
+        n = len(common_info_ratings)
+        if n > 1:
+            sum_p1 = sum(
+                [x.rating for (x,y) in common_info_ratings])
+            sum_p2 = sum(
+                [y.rating for (x,y) in common_info_ratings])
+            sum_p1_p2 = sum(
+                [x.rating*y.rating for (x,y) in common_info_ratings])
+            sum_p1_squared = sum(
+                [x.rating**2 for (x,y) in common_info_ratings])
+            sum_p2_squared = sum(
+                [y.rating**2 for (x,y) in common_info_ratings])
+        
+            coefficient = float((n*sum_p1_p2 - sum_p1*sum_p2))/ \
+                float((math.sqrt((n*sum_p1_squared-((sum_p1)**2))*(n*sum_p2_squared - ((sum_p2)**2)))))
+        else:
+            coefficient = 0
+
+    return coefficient
+
+
+def _stddev(numbers):
+    np_array = array(numbers)
+    return np_array.std()
+
+def _mean(numbers):
+    np_array = array(numbers)
+    return np_array.mean()                       
+
+    
 
 if __name__ == "__main__":
     build_network_from_db()
