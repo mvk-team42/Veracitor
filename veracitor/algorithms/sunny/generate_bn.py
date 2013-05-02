@@ -18,7 +18,7 @@ graph, and two nodes, source and sink (as described by Golbeck and Kuter (2010))
 
 import networkx as nx
 from itertools import chain
-from veracitor.database import globalNetwork
+from veracitor.database import networkModel
 import math
 
 def golbeck_generate_bn(graph, source, sink, tag="weight"):
@@ -138,10 +138,10 @@ def _p_confidence(graph, tag, weights=(0.7, 0.2, 0.1, 0.8)):
 
     for edge in graph.edges():
         p1, p2 = edge[0], edge[1]
-        overall_difference = globalNetwork.get_overall_difference(p1, p2, [tag])
-        difference_on_extremes = globalNetwork.get_difference_on_extremes(p1, p2, [tag])
-        max_difference = globalNetwork.get_max_rating_difference(p1, p2, [tag])
-        belief_coefficient = globalNetwork.get_belief_coefficient(p1, p2, [tag])
+        overall_difference = networkModel.get_overall_difference(p1, p2, [tag])
+        difference_on_extremes = networkModel.get_difference_on_extremes(p1, p2, [tag])
+        max_difference = networkModel.get_max_rating_difference(p1, p2, [tag])
+        belief_coefficient = networkModel.get_belief_coefficient(p1, p2, [tag])
         
         #print "overall_difference: " + str(overall_difference)
         #print "diff on extremes: " + str(difference_on_extremes)
