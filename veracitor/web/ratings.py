@@ -1,5 +1,18 @@
 # -*- coding: utf-8 -*-
 
+# ratings.py
+# ========
+
+"""
+.. module:: ratings
+    :synopsis: Defines server logic for the ratings tab
+
+.. moduleauthor:: Martin Runelöv <mrunelov@kth.se>
+.. moduleauthor:: Daniel Molin <dmol@kth.se>
+
+"""
+
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 import json
@@ -10,6 +23,24 @@ from veracitor.web.utils import store_job_result
 from veracitor.database import user, group, information, extractor
 
 import veracitor.tasks.ratings as ratings
+
+
+@app.route('/ratings')
+def ratings():
+    """
+    Initializes the ratings tab
+
+    """
+    # TODO Session-hantering. tror 'session'-variabeln är global
+    # och isf funkar nåt sånt här. FRÅGA ANTON!
+        if "user" not in session:
+        return redirect(url_for('login')) 
+        # Tror 'login' är url för att posta login. 
+        # Köra på 'index' istället kanske?
+    else:
+        user_data = get_user()
+        return render_template('ratings_tab.html', vera=user_data)
+        
 
 @app.route('/jobs/ratings/user', methods=['GET', 'POST'])
 def get_user():
@@ -129,12 +160,3 @@ def rate_group():
         abort(400)
 
     # TODO: Render json
-
-def ratings():
-    """
-    Initializes the ratings tab
-
-    """
-    user_data = get_user()
-
-    return render_template('ratings_tab.html', vera=user_data)

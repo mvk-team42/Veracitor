@@ -1,2 +1,19 @@
 /* RATINGS VIEW */
 
+#producer-table, #information-table{
+    width: 260px;
+}
+
+table tr.row {
+    text-align: center;
+}
+
+div.left {
+    float:left;
+    margin-right: 200px;
+}
+
+div.right {
+    float: left; 
+    width: 200px;
+}
