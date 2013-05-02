@@ -170,8 +170,19 @@ class GeneralSetup(unittest.TestCase):
                                   time_created=datetime.\
                                       datetime.now())
         self.group2.save()
-        self.user1.rate_group(self.group2, 5)
+        self.group2.producers.append(self.prod1)
+        self.group2.producers.append(self.prod2)
+        self.group2.producers.append(self.prod3)
+        self.group2.save()
+        self.user1.rate_group(self.group2, self.tag1, 5)
         self.user1.save()
+        self.group3 = group.Group(name="edd",
+                                  owner=self.user1,
+                                  tags=[self.tag1, self.tag2],
+                                  time_created=datetime.\
+                                      datetime.now())
+        self.group3.save()
+        
 
         
 
@@ -239,6 +250,13 @@ class TestGroupThings(GeneralSetup):
             == self.prod1
         self.assertRaises(Exception, extractor.get_group, "Hurrman", self.group1.name)
         assert self.user1.get_group_rating(self.group2) == 5 
+        assert self.user1.get_source_rating(self.prod1, self.tag1) == 5
+        assert self.user1.get_source_rating(self.prod2, self.tag1) == 5
+        assert self.user1.get_source_rating(self.prod3, self.tag1) == 5
+        assert self.user1.get_source_rating(self.prod4, self.tag1) == -1
+        assert self.user1.create_group("GHURR") == True
+        assert self.user1.create_group("GHURR") == False
+        assert self.user1.rate_group(self.group1, self.tag1, 1) == False
  
 
 class TestNetworkModelThings(GeneralSetup):
