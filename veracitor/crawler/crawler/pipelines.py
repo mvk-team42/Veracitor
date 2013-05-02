@@ -20,6 +20,8 @@ from .spiders.articleSpider import ArticleSpider
 from .spiders.rssSpider import RssSpider
 from ...database import *
 from ...logger import *
+import .articlePipeline
+import .producerPipeline
 
 class CrawlerPipeline(object):
 
@@ -32,15 +34,23 @@ class CrawlerPipeline(object):
             is called after an item is returned from some spider.
             Different things happen depending on the spider.
         """
-        if isinstance(spider, NewspaperBankSpider):
-            return item
-        self.fix_fields(item)
-        #self.print_if_unknown(item)
-        self.articles.append(item)
-        print item
-        print "---------------------"
-        self.add_to_database(item)
-        return item
+        if isinstance(item, ArticleItem):
+            return articlePipeline.process_article(item, spider)
+        if isinstance(item, ProducerItem):
+            return producerPipeline.process_producer(item, spider)
+        raise Exception("Item type not recognized!")
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
     def add_to_database(self, item):
         """

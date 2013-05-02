@@ -9,7 +9,7 @@ from os.path import realpath, dirname
 import xml.etree.ElementTree as ET
 
 from ..webpageMeta import WebpageMeta
-from ..items import ArticleItem, ArticleLoader
+from ..items import ArticleItem, ProducerItem, ArticleLoader
 from .articleSpider import ArticleSpider
 from ....database import *
 
@@ -35,51 +35,23 @@ class MetaNewspaperSpider(BaseSpider):
 
     @staticmethod
     def scrape_meta(response):
-        current_dir = dirname(realpath(__file__))
-        xml_file = current_dir + '/../webpageMeta.xml'
-        tree = ET.parse(xml_file)
-        webpages = tree.getroot()
-        url = response.url
-        domain = url
-        already_in_xml = len(webpages.findall("./webpage[@domain='" + domain + "']")) > 0
+    
+        producer_item = ProducerItem()
         
+        current_dir = dirname(realpath(__file__))
         meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
         hxs = HtmlXPathSelector(response)
+        producer_item["name"] = MetaNewspaperSpider.extract_name(domain, hxs, meta)
+        producer_item["rss_urls"] = MetaNewspaperSpider.extract_rss_urls(domain, hxs, meta)
+        producer_item["description"] = MetaNewspaperSpider.extract_description(domain, hxs, meta)
+        producer_item["url"] = response.url
         
-        name = MetaNewspaperSpider.extract_name(domain, hxs, meta)
-        if name=="" or extractor.contains_producer_with_name(name):
-            name = url
-
-        rss_urls = MetaNewspaperSpider.extract_rss_urls(domain, hxs, meta)
-        description = MetaNewspaperSpider.extract_description(domain, hxs, meta)
+        return producer_item
+         
+         
         
-        webpage = None
-
-        if already_in_xml:   # Get element and remove existing url-links
-            webpage = webpages.find("webpage[@domain='"+domain+"']")
-            webpage.remove(webpage.find("rss-urls"))
-        else:  # Create new element
-            webpage = ET.Element("webpage", attrib={'domain':domain, 'name':name})
-        rss_urls_tag = ET.Element("rss-urls")
-        for rss_url in rss_urls:  # Add all urls to rss-urls element
-            rss = ET.Element("rss")
-            rss.text = rss_url
-            rss_urls_tag.append(rss)
-        webpage.append(rss_urls_tag)  # Append rss-urls to webpage element
-        if not already_in_xml:
-            webpages.append(webpage)
-        tree.write(xml_file)
-
-        if not extractor.contains_producer_with_url(url): #db-method
-            new_producer = producer.Producer(name = name,
-                description = description,
-                url = url,
-                infos = [],
-                source_ratings = [],
-                info_ratings = [],
-                type_of = "Newspaper")
-            new_producer.save()
-
+    #These three should be in some ItemLoader, whatever    
+        
     @staticmethod
     def extract_name(domain, hxs, meta):
         for name_xpath in meta.get_webpage_xpaths("name", domain):

@@ -67,6 +67,7 @@ class ProducerItem(Item):
     source_ratings = Field()
     info_ratings = Field()
     type_of = Field()
+    rss_urls = Field()
 
     
     
