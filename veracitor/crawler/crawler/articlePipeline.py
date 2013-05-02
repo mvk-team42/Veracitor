@@ -74,7 +74,7 @@ def fix_fields(article):
     """
     fix_time_published(article)
     shorten_summary(article)
-    for field in Articlearticle.fields.iterkeys():
+    for field in ArticleItem.fields.iterkeys():
         fix_field(article, field)  
             
 def fix_time_published(article):
