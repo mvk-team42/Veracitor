@@ -9,6 +9,7 @@
 
 from mongoengine import *
 import producer
+import tag
 
 class GroupRating(EmbeddedDocument):
     """ Defines a object structure used by
@@ -44,7 +45,7 @@ class User(producer.Producer):
     pw_hash = StringField()
     email = StringField()
 
-    def rate_group(self, group_to_rate, rating):
+    def rate_group(self, group_to_rate, considered_tag, rating):
         found = False
         for g_rating in self.group_ratings:
             if(g_rating.group == group_to_rate):
@@ -53,6 +54,11 @@ class User(producer.Producer):
             new_rating = GroupRating(group=group_to_rate,
                                      rating=rating)
             self.group_ratings.append(new_rating)
+        self.__rate_all_members(group_to_rate, considered_tag, rating)
+
+    def __rate_all_members(self, group_to_rate, considered_tag, rating):
+        for p in group_to_rate.producers:
+            self.rate_source(p, considered_tag, rating)
     
     def get_group_rating(self, req_group):
         for g_rating in self.group_ratings:
@@ -60,6 +66,8 @@ class User(producer.Producer):
                 return g_rating.rating
         return -1
     
+    
+
     
     
 if __name__ == "__main__":
