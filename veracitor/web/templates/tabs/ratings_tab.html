@@ -3,10 +3,81 @@
 {% block content %}
 <h1>{{ tab.name }}</h1>
 
-<p><input type="text" /><input type="button" value="Search friends" /></p>
-<ul class="list">
-    <li>Daniel Molin</li>
-    <li>John Brynte Turesson</li>
-    <li>Slim Jim</li>
-</ul>
+<div class="table">
+	<div class="left" style="float:left; margin-right: 200px">
+	<h2>Producers</h2>
+
+	<p>
+	  <input type="text" />
+	  <input type="button" value="Search producers"/>
+	</p>
+	<form id="filter-producers-form">
+	  <label for="tags">Tag:</label>
+	  <select name="tags" id="tags">
+	    <option value="crime">Crime</option>
+	    <option value="gardening">Gardening</option>
+	  </select>
+	  <br/>
+	  <label for="groups">Group:</label>
+	  <select name="groups" id="groups">
+	    <option value="newspapers">Newspapers</option>
+	    <option value="random">Random</option>
+	  </select>
+	  <input type="button" value="Add group" id="add-group"/>
+	  <br/>
+	  <input type="button" value="Filter" id="filter-producers"/>
+	</form>
+<table style="width:260px" id="producer-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Group</th>
+      <th>Credibility rating</th>
+    </tr>
+</head>
+<tbody>
+  <tr class='row' style="text-align:center;">
+    <td class='name'>Bla</td>
+    <td class='type'>Bla</td>
+    <td class='rating'>
+      <div class="rating">5</div>
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<div class="right" style="float: left; width:200px">   
+  <h2>Information</h2>
+  <form id="filter-information-form">
+    <label for="tags">Tag:</label>
+    <select name="tags" id="tags">
+      <option value="crime">Crime</option>
+      <option value="gardening">Gardening</option>
+    </select>
+    <br/>
+    <input type="button" value="Filter" id="filter-information"/>
+  </form>
+  <table style="width:240px" id="information-table">
+    <thead>
+      <tr>
+	<th>Name</th>
+	<th>Group</th>
+	<th>Factual rating</th>
+      </tr>
+</head>
+<tbody>
+  <tr class='row' style="text-align:center;">
+    <td class='name'>Bla</td>
+    <td class='type'>Bla</td>
+    <td class='rating'>
+      <div class="rating">3</div>
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
+</div>        
+
+
 {% endblock %}

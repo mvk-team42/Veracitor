@@ -26,7 +26,27 @@ var RatingsController = function (controller) {
        Add event handlers to the ratings view.
      */
     function add_event_handlers() {
-	//TODO
+	$("#filter-producers").click(function(evt) {
+	    alert('Filter producers handled in ratingsController!');
+	    return false;
+	});
+
+	$("#filter-information").click(function(evt) {
+	    
+	    alert("Filter info handled in ratingsController!");
+	});
+
+	$("#information-table td").click(function(evt) {
+	    alert("Information table row clicked!");
+	});
+
+	$("#producer-table td").click(function(evt) {
+	    alert("Producer table row clicked!");
+	});
+
+	$("#add-group").click(function(evt) {
+	    alert("Add group pressed!");
+	});
     }
 
 
@@ -35,8 +55,44 @@ var RatingsController = function (controller) {
        Fetches all groups that the current user has.
     */
     var request_groups = function(user_id) {
-	//TODO Make job call.
-	//See searchController for example.
+	$.post("/jobs/search/groups", {
+	    'user_id' : user_id
+	}, function (data) {
+	    var job_id = data['job_id'];
+	    
+	    controller.set_job_callback(job_id, function (data) {
+		if(data.result.data.length > 0) {
+		    search_result = data.result.data;
+		    
+		    //var table = etc etc
+		    // see searchController...
+		    //Fill tables with result
+		}
+	    });
+	});
+    }
+
+    /**
+       Makes a database request to the server. 
+       Fetches a specific group that the current user has
+    */
+    var request_group = function(user_name,group_name ) {
+	$.post("/jobs/ratings/group", {
+	    'owner_name' : user_name,
+	    'group_name' : group_name
+	}, function (data) {
+	    var job_id = data['job_id'];
+	    
+	    controller.set_job_callback(job_id, function (data) {
+		if(data.result.data.length > 0) {
+		    search_result = data.result.data;
+		    
+		    //var table = etc etc
+		    // see searchController...
+		    //Fill tables with result
+		}
+	    });
+	});
     }
 
 
