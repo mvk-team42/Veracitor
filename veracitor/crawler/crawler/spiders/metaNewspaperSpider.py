@@ -7,7 +7,6 @@ from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
 from os.path import realpath, dirname
 import xml.etree.ElementTree as ET
-from scrapy.log import *
 
 from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ProducerItem, ArticleLoader

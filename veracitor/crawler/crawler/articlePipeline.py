@@ -40,10 +40,13 @@ def add_to_database(article):
     #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
     tag_strings = re.sub("[^\w]", " ",  article["tags"]).split()
     tags = [extractor.get_tag_create_if_needed(tag_str) for tag_str in tag_strings]
-    
+
+    # lägg till urlen artikeln är på
+
     #utgår från att article["publishers"] är en sträng med space-separerade publishers, t.ex. "DN SVD NYT"
     publisher_strings = re.sub("[^\w]", " ",  article["publishers"]).split()
-    publishers = [extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in tag_strings]
+    log.msg("pubStrings: " + str(tag_strings))
+    publishers = [extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in publisher_strings]
     
     info = information.Information(
                         title = article["title"],
@@ -56,6 +59,7 @@ def add_to_database(article):
                    )
     info.save()       
     for publisher in publishers:
+        log.msg("publisher name: " + publisher.name)
         publisher.infos.append(info)
         publisher.save()
     
