@@ -10,7 +10,6 @@ import xml.etree.ElementTree as ET
 
 from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ProducerItem, ArticleLoader
-from .articleSpider import ArticleSpider
 from ....database import *
 
 

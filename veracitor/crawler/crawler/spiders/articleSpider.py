@@ -9,6 +9,7 @@ import urllib2
 
 from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader
+from ....database import *
 from .metaNewspaperSpider import MetaNewspaperSpider
 
 
@@ -40,7 +41,7 @@ class ArticleSpider(BaseSpider):
         
         mainpage_domain = urlparse(response.url)[:1]
         if not extractor.contains_producer_with_url(mainpage_domain):
-            mainpage_response = urllib2.urlopen(mainpage_domain).read()
+            mainpage_response = urllib2.urlopen(mainpage_domain, timeout=10).read()
             yield MetaNewspaperSpider.scrape_meta(mainpage_response)
         
         for field in ArticleItem.fields.iterkeys():
