@@ -64,7 +64,7 @@ def build_network_from_db():
 
     global graph
     # Users not included in graph.
-    producers = producer.Producer.objects(type_of__ne="User")
+    producers = producer.Producer.objects()
     graph = DiGraph()
    
     # Add all producers in the database as nodes.
