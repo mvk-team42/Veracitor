@@ -77,5 +77,3 @@ def add_to_database(producer_item):
         info_ratings = [],
         type_of = "Newspaper")
     new_producer.save()
-
-

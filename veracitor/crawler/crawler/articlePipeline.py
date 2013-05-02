@@ -152,4 +152,3 @@ def fix_field(article, field):
                 article[field] = article[field].strip().replace("\n", "")
                 return
         article[field] = "unknown"
-        

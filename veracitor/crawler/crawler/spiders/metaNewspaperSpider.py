@@ -76,6 +76,3 @@ class MetaNewspaperSpider(BaseSpider):
             if len(descriptions) > 0:
                 return descriptions[0].extract().strip()
         return "No description scraped."
-        
-       
-  
