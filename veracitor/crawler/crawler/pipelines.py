@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
@@ -51,7 +53,7 @@ class CrawlerPipeline(object):
         log.msg("extractor returns " + str(extractor.contains_information(item["url"])))
         log.msg(item["url"] + " is new, adding to database")
             
-        #utgår från att item["tags"] är en sträng med space-separerade tags, t.ex. "bombs kidnapping cooking"
+        #utgar fran att item["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
         tag_strings = re.sub("[^\w]", " ",  item["tags"]).split()
         tags = [extractor.get_tag_create_if_needed(tag_str) for tag_str in tag_strings]
         
@@ -105,8 +107,12 @@ class CrawlerPipeline(object):
         
     def replace_words_in_time_published(self, item):
         special_words = ["idag", "i dag", "today"]
-        for word in special_words:
-            item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
+        pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today"), re.IGNORECASE)
+        item["time_published"] = pattern.sub(date.today().isoformat(), item["time_published"])
+        
+        
+        #for word in special_words:
+        #    item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
 
         #replace swedish months with english
         months_in_swedish = {"januari":"january",
