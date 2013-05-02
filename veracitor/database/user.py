@@ -9,7 +9,10 @@
 
 from mongoengine import *
 import producer
+import group
 import tag
+import datetime
+from dbExceptions import AlreadyExists
 
 class GroupRating(EmbeddedDocument):
     """ Defines a object structure used by
@@ -47,6 +50,8 @@ class User(producer.Producer):
 
     def rate_group(self, group_to_rate, considered_tag, rating):
         found = False
+        if(not self.__user_owns_group(group_to_rate.name)):
+            self.groups.append(group_to_rate)
         for g_rating in self.group_ratings:
             if(g_rating.group == group_to_rate):
                 g_rating.rating = rating
@@ -55,10 +60,27 @@ class User(producer.Producer):
                                      rating=rating)
             self.group_ratings.append(new_rating)
         self.__rate_all_members(group_to_rate, considered_tag, rating)
+        return True
 
+    def create_group(self, group_name):
+        if(self.__user_owns_group(group_name)):
+            return False
+        new_group = group.Group(name=group_name,
+                                owner=self,
+                                time_created=datetime.datetime.now())
+        self.groups.append(new_group)
+        return True
+        
+    
     def __rate_all_members(self, group_to_rate, considered_tag, rating):
         for p in group_to_rate.producers:
             self.rate_source(p, considered_tag, rating)
+    
+    def __user_owns_group(self, group_name):
+        for g in self.groups:
+            if(g.name == group_name):
+                return True
+        return False
     
     def get_group_rating(self, req_group):
         for g_rating in self.group_ratings:
