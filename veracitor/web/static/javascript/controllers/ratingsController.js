@@ -45,15 +45,27 @@ var RatingsController = function (controller) {
 	    $('#new-group-form').fadeIn();
 	});
 
-	$('#create-group').click(function(evt) {
-	    alert("plz create group :(");
-	});
 
 	$('#producer-list').accordion({ collapsible: true, active: false, header: "h3"});
 	
 	$('#information-list').accordion({ collapsible: true, active: false, header: "h3"});
 
+	$('#create-group').click(function(evt) {
+	    $.post('jobs/ratings/create_group', 
+		   {
+		       'name' : $('#name').val()
+		   }, add_group)
+	});
+    }
+
+    function add_group(data) {
+	$('#new-group').css('display','block');
+	$('#new-group-form').fadeOut();
 	
+	$('#groups')
+            .append($("<option></option>")
+		    .attr("value",data)
+		    .text(data)); 
     }
 
 
