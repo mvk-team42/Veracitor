@@ -63,22 +63,50 @@ class Producer(Document):
     # To allow the User class to inherhit from this.
     meta = {'allow_inheritance':'On'}
     
-    #TODO implement. Should overwrite earlier ratings on same tag/source
+
     def rate_source(self, source_to_rate, considered_tag, rating):
+        """
+        This function adds a source rating to the producer, unless
+        there already exists a source rating with source_to_rate and
+        considered_tag, in which case only the rating is updated. 
+
+        Args:
+            source_to_rate (producer.Producer): The source to rate.
+
+            considered_tag (tag.Tag): The tag to rate the producer under.
+
+            rating (int): The rating to set on source_to_rate.
+
+        """
+        
         found = False
+
         for s_rating in self.source_ratings:
             if(s_rating.source == source_to_rate and\
                s_rating.tag == considered_tag):
                 s_rating.rating = rating
                 found = True
+
         if(not found):
             new_rating = SourceRating(source=source_to_rate, 
                                       tag=considered_tag, 
                                       rating=rating)
             self.source_ratings.append(new_rating)
+
         
 
     def rate_information(self, info_to_rate, rating):
+        """
+        This function adds an info rating to the producer, unless
+        there already exists an info rating with info_to_rate,
+        in which case only the rating is updated. 
+        
+        Args:
+            info_to_rate (information.Information): The information to rate.
+
+            rating (int): The rating to set on info_to_rate.
+        
+        """
         found = False
         for i_rating in self.info_ratings:
             if(i_rating.information == info_to_rate):
@@ -91,12 +119,39 @@ class Producer(Document):
     
 
     def get_source_rating(self, req_source, req_tag):
+        """
+        Returns the rating from the source rating set on req_source
+        under the req_tag.
+        
+        Args:
+            req_source (producer.Producer): The requested rating should be set
+            on this source.
+        
+            req_tag (tag.Tag): The requested rating should be set 
+            under this tag.
+
+        Returns:
+            The rating set on req_source under req_tag. If no such rating is
+            set -1 will be returned.
+        
+        """
         for s_rating in self.source_ratings:
            if(s_rating.source == req_source and s_rating.tag == req_tag):
                 return s_rating.rating
         return -1 
             
     def get_info_rating(self, req_info):
+        """
+        Returns the rating from the info rating set on req_info.
+
+        Args:
+            req_info (information.Information): The requested rating should
+            be set on this information.
+
+        Returns:
+            The rating set on req_info. If no such rating is set -1 will
+            be returned.
+        """
         for i_rating in self.info_ratings:
             if(i_rating.information == req_info):
                 return i_rating.rating
