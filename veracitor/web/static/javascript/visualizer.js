@@ -20,6 +20,10 @@ var Visualizer = function (controller) {
             unselect: {
                 background: '#ddd',
                 border: '#555'
+            },
+            user: {
+                background: '#fb3',
+                border: '#f90'
             }
         },
         edge: {
@@ -135,10 +139,14 @@ var Visualizer = function (controller) {
             'width': 2
         });
 
+        cy.nodes('#' + session.user.name).css({
+            'background-color': color.node.user.background,
+            'border-color': color.node.user.border
+        });
+
         cy.fit(cy.nodes());
         cy.layout({
-            'name': 'arbor',
-            'ungrabifyWhileSimulating': false
+            'name': 'arbor'
         });
     };
 
@@ -165,7 +173,12 @@ var Visualizer = function (controller) {
         }).neighborhood('edge').css({
             'line-color': color.edge.select.line,
             'width': 2
-        });;
+        });
+
+        cy.nodes('#' + session.user.name).css({
+            'background-color': color.node.user.background,
+            'border-color': color.node.user.border
+        });
     };
 
 };

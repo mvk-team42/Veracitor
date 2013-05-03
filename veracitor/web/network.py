@@ -49,18 +49,30 @@ def get_neighbors():
     gn = nm.build_network_from_db()
 
     neighbors = []
-    neighbor_queue = [name]
 
     #for i in range(0, int(depth)):
-    while neighbor_queue:
-        new_queue = []
-        for node in neighbor_queue:
-            if not node in neighbors:
-                neighbors.append(node)
-                new_queue = new_queue + gn.successors(node) + gn.predecessors(node)
-        neighbor_queue = new_queue
+    depth = int(depth)
 
-    #neighbors = list(set(itertools.chain.from_iterable(neighbors)))
+    if depth < 0:
+        layer = [name]
+        while layer:
+            neighbor_queue = []
+            for node in layer:
+                if node not in neighbors:
+                    neighbors.append(node)
+                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
+            layer = neighbor_queue
+    else:
+        layer = [name]
+        for i in range(0, depth):
+            neighbor_queue = []
+            for node in layer:
+                if node not in neighbors:
+                    neighbors.append(node)
+                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
+            layer = neighbor_queue
+
+    log(neighbors)
 
     data = {}
 
@@ -77,115 +89,3 @@ def get_neighbors():
                       'source_ratings' : source_ratings}
 
     return jsonify(neighbors=data,debug=neighbors)
-
-#    res = search.get_producers.delay(name, type_of)
-#    store_job_result(res)
-#    return jsonify(job_id=res.id)
-
-# def callback_function(trust):
-#     pass
-#     # TODO
-#     # callback.set_item(trust)
-
-# """
-# Starts a SUNNY procedure given a source and sink producer.
-
-# """
-# @app.route('/calculate_sunny_value', methods=['GET','POST'])
-# def calculate_sunny_value():
-
-#     if request.method == 'POST':
-#         procedure = {}
-#         error = {
-#             'message' : 'none',
-#             'type' : 'none'
-#         }
-
-#         if request.form:
-#             f = request.form
-
-#             if not f['source']:
-#                 error = {
-#                     'message': 'No source node specified.',
-#                     'type': 'no_source'
-#                 }
-#             if not f['sink']:
-#                 error = {
-#                     'message': 'No sink node specified.',
-#                     'type': 'no_sink'
-#                 }
-#             if not f['tag']:
-#                 error = {
-#                     'message': 'No tag specified',
-#                     'type': 'no_tag'
-#                 }
-
-#             if error['type'] == 'none':
-#                 id = callback.get_unique_id()
-
-#                 trust = compute_trust(gn.get_global_network(),
-#                                       f['source'], f['sink'],
-#                                       tag=f['tag'], callback=callback_function)
-
-#                 procedure = {
-#                     'message': 'Started SUNNY procedure',
-#                     'callback_url': '/check_sunny_procedure',
-#                     'trust': trust,
-#                     'id': id
-#                 }
-#         else:
-#             error = {
-#                 'message': 'Form data error.',
-#                 'type': 'form_error'
-#             }
-
-#         return json.dumps({ 'error': error, 'procedure': procedure })
-
-#     return redirect(url_for('index'))
-
-# """
-# Handles the connection between the client and its currently
-# running SUNNY procedures.
-
-# """
-# @app.route('/check_sunny_procedure', methods=['GET','POST'])
-# def check_sunny_procedure():
-
-#     if request.method == 'POST':
-#         procedure = {}
-#         error = {
-#             'message' : 'none',
-#             'type' : 'none'
-#         }
-
-#         if request.form:
-#             f = request.form
-
-#             if not f['id']:
-#                 error = {
-#                     'message': 'No id specified.',
-#                     'type': 'no_source'
-#                 }
-
-#             if error['type'] == 'none':
-#                 item = callback.check_id(f['id'])
-
-#                 if item:
-#                     procedure = {
-#                         'status': 'done',
-#                         'trust': item
-#                     }
-#                 else:
-#                     procedure = {
-#                         'status': 'processing'
-#                     }
-
-#         else:
-#             error = {
-#                 'message': 'Form data error.',
-#                 'type': 'form_error'
-#             }
-
-#         return json.dumps({ 'error': error, 'procedure': procedure })
-
-#     return redirect(url_for('index'))

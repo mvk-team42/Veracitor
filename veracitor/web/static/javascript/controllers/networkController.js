@@ -56,10 +56,12 @@ var NetworkController = function (controller) {
         var network_controller = this;
 
         $.post('/jobs/network/neighbors', {
-            'name': prod.name,
+            'name': session.user.name,
             'depth': depth
         }, function (data) {
             network_controller.display_producer_information(prod);
+
+            console.log(data);
 
             visualizer.visualize_producer_in_network(prod, data.neighbors, depth);
         }).fail(function (data) {

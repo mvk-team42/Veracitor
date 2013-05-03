@@ -9,6 +9,11 @@ def generate_test_data():
 
     trust = extractor.get_tag_create_if_needed("Trust")
 
+    try:
+        john = extractor.get_producer('John')
+    except NotInDataBase:
+        john = user.User(name='John',password='123')
+        john.save()
     prod1 = extractor.producer_create_if_needed("Prod1", "TestProducer")
     prod2 = extractor.producer_create_if_needed("Prod2", "TestProducer")
     prod3 = extractor.producer_create_if_needed("Prod3", "TestProducer")
@@ -16,6 +21,8 @@ def generate_test_data():
     prod5 = extractor.producer_create_if_needed("Prod5", "TestProducer")
     prod6 = extractor.producer_create_if_needed("Prod6", "TestProducer")
 
+    john.source_ratings = [producer.SourceRating(rating=5,tag=trust,source=prod1)]
+    john.save()
     prod1.source_ratings = [producer.SourceRating(rating=5,tag=trust,source=prod2)]
     prod2.source_ratings = [producer.SourceRating(rating=5,tag=trust,source=prod1),
                             producer.SourceRating(rating=5,tag=trust,source=prod3),
