@@ -32,21 +32,37 @@ var RatingsController = function (controller) {
     function add_event_handlers() {
 
 	$("#new-group").click(function(evt) {
-	   // $('#new-group-form').css('display','block');
 	    show_new_group_form();
 	});
-
+	
+	$("#rate-group").click(function(evt) {
+	    show_rate_group_form();
+	});
 
 	$('#producer-list').accordion({ collapsible: true, active: false, header: "h3"});
 	
 	$('#information-list').accordion({ collapsible: true, active: false, header: "h3"});
 
 	$('#create-group').click(function(evt) {
-	    $.post('jobs/ratings/create_group', 
+	    $.post('/jobs/ratings/create_group', 
 		   {
 		       'name' : $('#name').val()
 		   }, add_group)
 	});
+
+	$('#rate-group-submit').click(function(evt) {
+	    $.post('/jobs/ratings/rate_group',
+		   {
+		       'name' : $('#groups').val(),
+		       'tag' : $('#rate-group-tag').val(),
+		       'rating' : $('#rate-group-rating').val()
+		   }, done_rating_group)
+	});
+    }
+
+
+    function done_rating_group() {
+	hide_rate_group_form();
     }
 
     function add_group(data) {
@@ -57,14 +73,24 @@ var RatingsController = function (controller) {
 		    .text(data)); 
     }
 
+    function show_rate_group_form() {
+	$('#rate-group').css('display','none');
+	$('#rate-group-form-div').fadeIn();
+    }
+
+    function hide_rate_group_form() {
+	$('#rate-group-form-div').fadeOut();
+	$('#rate-group').css('display','block');
+    }
+
     function show_new_group_form() {
 	$('#new-group').css('display','none');
-	$('#new-group-form').fadeIn();
+	$('#new-group-form-div').fadeIn();
 	
     }
 
     function hide_new_group_form() {
-	$('#new-group-form').fadeOut();
+	$('#new-group-form-div').fadeOut();
 	$('#new-group').css('display','block');
     }
 
