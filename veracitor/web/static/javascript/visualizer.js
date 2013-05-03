@@ -9,7 +9,25 @@
     specific producer.
     @constructor
  */
-var Visualizer = function () {
+var Visualizer = function (controller) {
+
+    var color = {
+        node: {
+            select: {
+                background: '#f66',
+                border: '#a00'
+            },
+            unselect: {
+                background: '#ddd',
+                border: '#555'
+            }
+        },
+        edge: {
+            select: {
+                line: '#a00'
+            }
+        }
+    };
 
     var holder = document.getElementById('network-holder');
     window.cy;
@@ -21,6 +39,8 @@ var Visualizer = function () {
         $('#network-graph').cytoscape({
             ready: function () {
                 cy = this;
+
+                cy.on('click', 'node', node_click_event);
             },
             style: cytoscape.stylesheet()
                 .selector("node")
@@ -28,8 +48,8 @@ var Visualizer = function () {
                     "content": "data(id)",
                     "shape": "data(shape)",
                     "border-width": 3,
-                    "background-color": "#DDD",
-                    "border-color": "#555"
+                    "background-color": color.node.unselect.background,
+                    "border-color": color.node.unselect.border
                 })
                 .selector("edge")
                 .css({
@@ -77,42 +97,48 @@ var Visualizer = function () {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
-    this.visualize_producer_in_network = function (prod, depth) {
+    this.visualize_producer_in_network = function (prod, neighbors, depth) {
+        var i, j;
         var nodes = [];
         var edges = [];
 
-        nodes.push({
-            group: 'nodes',
-            data: {
-                id: prod.name
-            }
-        });
-
-        for(var i in prod.source_ratings) {
+        for(i in neighbors) {
             nodes.push({
-                group: 'nodes',
-                data: {
-                    id: prod.source_ratings[i].name
+                'group': 'nodes',
+                'data': {
+                    'id': neighbors[i].name,
+                    'data': neighbors[i]
                 }
             });
 
-            edges.push({
-                group: 'edges',
-                data: {
-                    id: prod.name + '-' + prod.source_ratings[i].name,
-                    source: prod.name,
-                    target: prod.source_ratings[i].name
-                }
-            });
+            for(j in neighbors[i].source_ratings) {
+                edges.push({
+                    'group': 'edges',
+                    'data': {
+                        'id': neighbors[i].name + '-' + neighbors[i].source_ratings[j].name,
+                        'source': neighbors[i].name,
+                        'target': neighbors[i].source_ratings[j].name
+                    }
+                });
+            }
         }
 
         cy.elements().remove();
         cy.add(nodes);
         cy.add(edges);
 
+        cy.nodes('#' + prod.name).css({
+            'background-color': color.node.select.background,
+            'border-color': color.node.select.border
+        }).neighborhood('edge').css({
+            'line-color': color.edge.select.line,
+            'width': 2
+        });
+
         cy.fit(cy.nodes());
         cy.layout({
-            name: 'random'
+            'name': 'arbor',
+            'ungrabifyWhileSimulating': false
         });
     };
 
@@ -123,95 +149,23 @@ var Visualizer = function () {
         // TODO
     };
 
-    /**
-        Generates some test graph data.
-        @param nodes The number of generated nodes.
-        @param tags The number of tag objects.
-        @param maxNodes The maximum number of connections for one node (?).
-     */
-    var generate_data = function (nodes, tags, maxNodes) {
-        var i, j, k,
-            my_nodes, my_tags,
-            rnd_nodes, rnd_tags,
-            rnd_n, rnd_t,
-            data;
+    var node_click_event = function (evt) {
+        var node = this;
 
-        selectedNode = null;
-
-        data = {};
-
-        for(i = 0; i < nodes; i++) {
-            data[i] = {};
-            my_nodes = [i];
-            rnd_nodes = Math.floor(Math.random() * maxNodes) + 1;
-
-            for(j = 0; j < rnd_nodes; j++) {
-                do {
-                    rnd_n = Math.floor(Math.random() * (Math.random() > 0.2 ? rnd_nodes + 1 : nodes));
-                } while(my_nodes.indexOf(rnd_n) >= 0);
-                my_nodes.push(rnd_n);
-
-                data[i][rnd_n] = {};
-                my_tags = [];
-                rnd_tags = Math.floor(Math.random() * (tags - 1)) + 1;
-
-                for(k = 0; k < rnd_tags; k++) {
-                    do {
-                        rnd_t = Math.floor(Math.random() * tags);
-                    } while(my_tags.indexOf(rnd_t) >= 0);
-                    my_tags.push(rnd_t);
-
-                    data[i][rnd_n][rnd_t] = Math.random();
-                }
-            }
-        }
-
-        return data;
-    }
-
-    /**
-        Draws a graph representation given the data.
-        @param data The data, on the form specified by the function generateData.
-     */
-    var draw_graph = function (data) {
-        var nodes = [];
-        var edges = [];
-        var from, to, size;
-
-        for(from in data) {
-            size = 0;
-            for(to in data[from]) {
-                edges.push({
-                    group: 'edges',
-                    data: {
-                        id: 'n'+from+'-n'+to,
-                        source: 'n'+from,
-                        target: 'n'+to
-                    }
-                });
-                size += 1;
-            }
-
-            nodes.push({
-                group: 'nodes',
-                data: {
-                    id: 'n'+from,
-                    weight: size
-                },
-                position: {
-                    x: 0,
-                    y: 0
-                }
-            });
-        }
-
-        cy.add(nodes);
-        cy.add(edges);
-
-        cy.fit(cy.nodes());
-        cy.layout({
-            name: 'random'
+        controller.display_producer_information({
+            name: node.id()
         });
-    }
+
+        cy.nodes().removeCss()
+        cy.edges().removeCss()
+
+        node.css({
+            'background-color': color.node.select.background,
+            'border-color': color.node.select.border
+        }).neighborhood('edge').css({
+            'line-color': color.edge.select.line,
+            'width': 2
+        });;
+    };
 
 };

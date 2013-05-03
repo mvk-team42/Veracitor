@@ -51,7 +51,7 @@ class User(producer.Producer):
     def rate_group(self, group_to_rate, considered_tag, rating):
         found = False
         if(not self.__user_owns_group(group_to_rate.name)):
-            self.groups.append(group_to_rate)
+            return False
         for g_rating in self.group_ratings:
             if(g_rating.group == group_to_rate):
                 g_rating.rating = rating
@@ -68,7 +68,8 @@ class User(producer.Producer):
         new_group = group.Group(name=group_name,
                                 owner=self,
                                 time_created=datetime.datetime.now())
-        self.groups.append(new_group)
+        new_group.save()
+        #self.groups.append(new_group)
         return True
         
     
