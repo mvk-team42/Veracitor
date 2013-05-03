@@ -137,7 +137,8 @@ var Visualizer = function (controller) {
 
         cy.fit(cy.nodes());
         cy.layout({
-            'name': 'random'
+            'name': 'arbor',
+            'ungrabifyWhileSimulating': false
         });
     };
 
