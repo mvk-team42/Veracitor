@@ -13,7 +13,7 @@
 """
 
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 
 import json
 
@@ -123,9 +123,11 @@ def create_group():
     if not request.method == 'POST':
         abort(405)
     try:
-        user = extractor.get_user(request.form['username']) # TODO: Use real session user
+        user = session['user']
         user.create_group(request.form['name'])
-        #user.save()
+        # Update the global user object for the current session 
+        session['user'] = extractor.get_user(session['user'].name)
+        return request.form['name']
     except:
         abort(400)
 
@@ -140,10 +142,10 @@ def rate_group():
     if not request.method == 'POST':
         abort(405)
     try:
-        user = extractor.get_user(request.form['username']) # TODO: Use real session user
+        user = session['user']
         user.rate_group(request.form['name'], request.form['tag'],
                         int(request.form['rating']))
-        #user.save()
+        session['user'] = extractor.get_user(session['user'].name)
     except:
         abort(400)
 
