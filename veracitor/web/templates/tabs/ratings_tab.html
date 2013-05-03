@@ -2,7 +2,8 @@
 
 {% block content %}
 <h1>{{ tab.name }}</h1>
-<h2>{{  session.user.groups  }}</h2>
+
+{% if session.user %}
 
 <div class="table">
 	<div class="left">
@@ -126,5 +127,5 @@
     
 </div>
 </div>
-
+{% endif %}
 {% endblock %}
