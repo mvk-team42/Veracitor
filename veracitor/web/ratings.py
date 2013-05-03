@@ -150,3 +150,20 @@ def rate_group():
         abort(400)
 
     # TODO: Render json
+
+
+@app.route('/jobs/ratings/get_used_tags', methods=['GET', 'POST'])
+def get_used_tags():
+    """
+    Returns a list of all tags that the user has rated producers with.
+
+    """
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        user = session['user']
+        tags_used = list(set([sr.tag.name for sr in user.source_ratings]))
+
+        return jsonify(tags=tags_used)
+    except:
+        abort(400)

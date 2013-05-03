@@ -14,9 +14,11 @@ var RatingsController = function (controller) {
     /**
        Initialize the ratings tab:
        - Setup event handlers
+       - Populate tag dropdown list
     */
     (function () {
         add_event_handlers();
+	populate_tag_dropdown();
 	
     })();
 
@@ -140,7 +142,7 @@ var RatingsController = function (controller) {
 	});
     }
 
-
+    
     /**
        Makes a database request to the server.
        Fetches information objects, optionally
@@ -160,6 +162,20 @@ var RatingsController = function (controller) {
     //TODO. Nåt sånt?
     function set_information_credibility_rating(information_id) {
 
+    }
+
+    /**
+     * Fills the dropdown list for producer rating tags with options
+     */
+    function populate_tag_dropdown(){
+	$.post('/jobs/ratings/get_used_tags',
+	       function(data){
+		   var tags_list = $('.left > #tags');
+		   $.each(data.tags, function(i, val){
+		       tags_list.append(
+			   $('<option></option>').val(val).html(val));
+		   })
+		       });
     }
 
 };
