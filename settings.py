@@ -5,7 +5,7 @@
 
 # # Uncomment these and modify as needed.
 # # See more at http://flask.pocoo.org/docs/config/
-DEBUG = False
+DEBUG = True
 STATIC_PATH = 'static/'
 SECRET_KEY = 'dev key'
 USERNAME = 'admin'

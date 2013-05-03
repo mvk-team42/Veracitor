@@ -31,29 +31,41 @@ var RatingsController = function (controller) {
      */
     function add_event_handlers() {
 
-	$("#information-table td").click(function(evt) {
-	    alert("Information table row clicked!");
-	});
-
-	$("#producer-table td").click(function(evt) {
-	    alert("Producer table row clicked!");
-	});
-
 	$("#new-group").click(function(evt) {
 	   // $('#new-group-form').css('display','block');
-	    $('#new-group').css('display','none');
-	    $('#new-group-form').fadeIn();
+	    show_new_group_form();
 	});
 
-	$('#create-group').click(function(evt) {
-	    alert("plz create group :(");
-	});
 
 	$('#producer-list').accordion({ collapsible: true, active: false, header: "h3"});
 	
 	$('#information-list').accordion({ collapsible: true, active: false, header: "h3"});
 
+	$('#create-group').click(function(evt) {
+	    $.post('jobs/ratings/create_group', 
+		   {
+		       'name' : $('#name').val()
+		   }, add_group)
+	});
+    }
+
+    function add_group(data) {
+	hide_new_group_form();
+	$('#groups')
+            .append($("<option></option>")
+		    .attr("value",data)
+		    .text(data)); 
+    }
+
+    function show_new_group_form() {
+	$('#new-group').css('display','none');
+	$('#new-group-form').fadeIn();
 	
+    }
+
+    function hide_new_group_form() {
+	$('#new-group-form').fadeOut();
+	$('#new-group').css('display','block');
     }
 
 
