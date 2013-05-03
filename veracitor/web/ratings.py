@@ -17,29 +17,12 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 import json
 
-from flask import render_template
+from flask import session, redirect
 from veracitor.web import app
 from veracitor.web.utils import store_job_result
 from veracitor.database import user, group, information, extractor
 
 import veracitor.tasks.ratings as ratings
-
-
-@app.route('/ratings')
-def ratings():
-    """
-    Initializes the ratings tab
-
-    """
-    # TODO Session-hantering. tror 'session'-variabeln är global
-    # och isf funkar nåt sånt här. FRÅGA ANTON!
-    if "user" not in session:
-        return redirect(url_for('login'))
-        # Tror 'login' är url för att posta login.
-        # Köra på 'index' istället kanske?
-    else:
-        user_data = get_user()
-        return render_template('ratings_tab.html', vera=user_data)
 
 
 @app.route('/jobs/ratings/user', methods=['GET', 'POST'])
@@ -67,9 +50,14 @@ def get_user():
         return "nope"
         abort(405)
     try:
-        user_id = request.form['user_id']
-        userObj = extractor.get_user(user_id)
-
+        #user_id = request.form['user_id']
+        #userObj = extractor.get_user(user_id)
+        
+        # Ersätter raderna ovan. OBS, ingen kontroll att användare
+        # existerar här! (men finns i ratings() som ska köras
+        # när sidan laddas. TODO TODO TODO
+        userObj = session['user']
+        
         source_ratings = [{'name' : s.source.name,
                            'tag' : s.tag.name,
                            'rating': s.rating }
@@ -93,9 +81,9 @@ def get_user():
                     'info_ratings' : info_ratings}
 
     except NotInDatabase:
-        return "not in databaseteafw"
+        return "not in database"
     except:
-        return "bajs"
+        return "bla"
         abort(400)
 
     return jsonify(user=userDict)

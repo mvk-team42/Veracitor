@@ -16,16 +16,14 @@ var RatingsController = function (controller) {
        - Setup event handlers
     */
     (function () {
-
         add_event_handlers();
-
+	
     })();
 
     /**
        This function is called by the super controller when the tab is opened.
      */
     this.on_tab_active = function () {
-
     };
 
     /**
@@ -50,6 +48,12 @@ var RatingsController = function (controller) {
 	$('#create-group').click(function(evt) {
 	    alert("plz create group :(");
 	});
+
+	$('#producer-list').accordion({ collapsible: true, active: false, header: "h3"});
+	
+	$('#information-list').accordion({ collapsible: true, active: false, header: "h3"});
+
+	
     }
 
 
