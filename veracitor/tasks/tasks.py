@@ -13,7 +13,8 @@ from ..crawler import crawlInterface as ci
 taskmgr = Celery(main='veracitor.tasks.tasks.taskmgr',
                  include=['veracitor.tasks.crawler',
                           'veracitor.tasks.algorithms',
-                          'veracitor.tasks.search'])
+                          'veracitor.tasks.search',
+                          'veracitor.tasks.test'])
 
 try:
     import os
@@ -25,6 +26,7 @@ except:
         raise Error("Unable to load celery configuration.'")
 
 ci.init_interface()
+
 
 if __name__ == '__main__':
     taskmgr.start()

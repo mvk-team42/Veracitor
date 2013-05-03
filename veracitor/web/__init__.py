@@ -37,3 +37,4 @@ import login
 #import ratings
 #import account
 import index
+import veracitor.web.test

@@ -17,6 +17,9 @@ def login():
         return redirect(url_for('index'))
 
     error = None
+    user = None
+    session.pop('error', None)
+    
     if request.method == "POST":
         if not request.form['username']:
             error = "No username defined."
@@ -26,15 +29,20 @@ def login():
             try:
                 user = extractor.get_user(request.form['username'])
             except:
-                error = "No user with that username."
-            if not user.password == request.form['password']:
-                error = "Wrong password."
+                print "exxxxxxxx"
+                pass
+        
+        if not user:
+            error = "No user with that username."
+        elif not user.password == request.form['password']:
+            error = "Wrong password."
+
         if error:
             session['error'] = error
         else:
             session['user'] = user
             
-        return redirect(url_for("index"))
+    return redirect(url_for("index"))
 
 
 
