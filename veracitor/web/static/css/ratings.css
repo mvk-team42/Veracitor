@@ -13,12 +13,12 @@
    denoted below to affect only this tab (or tags with
    a specific id). To affect only the direct children
    write tag > children. */
-#ratings_view .left {
+#ratings_view > .content .left {
     float:left;
     margin-right: 200px;
 }
 
-#ratings_view .right {
+#ratings_view > .content .right {
     float: left;
     width: 200px;
 }
