@@ -27,14 +27,36 @@
 	  </select>
 	  <input type="button" value="Rate group" id="rate-group"/>
 	  <br/>
-	  <div id="new-group-form" style="display:none; float: left;">
+	  <div id="rate-group-form-div" style="display:none;">
+	    <form id="rate-group-form">
+	      <label for='rate-group-rating' id='rating_label'>Rating:</label>
+	      <select id='rate-group-rating'>
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  <option value="4">4</option>
+		  <option value="5">5</option>
+		</select>
+	      <br/>
+	      <label for='rate-group-tag' id='tag_label'>Tag:</label>
+		<select id='rate-group-tag'>
+		  <option value='crime'>Crime</option>
+		  <option value='gardening'>Gardening</option>
+		</select>
+	      <input type="button" value="Rate group" id="rate-group-submit"/>
+	    </form>
+	  </div>
+	  <br/>
+	  <div id="new-group-form-div" style="display:none;">
 	    <form id="new-group-form">
 	      <input id="name" type="text" placeholder="Group name"/>
 	      <input type="button" value="Create group" id="create-group"/>
 	    </form>
 	  </div>
 	</div>
-	  <input type="button" value="+ New group" id="new-group"/>
+	<div display='block' id='new-group-div'>
+	  <input type="button" value="+ New group" id='new-group'/>
+	</div>
 	  <br/>
 	  <br/>
 
