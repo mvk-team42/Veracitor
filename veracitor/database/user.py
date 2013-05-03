@@ -50,7 +50,7 @@ class User(producer.Producer):
 
     def rate_group(self, group_to_rate, considered_tag, rating):
         found = False
-        if(not self.__user_owns_group(group_to_rate.name)):
+        if(not self.__user_owns_group(group_to_rate)):
             return False
         for g_rating in self.group_ratings:
             if(g_rating.group == group_to_rate):
@@ -77,11 +77,11 @@ class User(producer.Producer):
         for p in group_to_rate.producers:
             self.rate_source(p, considered_tag, rating)
     
-    def __user_owns_group(self, group_name):
-        for g in self.groups:
-            if(g.name == group_name):
-                return True
-        return False
+    def __user_owns_group(self, group):
+        if(group.owner == self):
+            return True
+        else:
+            return False
     
     def get_group_rating(self, req_group):
         for g_rating in self.group_ratings:
