@@ -129,8 +129,10 @@ def get_job_result():
         return make_response('', 204)
     elif not res.result.get('template_url') == None:
         try:
-            res.result['html'] = render_template(res.result['template_url'], res.result['data'])
+            res.result['html'] = render_template(res.result['template_url'], 
+                                                 data=res.result['data'])
         except KeyError:
             raise Exception('Couldn\'t parse template.')
+        return jsonify(result=res.result)
     else:
         return jsonify(result=res.result)
