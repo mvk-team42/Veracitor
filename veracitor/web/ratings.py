@@ -33,14 +33,14 @@ def ratings():
     """
     # TODO Session-hantering. tror 'session'-variabeln är global
     # och isf funkar nåt sånt här. FRÅGA ANTON!
-        if "user" not in session:
-        return redirect(url_for('login')) 
-        # Tror 'login' är url för att posta login. 
+    if "user" not in session:
+        return redirect(url_for('login'))
+        # Tror 'login' är url för att posta login.
         # Köra på 'index' istället kanske?
     else:
         user_data = get_user()
         return render_template('ratings_tab.html', vera=user_data)
-        
+
 
 @app.route('/jobs/ratings/user', methods=['GET', 'POST'])
 def get_user():
