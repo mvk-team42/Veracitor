@@ -56,7 +56,6 @@ def get_neighbors():
         new_queue = []
         for node in neighbor_queue:
             if not node in neighbors:
-                log(node)
                 neighbors.append(node)
                 new_queue = new_queue + gn.successors(node) + gn.predecessors(node)
         neighbor_queue = new_queue
