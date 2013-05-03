@@ -34,6 +34,6 @@ import crawler
 import algorithm
 import login
 #import network
-#import ratings
+import ratings
 #import account
 import index
