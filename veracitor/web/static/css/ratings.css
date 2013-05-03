@@ -1,2 +1,24 @@
 /* RATINGS VIEW */
 
+#producer-table, #information-table{
+    width: 260px;
+}
+
+#ratings_view table tr.row {
+    text-align: center;
+}
+
+/* Note that "open" class definitions such as tag.class
+   affects the entire HTML document. Specify classes as
+   denoted below to affect only this tab (or tags with
+   a specific id). To affect only the direct children
+   write tag > children. */
+#ratings_view > .content .left {
+    float:left;
+    margin-right: 200px;
+}
+
+#ratings_view > .content .right {
+    float: left;
+    width: 200px;
+}

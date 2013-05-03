@@ -1,6 +1,6 @@
 import unittest
 from mongoengine import *
-import globalNetwork
+import networkModel
 import tag
 import producer
 import user
@@ -20,7 +20,7 @@ class GeneralSetup(unittest.TestCase):
 
         self.tearDown()
 
-        self.graph = globalNetwork.build_network_from_db()
+        self.graph = networkModel.build_network_from_db()
 
         self.tag1 = tag.Tag(name="Gardening", 
                             description="Hurrr HURRRRRR")
@@ -98,8 +98,18 @@ class GeneralSetup(unittest.TestCase):
         self.prod3.info_ratings.append(self.info_rating1)
         self.prod3.info_ratings.append(self.info_rating6)
         self.prod4.info_ratings.append(self.info_rating7)
-
+        """
+        self.prod1.rate_information(self.info1, 4)
+        self.prod2.rate_information(self.info1, 2)
+        self.prod2.rate_information(self.info2, 1)
+        self.prod3.rate_information(self.info2, 5)
+        self.prod3.rate_information(self.info3, 3)
+        self.prod3.rate_information(self.info1, 4)
+        self.prod3.rate_information(self.info4, 4)
+        self.prod4.rate_information(self.info1, 4)
+        """
         self.prod1.source_ratings.append(self.source_rating1)
+        #self.prod1.rate_source(self.prod2, self.tag1, 3)
         self.group1.save()
         self.info1.save()
         self.info2.save()
@@ -122,15 +132,62 @@ class GeneralSetup(unittest.TestCase):
             self.prod_list.append(producer.Producer(name=multi+str(i),
                                                type_of="TestPlaceHolder"))
             if i > 1:
-                self.prod_list[i].source_ratings.append(producer.SourceRating(rating=1,
-                                                                          tag=self.tag1,
-                                                                          source=self.prod_list[i-1]))
+                #self.prod_list[i].rate_source(self.prod_list[i-1], self.tag1, 1)
+               self.prod_list[i].source_ratings.append(producer.SourceRating(rating=1,
+                                                                             tag=self.tag1,
+                                                                             source=self.prod_list[i-1]))
         for i in range(len(self.prod_list)):
             self.prod_list[i].save()
-          
+ 
+
+        self.prod6 = producer.Producer(name="Donkey",
+                                       type_of="newspaper")
+        self.prod7 = producer.Producer(name="Mule",
+                                       type_of="newspaper")
+
+        self.tag3 = tag.Tag(name="Pastry", 
+                            description="123dddasd")
+        self.tag4 = tag.Tag(name="Sowing", 
+                            description="123dddasd")
+        
+        self.tag3.save()
+        self.tag4.save()
+        # To test rate_source overwriting capabilities
+        self.prod6.save()
+        self.prod7.save()
+        self.prod6.rate_source(self.prod7, self.tag3, 4)
+        self.prod6.rate_source(self.prod7, self.tag3, 5)
+        self.prod6.rate_source(self.prod7, self.tag3, 3)             
+
+        self.prod6.rate_information(self.info1, 3)
+        self.prod6.rate_information(self.info1, 2)
+
+        self.prod7.rate_source(self.prod6, self.tag4, 1)
+
+        self.group2 = group.Group(name="Horses",
+                                  owner=self.user1,
+                                  tags=[self.tag1, self.tag2],
+                                  time_created=datetime.\
+                                      datetime.now())
+        self.group2.save()
+        self.group2.producers.append(self.prod1)
+        self.group2.producers.append(self.prod2)
+        self.group2.producers.append(self.prod3)
+        self.group2.save()
+        self.user1.rate_group(self.group2, self.tag1, 5)
+        self.user1.save()
+        self.group3 = group.Group(name="edd",
+                                  owner=self.user1,
+                                  tags=[self.tag1, self.tag2],
+                                  time_created=datetime.\
+                                      datetime.now())
+        self.group3.save()
+        
+
+        
 
     def tearDown(self):
-        globalNetwork.build_network_from_db()
+        networkModel.build_network_from_db()
         for t in tag.Tag.objects:
             t.delete()
         for p in producer.Producer.objects:
@@ -180,6 +237,9 @@ class TestProducerThings(GeneralSetup):
         assert self.prod1 not in extractor.search_producers('vd', 'newspaper')
         assert extractor.contains_producer_with_name(self.prod1.name) == True
         assert extractor.contains_producer_with_name("Should not exist!") == False
+        assert self.prod6.get_source_rating(self.prod7, self.tag3) == 3
+        assert self.prod6.get_info_rating(self.info1) == 2
+        assert self.prod7.get_source_rating(self.prod6, self.tag4) == 1
 
 class TestGroupThings(GeneralSetup):
     
@@ -188,47 +248,53 @@ class TestGroupThings(GeneralSetup):
         assert extractor.contains_group("Not a group!!") == False
         assert extractor.get_group(self.group1.owner.name, self.group1.name).producers[0]\
             == self.prod1
-        self.assertRaises(Exception, extractor.get_group, "Hurrman", self.group1.name) 
+        self.assertRaises(Exception, extractor.get_group, "Hurrman", self.group1.name)
+        assert self.user1.get_group_rating(self.group2) == 5 
+        assert self.user1.get_source_rating(self.prod1, self.tag1) == 5
+        assert self.user1.get_source_rating(self.prod2, self.tag1) == 5
+        assert self.user1.get_source_rating(self.prod3, self.tag1) == 5
+        assert self.user1.get_source_rating(self.prod4, self.tag1) == -1
+        assert self.user1.create_group("GHURR") == True
+        assert self.user1.create_group("GHURR") == False
+        assert self.user1.rate_group(self.group1, self.tag1, 1) == False
  
 
-class TestGlobalNetworkThings(GeneralSetup):
+class TestNetworkModelThings(GeneralSetup):
     """
     def test_global_network(self):
-        assert globalNetwork.neighbours(self.prod1) == [self.prod2]
+        assert networkModel.neighbours(self.prod1) == [self.prod2]
     """
     def test_global_network_performance(self):
         self.prod_list[35].save()
         assert 1 == 1
         
     def test_get_overall_difference(self):
-        print globalNetwork.get_overall_difference(self.prod2.name, self.prod3.name,
+        print networkModel.get_overall_difference(self.prod2.name, self.prod3.name,
                                                     [self.tag1.name, self.tag2.name])\
                                                     == 3
     def test_global_info_ratings(self):
-        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag1.name])\
+        assert networkModel.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag1.name])\
             == [(self.info_rating1, self.info_rating2,)]
-        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag2.name])\
+        assert networkModel.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag2.name])\
             == []
-        assert globalNetwork.get_common_info_ratings(self.prod1.name, self.prod3.name,[self.tag1.name, self.tag2.name])\
+        assert networkModel.get_common_info_ratings(self.prod1.name, self.prod3.name,[self.tag1.name, self.tag2.name])\
             == [(self.info_rating1, self.info_rating1,)]
-        assert globalNetwork.get_common_info_ratings(self.prod2.name, self.prod3.name,[self.tag2.name])\
+        assert networkModel.get_common_info_ratings(self.prod2.name, self.prod3.name,[self.tag2.name])\
             == [(self.info_rating3, self.info_rating4,)]
 
     def test_get_extreme_info_ratings(self):
-        res = globalNetwork.get_extreme_info_ratings(self.prod3.name, [self.tag1.name, self.tag2.name])
+        res = networkModel.get_extreme_info_ratings(self.prod3.name, [self.tag1.name, self.tag2.name])
         assert self.info_rating4 in res
         assert self.info_rating5 in res
         assert len(res) == 2
     
     def test_get_max_rating_differnce(self):
-        test1 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod4.name, [self.tag1.name, self.tag2.name])
+        test1 = networkModel.get_max_rating_difference(self.prod1.name, self.prod4.name, [self.tag1.name, self.tag2.name])
         assert test1 == -1
-        test2 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag1.name])
+        test2 = networkModel.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag1.name])
         assert test2 == 2
-        test3 = globalNetwork.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag2.name])
+        test3 = networkModel.get_max_rating_difference(self.prod1.name, self.prod2.name, [self.tag2.name])
         assert test3 == -1
 
 if __name__ == "__main__":
     unittest.main()
-
-

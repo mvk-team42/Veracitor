@@ -3,10 +3,129 @@
 {% block content %}
 <h1>{{ tab.name }}</h1>
 
-<p><input type="text" /><input type="button" value="Search friends" /></p>
-<ul class="list">
-    <li>Daniel Molin</li>
-    <li>John Brynte Turesson</li>
-    <li>Slim Jim</li>
-</ul>
+{% if session.user %}
+
+<div class="table">
+	<div class="left">
+	<h2>Rated producers</h2>
+	<div display='block'>
+	  <label for="tags">Tag:</label>
+	  <select name="tags" id="tags">  
+<!--
+    TODO: Loop like all other select's, or loop all available tags (possible?)
+    or, last resort: hard-code all available tags.
+-->
+	    <option value="crime">Crime</option>
+	  </select>
+	  </div>
+	<div display='block'>
+	  <label for="groups">Group:</label>
+	  <select name="groups" id="groups">
+	    {% for group in session.user.groups  %}
+	    <option value="{{ group.name }}">{{ group.name  }}</option>
+	    {% endfor %}
+	  </select>
+	  <input type="button" value="Rate group" id="rate-group"/>
+	  <br/>
+	  <div id="new-group-form" style="display:none; float: left;">
+	    <form id="new-group-form">
+	      <input id="name" type="text" placeholder="Group name"/>
+	      <input type="button" value="Create group" id="create-group"/>
+	    </form>
+	  </div>
+	</div>
+	  <input type="button" value="+ New group" id="new-group"/>
+	  <br/>
+	  <br/>
+
+<div id='producer-list-container'>
+  <div>Showing sources rated within the tag 'Crime'</div>
+  <div id='producer-list'>
+    <div class='crime'>
+      <h3>Producer1 <div class='rating'>3</div></h3>
+      <div>
+	<p>Information about Producer1</p>
+      </div>
+    </div>
+    <div class='gardening'>
+      <h3>Producer2 <div class='rating'>9</div></h3>
+      <div>
+	<p>Information about Producer2</p>
+      </div>
+    </div>
+    <!-- TODO: Fixa tag-filtrering! -->
+    {% for producer in session.user.source_ratings  %}
+    <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
+    <div>
+      <p>Information about {{ producer.name }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<!-- TABLE VERSION:
+<table id="producer-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Rating</th>
+    </tr>
+</head>
+<tbody>
+  {% for producer in source_ratings  %}
+    <tr class='row'>
+    <td class='name'>{{ producer.name  }}</td>
+    <td class='rating'>
+      <div class="rating">{{ producer.rating  }}</div>
+    </td>
+    </tr>
+  {% endfor  %}
+</tbody>
+</table>
+-->
+</div>
+
+<div class="right">
+  <h2>Rated information</h2>
+     <label for "producers">Producer:</label>
+    <select name="producers" id="producers">
+    {% for producer in session.user.source_ratings  %}
+      <option value="{{ producer.name  }}">{{ producer.name  }}
+    {% endfor  %}
+    </select>
+    <br/>
+    <label for="tags">Tag:</label>
+    <select name="tags" id="tags">
+      <option value="crime">Crime</option>
+      <option value="gardening">Gardening</option>
+    </select>
+    <br/>
+ 
+    <div id='information-list-container'>
+      <div>Showing information rated within the tag 'Crime'</div>
+      <div id='information-list'>
+	<div class='crime'>
+	  <h3>Article1 <div class='rating'>4</div></h3>
+	  <div>
+	    <p>Information about Article1</p>
+	  </div>
+	</div>
+	<div class='gardening'>
+	  <h3>Article2 <div class='rating'>7</div></h3>
+	  <div>
+	    <p>Information about Article2</p>
+	  </div>
+	</div>
+	<!-- TODO: Fixa tag-filtrering! -->
+	{% for information in session.user.info_ratings  %}
+	<h3>{{ information.name }} <div class='rating'>{{ information.rating }}</div></h3>
+	<div>
+	  <p>Information about {{ information.name }}</p>
+	</div>
+	{% endfor %}
+      </div>
+    </div>
+    
+</div>
+</div>
+{% endif %}
 {% endblock %}

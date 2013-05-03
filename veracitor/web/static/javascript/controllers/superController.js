@@ -23,11 +23,14 @@ function SuperController(vera) {
     // The time taken to switch from one tab to another in milliseconds
     var TAB_SWITCH_TIME = 300;
 
+    // A pointer to this object
+    var controller = this;
+
     // Setup controllers
-    this.search = new SearchController(this);
-    this.network = new NetworkController(this, new Visualizer());
-    this.ratings = new RatingsController(this);
-    this.account = new AccountController(this);
+    controller.search = new SearchController(this);
+    controller.network = new NetworkController(this);
+    controller.ratings = new RatingsController(this);
+    controller.account = new AccountController(this);
 
     /**
         Handles the event fired when a menu tab is clicked.
@@ -44,20 +47,25 @@ function SuperController(vera) {
         /** A key in the vera.dom object of tab objects. */
         var tab;
         /** The index of the clicked tab. */
-        var clickedTab;
+        var clicked_tab;
+        /** The key of the clicked tab */
+        var clicked_tab_key
 
-        clickedTab = 0;
+        clicked_tab = 0;
+        clicked_tab_key = null;
 
         // Retrieve the index of the clicked tab
         for(tab in vera.dom) {
             if(vera.dom[tab].menu[0] == evt.currentTarget) {
-                clickedTab = vera.dom[tab].index;
+                clicked_tab = vera.dom[tab].index;
+                clicked_tab_key = tab;
+                break;
             }
         }
 
         for(tab in vera.dom) {
 
-            if(vera.dom[tab].index == clickedTab) {
+            if(vera.dom[tab].index == clicked_tab) {
                 vera.dom[tab].menu.addClass(CLASSES.ACTIVE);
 
                 // Animate the clicked tab to the center of the screen
@@ -70,7 +78,7 @@ function SuperController(vera) {
 
                 // Animate the previous visible tab out of the screen
                 vera.dom[tab].view.animate({
-                    'left' : (vera.dom[tab].index < clickedTab) ?
+                    'left' : (vera.dom[tab].index < clicked_tab) ?
                             VIEW_POS.LEFT : VIEW_POS.RIGHT
                 }, TAB_SWITCH_TIME, null);
 
@@ -79,15 +87,15 @@ function SuperController(vera) {
 
                 // Move the tab relative to the clicked tab
                 vera.dom[tab].view.css({
-                    'left' : (vera.dom[tab].index < clickedTab) ?
+                    'left' : (vera.dom[tab].index < clicked_tab) ?
                             VIEW_POS.LEFT : VIEW_POS.RIGHT
                 });
             }
         }
 
-        active_tab = clickedTab;
-
-        return false;
+        active_tab = clicked_tab;
+        // Notify the tab that it has been activated
+        controller[clicked_tab_key].on_tab_active();
     }
 
     /**

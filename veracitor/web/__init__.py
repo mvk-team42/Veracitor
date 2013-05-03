@@ -13,7 +13,7 @@ except:
 # Create NetworkModel
 try:
     from veracitor.database import *
-    app.NetworkModel = globalNetwork.build_network_from_db()
+    app.NetworkModel = networkModel.build_network_from_db()
 except:
     import sys
     print "Can't build NetworkModel"
@@ -33,8 +33,8 @@ import search
 import crawler
 import algorithm
 import login
-#import network
-#import ratings
-#import account
+import network
+import ratings
+import account
 import index
 import veracitor.web.test

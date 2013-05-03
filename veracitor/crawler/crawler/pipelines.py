@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
@@ -51,13 +53,13 @@ class CrawlerPipeline(object):
         log.msg("extractor returns " + str(extractor.contains_information(item["url"])))
         log.msg(item["url"] + " is new, adding to database")
             
-        #utgår från att item["tags"] är en sträng med space-separerade tags, t.ex. "bombs kidnapping cooking"
+        #utgar fran att item["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
         tag_strings = re.sub("[^\w]", " ",  item["tags"]).split()
         tags = [extractor.get_tag_create_if_needed(tag_str) for tag_str in tag_strings]
         
         #utgår från att item["publishers"] är en sträng med space-separerade publishers, t.ex. "DN SVD NYT"
         publisher_strings = re.sub("[^\w]", " ",  item["publishers"]).split()
-        publishers = [extractor.get_producer_create_if_needed(pub_str, "newspaper") for pub_str in tag_strings]
+        publishers = [extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in tag_strings]
         
         info = information.Information(
                             title = item["title"],
@@ -68,11 +70,10 @@ class CrawlerPipeline(object):
                             publishers = publishers,
                             references = [],
                        )
+        info.save()       
         for publisher in publishers:
             publisher.infos.append(info)
             publisher.save()
-        info.save()       
-                                                     
         
     def print_if_unknown(self, article):
         for field in ArticleItem.fields.iterkeys():
@@ -105,8 +106,11 @@ class CrawlerPipeline(object):
         
     def replace_words_in_time_published(self, item):
         special_words = ["idag", "i dag", "today"]
-        for word in special_words:
-            item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
+        pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") "|" re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
+        item["time_published"] = pattern.sub(date.today().isoformat(), item["time_published"])        
+        
+        #for word in special_words:
+        #    item["time_published"] = item["time_published"].replace(word, date.today().isoformat())
 
         #replace swedish months with english
         months_in_swedish = {"januari":"january",
@@ -144,24 +148,6 @@ class CrawlerPipeline(object):
                 break
             except ValueError:
                 log.msg("could not parse date using " + time_format)
-                
-                
-                
-                """
-        if len(datetime_format) > 0:
-            log.msg("found time format: " + str(datetime_format[0]))
-            time = strptime(item['time_published'],datetime_format[0])
-        else:
-            log.msg("no time format found, trying defaults on: " + item['time_published'])
-            formats = ["%Y-%m-%d %H:%M","%d %B %Y kl %H:%M"]
-            for time_format in formats:
-                try:
-                    time = strptime(item['time_published'],time_format)
-                    break
-                except ValueError:
-                    log.msg("could not parse date using " + time_format)
-                """
-
 
         if time==None:
             log.msg("time could not be extracted")

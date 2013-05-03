@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-.. module:: globalNetwork
+.. module:: networkModel
     :synopsis: The purpose of the global network is to ease the accessing of the database through building a NetworkX DiGraph. Defines a set of convenience functions performing tasks related to traversing the data in the database.
 
 
@@ -64,7 +64,7 @@ def build_network_from_db():
 
     global graph
     # Users not included in graph.
-    producers = producer.Producer.objects(type_of__ne="User")
+    producers = producer.Producer.objects()
     graph = DiGraph()
    
     # Add all producers in the database as nodes.
@@ -112,7 +112,7 @@ def notify_producer_was_added(producer):
 
     Args:
         producer (producer.Producer): The producer object
-        to be inserted into the globalNetwork.
+        to be inserted into the networkModel.
     """
     graph.add_node(producer.name)
     for s in producer.source_ratings:
@@ -128,7 +128,7 @@ def notify_producer_was_removed(producer):
     
     Args:
         producer (producer.Producer): The producer object
-        to be deleted from the globalNetwork.
+        to be deleted from the networkModel.
     
     """
     try:
@@ -149,7 +149,7 @@ def notify_producer_was_updated(producer):
     
     Args:
         producer (producer.Producer): The producer object
-        to be updated in the globalNetwork.
+        to be updated in the networkModel.
 
     """
     # Possibly cheap/slow implementation.

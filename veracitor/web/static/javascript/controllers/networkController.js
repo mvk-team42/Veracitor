@@ -9,24 +9,16 @@
     well as tools to alter the visualization of the network.
     @constructor
  */
-var NetworkController = function (controller, visualizer) {
+var NetworkController = function (controller) {
 
-    // Display something in the network
-    //visualizer.visualizeProducerInNetwork(null, -1);
+    var visualizer = new Visualizer(this);
 
-    (function () {
-        $('#calculate-sunny').click(function (evt) {
-            request_sunny_value('SvD', 'DN', 'newspaper');
-        });
+    /**
+       This function is called by the super controller when the tab is opened.
+     */
+    this.on_tab_active = function () {
 
-        var width = $('#network-info-view').width();
-
-        $('#network-info-view').resizable({
-            minWidth: width,
-            maxWidth: width,
-            containment: '#network-holder > .top > .left'
-        });
-    })();
+    };
 
     /**
        Request a SUNNY value.
@@ -61,12 +53,28 @@ var NetworkController = function (controller, visualizer) {
         entire network will be visualized).
      */
     this.visualize_producer_in_network = function (prod, depth) {
+        var network_controller = this;
+
+        $.post('/jobs/network/neighbors', {
+            'name': prod.name,
+            'depth': depth
+        }, function (data) {
+            network_controller.display_producer_information(prod);
+
+            visualizer.visualize_producer_in_network(prod, data.neighbors, depth);
+        }).fail(function (data) {
+            console.log(data);
+        });
+    };
+
+    /**
+       Displays information about the given producer.
+     */
+    this.display_producer_information = function (prod) {
         $('#network-info-view .title').html(prod.name);
         $('#network-info-view .description').html(prod.description);
-        $('#network-info-view .url').html(prod.url);
+        $('#network-info-view .url').html($('<a>').attr('href', prod.url).html(prod.url));
         $('#network-info-view .type').html(prod.type_of);
-
-        visualizer.visualize_producer_in_network(prod, depth);
     };
 
     /**

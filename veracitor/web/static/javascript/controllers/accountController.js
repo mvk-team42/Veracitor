@@ -8,6 +8,11 @@
  */
 var AccountController = function (controller) {
 
+    /**
+       This function is called by the super controller when the tab is opened.
+     */
+    this.on_tab_active = function () {
 
+    };
 
 };

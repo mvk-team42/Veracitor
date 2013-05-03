@@ -33,6 +33,13 @@ var SearchController = function (controller) {
     })();
 
     /**
+       This function is called by the super controller when the tab is opened.
+     */
+    this.on_tab_active = function () {
+
+    };
+
+    /**
        Initialize the time period slider.
      */
     function initialize_time_period_slider() {
@@ -209,9 +216,7 @@ var SearchController = function (controller) {
                     $('#search-result').html(table);
 
                     $('#search-result .result').click(function (evt) {
-                        var prod = search_result[$('#search-result .result').index()];
-
-                        console.log(prod);
+                        var prod = search_result[$(this).index()];
 
                         controller.network.visualize_producer_in_network(prod, -1);
                         controller.switch_to_tab('network');
@@ -222,29 +227,8 @@ var SearchController = function (controller) {
             });
         })
         .fail(function (data) {
-            var response = JSON.parse(data);
-            console.log(data); // TODO
-            if(response.error.type != "none") {
-                if(response.error.type == "no_result") {
-                    // set focus on the search add text field
-                    $("#search-add-field").focus();
+            console.log(data);
 
-                    // define enter key press in search add field
-                    $("#search-add-field").keydown(function (evt) {
-                        if(evt.keyCode == ENTER) {
-                            // move focus to the local search button
-                            $("#search-add-button").focus();
-                        }
-                    });
-
-                    // add an event listener for the created button
-                    $("#search-add-button").click(function () {
-                        var url = $("#search-add-field").val();
-
-                        request_crawl_procedure(url);
-                    });
-                }
-            }
             $("#search-result").html("<h2>Server error.</h2>");
         });
     };
