@@ -56,6 +56,7 @@ class User(producer.Producer):
         there already exists a group rating with group_to_rate and
         considered_tag, in which case only the rating is updated.
         Also, the user cannot rate a group that it doesn't own. 
+    
         """
         found = False
         # You can't rate a group that you don't own
