@@ -11,8 +11,10 @@ from mongoengine import *
 import producer
 import group
 import tag
+import extractor
 import datetime
-from dbExceptions import AlreadyExists
+import dbExceptions
+
 
 class GroupRating(EmbeddedDocument):
     """ Defines a object structure used by
@@ -49,9 +51,17 @@ class User(producer.Producer):
     email = StringField()
 
     def rate_group(self, group_to_rate, considered_tag, rating):
+        """
+        This function adds a group rating to the user, unless
+        there already exists a group rating with group_to_rate and
+        considered_tag, in which case only the rating is updated.
+        Also, the user cannot rate a group that it doesn't own. 
+    
+        """
         found = False
-        if(not self.__user_owns_group(group_to_rate.name)):
-            return False
+        # You can't rate a group that you don't own
+        group_to_rate = self.__user_owns_group(group_to_rate)
+        considered_tag = extractor.get_tag(considered_tag)
         for g_rating in self.group_ratings:
             if(g_rating.group == group_to_rate):
                 g_rating.rating = rating
@@ -78,10 +88,14 @@ class User(producer.Producer):
             self.rate_source(p, considered_tag, rating)
     
     def __user_owns_group(self, group_name):
-        for g in self.groups:
-            if(g.name == group_name):
-                return True
-        return False
+        try:
+            check_group = extractor.get_group(self.name, group_name)
+        except dbExceptions.NotInDatabase:
+            return None
+        if(check_group.owner == self):
+            return check_group
+        else:
+            return None
     
     def get_group_rating(self, req_group):
         for g_rating in self.group_ratings:
@@ -93,11 +107,14 @@ class User(producer.Producer):
 
     
     
-if __name__ == "__main__":
-    u1 = User(name="hurse", password="hursefood")
-    p1 = Producer(name="fax", type_of="mule")
-    g1 = Group()
-    g1.producers.add(p1)
+def testing():
+    u1 = extractor.get_user("hurse")
+    u1.save()
+    p1 = extractor.get_producer("mrunelov")
+    p1.save()
+    u1.create_group("de_stable")
+    u1.groups[0].append(p1)
+    u1.rate_group("de_stable", "Trust", 5)
     
     
     

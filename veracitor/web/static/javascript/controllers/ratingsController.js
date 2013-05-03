@@ -14,18 +14,18 @@ var RatingsController = function (controller) {
     /**
        Initialize the ratings tab:
        - Setup event handlers
+       - Populate tag dropdown list
     */
     (function () {
-
         add_event_handlers();
-
+	populate_tag_dropdown();
+	
     })();
 
     /**
        This function is called by the super controller when the tab is opened.
      */
     this.on_tab_active = function () {
-
     };
 
     /**
@@ -33,23 +33,67 @@ var RatingsController = function (controller) {
      */
     function add_event_handlers() {
 
-	$("#information-table td").click(function(evt) {
-	    alert("Information table row clicked!");
-	});
-
-	$("#producer-table td").click(function(evt) {
-	    alert("Producer table row clicked!");
-	});
-
 	$("#new-group").click(function(evt) {
-	   // $('#new-group-form').css('display','block');
-	    $('#new-group').css('display','none');
-	    $('#new-group-form').fadeIn();
+	    show_new_group_form();
 	});
+	
+	$("#rate-group").click(function(evt) {
+	    show_rate_group_form();
+	});
+
+	$('#producer-list').accordion({ collapsible: true, active: false, header: "h3"});
+	
+	$('#information-list').accordion({ collapsible: true, active: false, header: "h3"});
 
 	$('#create-group').click(function(evt) {
-	    alert("plz create group :(");
+	    $.post('/jobs/ratings/create_group', 
+		   {
+		       'name' : $('#name').val()
+		   }, add_group)
 	});
+
+	$('#rate-group-submit').click(function(evt) {
+	    $.post('/jobs/ratings/rate_group',
+		   {
+		       'name' : $('#groups').val(),
+		       'tag' : $('#rate-group-tag').val(),
+		       'rating' : $('#rate-group-rating').val()
+		   }, done_rating_group)
+	});
+    }
+
+
+    function done_rating_group() {
+	hide_rate_group_form();
+    }
+
+    function add_group(data) {
+	hide_new_group_form();
+	$('#groups')
+            .append($("<option></option>")
+		    .attr("value",data)
+		    .text(data)); 
+    }
+
+    function show_rate_group_form() {
+	$('#rate-group').css('display','none');
+	$('#rate-group-form-div').fadeIn();
+    }
+
+    function hide_rate_group_form() {
+	$('#rate-group-form-div').fadeOut();
+	$('#rate-group').css('display','block');
+    }
+
+    function show_new_group_form() {
+	$('#new-group').css('display','none');
+	$('#new-group-form-div').fadeIn();
+	
+    }
+
+    function hide_new_group_form() {
+	$('#new-group-form-div').fadeOut();
+	$('#new-group').css('display','block');
     }
 
 
@@ -98,7 +142,7 @@ var RatingsController = function (controller) {
 	});
     }
 
-
+    
     /**
        Makes a database request to the server.
        Fetches information objects, optionally
@@ -118,6 +162,20 @@ var RatingsController = function (controller) {
     //TODO. Nåt sånt?
     function set_information_credibility_rating(information_id) {
 
+    }
+
+    /**
+     * Fills the dropdown list for producer rating tags with options
+     */
+    function populate_tag_dropdown(){
+	$.post('/jobs/ratings/get_used_tags',
+	       function(data){
+		   var tags_list = $('.left > #tags');
+		   $.each(data.tags, function(i, val){
+		       tags_list.append(
+			   $('<option></option>').val(val).html(val));
+		   })
+		       });
     }
 
 };

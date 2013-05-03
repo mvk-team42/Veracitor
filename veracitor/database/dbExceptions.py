@@ -16,6 +16,7 @@ class NotInDatabase(Exception):
     Exception to be used when important to indicate that
     requested item is not present in the database.
     
+    
     """
     pass
 

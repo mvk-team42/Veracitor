@@ -17,6 +17,8 @@ logger = get_task_logger(__name__)
 
 @taskmgr.task
 def get_user(user_id):
+    print "AAAAAAAAAAAA"
+
     res = extractor.get_user(user_id)
     logger.info('res: %s', str(res))
 
