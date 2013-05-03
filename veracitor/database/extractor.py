@@ -115,7 +115,7 @@ def get_tag(requested_name):
             The requested tag object.
 
         Raises:
-            NotInDataBase: No such tag could be found in the database.
+            :class:`veracitor.database.dbExceptions.NotInDatabase`: No such tag could be found in the database.
 
     """
     extr_tag = tag.Tag.objects(name=requested_name)
