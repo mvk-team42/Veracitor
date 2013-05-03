@@ -157,7 +157,8 @@ def notify_producer_was_updated(producer):
     notify_producer_was_added(producer)
 
 def get_overall_difference(producer_name1, producer_name2, tag_names):
-    """Returns the average difference in ratings 
+    """
+    Returns the average difference in ratings 
     made by producer_name1 and producer_name2
     on the same informations. 
     Informations need to contain at least one tag in tag_names.
