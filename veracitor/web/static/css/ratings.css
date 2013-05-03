@@ -9,15 +9,16 @@
 }
 
 /* Note that "open" class definitions such as tag.class
-   effects the entire HTML document. Specify classes as
+   affects the entire HTML document. Specify classes as
    denoted below to affect only this tab (or tags with
-   a specific id). */
-#ratings_view > .content > .left {
+   a specific id). To affect only the direct children
+   write tag > children. */
+#ratings_view .left {
     float:left;
     margin-right: 200px;
 }
 
-#ratings_view > .content > .right {
+#ratings_view .right {
     float: left;
     width: 200px;
 }
