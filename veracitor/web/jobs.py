@@ -127,9 +127,9 @@ def get_job_result():
 
     if not res.ready():
         return make_response('', 204)
-    elif not res.get('template_url') == None:
+    elif not res.result.get('template_url') == None:
         try:
-            res['html'] = render_template(res['template_url'], res['data'])
+            res.result['html'] = render_template(res.result['template_url'], res.result['data'])
         except KeyError:
             raise Exception('Couldn\'t parse template.')
     else:
