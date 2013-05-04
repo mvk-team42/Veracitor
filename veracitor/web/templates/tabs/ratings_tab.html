@@ -60,23 +60,21 @@
 <div id='producer-list-container'>
   <div>Showing sources rated within the tag 'Crime'</div>
   <div id='producer-list'>
-    <div class='crime'>
-      <h3>Producer1 <div class='rating'>3</div></h3>
-      <div>
-	<p>Information about Producer1</p>
-      </div>
-    </div>
     <div class='gardening'>
-      <h3>Producer2 <div class='rating'>9</div></h3>
+      <h3>Producer1 <div class='rating'>9</div></h3>
       <div>
-	<p>Information about Producer2</p>
+	<div class='description'>
+	  <p>Description of Producer1 bla bla blbababd desc desc bla.</p>
+	</div>
       </div>
     </div>
     <!-- TODO: Fixa tag-filtrering! -->
     {% for producer in vera.user.source_ratings  %}
     <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
     <div>
-      <p>Information about {{ producer.name }}</p>
+      <div class='description'>
+	<p>{{ producer.description }}</p>
+      </div>
     </div>
     {% endfor %}
   </div>
