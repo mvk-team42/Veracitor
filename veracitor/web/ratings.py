@@ -54,7 +54,7 @@ def get_user():
         # Ersätter raderna ovan. OBS, ingen kontroll att användare
         # existerar här! (men finns i ratings() som ska köras
         # när sidan laddas. TODO TODO TODO
-        userObj = session['user']
+        userObj = extractor.get_user(session['user_name'])
         
         source_ratings = [{'name' : s.source.name,
                            'tag' : s.tag.name,
@@ -92,11 +92,9 @@ def rate_producer():
     if not request.method == 'POST':
         abort(405)
     try:
-        # TODO: Use real session user
-        user = extractor.get_user(request.form['username'])
+        user = extractor.get_user(session['user_name'])
         user.rate_source(request.form['producer'],
                          request.form['tag'], int(request.form['rating']))
-        #user.save()
     except:
         abort(400)
 
@@ -107,11 +105,9 @@ def rate_information():
     if not request.method == 'POST':
         abort(405)
     try:
-        # TODO: Use real session user
-        user = extractor.get_user(request.form['username'])
+        user = extractor.get_user(session['user_name'])
         user.rate_information(request.form['information'],
                               int(request.form['rating']))
-        #user.save()
     except:
         abort(400)
 
@@ -126,11 +122,9 @@ def create_group():
     if not request.method == 'POST':
         abort(405)
     try:
-        # TODO: Use real session user
-        user = session['user']
+        user = extractor.get_user(session['user_name'])
         user.create_group(request.form['name'])
-        # Update the global user object for the current session 
-        session['user'] = extractor.get_user(session['user'].name)
+
         return request.form['name']
     except:
         abort(400)
@@ -146,14 +140,11 @@ def rate_group():
     if not request.method == 'POST':
         abort(405)
     try:
-        # TODO: Use real session user
-        user = session['user']
+        user = extractor.get_user(session['user_name'])
 
         if len(user.groups[request.form['name']].producers) > 0:
             user.rate_group(request.form['name'], request.form['tag'],
                             int(request.form['rating']))
-            
-            session['user'] = extractor.get_user(session['user'].name)
         else:
             abort(400)
     except Exception, e:
@@ -172,8 +163,8 @@ def get_used_tags():
     if not request.method == 'POST':
         abort(405)
     try:
-        # TODO: Use real session user
-        user = session['user']
+        user = extractor.get_user(session['user_name'])
+                
         tags_used = list(set([sr.tag.name for sr in user.source_ratings]))
 
         return jsonify(tags=tags_used)
