@@ -12,8 +12,9 @@
 
 from flask import render_template, url_for, session
 
-from veracitor.web import app
+from veracitor.web import app, utils
 from veracitor.database import *
+
 
 
 #app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='images/favicon.ico'))
@@ -62,5 +63,5 @@ def index():
     uname = session.get('user_name')
     if uname != None:
         veracitor['user_name'] = uname
-        veracitor['user'] = extractor.get_user(uname)
+        veracitor['user'] = utils.get_user_as_dict(uname)
     return render_template('index.html', vera=veracitor)
