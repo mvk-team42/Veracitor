@@ -116,14 +116,16 @@ var Visualizer = function (controller) {
             });
 
             for(j in neighbors[i].source_ratings) {
-                edges.push({
-                    'group': 'edges',
-                    'data': {
-                        'id': neighbors[i].name + '-' + neighbors[i].source_ratings[j].name,
-                        'source': neighbors[i].name,
-                        'target': neighbors[i].source_ratings[j].name
-                    }
-                });
+                if (typeof neighbors[neighbors[i].source_ratings[j].name] !== 'undefined') {
+                    edges.push({
+                        'group': 'edges',
+                        'data': {
+                            'id': neighbors[i].name + '-' + neighbors[i].source_ratings[j].name,
+                            'source': neighbors[i].name,
+                            'target': neighbors[i].source_ratings[j].name
+                        }
+                    });
+                }
             }
         }
 
