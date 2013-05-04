@@ -21,6 +21,7 @@
 
 #ratings_view form {
     border: 1px solid;
+    margin-top: 2px;
 }
 
 #ratings_view > .content .left {

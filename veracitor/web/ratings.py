@@ -93,14 +93,15 @@ def rate_group():
         abort(405)
     try:
         user = extractor.get_user(session['user_name'])
-
-        if len(user.groups[request.form['name']].producers) > 0:
-            user.rate_group(request.form['name'], request.form['tag'],
-                            int(request.form['rating']))
+        
+        if len(extractor.get_group(session['user_name'],request.form['name']).producers) > 0:
+            user.rate_group(request.form['name'], request.form['tag'], request.form['rating'])
         else:
             abort(400)
+        return "Success"
     except Exception, e:
         log(e)
+        return "Fail"
         abort(400)
 
     # TODO: Render json
