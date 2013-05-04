@@ -13,16 +13,15 @@
 """
 
 
-from flask import Flask, render_template, session, request, redirect, url_for, jsonify
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify, abort
 
-import json
-
-from flask import session, redirect
 from veracitor.web import app
 from veracitor.web.utils import store_job_result
 from veracitor.database import user, group, information, extractor
 
 import veracitor.tasks.ratings as ratings
+
+log = app.logger.debug
 
 
 @app.route('/jobs/ratings/user', methods=['GET', 'POST'])
@@ -146,7 +145,8 @@ def rate_group():
         user.rate_group(request.form['name'], request.form['tag'],
                         int(request.form['rating']))
         session['user'] = extractor.get_user(session['user'].name)
-    except:
+    except Exception, e:
+        log(e)
         abort(400)
 
     # TODO: Render json
