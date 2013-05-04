@@ -122,21 +122,9 @@ footer #team42-logo {
     height: 20px;
 }
 
-footer #login {
-    position: absolute;
-    right: 15px;
-    top: 0px;
-    line-height: 35px;
-}
 
 .error { /* dirty haxx */
-    position: fixed;
-    top: 100px;
-    left: 100px;
-    padding: 20px;
-    font-size: 20pt;
     color: red;
-    background: white;
 }
 
 /* CONTENT */
@@ -244,6 +232,28 @@ hr {
 
 /* LOGIN */
 
+#cover {
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 10000;
+}
+
+#login-popup {
+    top: 20px;
+    position: relative;
+    padding: 10px;
+    margin: 0 auto;
+    line-height: 35px;
+    width: 320px;
+    color: #fff;
+    background: #000;
+    z-index:10001;
+}
+
 #login label {
     font-size: 12pt;
 }
@@ -252,7 +262,7 @@ hr {
     font-size: 12pt;
 
     color: #fff;
-    background: none;
+    background: #000;
 
     outline: none;
     border: none;

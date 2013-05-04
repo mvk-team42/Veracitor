@@ -64,4 +64,5 @@ def index():
     if uname != None:
         veracitor['user_name'] = uname
         session['user'] = extractor.get_user(uname)
+
     return render_template('index.html', vera=veracitor)

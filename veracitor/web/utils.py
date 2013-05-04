@@ -5,6 +5,7 @@ from bson.json_util import default
 
 from veracitor.database import extractor
 from veracitor.web import app
+from veracitor.database import extractor
 
 class JSONEnc(JSONEncoder):
 
