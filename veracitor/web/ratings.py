@@ -14,7 +14,7 @@
 
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, abort
 
-from veracitor.web import app
+from veracitor.web import app, utils
 from veracitor.web.utils import store_job_result, get_user_as_dict
 from veracitor.database import user, group, information, extractor
 
@@ -23,39 +23,21 @@ import veracitor.tasks.ratings as ratings
 log = app.logger.debug
 
 
-@app.route('/jobs/ratings/user', methods=['GET', 'POST'])
-def get_user():
-    """Gets the specified user from the database.
-
-    URL Structure:
-        /jobs/ratings/user
-
-    Method:
-        POST
-
-    Parameters:
-        name (str): The name of the user.
-
-    Returns:
-        Upon success, returns the user as a json object.
-
-    Errors:
-        400 - Bad syntax/No name/type in request
-        405 - Method not allowed
+@app.route('/jobs/ratings/render', methods=['GET', 'POST'])
+def render_ratings():
+    """
+    Fetches the current user and renders the Ratings tab
 
     """
     if not request.method == 'POST':
-        return "nope"
         abort(405)
     try:
-        user_dict = get_user_as_dict(session['user_name'])
-    except NotInDatabase:
-        return "not in database"
-    except:
-        return "bla"
+        userDict = utils.get_user_as_dict(session['user_name'])
+    except Exception, e:
+        log(e)
         abort(400)
 
-    return jsonify(user=user_dict)
+    return render_template('tabs/ratings_tab_content.html', user=userDict)
 
 @app.route('/jobs/ratings/rate_producer', methods=['GET', 'POST'])
 def rate_producer():

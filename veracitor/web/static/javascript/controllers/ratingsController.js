@@ -17,8 +17,9 @@ var RatingsController = function (controller) {
        - Populate tag dropdown list
     */
     (function () {
-        add_event_handlers();
-	populate_tag_dropdown();
+	//Moved to this.on_tab_active below
+	//add_event_handlers();
+	//populate_tag_dropdown();
 	
     })();
 
@@ -26,6 +27,11 @@ var RatingsController = function (controller) {
        This function is called by the super controller when the tab is opened.
      */
     this.on_tab_active = function () {
+	$.post('/jobs/ratings/render',{}, function(data){
+	    $('#ratings_view').html(data);
+	    add_event_handlers();
+	    populate_tag_dropdown();
+	});
     };
 
     /**

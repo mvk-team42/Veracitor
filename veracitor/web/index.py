@@ -60,8 +60,4 @@ def index():
         ]
     }
 
-    uname = session.get('user_name')
-    if uname != None:
-        veracitor['user_name'] = uname
-        veracitor['user'] = utils.get_user_as_dict(uname)
     return render_template('index.html', vera=veracitor)
