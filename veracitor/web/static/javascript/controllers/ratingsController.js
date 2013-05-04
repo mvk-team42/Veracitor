@@ -28,7 +28,7 @@ var RatingsController = function (controller) {
      */
     this.on_tab_active = function () {
 	$.post('/jobs/ratings/render',{}, function(data){
-	    $('#ratings_view > .content').html(data);
+	    $('#ratings_view_content').html(data);
 	    add_event_handlers();
 	    populate_tag_dropdown();
 	});
