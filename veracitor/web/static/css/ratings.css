@@ -1,24 +1,29 @@
 /* RATINGS VIEW */
 
-#producer-table, #information-table{
-    width: 260px;
+#ratings_view #producer-list-container, #ratings_view #information-list-container {
+    width: 340px;
 }
 
-#ratings_view table tr.row {
-    text-align: center;
+#ratings_view h3 {
+    position: relative;
 }
 
-/* Note that "open" class definitions such as tag.class
-   affects the entire HTML document. Specify classes as
-   denoted below to affect only this tab (or tags with
-   a specific id). To affect only the direct children
-   write tag > children. */
+#ratings_view div.rating {
+    float: right;
+    position: absolute;
+    right: 8px;
+    top: 4px;
+}
+
+#ratings_view form {
+    border: 1px solid;
+}
+
 #ratings_view > .content .left {
-    float:left;
-    margin-right: 200px;
+    float: left;
+    margin-right: 150px;
 }
 
 #ratings_view > .content .right {
     float: left;
-    width: 200px;
 }

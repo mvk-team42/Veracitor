@@ -56,7 +56,6 @@
 	  <input type="button" value="+ New group" id='new-group'/>
 	</div>
 	  <br/>
-	  <br/>
 
 <div id='producer-list-container'>
   <div>Showing sources rated within the tag 'Crime'</div>
@@ -82,35 +81,16 @@
     {% endfor %}
   </div>
 </div>
-<!-- TABLE VERSION:
-<table id="producer-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Rating</th>
-    </tr>
-</head>
-<tbody>
-  {% for producer in source_ratings  %}
-    <tr class='row'>
-    <td class='name'>{{ producer.name  }}</td>
-    <td class='rating'>
-      <div class="rating">{{ producer.rating  }}</div>
-    </td>
-    </tr>
-  {% endfor  %}
-</tbody>
-</table>
--->
 </div>
 
 <div class="right">
   <h2>Rated information</h2>
-     <label for "producers">Producer:</label>
+  <div display='block'>
+    <label for "producers">Producer:</label>
     <select name="producers" id="producers">
-    {% for producer in session.user.source_ratings  %}
+      {% for producer in session.user.source_ratings  %}
       <option value="{{ producer.name  }}">{{ producer.name  }}
-    {% endfor  %}
+	{% endfor  %}
     </select>
     <br/>
     <label for="tags">Tag:</label>
@@ -118,6 +98,7 @@
       <option value="crime">Crime</option>
       <option value="gardening">Gardening</option>
     </select>
+  </div>
     <br/>
  
     <div id='information-list-container'>
