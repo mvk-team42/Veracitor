@@ -115,10 +115,14 @@ def get_used_tags():
     if not request.method == 'POST':
         abort(405)
     try:
+        info += "pre extract"
         user = extractor.get_user(session['user_name'])
                 
+        info += "pre get tag names"
         tags_used = list(set([sr.tag.name for sr in user.source_ratings]))
 
+        info += "return"
         return jsonify(tags=tags_used)
     except:
+        return info
         abort(400)
