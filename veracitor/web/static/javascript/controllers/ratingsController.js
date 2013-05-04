@@ -38,6 +38,9 @@ var RatingsController = function (controller) {
 	});
 	
 	$("#rate-group").click(function(evt) {
+	    //TODO The user should not be able to
+	    // rate empty groups. Check if empty
+	    // with a post?
 	    show_rate_group_form();
 	});
 
