@@ -30,3 +30,31 @@ def store_job_result(result):
     # is logged in.
 
     app.current_number_of_jobs += 1
+
+def get_user_as_dict(username):
+    user_obj = extractor.get_user(username)
+    
+    source_ratings = [{'name' : s.source.name,
+                       'tag' : s.tag.name,
+                       'rating': s.rating }
+                      for s in user_obj.source_ratings]
+    
+    info_ratings = [{'title':ir.information.title, 'rating':ir.rating}
+                    for ir in user_obj.info_ratings]
+    
+    groups = [{'name' : g.name,
+               'description' : g.description,
+               'owner' : g.owner,
+               'producers' : [p.name for p in g.producers]}
+              for g in user_obj.groups]
+    
+    userDict = {'name' : user_obj.name,
+                'description' : user_obj.description,
+                'type_of' : user_obj.type_of,
+                'source_ratings' : source_ratings,
+                'groups' : groups,
+                'group_ratings' : [{'group':gr.group, 'rating':gr.rating}
+                                   for gr in user_obj.group_ratings],
+                'info_ratings' : info_ratings}
+    
+    return user_dict
