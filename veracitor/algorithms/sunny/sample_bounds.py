@@ -19,7 +19,7 @@ import math
 
 tag = "cooking"
 
-def sample_bounds(bayesianNetwork, source, sink, k=10):
+def sample_bounds(bayesianNetwork, source, sink, bounds, k=10):
     """
     The main function in the sampling procedure. 
 
@@ -57,7 +57,12 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
                     
             else:
                 parents = bayesianNetwork.successors(n)
-                probability_set = get_probability_set(bayesianNetwork, n)
+                # If this is the first run, calculate probabilities
+                if not bounds:
+                    probability_set = get_probability_set(bayesianNetwork, n)
+                # Else, use the previously sampled probabilities
+                else:
+                    probability_set = set([bounds[n]])
                 rand = random.random()
                 if rand <= min(probability_set):
                     nodes[n]['xmin'] = 1
@@ -69,11 +74,15 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
                     xmax_counters[n]+=1
                 else:
                     nodes[n]['xmax'] = 0
-
     
-    min_total_source = xmin_counters[source]/k
-    max_total_source = xmax_counters[source]/k
-    return (min_total_source,max_total_source)
+    # Build the return value.
+    if not bounds:
+        for node in bayesianNetwork.node:
+            bounds[node] = [xmin_counters[node]/k, xmax_counters[node]/k]
+    else:
+        bounds[source] = [xmin_counters[source]/k, xmax_counters[source]/k]
+
+    return bounds
 
 
 
