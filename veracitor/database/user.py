@@ -50,26 +50,26 @@ class User(producer.Producer):
     pw_hash = StringField()
     email = StringField()
 
-    def rate_group(self, group_to_rate, considered_tag, rating):
+    def rate_group(self, name_of_group, name_of_tag, rating):
         """
         This function adds a group rating to the user, unless
-        there already exists a group rating with group_to_rate and
-        considered_tag, in which case only the rating is updated.
+        there already exists a group rating with name_of_group and
+        name_of_tag, in which case only the rating is updated.
         Also, the user cannot rate a group that it doesn't own. 
     
         """
         found = False
         # You can't rate a group that you don't own
-        group_to_rate = self.__user_owns_group(group_to_rate)
-        considered_tag = extractor.get_tag(considered_tag)
+        name_of_group = self.__user_owns_group(name_of_group)
+        name_of_tag = extractor.get_tag(name_of_tag)
         for g_rating in self.group_ratings:
-            if(g_rating.group == group_to_rate):
+            if(g_rating.group == name_of_group):
                 g_rating.rating = rating
         if(not found):
-            new_rating = GroupRating(group=group_to_rate,
+            new_rating = GroupRating(group=name_of_group,
                                      rating=rating)
             self.group_ratings.append(new_rating)
-        self.__rate_all_members(group_to_rate, considered_tag, rating)
+        self.__rate_all_members(name_of_group, name_of_tag, rating)
         return True
 
     def create_group(self, group_name):
