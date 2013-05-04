@@ -64,9 +64,9 @@ var RatingsController = function (controller) {
 	$('#rate-group-submit').click(function(evt) {
 	    $.post('/jobs/ratings/rate_group',
 		   {
-		       'name' : $('#groups').val(),
-		       'tag' : $('#rate-group-tag').val(),
-		       'rating' : $('#rate-group-rating').val()
+		       'name' : $('#groups').find(':selected').val(),
+		       'tag' : $('#rate-group-tag').find(':selected').val(),
+		       'rating' : $('#rate-group-rating').find(':selected').val()
 		   }, done_rating_group)
 	});
     }
