@@ -148,9 +148,14 @@ def rate_group():
     try:
         # TODO: Use real session user
         user = session['user']
-        user.rate_group(request.form['name'], request.form['tag'],
-                        int(request.form['rating']))
-        session['user'] = extractor.get_user(session['user'].name)
+
+        if len(user.groups[request.form['name']].producers) > 0:
+            user.rate_group(request.form['name'], request.form['tag'],
+                            int(request.form['rating']))
+            
+            session['user'] = extractor.get_user(session['user'].name)
+        else:
+            abort(400)
     except Exception, e:
         log(e)
         abort(400)
