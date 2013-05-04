@@ -7,13 +7,13 @@
 .. module:: ratings
     :synopsis: Defines server logic for the ratings tab
 
-.. moduleauthor:: Martin Runelöv <mrunelov@kth.se>
+.. moduleauthor:: Martin RunelÃ¶v <mrunelov@kth.se
 .. moduleauthor:: Daniel Molin <dmol@kth.se>
 
 """
 
 
-from flask import Flask, render_template, session, request, redirect, url_for, jsonify
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify, abort
 
 import json
 
