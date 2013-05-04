@@ -20,7 +20,7 @@ var RatingsController = function (controller) {
 	//Moved to this.on_tab_active below
 	//add_event_handlers();
 	//populate_tag_dropdown();
-	
+
     })();
 
     /**
@@ -28,7 +28,7 @@ var RatingsController = function (controller) {
      */
     this.on_tab_active = function () {
 	$.post('/jobs/ratings/render',{}, function(data){
-	    $('#ratings_view').html(data);
+	    $('#ratings_view > .content').html(data);
 	    add_event_handlers();
 	    populate_tag_dropdown();
 	});
@@ -42,7 +42,7 @@ var RatingsController = function (controller) {
 	$("#new-group").click(function(evt) {
 	    show_new_group_form();
 	});
-	
+
 	$("#rate-group").click(function(evt) {
 	    //TODO The user should not be able to
 	    // rate empty groups. Check if empty
@@ -51,11 +51,11 @@ var RatingsController = function (controller) {
 	});
 
 	$('#producer-list').accordion({ collapsible: true, active: false, header: "h3"});
-	
+
 	$('#information-list').accordion({ collapsible: true, active: false, header: "h3"});
 
 	$('#create-group').click(function(evt) {
-	    $.post('/jobs/ratings/create_group', 
+	    $.post('/jobs/ratings/create_group',
 		   {
 		       'name' : $('#name').val()
 		   }, add_group)
@@ -81,7 +81,7 @@ var RatingsController = function (controller) {
 	$('#groups')
             .append($("<option></option>")
 		    .attr("value",data)
-		    .text(data)); 
+		    .text(data));
     }
 
     function show_rate_group_form() {
@@ -97,7 +97,7 @@ var RatingsController = function (controller) {
     function show_new_group_form() {
 	$('#new-group').css('display','none');
 	$('#new-group-form-div').fadeIn();
-	
+
     }
 
     function hide_new_group_form() {
@@ -151,7 +151,7 @@ var RatingsController = function (controller) {
 	});
     }
 
-    
+
     /**
        Makes a database request to the server.
        Fetches information objects, optionally
