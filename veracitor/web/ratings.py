@@ -133,7 +133,7 @@ def get_used_tags():
     if not request.method == 'POST':
         abort(405)
     try:
-        info = "pre extract"
+        info += "pre extract"
         user = extractor.get_user(session['user_name'])
                 
         info += "pre get tag names"
