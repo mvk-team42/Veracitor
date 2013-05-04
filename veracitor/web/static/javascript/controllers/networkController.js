@@ -55,6 +55,20 @@ var NetworkController = function (controller) {
     this.visualize_producer_in_network = function (prod, depth) {
         var network_controller = this;
 
+        $.post('/jobs/network/path', {
+            'source': session.user.name,
+            'target': prod.name
+        }, function (data) {
+            network_controller.display_producer_information(prod);
+
+            console.log(data);
+
+            visualizer.visualize_producer_in_network(prod, data.path.nodes, depth);
+        }).fail(function (data) {
+            console.log(data);
+        });
+
+        /*
         $.post('/jobs/network/neighbors', {
             'name': session.user.name,
             'depth': depth
@@ -67,6 +81,7 @@ var NetworkController = function (controller) {
         }).fail(function (data) {
             console.log(data);
         });
+        */
     };
 
     /**
