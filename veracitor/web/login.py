@@ -13,12 +13,14 @@ def login():
     """
     
     """
-    if "user" in session:
+    if "user_name" in session:
         return redirect(url_for('index'))
 
     error = None
     user = None
-    session.pop('error', None)
+    if session.get('error') != None:
+        session.pop('error', None)
+
     
     if request.method == "POST":
         if not request.form['username']:
@@ -29,7 +31,7 @@ def login():
             try:
                 user = extractor.get_user(request.form['username'])
             except:
-                print "exxxxxxxx"
+                print "Can't extract user from db."
                 pass
         
         if not user:
@@ -40,7 +42,7 @@ def login():
         if error:
             session['error'] = error
         else:
-            session['user'] = user
+            session['user_name'] = user.name
             
     return redirect(url_for("index"))
 
@@ -48,7 +50,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop("user", None)
+    session.pop("user_name", None)
     session.pop("error", None)
     return redirect(url_for("index"))
     

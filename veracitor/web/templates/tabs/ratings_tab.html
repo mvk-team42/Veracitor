@@ -3,7 +3,7 @@
 {% block content %}
 <h1>{{ tab.name }}</h1>
 
-{% if session.user %}
+{% if vera.user %}
 
 <div class="table">
 	<div class="left">
@@ -19,7 +19,7 @@
 	<div display='block'>
 	  <label for="groups">Group:</label>
 	  <select name="groups" id="groups">
-	    {% for group in session.user.groups  %}
+	    {% for group in vera.user.groups  %}
 	    <option value="{{ group.name }}">{{ group.name  }}</option>
 	    {% endfor %}
 	  </select>
@@ -60,23 +60,21 @@
 <div id='producer-list-container'>
   <div>Showing sources rated within the tag 'Crime'</div>
   <div id='producer-list'>
-    <div class='crime'>
-      <h3>Producer1 <div class='rating'>3</div></h3>
-      <div>
-	<p>Information about Producer1</p>
-      </div>
-    </div>
     <div class='gardening'>
-      <h3>Producer2 <div class='rating'>9</div></h3>
+      <h3>Producer1 <div class='rating'>9</div></h3>
       <div>
-	<p>Information about Producer2</p>
+	<div class='description'>
+	  <p>Description of Producer1 bla bla blbababd desc desc bla.</p>
+	</div>
       </div>
     </div>
     <!-- TODO: Fixa tag-filtrering! -->
-    {% for producer in session.user.source_ratings  %}
+    {% for producer in vera.user.source_ratings  %}
     <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
     <div>
-      <p>Information about {{ producer.name }}</p>
+      <div class='description'>
+	<p>{{ producer.description }}</p>
+      </div>
     </div>
     {% endfor %}
   </div>
@@ -88,7 +86,7 @@
   <div display='block'>
     <label for "producers">Producer:</label>
     <select name="producers" id="producers">
-      {% for producer in session.user.source_ratings  %}
+      {% for producer in vera.user.source_ratings  %}
       <option value="{{ producer.name  }}">{{ producer.name  }}
 	{% endfor  %}
     </select>
@@ -117,7 +115,7 @@
 	  </div>
 	</div>
 	<!-- TODO: Fixa tag-filtrering! -->
-	{% for information in session.user.info_ratings  %}
+	{% for information in vera.user.info_ratings  %}
 	<h3>{{ information.name }} <div class='rating'>{{ information.rating }}</div></h3>
 	<div>
 	  <p>Information about {{ information.name }}</p>
