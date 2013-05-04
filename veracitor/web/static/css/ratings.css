@@ -23,11 +23,13 @@
     border: 1px solid;
 }
 
-#ratings_view > .content .left {
+#ratings_view .left {
     float: left;
     margin-right: 150px;
+    width: 340px;
 }
 
-#ratings_view > .content .right {
+#ratings_view .right {
     float: left;
+    width: 340px;
 }

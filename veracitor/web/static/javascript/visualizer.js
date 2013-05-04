@@ -116,16 +116,21 @@ var Visualizer = function (controller) {
             });
 
             for(j in neighbors[i].source_ratings) {
-                edges.push({
-                    'group': 'edges',
-                    'data': {
-                        'id': neighbors[i].name + '-' + neighbors[i].source_ratings[j].name,
-                        'source': neighbors[i].name,
-                        'target': neighbors[i].source_ratings[j].name
-                    }
-                });
+                if (typeof neighbors[neighbors[i].source_ratings[j].name] !== 'undefined') {
+                    edges.push({
+                        'group': 'edges',
+                        'data': {
+                            'id': neighbors[i].name + '-' + neighbors[i].source_ratings[j].name,
+                            'source': neighbors[i].name,
+                            'target': neighbors[i].source_ratings[j].name
+                        }
+                    });
+                }
             }
         }
+
+        console.log(nodes);
+        console.log(edges);
 
         cy.elements().remove();
         cy.add(nodes);
@@ -134,10 +139,14 @@ var Visualizer = function (controller) {
         cy.nodes('#' + prod.name).css({
             'background-color': color.node.select.background,
             'border-color': color.node.select.border
-        }).neighborhood('edge').css({
-            'line-color': color.edge.select.line,
-            'width': 2
         });
+
+        for(i = 0; i < neighbors.length - 1; i += 1) {
+            cy.edges('[source="' + neighbors[i].name + '"][target="' + neighbors[i + 1].name + '"]').css({
+                'line-color': color.edge.select.line,
+                'width': 2
+            });
+        }
 
         cy.nodes('#' + session.user.name).css({
             'background-color': color.node.user.background,

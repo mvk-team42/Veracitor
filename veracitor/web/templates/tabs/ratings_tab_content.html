@@ -1,0 +1,126 @@
+{% block content %}
+{% if user %}
+
+<div class="table">
+	<div class="left">
+	<h2>Rated producers</h2>
+	<div display='block'>
+	  <label for="tags">Tag:</label>
+	  <select name="tags" id="tags">  
+	    <!--
+		Populated from controller/js.
+	      -->
+	  </select>
+	  </div>
+	<div display='block'>
+	  <label for="groups">Group:</label>
+	  <select name="groups" id="groups">
+	    {% for group in user.groups  %}
+	    <option value="{{ group.name }}">{{ group.name  }}</option>
+	    {% endfor %}
+	  </select>
+	  <input type="button" value="Rate group" id="rate-group"/>
+	  <br/>
+	  <div id="rate-group-form-div" style="display:none;">
+	    <form id="rate-group-form">
+	      <label for='rate-group-rating' id='rating_label'>Rating:</label>
+	      <select id='rate-group-rating'>
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  <option value="4">4</option>
+		  <option value="5">5</option>
+		</select>
+	      <br/>
+	      <label for='rate-group-tag' id='tag_label'>Tag:</label>
+		<select id='rate-group-tag'>
+		  <option value='crime'>Crime</option>
+		  <option value='gardening'>Gardening</option>
+		</select>
+	      <input type="button" value="Rate group" id="rate-group-submit"/>
+	    </form>
+	  </div>
+	  <br/>
+	  <div id="new-group-form-div" style="display:none;">
+	    <form id="new-group-form">
+	      <input id="name" type="text" placeholder="Group name"/>
+	      <input type="button" value="Create group" id="create-group"/>
+	    </form>
+	  </div>
+	</div>
+	<div display='block' id='new-group-div'>
+	  <input type="button" value="+ New group" id='new-group'/>
+	</div>
+	  <br/>
+
+<div id='producer-list-container'>
+  <div>Showing sources rated within the tag 'Crime'</div>
+  <div id='producer-list'>
+    <div class='gardening'>
+      <h3>Producer1 <div class='rating'>9</div></h3>
+      <div>
+	<div class='description'>
+	  <p>Description of Producer1 bla bla blbababd desc desc bla.</p>
+	</div>
+      </div>
+    </div>
+    <!-- TODO: Fixa tag-filtrering! -->
+    {% for producer in user.source_ratings  %}
+    <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
+    <div>
+      <div class='description'>
+	<p>{{ producer.description }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+</div>
+
+<div class="right">
+  <h2>Rated information</h2>
+  <div display='block'>
+    <label for "producers">Producer:</label>
+    <select name="producers" id="producers">
+      {% for producer in user.source_ratings  %}
+      <option value="{{ producer.name  }}">{{ producer.name  }}
+	{% endfor  %}
+    </select>
+    <br/>
+    <label for="tags">Tag:</label>
+    <select name="tags" id="tags">
+      <option value="crime">Crime</option>
+      <option value="gardening">Gardening</option>
+    </select>
+  </div>
+    <br/>
+ 
+    <div id='information-list-container'>
+      <div>Showing information rated within the tag 'Crime'</div>
+      <div id='information-list'>
+	<div class='crime'>
+	  <h3>Article1 <div class='rating'>4</div></h3>
+	  <div>
+	    <p>Information about Article1</p>
+	  </div>
+	</div>
+	<div class='gardening'>
+	  <h3>Article2 <div class='rating'>7</div></h3>
+	  <div>
+	    <p>Information about Article2</p>
+	  </div>
+	</div>
+	<!-- TODO: Fixa tag-filtrering! -->
+	{% for information in user.info_ratings  %}
+	<h3>{{ information.name }} <div class='rating'>{{ information.rating }}</div></h3>
+	<div>
+	  <p>Information about {{ information.name }}</p>
+	</div>
+	{% endfor %}
+      </div>
+    </div>
+    
+</div>
+</div>
+{% endif %}
+{% endblock %}
