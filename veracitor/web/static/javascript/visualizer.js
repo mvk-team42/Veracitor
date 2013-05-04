@@ -45,6 +45,9 @@ var Visualizer = function (controller) {
                 cy = this;
 
                 cy.on('click', 'node', node_click_event);
+                cy.on('layoutstop', function () {
+                    cy.nodes().unlock();
+                });
             },
             style: cytoscape.stylesheet()
                 .selector("node")
@@ -160,6 +163,86 @@ var Visualizer = function (controller) {
     };
 
     /**
+        Creates an interactive visualization network of the trust ratings
+        directly or indirectly associated with the given Producer (source
+        node) within the GlobalNetwork. Only nodes that have a trust
+        relation with the source node at a maximum of depth nodes away
+        from the source node will be visualized. If -1 is input as depth
+        there will be no restrictions as to how close a node has to be to
+        the source node in order to be part of the visualization (that is the
+        entire network will be visualized).
+     */
+    this.visualize_path_in_network = function (source, target, path, ghosts) {
+        var i, j;
+        var existing_nodes = [];
+        var nodes = [];
+        var edges = [];
+
+        for(i in path) {
+            nodes.push({
+                'group': 'nodes',
+                'data': {
+                    'id': path[i].name,
+                    'data': path[i]
+                }
+            });
+            existing_nodes.push(path[i].name);
+
+            for(j in path[i].source_ratings) {
+                edges.push({
+                    'group': 'edges',
+                    'data': {
+                        'id': path[i].name + '-' + path[i].source_ratings[j].name,
+                        'source': path[i].name,
+                        'target': path[i].source_ratings[j].name
+                    }
+                });
+            }
+        }
+
+        for (i in ghosts) {
+            nodes.push({
+                'group': 'nodes',
+                'data': {
+                    'id': ghosts[i]
+                }
+            });
+        }
+
+        cy.elements().remove();
+        cy.add(nodes);
+        cy.add(edges);
+
+        for (i = 0; i < existing_nodes.length; i += 1) {
+            cy.nodes('#' + existing_nodes[i]).css({
+                'background-color': color.node.select.background,
+                'border-color': color.node.select.border,
+                'shape': 'ellipse'
+            });
+            if (i < existing_nodes.length - 1) {
+                cy.edges('[source="' + existing_nodes[i] + '"][target="' + existing_nodes[i + 1] + '"]').css({
+                    'line-color': color.edge.select.line,
+                    'width': 2
+                });
+            }
+        }
+
+        for (i in ghosts) {
+            cy.nodes('#' + ghosts[i]).addClass('ghost');
+        }
+
+        cy.nodes('#' + source).css({
+            'background-color': color.node.user.background,
+            'border-color': color.node.user.border,
+            'shape': 'roundrectangle'
+        });
+
+        cy.layout({
+            'name': 'arbor'
+        });
+    };
+
+    /**
         Visualizes the given trust network.
      */
     this.visualize_trust_network = function (network) {
@@ -169,25 +252,60 @@ var Visualizer = function (controller) {
     var node_click_event = function (evt) {
         var node = this;
 
-        controller.display_producer_information({
-            name: node.id()
-        });
+        if (node.hasClass('ghost')) {
+            $.post('/jobs/network/neighbors', {
+                'name': node.id(),
+                'depth': 1
+            }, function (data) {
+                var nodes = [];
+                var edges = [];
+                var ghosts = [];
 
-        cy.nodes().removeCss()
-        cy.edges().removeCss()
+                for (i in data.neighbors) {
+                    nodes.push({
+                        'group': 'nodes',
+                        'data': {
+                            'id': data.neighbors[i].name,
+                            'data': data.neighbors[i]
+                        }
+                    });
 
-        node.css({
-            'background-color': color.node.select.background,
-            'border-color': color.node.select.border
-        }).neighborhood('edge').css({
-            'line-color': color.edge.select.line,
-            'width': 2
-        });
+                    for (j in data.neighbors[i].source_ratings) {
+                        edges.push({
+                            'group': 'edges',
+                            'data': {
+                                'id': data.neighbors[i].name + '-' + data.neighbors[i].source_ratings[j].name,
+                                'source': data.neighbors[i].name,
+                                'target': data.neighbors[i].source_ratings[j].name
+                            }
+                        });
 
-        cy.nodes('#' + session.user.name).css({
-            'background-color': color.node.user.background,
-            'border-color': color.node.user.border
-        });
+                        if (cy.nodes('#' + data.neighbors[i].source_ratings[j].name).empty()) {
+                            nodes.push({
+                                'group': 'nodes',
+                                'data': {
+                                    'id': data.neighbors[i].source_ratings[j].name
+                                }
+                            });
+                            ghosts.push(data.neighbors[i].source_ratings[j].name);
+                        }
+                    }
+                }
+
+                cy.nodes().lock();
+                cy.add(nodes);
+                cy.add(edges);
+
+                for (i in ghosts) {
+                    cy.nodes('#' + ghosts[i]).addClass('ghost');
+                }
+                node.removeClass('ghost');
+
+                cy.layout();
+            }).fail(function (data) {
+                console.log(data);
+            });
+        }
     };
 
 };
