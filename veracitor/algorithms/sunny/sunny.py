@@ -10,6 +10,8 @@ def sunny(graph, source, sink, tag="weight"):
         bounds = sample_bounds(bayesianNetwork, source, sink, {}, 100)
         source_lower = bounds[source][0]
         source_upper = bounds[source][1]
+        # TODO: Discuss placement of this inner/outer/other for-loop...
+        # Related TODO: read paper again...
         for leaf in leaves:
             bounds[leaf] = [1,1]
             bounds = sample_bounds(bayesianNetwork, source, sink, bounds, 100)
