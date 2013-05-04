@@ -13,7 +13,8 @@
 """
 
 
-from flask import Flask, render_template, session, request, redirect, url_for, jsonify
+from flask import Flask, render_template, session,  \
+    request, redirect, url_for, jsonify
 
 import json
 
@@ -63,8 +64,8 @@ def get_user():
                            'rating': s.rating }
                           for s in userObj.source_ratings]
 
-        info_ratings = [{'title':ir.information.title,
-                                'rating':ir.rating} for ir in userObj.info_ratings]
+        info_ratings = [{'title':ir.information.title, 'rating':ir.rating}
+                        for ir in userObj.info_ratings]
 
         groups = [{'name' : g.name,
                    'description' : g.description,
@@ -77,7 +78,8 @@ def get_user():
                     'type_of' : userObj.type_of,
                     'source_ratings' : source_ratings,
                     'groups' : groups,
-                    'group_ratings' : [{'group':gr.group, 'rating':gr.rating} for gr in userObj.group_ratings],
+                    'group_ratings' : [{'group':gr.group, 'rating':gr.rating}
+                                       for gr in userObj.group_ratings],
                     'info_ratings' : info_ratings}
 
     except NotInDatabase:
@@ -93,8 +95,10 @@ def rate_producer():
     if not request.method == 'POST':
         abort(405)
     try:
-        user = extractor.get_user(request.form['username']) # TODO: Use real session user
-        user.rate_source(request.form['producer'], request.form['tag'], int(request.form['rating']))
+        # TODO: Use real session user
+        user = extractor.get_user(request.form['username'])
+        user.rate_source(request.form['producer'],
+                         request.form['tag'], int(request.form['rating']))
         #user.save()
     except:
         abort(400)
@@ -106,8 +110,10 @@ def rate_information():
     if not request.method == 'POST':
         abort(405)
     try:
-        user = extractor.get_user(request.form['username']) # TODO: Use real session user
-        user.rate_information(request.form['information'], int(request.form['rating']))
+        # TODO: Use real session user
+        user = extractor.get_user(request.form['username'])
+        user.rate_information(request.form['information'],
+                              int(request.form['rating']))
         #user.save()
     except:
         abort(400)
