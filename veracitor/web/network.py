@@ -53,15 +53,21 @@ def get_shortest_path():
     data = {
         'source': source,
         'target': target,
-        'nodes': []
+        'nodes': [],
+        'ghosts': []
     }
 
     for node in nodes:
         prod = extractor.get_producer(node)
-        source_ratings = [{'name' : s.source.name,
-                           'tag' : s.tag.name,
-                           'rating': s.rating }
-                          for s in prod.source_ratings]
+        source_ratings = []
+
+        for s in prod.source_ratings:
+            source_ratings.append({'name' : s.source.name,
+                                   'tag' : s.tag.name,
+                                   'rating': s.rating})
+            if s.source.name not in nodes:
+                data['ghosts'].append(s.source.name)
+
         data['nodes'].append({'name' : prod.name,
                       'description' : prod.description,
                       'url' : prod.url,
@@ -116,16 +122,16 @@ def get_neighbors():
             for node in layer:
                 if node not in neighbors:
                     neighbors.append(node)
-                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
+                    neighbor_queue += gn.successors(node)# + gn.predecessors(node)
             layer = neighbor_queue
     else:
         layer = [name]
-        for i in range(0, depth):
+        for i in range(0, depth + 1):
             neighbor_queue = []
             for node in layer:
                 if node not in neighbors:
                     neighbors.append(node)
-                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
+                    neighbor_queue += gn.successors(node)# + gn.predecessors(node)
             layer = neighbor_queue
 
     data = {}

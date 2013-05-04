@@ -63,7 +63,10 @@ var NetworkController = function (controller) {
 
             console.log(data);
 
-            visualizer.visualize_producer_in_network(prod, data.path.nodes, depth);
+            visualizer.visualize_path_in_network(data.path.source,
+                                                 data.path.target,
+                                                 data.path.nodes,
+                                                 data.path.ghosts);
         }).fail(function (data) {
             console.log(data);
         });
