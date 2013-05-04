@@ -79,7 +79,7 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
 
 def get_probability_set(network, node):
     """
-    Calculates the set of possible probabilites of 'node' for being true. 
+    Calculates the set of possible probabilites of 'node' being true (included). 
 
     """
     probabilities = set()
