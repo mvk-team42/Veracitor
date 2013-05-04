@@ -12,7 +12,6 @@
 
 """
 
-
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, abort
 
 from veracitor.web import app
@@ -62,8 +61,8 @@ def get_user():
                            'rating': s.rating }
                           for s in userObj.source_ratings]
 
-        info_ratings = [{'title':ir.information.title,
-                                'rating':ir.rating} for ir in userObj.info_ratings]
+        info_ratings = [{'title':ir.information.title, 'rating':ir.rating}
+                        for ir in userObj.info_ratings]
 
         groups = [{'name' : g.name,
                    'description' : g.description,
@@ -76,7 +75,8 @@ def get_user():
                     'type_of' : userObj.type_of,
                     'source_ratings' : source_ratings,
                     'groups' : groups,
-                    'group_ratings' : [{'group':gr.group, 'rating':gr.rating} for gr in userObj.group_ratings],
+                    'group_ratings' : [{'group':gr.group, 'rating':gr.rating}
+                                       for gr in userObj.group_ratings],
                     'info_ratings' : info_ratings}
 
     except NotInDatabase:
@@ -92,8 +92,10 @@ def rate_producer():
     if not request.method == 'POST':
         abort(405)
     try:
-        user = extractor.get_user(request.form['username']) # TODO: Use real session user
-        user.rate_source(request.form['producer'], request.form['tag'], int(request.form['rating']))
+        # TODO: Use real session user
+        user = extractor.get_user(request.form['username'])
+        user.rate_source(request.form['producer'],
+                         request.form['tag'], int(request.form['rating']))
         #user.save()
     except:
         abort(400)
@@ -105,8 +107,10 @@ def rate_information():
     if not request.method == 'POST':
         abort(405)
     try:
-        user = extractor.get_user(request.form['username']) # TODO: Use real session user
-        user.rate_information(request.form['information'], int(request.form['rating']))
+        # TODO: Use real session user
+        user = extractor.get_user(request.form['username'])
+        user.rate_information(request.form['information'],
+                              int(request.form['rating']))
         #user.save()
     except:
         abort(400)
@@ -122,6 +126,7 @@ def create_group():
     if not request.method == 'POST':
         abort(405)
     try:
+        # TODO: Use real session user
         user = session['user']
         user.create_group(request.form['name'])
         # Update the global user object for the current session 
@@ -141,6 +146,7 @@ def rate_group():
     if not request.method == 'POST':
         abort(405)
     try:
+        # TODO: Use real session user
         user = session['user']
         user.rate_group(request.form['name'], request.form['tag'],
                         int(request.form['rating']))
@@ -161,6 +167,7 @@ def get_used_tags():
     if not request.method == 'POST':
         abort(405)
     try:
+        # TODO: Use real session user
         user = session['user']
         tags_used = list(set([sr.tag.name for sr in user.source_ratings]))
 
