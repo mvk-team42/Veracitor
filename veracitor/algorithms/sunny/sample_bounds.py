@@ -39,10 +39,9 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
     for n in bayesianNetwork.nodes():
         xmin_counters[n] = 0
         xmax_counters[n] = 0
-    # TODO backwards BFS to set attributes in correct order.
-    # Atm xmin and xmax have not been set for previous nodes
     for _ in range(k):
         nodes = bayesianNetwork.node
+        # Top sort the nodes to traverse parents before children
         top_sort_nodes = nx.topological_sort(bayesianNetwork.reverse(),[sink])
         for n in top_sort_nodes:
             if not bayesianNetwork.successors(n):
