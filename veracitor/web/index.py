@@ -25,7 +25,7 @@ def index():
     Initializes the web page.
     """
 
-        
+
     veracitor = {
         'title' : 'Veracitor',
         'tabs' : [
@@ -59,5 +59,10 @@ def index():
             }
         ]
     }
+
+    uname = session.get('user_name')
+    if uname != None:
+        veracitor['user_name'] = uname
+        session['user'] = extractor.get_user(uname)
 
     return render_template('index.html', vera=veracitor)
