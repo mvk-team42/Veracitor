@@ -4,6 +4,7 @@ from json import JSONEncoder
 from bson.json_util import default
 
 from veracitor.web import app
+from veracitor.database import extractor
 
 class JSONEnc(JSONEncoder):
 
