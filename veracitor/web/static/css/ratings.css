@@ -8,6 +8,10 @@
     position: relative;
 }
 
+#ratings_view div.description p {
+    font-size: 12px;
+}
+
 #ratings_view div.rating {
     float: right;
     position: absolute;
