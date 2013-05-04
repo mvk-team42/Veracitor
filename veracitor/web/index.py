@@ -6,12 +6,15 @@
     :synopsis: Defines what should be returned when / is requested.
 
 .. moduleauthor:: John Brynte Turesson <johntu@kth.se>
+.. moduleauthor:: Anton Erholt <aerholt@kth.se>
 
 """
 
-from flask import render_template, url_for
+from flask import render_template, url_for, session
 
 from veracitor.web import app
+from veracitor.database import *
+
 
 #app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='images/favicon.ico'))
 
@@ -20,7 +23,8 @@ def index():
     """
     Initializes the web page.
     """
-    
+
+        
     veracitor = {
         'title' : 'Veracitor',
         'tabs' : [
@@ -54,4 +58,8 @@ def index():
             }
         ]
     }
+
+    uname = session.get('user_name')
+    if uname != None:
+        veracitor['user_name'] = uname
     return render_template('index.html', vera=veracitor)
