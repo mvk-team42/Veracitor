@@ -129,6 +129,7 @@ def create_group():
     if not request.method == 'POST':
         abort(405)
     try:
+        # TODO: Use real session user
         user = session['user']
         user.create_group(request.form['name'])
         # Update the global user object for the current session 
@@ -148,6 +149,7 @@ def rate_group():
     if not request.method == 'POST':
         abort(405)
     try:
+        # TODO: Use real session user
         user = session['user']
         user.rate_group(request.form['name'], request.form['tag'],
                         int(request.form['rating']))
@@ -167,6 +169,7 @@ def get_used_tags():
     if not request.method == 'POST':
         abort(405)
     try:
+        # TODO: Use real session user
         user = session['user']
         tags_used = list(set([sr.tag.name for sr in user.source_ratings]))
 
