@@ -111,7 +111,7 @@ def rate_group():
 
 
 @app.route('/jobs/ratings/get_used_prod_tags', methods=['GET', 'POST'])
-def get_used_tags():
+def get_used_prod_tags():
     """
     Returns a list of all tags that the user has rated producers with.
 
@@ -122,6 +122,23 @@ def get_used_tags():
         user = extractor.get_user(session['user_name'])
 
         tags_used = list(set([sr.tag.name for sr in user.source_ratings]))
+
+        return jsonify(tags=tags_used)
+    except:
+        abort(400)
+
+
+def get_used_info_tags():
+    """
+    Returns a list of all tags that the user has rated information with
+
+    """
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        # TODO: Try this! (nested list comprehension)
+        user = extractor.get_user(session['user_name'])
+        tags_used = list(set((tag.name for tag in ir.information.tags) for ir in user.info_ratings))
 
         return jsonify(tags=tags_used)
     except:
