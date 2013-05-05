@@ -1,0 +1,19 @@
+{% extends "tabs/veracitor_tab.html" %}
+
+{% block content %}
+<h1>Login to Veracitor</h1>
+
+{% if session.error %}
+    <p class="error">{{ session.error }}</p>
+{% endif %}
+<form id="login" action="/login" method="post">
+    <label for="username">Username:</label>
+    <input name="username" type="text" />
+    <label for="password">Password:</label>
+    <input name="password" type="password" />
+    <input type="submit" value="login" />
+</form>
+
+<h2>Not a user?</h2>
+<input id="join_veracitor" type="button" value="Join Veracitor!" />
+{% endblock %}

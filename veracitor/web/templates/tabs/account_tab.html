@@ -3,8 +3,10 @@
 {% block content %}
 <h1>{{ tab.name }}</h1>
 
+{% if session.user_name %}
+
 <p>Name: Mr. Advanced User</p>
-                
+
 <h2>Rated sources:</h2>
 <p><input type="text"/><input type="button" value="Search sources" /></p>
 <ul class="list">
@@ -17,4 +19,18 @@
     <li>Rimjingang (unofficial, private publication)<div class="rating">2</div></li>
     <li>Korean News Service (Chosun Tongsin)<div class="rating">4</div></li>
 </ul>
+
+{% else %}
+
+<p>Become a user of Veracitor!</p>
+
+<form>
+    <label for="username">Username:</label>
+    <input name="username" type="text" />
+    <label for="password">Password:</label>
+    <input name="password" type="password" />
+    <input type="submit" value="login" />
+</form>
+
+{% endif %}
 {% endblock %}

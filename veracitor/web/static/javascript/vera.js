@@ -48,14 +48,16 @@
                 }
             },
             'set_active_tab': function ( user, tab_index ) {
-                localStorage.setItem(this._private.ACTIVE_TAB + user, tab_index);
+                if (typeof user !== 'undefined') {
+                    localStorage.setItem(this._private.ACTIVE_TAB + user, tab_index);
+                }
             },
             '_private': {
                 'ACTIVE_TAB': 'veracitor_active_tab_'
             }
         };
 
-        var active_tab = vera.local_storage.get_active_tab(session.user.name);
+        var active_tab = vera.local_storage.get_active_tab(vera.user_name);
 
         vera.dom = {};
 
