@@ -231,10 +231,12 @@ var Visualizer = function (controller) {
         }
 
         cy.nodes('#' + source).css({
+            'width': 80,
+            'height': 80,
             'border-width': 0,
-            'shape': 'rectangle'
+            'shape': 'ellipse'
         });
-        var animation = new Animation('/static/images/node_loading.png', 4, 2, '0:7', 1000);
+        var animation = new Animation('/static/images/node_loading.png', 4, 2, '0:7', 500);
         animation.animate(cy.nodes('#' + source));
 
         cy.layout({
