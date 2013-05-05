@@ -128,6 +128,7 @@ def get_used_prod_tags():
         abort(400)
 
 
+@app.route('/jobs/ratings/get_used_info_tags', methods=['GET', 'POST'])
 def get_used_info_tags():
     """
     Returns a list of all tags that the user has rated information with
