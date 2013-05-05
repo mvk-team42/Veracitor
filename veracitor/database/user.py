@@ -65,6 +65,7 @@ class User(producer.Producer):
         for g_rating in self.group_ratings:
             if(g_rating.group == name_of_group):
                 g_rating.rating = rating
+                found = True
         if(not found):
             new_rating = GroupRating(group=name_of_group,
                                      rating=rating)
