@@ -2,34 +2,28 @@
 
 {% block content %}
 <div id="network-holder">
-    <div class="top">
-        <div class="left">
-            <div id="network-info-view">
-                <div class="body">
-                    <h1 class="title">Title</h1>
-                    <p><b>Description:</b><span class="description"></span></p>
-                    <p><b>URL:</b><span class="url"></span></p>
-                    <p><b>Source type:</b><span class="type"></span></p>
-                    <p><b>Informations:</b></p>
-                    <span class="informations"></span>
-                    <input type="text" placeholder="Group name" />
-                    <input type="button" value="Add to group" />
-                </div>
+    <div class="left">
+        <div id="network-info-view">
+            <div class="body">
+                <h1 class="title">Title</h1>
+                <p><b>Description:</b><span class="description"></span></p>
+                <p><b>URL:</b><span class="url"></span></p>
+                <p><b>Source type:</b><span class="type"></span></p>
+                <p><b>Informations:</b></p>
+                <span class="informations"></span>
+                <input type="text" placeholder="Group name" />
+                <input type="button" value="Add to group" />
             </div>
-            <div id="network-toolbox">
-                <div class="body">
-                    <p><b>Tool-box</b></p>
-                </div>
-            </div>
-        </div>
-        <div class="right">
-            <div id="network-graph"></div>
         </div>
     </div>
-    <div class="bottom">
-        <div id="network-relation-view">
+    <div class="right">
+        <div id="network-graph">
+            <div class="background"></div>
+            <div id="cytoscape"></div>
+        </div>
+        <div id="network-toolbox">
             <div class="body">
-                <p><b>Target producer</b></p>
+                <p><b>Tool-box</b></p>
             </div>
         </div>
     </div>

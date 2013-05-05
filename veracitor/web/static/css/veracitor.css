@@ -79,10 +79,6 @@ header #menu li a {
 
 header #menu .active {
     background-color: #eee;
-
-/*    -webkit-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
-    -moz-box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);
-    box-shadow: inset 0px 6px 6px rgba(50, 50, 50, 0.15);*/
 }
 
 header #menu .active a,
@@ -126,10 +122,6 @@ footer > .login {
     position: absolute;
     bottom: 0;
     right: 10px;
-}
-
-.error { /* dirty haxx */
-    color: red;
 }
 
 /* CONTENT */
@@ -183,12 +175,6 @@ hr {
 
     font-size: 12pt;
 }
-
-/* hide the scrollbar (not working in IE) */
-/*
-.view > .content::-webkit-scrollbar {
-    display: none;
-}*/
 
 /* SIDE TAB */
 
@@ -356,9 +342,9 @@ ul.list li .rating, div.rating {
     background: linear-gradient(to bottom,  rgba(217,236,239,1) 0%,rgba(198,228,232,1) 50%,rgba(183,215,223,1) 51%,rgba(214,232,240,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d9ecef', endColorstr='#d6e8f0',GradientType=0 ); /* IE6-9 */
 
-    -moz-box-shadow: 0px 1px 2px #000;
-    -box-shadow: 0px 1px 2px #000;
-    -shadow: 0px 1px 2px #000;
+    -moz-box-shadow: 0px 1px 2px #999;
+    -box-shadow: 0px 1px 2px #999;
+    -shadow: 0px 1px 2px #999;
     box-shadow: 0px 1px 2px #999;
 
     -webkit-border-radius: 15px;

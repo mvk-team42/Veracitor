@@ -33,14 +33,13 @@ var Visualizer = function (controller) {
         }
     };
 
-    var holder = document.getElementById('network-holder');
     window.cy;
 
     /**
        Initialize the visualizer; Initialize cytoscape.
      */
     (function () {
-        $('#network-graph').cytoscape({
+        $('#cytoscape').cytoscape({
             ready: function () {
                 cy = this;
 

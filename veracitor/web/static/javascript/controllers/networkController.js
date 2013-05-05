@@ -56,7 +56,7 @@ var NetworkController = function (controller) {
         var network_controller = this;
 
         $.post('/jobs/network/path', {
-            'source': session.user.name,
+            'source': vera.user_name,
             'target': prod.name
         }, function (data) {
             network_controller.display_producer_information(prod);
