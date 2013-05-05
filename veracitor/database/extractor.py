@@ -100,8 +100,11 @@ def get_group(owner_name, group_name):
 
     """
     extr_owner = get_user(owner_name)
+
     extr_group = group.Group.objects(owner=extr_owner, name=group_name)
+  
     __checkIfEmpty(extr_group)
+
     return extr_group[0]
 
 def get_tag(requested_name):

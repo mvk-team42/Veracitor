@@ -164,8 +164,6 @@ def notify_producer_was_updated(producer):
         graph.add_edge(producer.name, k, v)
         tmp_edges.append((producer.name,k,v))
 
-    print tmp_edges
-    print out_edges
     for edge in out_edges:
         if edge not in tmp_edges:
             graph.remove_edge(edge[0], edge[1])
@@ -236,16 +234,24 @@ def get_common_info_ratings(producer_name1, producer_name2, tag_names):
 
     p1_info_ratings = extractor.get_producer(producer_name1).info_ratings
     p2_info_ratings = extractor.get_producer(producer_name2).info_ratings
+    #print p1_info_ratings
+    #print p2_info_ratings['dn_ledare1']
+    #print "****"
+    common_info_ratings = []
     val = 0;
-    for k, v in p1_info_ratings.iteritem():
+    for k, v in p1_info_ratings.iteritems():
         try:
-            val = p2.info_ratings[k]
-            if __contains_common_tags(extractor.get_information(k).tags,
-                                      tag_names)
-                common_info_ratings.append( (v, val) )           
+            val = p2_info_ratings[k]    
         except Exception: 
-            pass
+            print "Excheitpion"
+        print extractor.get_information(k)
+        if __contains_common_tags(extractor.get_information(k).tags,
+                                  tag_names):
+            common_info_ratings.append( (v, val) )
 
+    print "****"           
+   
+    
     return common_info_ratings
     
 def __contains_common_tags(tags_1, tag2_names):

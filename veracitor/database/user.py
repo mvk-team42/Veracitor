@@ -14,6 +14,7 @@ import tag
 import extractor
 import datetime
 import dbExceptions
+import copy
 
 
 class User(producer.Producer):
@@ -43,33 +44,38 @@ class User(producer.Producer):
     email = StringField()
     
     def rate_group(self, name_of_group, name_of_tag, rating):
-        if(not self.__user__owns_group(name_of_group)
-            return False;
+       
         if(type(name_of_group) is str and\
            type(name_of_tag) is str and\
            type(rating) is int):
+       
+            if(not self.__user_owns_group(name_of_group)):
+                return False
             self.group_ratings[name_of_group] = rating
             self.__rate_all_members(name_of_group, name_of_tag, rating)
             return True
+
         else:
             raise TypeError("Problem with type of input variables.")
-
     
     
 
     def create_group(self, group_name):
+        
         if(self.__user_owns_group(group_name)):
             return False
         new_group = group.Group(name=group_name,
                                 owner=self,
                                 time_created=datetime.datetime.now())
+        
         new_group.save()
         #self.groups.append(new_group)
+
         return True
         
     
     def __rate_all_members(self, group_to_rate, considered_tag, rating):
-        group_to_rate = extractor.get_group(self, group_to_rate)
+        group_to_rate = extractor.get_group(self.name, group_to_rate)
         considered_tag = extractor.get_tag(considered_tag)
         for p in group_to_rate.producers:
             self.rate_source(p, considered_tag, rating)
