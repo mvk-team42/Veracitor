@@ -39,14 +39,16 @@ var RatingsController = function (controller) {
      */
     function add_event_handlers() {
 
+
+	$('#ratings_view form').submit(function(evt) {
+	    return false;
+	});
+
 	$("#new-group").click(function(evt) {
 	    show_new_group_form();
 	});
 
 	$("#rate-group").click(function(evt) {
-	    //TODO The user should not be able to
-	    // rate empty groups. Check if empty
-	    // with a post?
 	    show_rate_group_form();
 	});
 
@@ -69,6 +71,7 @@ var RatingsController = function (controller) {
 		       'rating' : $('#rate-group-rating').find(':selected').val()
 		   }, done_rating_group)
 	});
+
     }
 
 
