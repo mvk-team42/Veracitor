@@ -234,7 +234,7 @@ var Visualizer = function (controller) {
             'border-width': 0,
             'shape': 'rectangle'
         });
-        var animation = new Animation('/static/images/veracitor_logo_2.png', 2, 2, '0:3', 1000);
+        var animation = new Animation('/static/images/node_loading.png', 4, 2, '0:7', 1000);
         animation.animate(cy.nodes('#' + source));
 
         cy.layout({
