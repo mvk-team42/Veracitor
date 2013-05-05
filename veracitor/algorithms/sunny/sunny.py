@@ -14,9 +14,9 @@ def sunny(graph, source, sink, tag="weight"):
         # Related TODO: read paper again...
         for leaf in leaves:
             bounds[leaf] = [1,1]
-            bounds = sample_bounds(bayesianNetwork, source, sink, bounds, 100)
-            if not abs(bounds[source][0] - source_lower) < epsilon and abs(bounds[source][1] - source_upper) < epsilon:
-                decision.append(leaf)
+        bounds = sample_bounds(bayesianNetwork, source, sink, bounds, 100)
+        if not abs(bounds[source][0] - source_lower) < epsilon and abs(bounds[source][1] - source_upper) < epsilon:
+            decision.append(leaf)
 
     return tt.compute_trust(bayesianNetwork, source, sink, decision, tag)
 
