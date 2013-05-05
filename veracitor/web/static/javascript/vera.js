@@ -39,7 +39,23 @@
         /** Side tab dom element */
         var side_tab;
 
-        var active_tab = 0;
+        vera.local_storage = {
+            'get_active_tab': function ( user ) {
+                if (localStorage.getItem(this._private.ACTIVE_TAB + user) !== null) {
+                    return parseInt(localStorage.getItem(this._private.ACTIVE_TAB + user));
+                } else {
+                    return 0;
+                }
+            },
+            'set_active_tab': function ( user, tab_index ) {
+                localStorage.setItem(this._private.ACTIVE_TAB + user, tab_index);
+            },
+            '_private': {
+                'ACTIVE_TAB': 'veracitor_active_tab_'
+            }
+        };
+
+        var active_tab = vera.local_storage.get_active_tab(session.user.name);
 
         vera.dom = {};
 
@@ -110,6 +126,9 @@
                 })(tab + 1));
             }
         }
+
+        // activate the active tab
+        controller.switch_to_tab_index(active_tab);
     }
 
     // Initialize when the document has loaded

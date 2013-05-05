@@ -94,6 +94,8 @@ function SuperController(vera) {
         }
 
         active_tab = clicked_tab;
+        // Save active tab for further sessions
+        vera.local_storage.set_active_tab(session.user.name, active_tab);
         // Notify the tab that it has been activated
         controller[clicked_tab_key].on_tab_active();
     }

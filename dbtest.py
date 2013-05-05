@@ -1,4 +1,5 @@
 
+from veracitor.database import dbExceptions
 from veracitor.database import *
 
 import datetime
@@ -11,7 +12,7 @@ def generate_test_data():
 
     try:
         john = extractor.get_producer('John')
-    except NotInDataBase:
+    except dbExceptions.NotInDatabase:
         john = user.User(name='John',password='123')
         john.save()
     prod1 = extractor.producer_create_if_needed("Prod1", "TestProducer")
