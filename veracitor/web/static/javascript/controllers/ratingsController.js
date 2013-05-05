@@ -28,8 +28,8 @@ var RatingsController = function (controller) {
      */
     this.on_tab_active = function () {
 	$.post('/jobs/ratings/render',{}, function(data){
-	    $('#ratings_view_content').html(data);
-	    add_event_handlers();
+	    $('#ratings_view_content').html(data.html);
+	    add_event_handlers(data.producers, data.information);
 	    populate_tag_dropdown();
 	});
     };
@@ -37,8 +37,16 @@ var RatingsController = function (controller) {
     /**
        Add event handlers to the ratings view.
      */
-    function add_event_handlers() {
-
+    function add_event_handlers(producers, information) {
+	for(var p in producers) {
+	    producer = producers[p];
+	    alert(producer.description);
+	    $('div.description #' + producer.name)
+		.click(function(evt) {
+		    controller.network.visualize_producer_in_network(producer, -1);
+		    controller.switch_to_tab('network');
+		});
+	}
 
 	$('#ratings_view form').submit(function(evt) {
 	    return false;
@@ -90,11 +98,13 @@ var RatingsController = function (controller) {
     function show_rate_group_form() {
 	$('#rate-group').css('display','none');
 	$('#rate-group-form-div').fadeIn();
+	$('#rate-border-div').css('border','1px solid');
     }
 
     function hide_rate_group_form() {
 	$('#rate-group-form-div').fadeOut();
 	$('#rate-group').css('display','block');
+	$('#rate-border-div').css('border','');
     }
 
     function show_new_group_form() {

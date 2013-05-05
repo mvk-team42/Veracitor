@@ -12,7 +12,7 @@
 	      -->
 	  </select>
 	  </div>
-	<div display='block'>
+	<div display='block' id='rate-border-div'>
 	  <label for="groups">Group:</label>
 	  <select name="groups" id="groups">
 	    {% for group in user.groups  %}
@@ -40,13 +40,13 @@
 	      <input type="button" value="Rate group" id="rate-group-submit"/>
 	    </form>
 	  </div>
+	</div>
 	  <div id="new-group-form-div" style="display:none;">
 	    <form id="new-group-form">
 	      <input id="name" type="text" placeholder="Group name"/>
 	      <input type="button" value="Create group" id="create-group"/>
 	    </form>
 	  </div>
-	</div>
 	<div display='block' id='new-group-div'>
 	  <input type="button" value="+ New group" id='new-group'/>
 	</div>
@@ -69,6 +69,7 @@
     <div>
       <div class='description'>
 	<p>{{ producer.description }}</p>
+	  <input type="button" id="{{ producer.name  }}" value="View in network"/>
       </div>
     </div>
     {% endfor %}

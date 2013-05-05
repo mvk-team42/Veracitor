@@ -38,7 +38,8 @@ def get_user_as_dict(username):
 
     source_ratings = [{'name' : s.source.name,
                        'tag' : s.tag.name,
-                       'rating': s.rating }
+                       'rating': s.rating ,
+                       'description': extractor.get_producer(s.source.name).description}
                       for s in user_obj.source_ratings]
 
     info_ratings = [{'title':ir.information.title, 'rating':ir.rating}
