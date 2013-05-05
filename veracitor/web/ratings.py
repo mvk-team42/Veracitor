@@ -7,7 +7,7 @@
 .. module:: ratings
     :synopsis: Defines server logic for the ratings tab
 
-.. moduleauthor:: Martin RunelÃ¶v <mrunelov@kth.se
+.. moduleauthor:: Martin Runelöv <mrunelov@kth.se
 .. moduleauthor:: Daniel Molin <dmol@kth.se>
 
 """
@@ -33,11 +33,14 @@ def render_ratings():
         abort(405)
     try:
         userDict = utils.get_user_as_dict(session['user_name'])
+        producers = userDict['source_ratings']
+        information = userDict['info_ratings']
+        html = render_template('tabs/ratings_tab_content.html', user=userDict)
     except Exception, e:
         log(e)
         abort(400)
 
-    return render_template('tabs/ratings_tab_content.html', user=userDict)
+    return jsonify(html=html, producers=producers, information=information)
 
 @app.route('/jobs/ratings/rate_producer', methods=['GET', 'POST'])
 def rate_producer():
