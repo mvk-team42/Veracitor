@@ -19,7 +19,7 @@ import math
 
 tag = "cooking"
 
-def sample_bounds(bayesianNetwork, source, sink, k=10):
+def sample_bounds(bayesianNetwork, source, sink, bounds, k=10):
     """
     The main function in the sampling procedure. 
 
@@ -39,10 +39,9 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
     for n in bayesianNetwork.nodes():
         xmin_counters[n] = 0
         xmax_counters[n] = 0
-    # TODO backwards BFS to set attributes in correct order.
-    # Atm xmin and xmax have not been set for previous nodes
     for _ in range(k):
         nodes = bayesianNetwork.node
+        # Top sort the nodes to traverse parents before children
         top_sort_nodes = nx.topological_sort(bayesianNetwork.reverse(),[sink])
         for n in top_sort_nodes:
             if not bayesianNetwork.successors(n):
@@ -58,7 +57,12 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
                     
             else:
                 parents = bayesianNetwork.successors(n)
-                probability_set = get_probability_set(bayesianNetwork, n)
+                # If this is the first run, calculate probabilities
+                if not bounds:
+                    probability_set = get_probability_set(bayesianNetwork, n)
+                # Else, use the previously sampled probabilities
+                else:
+                    probability_set = set([bounds[n]])
                 rand = random.random()
                 if rand <= min(probability_set):
                     nodes[n]['xmin'] = 1
@@ -70,41 +74,26 @@ def sample_bounds(bayesianNetwork, source, sink, k=10):
                     xmax_counters[n]+=1
                 else:
                     nodes[n]['xmax'] = 0
-
     
-    min_total_source = xmin_counters[source]/k
-    max_total_source = xmax_counters[source]/k
-    return (min_total_source,max_total_source)
+    # Build the return value.
+    if not bounds:
+        for node in bayesianNetwork.node:
+            bounds[node] = [xmin_counters[node]/k, xmax_counters[node]/k]
+    else:
+        bounds[source] = [xmin_counters[source]/k, xmax_counters[source]/k]
 
-                # Probability set:
-                # Calculate probability of all possible scenarios
-                # for all parents. e.g. if you have two parents,
-                # they can be {true,true},{false,false},
-                # {true,false} and {false,true}.
-                # This depends on their xmin and xmax values.
-                # When all combinations have been calculated,
-                # the min and max probabilities are the used ones.
-                # They are used with the randomized r to calculate
-                # xmin and xmax for the current node.
-                #
-                # So, we need a way to calculate all possible
-                # permutations of probabilities.
-                # Example:
-                # "A" has parents "B" and "C" with:
-                # xmin(B) = 0, xmax(B) = 1
-                # xmin(C) = 0, xmax(C) = 1
-                #
-                # In this case, we need to check the probability of
-                # A being true with all four possible combinations
-                # of probabilities for B and C.
+    return bounds
+
 
 
 def get_probability_set(network, node):
     """
-    Calculates the set of possible probabilites of 'node' for being true. 
+    Calculates the set of possible probabilites of 'node' being true (included). 
 
     """
     probabilities = set()
+    # Generates all possible permutations of xmin and xmax values
+    # for the current node and its parents
     variants = [[[n, True],[n, False]] for n in network.successors(node)]
     permutations = list(itertools.product(*variants))
     nodes = network.node
@@ -147,6 +136,7 @@ def p_confidence(p1, p2, weights=(0.7, 0.2, 0.1, 0.8)):
     max_difference = networkModel.get_max_rating_difference(p1, p2, [tag])
     belief_coefficient = networkModel.get_belief_coefficient(p1, p2, [tag])
 
+    # TODO remove prints.
     #print "overall_difference: " + str(overall_difference)
     #print "diff on extremes: " + str(difference_on_extremes)
     #print "max_difference " + str(max_difference)
