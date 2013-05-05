@@ -118,74 +118,7 @@ var RatingsController = function (controller) {
     }
 
 
-    /**
-       Makes a database request to the server.
-       Fetches all groups that the current user has.
-    */
-    var request_groups = function(user_id) {
-	$.post("/jobs/search/groups", {
-	    'user_id' : user_id
-	}, function (data) {
-	    var job_id = data['job_id'];
-
-	    controller.set_job_callback(job_id, function (data) {
-		if(data.result.data.length > 0) {
-		    search_result = data.result.data;
-
-		    //var table = etc etc
-		    // see searchController...
-		    //Fill tables with result
-		}
-	    });
-	});
-    }
-
-    /**
-       Makes a database request to the server.
-       Fetches a specific group that the current user has
-    */
-    var request_group = function(user_name,group_name ) {
-	$.post("/jobs/ratings/group", {
-	    'owner_name' : user_name,
-	    'group_name' : group_name
-	}, function (data) {
-	    var job_id = data['job_id'];
-
-	    controller.set_job_callback(job_id, function (data) {
-		if(data.result.data.length > 0) {
-		    search_result = data.result.data;
-
-		    //var table = etc etc
-		    // see searchController...
-		    //Fill tables with result
-		}
-	    });
-	});
-    }
-
-
-    /**
-       Makes a database request to the server.
-       Fetches information objects, optionally
-       filtered by tag.
-       TODO: Any more filters?
-    */
-    var request_information_objects = function(tag) {
-	//TODO: Implement.
-    }
-
-
-    //TODO. Nåt sånt?
-    function set_producer_reliability_rating(producer_id) {
-
-    }
-
-    //TODO. Nåt sånt?
-    function set_information_credibility_rating(information_id) {
-
-    }
-
-    /**
+      /**
      * Fills the dropdown list for producer rating tags with options
      */
     function populate_tag_dropdown(){
