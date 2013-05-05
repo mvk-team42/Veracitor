@@ -284,3 +284,43 @@ def search_informations(possible_info, tags, startD, endD):
                 break
 
     return to_be_ret
+
+def db_to_dict( o ):
+    if isinstance(o, producer.Producer):
+        infos = [ db_to_dict(i) for i in o.infos ]
+        source_ratings = [ db_to_dict(r) for r in o.source_ratings ]
+        info_ratings = [ db_to_dict(r) for r in o.info_ratings ]
+        data = {'name': o.name,
+                'first_name': o.first_name,
+                'last_name': o.last_name,
+                'description': o.description,
+                'url': o.url,
+                'infos': infos,
+                'source_ratings': source_ratings,
+                'info_ratings': info_ratings,
+                'type_of': o.type_of}
+        if isinstance(o, user.User):
+            # TODO
+            #dict['time_joined'] = o.time_joined
+            data['group_ratings'] = [ db_to_dict(r) for r in o.group_ratings ]
+            data['groups'] = [ db_to_dict(r) for r in o.groups ]
+            data['email'] = o.email
+        return data
+    if isinstance(o, information.Information):
+        # TODO
+        return {}
+    if isinstance(o, tag.Tag):
+        # TODO
+        return {}
+    if isinstance(o, group.Group):
+        # TODO
+        return {}
+    if isinstance(o, producer.SourceRating):
+        # TODO
+        return {}
+    if isinstance(o, producer.InformationRating):
+        # TODO
+        return {}
+    if isinstance(o, user.GroupRating):
+        # TODO
+        return {}
