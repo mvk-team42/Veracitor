@@ -231,10 +231,11 @@ var Visualizer = function (controller) {
         }
 
         cy.nodes('#' + source).css({
-            'background-color': color.node.user.background,
-            'border-color': color.node.user.border,
-            'shape': 'roundrectangle'
+            'border-width': 0,
+            'shape': 'rectangle'
         });
+        var animation = new Animation('/static/images/veracitor_logo_2.png', 2, 2, '0:3', 1000);
+        animation.animate(cy.nodes('#' + source));
 
         cy.layout({
             'name': 'arbor'
@@ -307,4 +308,129 @@ var Visualizer = function (controller) {
         }
     };
 
+    var Animation = function ( url, w, h, frames, time ) {
+        var images;
+        var animation_cycle;
+        var animation_frame;
+        var animating;
+        var frame_time;
+        var node;
+
+        var timer = {
+            'delta': 0,
+            'time': 0,
+            'millis': +new Date,
+            'reset': function () {
+                this.time = 0;
+                this.millis = +new Date;
+            },
+            'requestAnimationFrame': function ( callback ) {
+                var time = - this.millis + (this.millis = +new Date);
+                this.time += time;
+                this.delta = (time / 1000) % 1;
+                window.requestAnimationFrame(callback);
+            }
+        };
+
+        var ready = false;
+        var ready_queue = [];
+        var image = new Image();
+        image.onload = function () {
+            divide_image(this);
+            parse_animation_cycle(frames);
+
+            ready = true;
+            for (var i in ready_queue) {
+                ready_queue[i]();
+            }
+        };
+        image.src = url;
+
+        var divide_image = function ( img ) {
+            var dx = img.width / w;
+            var dy = img.height / h;
+
+            if (dx % 1 > 0 || dy % 1 > 0) {
+                throw 'Image could not be divided.';
+            }
+
+            var canvas = document.createElement('canvas');
+            canvas.width = dx;
+            canvas.height = dy;
+            var ctx = canvas.getContext('2d');
+            images = new Array(w * h);
+            // Divide the image and save each piece
+            for (var j = 0; j < h; j += 1) {
+                for (var i = 0; i < w; i += 1) {
+                    ctx.clearRect(0, 0, dx, dy);
+                    ctx.drawImage(img, i * dx, j * dy, dx, dy, 0, 0, dx, dy);
+                    images[j * w + i] = canvas.toDataURL();
+                }
+            }
+        };
+
+        var parse_animation_cycle = function ( frames ) {
+            animation_cycle = [];
+            var s = frames.split(' ');
+            var range, from, to, step;
+            for (var i in s) {
+                if (!s[i].match(/(\d+)(:\d+)?/g)) {
+                    throw 'Could not parse animation frame cycle.';
+                }
+                range = s[i].split(':');
+                from = parseInt(range[0]);
+                if (range.length > 1) {
+                    to = parseInt(range[1]);
+                } else {
+                    to = from;
+                }
+                if (to > from) {
+                    step = 1;
+                } else {
+                    step = -1;
+                }
+
+                for (var j = from; j != to + step; j += step) {
+                    animation_cycle.push(j);
+                }
+            }
+            // Set the time for each image
+            frame_time = time / animation_cycle.length;
+        };
+
+        var animation_loop = function () {
+            if (timer.time > frame_time) {
+                timer.reset();
+                animation_frame += 1;
+                if (animation_frame === animation_cycle.length) {
+                    animation_frame = 0;
+                }
+                node.css('background-image', images[animation_cycle[animation_frame]]);
+            }
+
+            if (animating) {
+                timer.requestAnimationFrame(animation_loop);
+            }
+        };
+
+        this.animate = function ( n ) {
+            if (ready) {
+                node = n;
+                node.css('background-image', images[animation_cycle[0]]);
+                animation_frame = 0;
+                animating = true;
+                timer.reset();
+                animation_loop();
+            } else {
+                var animation = this;
+                ready_queue.push(function () {
+                    animation.animate(n);
+                });
+            }
+        };
+
+        this.stop = function () {
+            animating = false;
+        };
+    };
 };

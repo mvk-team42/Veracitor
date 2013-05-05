@@ -26,6 +26,14 @@
     /** The time taken to switch from one tab to another in milliseconds. */
     var TAB_SWITCH_TIME = 300;
 
+    /** Initialize window.requestAnimationFrame */
+    window.requestAnimationFrame = window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        function ( callback ) {
+            window.setTimeout(callback, 1000 / 30);
+        };
+
     /**
         This function is run when the document is loaded.
         @name Vera#init
