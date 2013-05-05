@@ -52,3 +52,4 @@ celerybeat.pid
 
 #local server-settings
 veracitor/web/settings.py
+settings.py
