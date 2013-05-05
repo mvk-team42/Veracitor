@@ -4,11 +4,11 @@
 
 try:
     from veracitor.tasks.tasks import taskmgr
-except:    
+except:
     from tasks import taskmgr
 
 from ..algorithms.tidaltrust import compute_trust
-from ..database import globalNetwork as gn
+from ..database import networkModel as nm
 
 @taskmgr.task
 def sunny(source, sink, tag, network):
@@ -22,7 +22,7 @@ def tidaltrust(source, sink, tag):
     tag = unicode(tag)
 
     # Get global network
-    network = gn.get_global_network()
+    network = nm.get_global_network()
 
     # Calc trust
     trust = compute_trust(network=network,
