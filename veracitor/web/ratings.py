@@ -110,7 +110,7 @@ def rate_group():
     # TODO: Render json
 
 
-@app.route('/jobs/ratings/get_used_tags', methods=['GET', 'POST'])
+@app.route('/jobs/ratings/get_used_prod_tags', methods=['GET', 'POST'])
 def get_used_tags():
     """
     Returns a list of all tags that the user has rated producers with.
