@@ -33,6 +33,7 @@ def sunny(graph, source, sink, tag="weight"):
     # List of nodes to exclude
     decision = []
     bayesianNetwork = generate_bn(graph,source,sink,tag)
+    # TODO: leaves are the ones with out_degree 0 after the flip in generate_bn, right? Otherwise, in_degree = 0?
     leaves = (n for n,d in graph.out_degree_iter() if d == 0)
     for leaf in leaves:
         bounds = sample_bounds(bayesianNetwork, source, sink, {}, 100)
