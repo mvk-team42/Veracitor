@@ -49,3 +49,7 @@ nosetests.xml
 # celery stuff
 celerybeat-schedule
 celerybeat.pid
+
+#local server-settings
+veracitor/web/settings.py
+settings.py
