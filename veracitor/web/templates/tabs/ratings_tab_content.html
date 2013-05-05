@@ -114,7 +114,7 @@
 	{% for information in user.info_ratings  %}
 	<h3>{{ information.name }} <div class='rating'>{{ information.rating }}</div></h3>
 	<div>
-	  <p>Information about {{ information.name }}</p>
+	  <p>URL: <a href="{{ information.url }}">{{ information.url  }}</a></p>
 	</div>
 	{% endfor %}
       </div>
