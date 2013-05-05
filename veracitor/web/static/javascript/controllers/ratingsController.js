@@ -40,7 +40,6 @@ var RatingsController = function (controller) {
     function add_event_handlers(producers, information) {
 	for(var p in producers) {
 	    producer = producers[p];
-	    alert(producer.description);
 	    $('div.description #' + producer.name)
 		.click(function(evt) {
 		    controller.network.visualize_producer_in_network(producer, -1);
