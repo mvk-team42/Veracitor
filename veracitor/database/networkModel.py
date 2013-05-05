@@ -75,8 +75,8 @@ def build_network_from_db():
     # where the actual rating and corresponding tag is set as an
     # edge attribute.
     for p2 in producers:
-        for s in p2.source_ratings:
-            graph.add_edge(p2.name, s.source.name, {s.tag.name: s.rating})
+        for k,v in p2.source_ratings.iteritems():
+            graph.add_edge(p2.name, k, v)
     
     return graph
 
@@ -115,8 +115,8 @@ def notify_producer_was_added(producer):
         to be inserted into the networkModel.
     """
     graph.add_node(producer.name)
-    for s in producer.source_ratings:
-        graph.add_edge(producer.name, s.source.name, {s.tag.name: s.rating})
+    for k,v in producer.source_ratings.iteritems():
+            graph.add_edge(producer.name, k, v)
 
 def notify_producer_was_removed(producer):
     """
@@ -153,8 +153,27 @@ def notify_producer_was_updated(producer):
 
     """
     # Possibly cheap/slow implementation.
-    notify_producer_was_removed(producer)
-    notify_producer_was_added(producer)
+    
+    out_edges = graph.out_edges(nbunch=[producer.name], data=True)
+    tmp_edges = []
+    for k,v in producer.source_ratings.iteritems():
+        try:
+            graph.remove_edge(producer.name, k)
+        except Exception:
+            pass
+        graph.add_edge(producer.name, k, v)
+        tmp_edges.append((producer.name,k,v))
+
+    print tmp_edges
+    print out_edges
+    for edge in out_edges:
+        if edge not in tmp_edges:
+            graph.remove_edge(edge[0], edge[1])
+
+    
+    
+    #notify_producer_was_removed(producer)
+    #notify_producer_was_added(producer)
 
 def get_overall_difference(producer_name1, producer_name2, tag_names):
     """
@@ -181,11 +200,12 @@ def get_overall_difference(producer_name1, producer_name2, tag_names):
     # No info ratings in common?
     if len(common_info_ratings) == 0:
         return -1.0
+
     sum_diff_ratings = 0
     for info_rating_t in common_info_ratings:
         # Increment sum with the difference in opinion 
         # of the currently selected info-rating-tuple
-        sum_diff_ratings += math.fabs(info_rating_t[0].rating - info_rating_t[1].rating)
+        sum_diff_ratings += math.fabs(info_rating_t[0] - info_rating_t[1])
     avg = sum_diff_ratings/len(common_info_ratings)
 
     return avg
@@ -212,25 +232,21 @@ def get_common_info_ratings(producer_name1, producer_name2, tag_names):
         They have both rated with the same tag specified.
         The return value will be (info_rating1, info_rating2,).
     
-    """    
+    """
+
     p1_info_ratings = extractor.get_producer(producer_name1).info_ratings
     p2_info_ratings = extractor.get_producer(producer_name2).info_ratings
-    
-    common_info_ratings = []
-    # Candidate for later optimization.
-    for info_1 in p1_info_ratings:
-        for info_2 in p2_info_ratings:
-            # Are these ratings set on the same information?
-            if info_1.information.title == info_2.information.title:
-                # Does the information have a tag matching requested tags?
-                if __contains_common_tags(info_1.information.tags, tag_names):
-                    # The ratings are set on the same information and conforms to tags.
-                    # Therefore considered as a common info rating.
-                    common_info_ratings.append((info_1, info_2,))
-                    
-   
-    return common_info_ratings
+    val = 0;
+    for k, v in p1_info_ratings.iteritem():
+        try:
+            val = p2.info_ratings[k]
+            if __contains_common_tags(extractor.get_information(k).tags,
+                                      tag_names)
+                common_info_ratings.append( (v, val) )           
+        except Exception: 
+            pass
 
+    return common_info_ratings
     
 def __contains_common_tags(tags_1, tag2_names):
     for tag in tags_1:
@@ -253,37 +269,38 @@ def get_extreme_info_ratings(producer_name, tag_names):
         tag_names ([str]): The tags specifying which informations to consider.
 
     Returns: 
-        [producer.InformationRating]. Ignoring tags, let's say a producer
+        {Information.title : rating_value }. Ignoring tags, let's say a producer
         has made the ratings 4, 6, 5, 1 and 10. This function would calculate
         the mean of these (I.E. 5) and the standard deviation of these
-        (2.925747...) and return those info_ratings with a rating that
+        (2.925747...) and return title of Informations with a rating that
         deviates from the mean by the standard deviation. In this
-        case the info_ratings with the ratings 1 and 10 would be returned
-        in a list.
+        case the Information ratings with the ratings 1 and 10 would be returned
+        in a dictionary.
     """
     producer = extractor.get_producer(producer_name)
     
     # Will contain info ratings set on informations
-    relevant_info_ratings = []
+    relevant_info_ratings = {}
     relevant_info_ratings_ints = []
     total_sum = 0.0
-    for info in producer.info_ratings:
-        for tag in info.information.tags:
+    for k,v in producer.info_ratings.iteritems():
+        for tag in extractor.get_information(k).tags:
             if tag.name in tag_names:
-                relevant_info_ratings.append(info)
-                relevant_info_ratings_ints.append(info.rating)
-                total_sum += info.rating
+                relevant_info_ratings[k] = v
+                relevant_info_ratings_ints.append(v)
+                total_sum += v
                 break
     
-    mean = (total_sum)/len(relevant_info_ratings)
+    mean = (total_sum)/len(relevant_info_ratings_ints)
 
-    extremes = []
+    extremes = {}
     np_array = array(relevant_info_ratings_ints)
     std = np_array.std()
-    for info in relevant_info_ratings:
-        diff = math.fabs(info.rating - mean)
+    for k,v in relevant_info_ratings.iteritems():
+        diff = math.fabs(v - mean)
         if diff > std:
-            extremes.append(info)
+            extremes[k] = v
+
     return extremes
     
     
@@ -317,12 +334,9 @@ def get_max_rating_difference(producer_name1, producer_name2, tag_names):
 
     max_diff = 0
     for common_tuple in common_info_ratings:
-       diff = math.fabs(common_tuple[0].rating - common_tuple[1].rating)
+       diff = math.fabs(common_tuple[0] - common_tuple[1])
        if diff > max_diff:
            max_diff = diff
 
     return max_diff
-
-if __name__ == "__main__":
-    build_network_from_db()
 

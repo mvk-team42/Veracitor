@@ -16,14 +16,6 @@ import datetime
 import dbExceptions
 
 
-class GroupRating(EmbeddedDocument):
-    """ Defines a object structure used by
-    User to store user specific group rating.
-    
-    """
-    group = ReferenceField('Group', required=True)
-    rating = IntField(required=True)
-
 class User(producer.Producer):
     """
     The Producer class inherits from the mongoengince Document class.
@@ -43,35 +35,27 @@ class User(producer.Producer):
     The name field uniquely identifies a user in the database.
     """
     time_joined = DateTimeField()
-    group_ratings = ListField(EmbeddedDocumentField(GroupRating))
+    group_ratings = DictField()
     groups = ListField(ReferenceField('Group'))
     type_of = "User"
     password = StringField(required=True)
     pw_hash = StringField()
     email = StringField()
-
-    def rate_group(self, name_of_group, name_of_tag, rating):
-        """
-        This function adds a group rating to the user, unless
-        there already exists a group rating with name_of_group and
-        name_of_tag, in which case only the rating is updated.
-        Also, the user cannot rate a group that it doesn't own. 
     
-        """
-        found = False
-        # You can't rate a group that you don't own
-        name_of_group = self.__user_owns_group(name_of_group)
-        name_of_tag = extractor.get_tag(name_of_tag)
-        for g_rating in self.group_ratings:
-            if(g_rating.group == name_of_group):
-                g_rating.rating = rating
-                found = True
-        if(not found):
-            new_rating = GroupRating(group=name_of_group,
-                                     rating=rating)
-            self.group_ratings.append(new_rating)
-        self.__rate_all_members(name_of_group, name_of_tag, rating)
-        return True
+    def rate_group(self, name_of_group, name_of_tag, rating):
+        if(not self.__user__owns_group(name_of_group)
+            return False;
+        if(type(name_of_group) is str and\
+           type(name_of_tag) is str and\
+           type(rating) is int):
+            self.group_ratings[name_of_group] = rating
+            self.__rate_all_members(name_of_group, name_of_tag, rating)
+            return True
+        else:
+            raise TypeError("Problem with type of input variables.")
+
+    
+    
 
     def create_group(self, group_name):
         if(self.__user_owns_group(group_name)):
@@ -85,6 +69,8 @@ class User(producer.Producer):
         
     
     def __rate_all_members(self, group_to_rate, considered_tag, rating):
+        group_to_rate = extractor.get_group(self, group_to_rate)
+        considered_tag = extractor.get_tag(considered_tag)
         for p in group_to_rate.producers:
             self.rate_source(p, considered_tag, rating)
     
@@ -98,11 +84,8 @@ class User(producer.Producer):
         else:
             return None
     
-    def get_group_rating(self, req_group):
-        for g_rating in self.group_ratings:
-            if(g_rating.group == req_group):
-                return g_rating.rating
-        return -1
+    def get_group_rating(self, req_group_name):
+        return self.groups[req_group_name]
     
     
 
