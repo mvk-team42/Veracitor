@@ -13,7 +13,7 @@ var RatingsController = function (controller) {
 
     /**
        Initialize the ratings tab:
-       (currently done in the on_tab_active function)
+       (currently done in the on_tab_active function below)
     */
     (function () {
     })();
@@ -26,6 +26,7 @@ var RatingsController = function (controller) {
 	    $('#ratings_view_content').html(data.html);
 	    add_event_handlers(data.producers, data.information);
 	    populate_prod_tag_dropdown();
+	    populate_info_tag_dropdown();
 	});
     };
 
@@ -116,15 +117,26 @@ var RatingsController = function (controller) {
       /**
      * Fills the dropdown list for producer rating tags with options
      */
-    function populate_prod_tag_dropdown(){
+    function populate_prod_tag_dropdown() {
 	$.post('/jobs/ratings/get_used_prod_tags',
 	       function(data){
 		   var tags_list = $('.left #prod-tags');
 		   $.each(data.tags, function(i, val){
 		       tags_list.append(
 			   $('<option></option>').val(val).html(val));
-		   })
-		       });
+		   });
+	       });
+    }
+
+    function populate_info_tag_dropdown() {
+	$.post('/jobs/ratings/get_used_info_tags',
+	       function(data) {
+		   var tags_list = $('.right #info-tags');
+		   $.each(data.tags, function(i, val) {
+		       tags_list.append(
+			   $('<option></option>').val(val).html(val));
+		   });
+	       });
     }
     
 };
