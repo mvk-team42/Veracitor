@@ -19,8 +19,12 @@
     top: 4px;
 }
 
-#ratings_view form {
+#ratings_view div#new-group-form-div {
     border: 1px solid;
+    margin-top: 2px;
+}
+
+#ratings_view div#rate-border-div {
     margin-top: 2px;
 }
 
