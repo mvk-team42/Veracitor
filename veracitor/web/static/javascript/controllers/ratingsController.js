@@ -13,14 +13,9 @@ var RatingsController = function (controller) {
 
     /**
        Initialize the ratings tab:
-       - Setup event handlers
-       - Populate tag dropdown list
+       (currently done in the on_tab_active function)
     */
     (function () {
-	//Moved to this.on_tab_active below
-	//add_event_handlers();
-	//populate_tag_dropdown();
-
     })();
 
     /**
@@ -30,7 +25,7 @@ var RatingsController = function (controller) {
 	$.post('/jobs/ratings/render',{}, function(data){
 	    $('#ratings_view_content').html(data.html);
 	    add_event_handlers(data.producers, data.information);
-	    populate_tag_dropdown();
+	    populate_prod_tag_dropdown();
 	});
     };
 
@@ -118,85 +113,18 @@ var RatingsController = function (controller) {
     }
 
 
-    /**
-       Makes a database request to the server.
-       Fetches all groups that the current user has.
-    */
-    var request_groups = function(user_id) {
-	$.post("/jobs/search/groups", {
-	    'user_id' : user_id
-	}, function (data) {
-	    var job_id = data['job_id'];
-
-	    controller.set_job_callback(job_id, function (data) {
-		if(data.result.data.length > 0) {
-		    search_result = data.result.data;
-
-		    //var table = etc etc
-		    // see searchController...
-		    //Fill tables with result
-		}
-	    });
-	});
-    }
-
-    /**
-       Makes a database request to the server.
-       Fetches a specific group that the current user has
-    */
-    var request_group = function(user_name,group_name ) {
-	$.post("/jobs/ratings/group", {
-	    'owner_name' : user_name,
-	    'group_name' : group_name
-	}, function (data) {
-	    var job_id = data['job_id'];
-
-	    controller.set_job_callback(job_id, function (data) {
-		if(data.result.data.length > 0) {
-		    search_result = data.result.data;
-
-		    //var table = etc etc
-		    // see searchController...
-		    //Fill tables with result
-		}
-	    });
-	});
-    }
-
-
-    /**
-       Makes a database request to the server.
-       Fetches information objects, optionally
-       filtered by tag.
-       TODO: Any more filters?
-    */
-    var request_information_objects = function(tag) {
-	//TODO: Implement.
-    }
-
-
-    //TODO. Nåt sånt?
-    function set_producer_reliability_rating(producer_id) {
-
-    }
-
-    //TODO. Nåt sånt?
-    function set_information_credibility_rating(information_id) {
-
-    }
-
-    /**
+      /**
      * Fills the dropdown list for producer rating tags with options
      */
-    function populate_tag_dropdown(){
-	$.post('/jobs/ratings/get_used_tags',
+    function populate_prod_tag_dropdown(){
+	$.post('/jobs/ratings/get_used_prod_tags',
 	       function(data){
-		   var tags_list = $('.left > #tags');
+		   var tags_list = $('.left #prod-tags');
 		   $.each(data.tags, function(i, val){
 		       tags_list.append(
 			   $('<option></option>').val(val).html(val));
 		   })
 		       });
     }
-
+    
 };

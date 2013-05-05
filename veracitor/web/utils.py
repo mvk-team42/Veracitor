@@ -42,7 +42,9 @@ def get_user_as_dict(username):
                        'description': extractor.get_producer(s.source.name).description}
                       for s in user_obj.source_ratings]
 
-    info_ratings = [{'title':ir.information.title, 'rating':ir.rating}
+    info_ratings = [{'title': ir.information.title,
+                     'rating': ir.rating,
+                     'url': ir.information.url}
                     for ir in user_obj.info_ratings]
 
     groups = [{'name' : g.name,
