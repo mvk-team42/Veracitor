@@ -51,4 +51,4 @@ celerybeat-schedule
 celerybeat.pid
 
 #local server-settings
-settings.py
+veracitor/web/settings.py
