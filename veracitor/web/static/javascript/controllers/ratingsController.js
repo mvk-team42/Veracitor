@@ -13,14 +13,9 @@ var RatingsController = function (controller) {
 
     /**
        Initialize the ratings tab:
-       - Setup event handlers
-       - Populate tag dropdown list
+       (currently done in the on_tab_active function)
     */
     (function () {
-	//Moved to this.on_tab_active below
-	//add_event_handlers();
-	//populate_tag_dropdown();
-
     })();
 
     /**
@@ -30,7 +25,7 @@ var RatingsController = function (controller) {
 	$.post('/jobs/ratings/render',{}, function(data){
 	    $('#ratings_view_content').html(data.html);
 	    add_event_handlers(data.producers, data.information);
-	    populate_tag_dropdown();
+	    populate_prod_tag_dropdown();
 	});
     };
 
@@ -121,15 +116,15 @@ var RatingsController = function (controller) {
       /**
      * Fills the dropdown list for producer rating tags with options
      */
-    function populate_tag_dropdown(){
+    function populate_prod_tag_dropdown(){
 	$.post('/jobs/ratings/get_used_tags',
 	       function(data){
-		   var tags_list = $('.left > #tags');
+		   var tags_list = $('.left #prod-tags');
 		   $.each(data.tags, function(i, val){
 		       tags_list.append(
 			   $('<option></option>').val(val).html(val));
 		   })
 		       });
     }
-
+    
 };
