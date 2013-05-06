@@ -22,20 +22,26 @@ def generate_test_data():
     prod5 = extractor.producer_create_if_needed("Prod5", "TestProducer")
     prod6 = extractor.producer_create_if_needed("Prod6", "TestProducer")
 
-    john.source_ratings = [producer.SourceRating(rating=5,tag=trust,source=prod1)]
+    john.rate_source(prod1, trust, 5)
     john.save()
-    prod1.source_ratings = [producer.SourceRating(rating=5,tag=trust,source=prod2)]
-    prod2.source_ratings = [producer.SourceRating(rating=5,tag=trust,source=prod1),
-                            producer.SourceRating(rating=5,tag=trust,source=prod3),
-                            producer.SourceRating(rating=5,tag=trust,source=prod4),
-                            producer.SourceRating(rating=5,tag=trust,source=prod5)]
-    prod3.source_ratings = [producer.SourceRating(rating=5,tag=trust,source=prod1),
-                            producer.SourceRating(rating=5,tag=trust,source=prod5),
-                            producer.SourceRating(rating=5,tag=trust,source=prod6)]
-    prod5.source_ratings = [producer.SourceRating(rating=5,tag=trust,source=prod2),
-                            producer.SourceRating(rating=5,tag=trust,source=prod3),
-                            producer.SourceRating(rating=5,tag=trust,source=prod4)]
-    prod6.source_ratings = [producer.SourceRating(rating=5,tag=trust,source=prod5)]
+
+    prod1.rate_source(prod2, trust, 5)
+
+    prod2.rate_source(prod1, trust, 5)
+    prod2.rate_source(prod3, trust, 5)
+    prod2.rate_source(prod4, trust, 5)
+    prod2.rate_source(prod5, trust, 5)
+
+    prod3.rate_source(prod1, trust, 5)
+    prod3.rate_source(prod5, trust, 5)
+    prod3.rate_source(prod6, trust, 5)
+
+    prod5.rate_source(prod2, trust, 5)
+    prod5.rate_source(prod3, trust, 5)
+    prod5.rate_source(prod4, trust, 5)
+
+    prod6.rate_source(prod5, trust, 5)
+
     prod1.save()
     prod2.save()
     prod3.save()
