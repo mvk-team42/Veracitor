@@ -30,6 +30,7 @@ var AccountController = function (controller) {
                     $(".register-content .error").html(res['error']);
                   }
                 });
+                
                 $('.register-content .error').html("Registering...");
               });
       });
