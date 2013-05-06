@@ -81,13 +81,15 @@
 <div class="right">
   <h2>Rated information</h2>
   <div display='block'>
-    <label for "producers">Producer:</label>
+<!-- Disabled producer filtering. TODO: Maybe implement
+  <label for "producers">Producer:</label>
     <select name="producers" id="producers">
       {% for producer in user.source_ratings  %}
       <option value="{{ producer.name  }}">{{ producer.name  }}
 	{% endfor  %}
     </select>
     <br/>
+-->
     <label for="info-tags">Tag:</label>
     <select name="tags" class="tags" id="info-tags">
       <option value="crime">Crime</option>
