@@ -41,7 +41,6 @@
 
 #ratings_view input.view_in_network {
     float:right;
-    font-size: 12px;
-    margin-top: 4px;
-    padding: 0px 4px;
+    font-size: 10px;
+    padding: 0px 5px;
 }
