@@ -14,31 +14,6 @@ import information
 from dbExceptions import NetworkModelException
 connect('mydb')
 
-class SourceRating(EmbeddedDocument):
-    """
-    The SourceRating class inherits from the mongoengine
-    EmbeddedDocument class. Is only meant to be used as a field value
-    inside the Producer class. Defines fields describing a rating made 
-    by one producer (the owner of a specific instance) on another producer
-    (specified by the source field).
-       
-    """
-    rating = IntField(required=True)
-    tag = ReferenceField('Tag', required=True)
-    source = ReferenceField('Producer', required=True)
-    
-class InformationRating(EmbeddedDocument):
-    """
-    The InformationRating class inherits from the mongoengine
-    EmbeddedDocument class. Is only meant to be used as a field value
-    inside the Producer class. Defines fields describing a rating made 
-    by one producer (the owner of a specific instance) on an information
-    (specified by the information field).
-       
-    """
-    information = ReferenceField('Information', required=True)
-    rating = IntField(required=True)
-    
 class Producer(Document):
     """
     The Producer class inherits from the mongoengince Document class.
@@ -48,114 +23,46 @@ class Producer(Document):
     or delete() to delete object from the database.
     The name field uniquely identifies a producer in the database.
 
-    
-
     """
     name = StringField(required=True, unique=True)
-    first_name = StringField();
-    last_name = StringField();
+    first_name = StringField()
+    last_name = StringField()
     description = StringField()
     url = StringField()
     infos = ListField(ReferenceField('Information'))
-    source_ratings = ListField(EmbeddedDocumentField(SourceRating))
-    info_ratings = ListField(EmbeddedDocumentField(InformationRating))
+    source_ratings = DictField()
+    info_ratings = DictField()
     type_of = StringField(required=True)
     # To allow the User class to inherhit from this.
     meta = {'allow_inheritance':'On'}
     
-
     def rate_source(self, source_to_rate, considered_tag, rating):
-        """
-        This function adds a source rating to the producer, unless
-        there already exists a source rating with source_to_rate and
-        considered_tag, in which case only the rating is updated. 
-
-        Args:
-            source_to_rate (producer.Producer): The source to rate.
-
-            considered_tag (tag.Tag): The tag to rate the producer under.
-
-            rating (int): The rating to set on source_to_rate.
-
-        """
-        
-        found = False
-
-        for s_rating in self.source_ratings:
-            if(s_rating.source == source_to_rate and\
-               s_rating.tag == considered_tag):
-                s_rating.rating = rating
-                found = True
-
-        if(not found):
-            new_rating = SourceRating(source=source_to_rate, 
-                                      tag=considered_tag, 
-                                      rating=rating)
-            self.source_ratings.append(new_rating)
-
-        
-
-    def rate_information(self, info_to_rate, rating):
-        """
-        This function adds an info rating to the producer, unless
-        there already exists an info rating with info_to_rate,
-        in which case only the rating is updated. 
-        
-        Args:
-            info_to_rate (information.Information): The information to rate.
-
-            rating (int): The rating to set on info_to_rate.
-        
-        """
-        found = False
-        for i_rating in self.info_ratings:
-            if(i_rating.information == info_to_rate):
-                i_rating.rating = rating
-                found = True
-        if(not found):
-            new_rating = InformationRating(information=info_to_rate,
-                                           rating=rating)
-            self.info_ratings.append(new_rating)
-    
-
-    def get_source_rating(self, req_source, req_tag):
-        """
-        Returns the rating from the source rating set on req_source
-        under the req_tag.
-        
-        Args:
-            req_source (producer.Producer): The requested rating should be set
-            on this source.
-        
-            req_tag (tag.Tag): The requested rating should be set 
-            under this tag.
-
-        Returns:
-            The rating set on req_source under req_tag. If no such rating is
-            set -1 will be returned.
-        
-        """
-        for s_rating in self.source_ratings:
-           if(s_rating.source == req_source and s_rating.tag == req_tag):
-                return s_rating.rating
-        return -1 
+        if(type(source_to_rate) is Producer and\
+           type(considered_tag) is tag.Tag and\
+           type(rating) is int):
             
+            self.source_ratings[source_to_rate.name] = {considered_tag.name:rating}
+        else:
+            raise TypeError("Problem with type of input variables.")
+
+    def rate_information(self, information_to_rate, rating):
+        if(type(information_to_rate) is information.Information and\
+           type(rating) is int):
+            self.info_ratings[self.__convert_url(information_to_rate.url)] = rating
+        else:
+            raise TypeError("Problem with type of input variables.")
+
+    def get_all_source_ratings(self):
+        return self.source_ratings
+
+    def get_all_info_ratings(self):
+        return self.info_ratings
+    
+    def get_source_rating(self, req_source, tag):
+        return self.source_ratings[req_source.name][tag.name]
+
     def get_info_rating(self, req_info):
-        """
-        Returns the rating from the info rating set on req_info.
-
-        Args:
-            req_info (information.Information): The requested rating should
-            be set on this information.
-
-        Returns:
-            The rating set on req_info. If no such rating is set -1 will
-            be returned.
-        """
-        for i_rating in self.info_ratings:
-            if(i_rating.information == req_info):
-                return i_rating.rating
-        return -1
+        return self.info_ratings[self.__convert_url(req_info.url)]
     
     def save(self):
         """
@@ -176,7 +83,7 @@ class Producer(Document):
             networkModel.notify_producer_was_added(self)
         else:
             networkModel.notify_producer_was_updated(self)
-        
+       
         super(Producer, self).save()
 
     def delete(self):
@@ -201,19 +108,23 @@ class Producer(Document):
             networkModel.notify_producer_was_removed(self)
             
         super(Producer, self).delete()
+    
+    def __convert_url(self, url):
+        return url.replace(".", "|")
 
+# Demonstrates use of rating methods
 if __name__ == "__main__":
     p1 = Producer(name="fax", type_of="mule")
     p2 = Producer(name="fux", type_of="donkey")
     t1 = tag.Tag(name="gardening")
     p1.rate_source(p2, t1, 5)
-    p1.rate_source(p2, t1, 4)
     #p1.rate_source(p2, "hgurur", 1)
-    print p1.source_ratings
-    print p1.get_source_rating(p2, t1)
+    print p1.get_all_source_ratings()
     print information.Information
+        
     i1 = information.Information(name="korre", url="seaweed.com")
     p1.rate_information(i1, 2)
     print p1.get_source_rating(p2, t1)
     print p1.get_info_rating(i1)
     
+
