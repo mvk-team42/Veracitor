@@ -137,6 +137,7 @@ def create_group():
 
     Parameters:
         *name* (str): The name of the group that will be created
+        *tag* (str): The tag to associate with the group
 
     Returns:
         The name of the created group
@@ -150,10 +151,11 @@ def create_group():
         abort(405)
     try:
         user = extractor.get_user(session['user_name'])
-        user.create_group(request.form['name'])
+        user.create_group(request.form['name'], request.form['tag'])
 
         return request.form['name']
-    except:
+    except Exception, e:
+        log(e)        
         abort(400)
 
     # TODO: Render json

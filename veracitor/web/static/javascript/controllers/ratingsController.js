@@ -97,7 +97,8 @@ var RatingsController = function (controller) {
 	$('#create-group').click(function(evt) {
 	    $.post('/jobs/ratings/create_group',
 		   {
-		       'name' : $('#name').val()
+		       'name' : $('#name').val(),
+		       'tag' : $('#create-group-tag').find(':selected').val()
 		   }, add_group)
 	});
 
