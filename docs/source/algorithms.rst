@@ -3,13 +3,13 @@
 :mod:`algorithms` -- Algorithms package
 =======================================
 
-:mod:`algorithms.tidaltrust` -- TidalTrust
+:mod:`tidaltrust` -- TidalTrust
 ------------------------------------------
 
 .. automodule:: veracitor.algorithms.tidaltrust
    :members: compute_trust
 
-:mod:`algorithms.generate_bn` -- GenerateBN
+:mod:`generate_bn` -- GenerateBN
 -------------------------------------------
 
 .. automodule:: veracitor.algorithms.generate_bn
