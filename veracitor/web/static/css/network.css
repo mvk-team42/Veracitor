@@ -1,12 +1,5 @@
 /* NETWORK VIEW */
 
-#network_view .hr {
-    width: 80%; height: 1px;
-    margin: 5px 10%;
-
-    border-top: 1px solid #aaa;
-}
-
 #network table {
     width: 600px;
     border-collapse: collapse;

@@ -137,9 +137,12 @@ footer > .login {
     overflow: hidden;
 }
 
-hr {
-    margin: 10px 0;
-    width: 500px;
+/* Replacing the deprecated hr tag in HTML5 */
+div.hr {
+    width: 80%; height: 1px;
+    margin: 5px 10%;
+
+    border-top: 1px solid #aaa;
 }
 
 /* VIEW */
