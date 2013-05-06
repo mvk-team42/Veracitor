@@ -53,7 +53,7 @@
 	  <br/>
 
 <div id='producer-list-container'>
-  <div>Showing sources rated within the tag 'Crime'</div>
+  <div>Showing sources rated within the tag <span class="tag-span" id="tag-name-prod-span" ></span></div>
   <div id='producer-list'>
     <div class='gardening'>
       <h3>Producer1 <div class='rating'>9</div></h3>
@@ -63,13 +63,14 @@
 	</div>
       </div>
     </div>
-    <!-- TODO: Fixa tag-filtrering! -->
     {% for producer in user.source_ratings  %}
-    <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
-    <div>
-      <div class='description'>
-	<p>{{ producer.description }}</p>
+    <div class='{{producer.tag}}'>
+      <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
+      <div>
+	<div class='description'>
+	  <p>{{ producer.description }}</p>
 	  <input type="button" id="{{ producer.name  }}" value="View in network" class="view_in_network"/>
+	</div>
       </div>
     </div>
     {% endfor %}
@@ -80,13 +81,15 @@
 <div class="right">
   <h2>Rated information</h2>
   <div display='block'>
-    <label for "producers">Producer:</label>
+<!-- Disabled producer filtering. TODO: Maybe implement
+  <label for "producers">Producer:</label>
     <select name="producers" id="producers">
       {% for producer in user.source_ratings  %}
       <option value="{{ producer.name  }}">{{ producer.name  }}
 	{% endfor  %}
     </select>
     <br/>
+-->
     <label for="info-tags">Tag:</label>
     <select name="tags" class="tags" id="info-tags">
       <option value="crime">Crime</option>
@@ -96,7 +99,7 @@
     <br/>
  
     <div id='information-list-container'>
-      <div>Showing information rated within the tag 'Crime'</div>
+      <div>Showing information rated within the tag <span class="tag-span" id="tag-name-info-span"></span></div>
       <div id='information-list'>
 	<div class='crime'>
 	  <h3>Article1 <div class='rating'>4</div></h3>

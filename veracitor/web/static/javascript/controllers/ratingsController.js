@@ -24,12 +24,17 @@ var RatingsController = function (controller) {
     this.on_tab_active = function () {
 	$.post('/jobs/ratings/render',{}, function(data){
 	    $('#ratings_view_content').html(data.html);
+	    //Must be called before populating tag dropdowns
 	    add_event_handlers(data.producers, data.information);
 	    populate_prod_tag_dropdown();
 	    populate_info_tag_dropdown();
 	});
     };
 
+
+    function initialize_filtering() {
+    }
+    
     /**
        Add event handlers to the ratings view.
      */
@@ -45,6 +50,20 @@ var RatingsController = function (controller) {
 
 	$('#ratings_view form').submit(function(evt) {
 	    return false;
+	});
+
+	$(".left #prod-tags").change(function() {
+	    var selectedValue = $(this).find(":selected").val();
+	    $('#producer-list >').not('div.' + selectedValue).hide()
+	    $('#producer-list > div.' + selectedValue).show();
+	    $('.left #tag-name-prod-span').text($('.left #prod-tags').val());
+	});
+
+	$(".right #info-tags").change(function() {
+	    var selectedValue = $(this).find(":selected").val();
+	    $('.right #information-list >').not('div.' + selectedValue).hide()
+	    $('.right #information-list > div.' + selectedValue).show();
+	    $('.right #tag-name-info-span').text($('.right #info-tags').val());
 	});
 
 	$("#new-group").click(function(evt) {
@@ -122,9 +141,13 @@ var RatingsController = function (controller) {
 	       function(data){
 		   var tags_list = $('.left #prod-tags');
 		   $.each(data.tags, function(i, val){
+		       console.log(val);
 		       tags_list.append(
 			   $('<option></option>').val(val).html(val));
 		   });
+		   //Initial filtering
+		   $('.left #prod-tags').change();
+		   $('.left #tag-name-prod-span').text($('.left #prod-tags').val());
 	       });
     }
 
@@ -136,6 +159,9 @@ var RatingsController = function (controller) {
 		       tags_list.append(
 			   $('<option></option>').val(val).html(val));
 		   });
+		   //Initial filtering
+		   $('.right #info-tags').change();
+		   $('.right #tag-name-info-span').text($('.right #info-tags').val());
 	       });
     }
     
