@@ -18,9 +18,13 @@ Errors:
    - **400** - Bad syntax
    - **405** - Method not allowed
 
-.. note:
+.. note::
    Though the URL structure begins with `jobs/`, these methods do not start
    any Celery tasks or jobs.
+
+
+Functions
+---------
    
 
 .. moduleauthor:: Martin Runelöv <mrunelov@kth.se
@@ -49,12 +53,10 @@ def render_ratings():
     
     Returns:
         *html* (str): The html used to render the Ratings tab
-        *producers* (dict): A dictionary of the producers that the currently logged in user has rated
-        *information* (dict): A dictionary of the information that the currently logged in user has rated
 
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
+        *producers* (dict): A dictionary of the producers that the currently logged in user has rated
+
+        *information* (dict): A dictionary of the information that the currently logged in user has rated
     
     """
     if not request.method == 'POST':
@@ -80,12 +82,10 @@ def rate_producer():
 
     Parameters:
         *producer* (str): The producer to be rated
-        *tag* (str): The tag with which to rate
-        *rating* (str): The rating with which to rate
 
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
+        *tag* (str): The tag with which to rate
+
+        *rating* (str): The rating with which to rate
 
     """
     if not request.method == 'POST':
@@ -109,12 +109,9 @@ def rate_information():
 
     Parameters:
         *information* (str): The information to be rated
+
         *rating* (str): The rating with which to rate
-
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
-
+   
     """
     if not request.method == 'POST':
         abort(405)
@@ -137,23 +134,21 @@ def create_group():
 
     Parameters:
         *name* (str): The name of the group that will be created
+        *tag* (str): The tag to associate with the group
 
     Returns:
-        The name of the created group
+        The name of the created group.
         
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
-
     """
     if not request.method == 'POST':
         abort(405)
     try:
         user = extractor.get_user(session['user_name'])
-        user.create_group(request.form['name'])
+        user.create_group(request.form['name'], request.form['tag'])
 
         return request.form['name']
-    except:
+    except Exception, e:
+        log(e)        
         abort(400)
 
     # TODO: Render json
@@ -168,11 +163,8 @@ def rate_group():
 
     Parameters:
         *name* (str): The name of the group to be rated
-        *rating* (str): The rating with which to rate
 
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
+        *rating* (str): The rating with which to rate
 
     Returns:
         A status string (currently without purpose)
@@ -207,7 +199,7 @@ def get_used_prod_tags():
        A dict containing the used tags::
 
           {
-             "tags" : *tags_used* ([(str), ]), 
+             "tags" : tags_used ([(str), ]), 
           }
 
     """
@@ -235,7 +227,7 @@ def get_used_info_tags():
        A dict containing the used tags::
 
           {
-             "tags" : *tags_used* ([(str), ]), 
+             "tags" : tags_used ([(str), ]), 
           }
 
     """

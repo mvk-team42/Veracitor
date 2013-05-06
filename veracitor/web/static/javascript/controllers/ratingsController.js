@@ -97,7 +97,8 @@ var RatingsController = function (controller) {
 	$('#create-group').click(function(evt) {
 	    $.post('/jobs/ratings/create_group',
 		   {
-		       'name' : $('#name').val()
+		       'name' : $('#name').val(),
+		       'tag' : $('#create-group-tag').find(':selected').val()
 		   }, add_group)
 	});
 
@@ -133,7 +134,7 @@ var RatingsController = function (controller) {
 
     function hide_rate_group_form() {
 	$('#rate-group-form-div').fadeOut();
-	$('#rate-group').css('display','block');
+	$('#rate-group').show();
 	$('#rate-border-div').css('border','');
     }
 
@@ -145,7 +146,7 @@ var RatingsController = function (controller) {
 
     function hide_new_group_form() {
 	$('#new-group-form-div').fadeOut();
-	$('#new-group').css('display','block');
+	$('#new-group').show();
     }
 
 
