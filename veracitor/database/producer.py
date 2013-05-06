@@ -40,8 +40,11 @@ class Producer(Document):
         if(type(source_to_rate) is Producer and\
            type(considered_tag) is tag.Tag and\
            type(rating) is int):
-            
-            self.source_ratings[source_to_rate.name] = {considered_tag.name:rating}
+            try:
+                self.source_ratings[source_to_rate.name][considered_tag.name] = rating
+            except KeyError:
+                self.source_ratings[source_to_rate.name] = {}
+                self.source_ratings[source_to_rate.name][considered_tag.name] = rating
         else:
             raise TypeError("Problem with type of input variables.")
 
