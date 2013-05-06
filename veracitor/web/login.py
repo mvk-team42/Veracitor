@@ -9,17 +9,17 @@
 
 """
 
-from flask import session, redirect, render_template, request, url_for
+from flask import session, redirect, render_template, request, url_for, abort, jsonify
 #from werkzeug.security import generate_password_hash, check_password_hash
 from veracitor.web import app
-
+from veracitor.web.utils import store_job_result
 from veracitor.tasks import login
 
 from veracitor.database import *
 
 
 @app.route("/login", methods=["GET","POST"])
-def login():
+def login_user():
     """
     
     """
@@ -67,7 +67,7 @@ def logout():
 
 
 @app.route("/register", methods=['POST', 'GET'])
-def register():
+def register_user():
     """Scrapes an article from a URL and adds it to the database.
 
     URL Structure:
@@ -92,8 +92,8 @@ def register():
        * **405** -- Method not allowed
 
     """
-    if request.method != ['POST']:
+    if request.method != 'POST':
         abort(405)
-    res = login.register.delay(username, password)
+    res = login.register.delay(request.form.get('username'), request.form.get('password'))
     store_job_result(res)
     return jsonify(job_id=res.id)

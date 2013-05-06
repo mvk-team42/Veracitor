@@ -5,7 +5,7 @@
 
 {% if session.user_name %}
 
-<p>Welcome {% session.user_name %}</p>
+<p>Welcome {{ session.user_name }}</p>
 
 <h2>Rated sources:</h2>
 <p><input type="text"/><input type="button" value="Search sources" /></p>
@@ -21,17 +21,16 @@
 </ul>
 
 {% else %}
-
+<div class="register-content">
 <p>Become a user of Veracitor!</p>
-
-<form>
-    <p class="error"></p>
+<p class="error"> </p>
+<form class="register-form">
     <label for="username">Username:</label>
     <input name="username" type="text" />
     <label for="password">Password:</label>
     <input name="password" type="password" />
-    <input id="register-button" type="submit" value="Register" />
+    <input id="register-button" type="button" value="Register" />
 </form>
-
+</div>
 {% endif %}
 {% endblock %}

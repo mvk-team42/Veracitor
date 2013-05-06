@@ -30,9 +30,15 @@ except:
 
 ci.init_interface()
 
-from veracitor.database import  *
 
-nm = networkModel.build_network_from_db()
+try:
+    from veracitor.database import  *
+
+    nm = networkModel.build_network_from_db()
+except:
+    import sys
+    print "FOOOBAR!"
+    sys.exit(-1)
 
 
 if __name__ == '__main__':

@@ -7,27 +7,24 @@ try:
 except:    
     from tasks import taskmgr
 
-from database import *
+from veracitor.database import *
 
 @taskmgr.task
 def register(username, password):
 
     error = None
-    if not request.form['username']:
+    if not username:
         error = "Please enter a username."
-    elif not request.form['password']:
+    elif not password:
         error = "Please enter a password."
-    elif not len(request.form['username']) > 3:
+    elif not len(username) > 3:
         error = "Please choose a longer username."
-    elif not len(request.form['password']) > 3:
+    elif not len(password) > 3:
         error = "Please choose a longer password."
     else:
-        username = request.form['username']
-        password = request.form['password']
-
-    user = extractor.get_user(username)
-    if user != None:
-        error = "Username already taken."
+        usr = user.User.objects.filter(name=username)
+        if len(usr) != 0:
+            error = "Username already taken."
 
     if error != None:
         return {"error": error,
