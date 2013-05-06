@@ -71,7 +71,12 @@ var RatingsController = function (controller) {
 	$(".left #groups").change(function() {
 	    var selectedValue = $(this).find(":selected").val();
 	    if( selectedValue != 'all' ) {
+		$("#rate-group").removeAttr("disabled");
+
 		//TODO: Filter list on group
+	    }
+	    else {
+		$("#rate-group").attr("disabled", "disabled");
 	    }
 	});
 
