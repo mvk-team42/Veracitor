@@ -182,17 +182,17 @@ def compute_trust(network, source, sink, decision=None, tag="weight"):
     5
 
     Args:
-       network (DiGraph): The graph in which trust is to be computed.
+       *network* (DiGraph): The graph in which trust is to be computed.
 
-       source (str): The name of the source node.
+       *source* (str): The name of the source node.
 
-       sink (str): The name of the sink node.
+       *sink* (str): The name of the sink node.
 
     Kwargs:
-       decision (iterable): A list of node identifiers (i.e. names or id's)
+       *decision* (iterable): A list of node identifiers (i.e. names or id's)
        for nodes that are not to be used in the trust calculation.
 
-       tag (str): A tag name. Only edges/ratings under this tag will be used
+       *tag* (str): A tag name. Only edges/ratings under this tag will be used
        in the trust calculation.
 
     Returns:

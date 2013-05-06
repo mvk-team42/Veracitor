@@ -12,6 +12,7 @@
 	  -->
       </select>
     </div>
+    <div display="block">
     <div id="rate-border-div">
     <label for="groups">Group:</label>
     <select name="groups" id="groups">
@@ -33,6 +34,7 @@
 	</select>
 	<label for='rate-group-tag' id='tag_label'>Tag:</label>
 	<select id='rate-group-tag'>
+	  <!-- TODO: Populate with actual tags!  -->
 	  <option value='crime'>Crime</option>
 	  <option value='gardening'>Gardening</option>
 	</select>
@@ -41,8 +43,15 @@
     </div>
     </div>
     <input type="button" value="+ New group" id='new-group'/>
+    </div>
     <div id="new-group-form-div" style="display:none;">
       <form id="new-group-form">
+	<label for='create-group-tag' id='tag_label'>Tag:</label>
+	<select id='create-group-tag'>
+	  <!-- TODO: Populate with actual tags!  -->
+	  <option value='crime'>Crime</option>
+	  <option value='gardening'>Gardening</option>
+	</select>
 	<input id="name" type="text" placeholder="Group name"/>
 	<input type="button" value="Create group" id="create-group"/>
       </form>
