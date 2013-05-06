@@ -73,7 +73,7 @@ def add_to_database(producer_item):
         description = producer_item["description"],
         url = producer_item["url"],
         infos = [],
-        source_ratings = [],
-        info_ratings = [],
+        source_ratings = {},
+        info_ratings = {},
         type_of = "Newspaper")
     new_producer.save()
