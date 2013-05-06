@@ -36,22 +36,28 @@ def store_job_result(result):
 def get_user_as_dict(username):
     user_obj = extractor.get_user(username)
 
-    source_ratings = [{'name' : s.source.name,
-                       'tag' : s.tag.name,
-                       'rating': s.rating ,
-                       'description': extractor.get_producer(s.source.name).description}
-                      for s in user_obj.source_ratings]
+    source_ratings = []
+    for s in user_obj.source_ratings.keys():
+        for tag in s.keys():
+            source_ratings.append({
+                    'name' : s,
+                    'tag' : tag,
+                    'rating': s[tag] ,
+                    'description': extractor.get_producer(s).description})
 
-    info_ratings = [{'title': ir.information.title,
-                     'rating': ir.rating,
-                     'url': ir.information.url}
-                    for ir in user_obj.info_ratings]
+    info_ratings = []
+    for iurl in user_obj.info_ratings.keys():
+        info_ratings.append({
+                'title': extractor.get_information(iurl).title,
+                'rating': user_obj.info_ratings[iurl],
+                'url': iurl,
+                })
 
-    groups = [{'name' : g.name,
-               'description' : g.description,
-               'owner' : g.owner,
-               'producers' : [p.name for p in g.producers]}
-              for g in user_obj.groups]
+    groups = [{'name' : g,
+               'description' : extractor.get_group(g).description,
+               'producers' : [p.name for p in extractor.get_group(g).producers],
+               'rating' : user_obj.groups_ratings[g]}
+              for g in user_obj.groups.keys()]
 
     user_dict = {'name' : user_obj.name,
                 'description' : user_obj.description,

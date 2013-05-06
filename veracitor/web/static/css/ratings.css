@@ -22,6 +22,7 @@
 #ratings_view div#new-group-form-div {
     border: 1px solid;
     margin-top: 2px;
+    float: left;
 }
 
 
@@ -45,4 +46,8 @@
 #ratings_view span.header-span {
     color: green;
     font-style: bold;
+}
+
+#ratings_view div#rate-border-div {
+    float: left;
 }

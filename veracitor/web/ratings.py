@@ -5,7 +5,27 @@
 
 """
 .. module:: ratings
-    :synopsis: Defines server logic for the ratings tab
+      :synopsis: Defines server logic for the ratings tab
+
+REST API implementation for server requests concerning the ratings tab.
+   
+This applies to all functions:
+   
+URL Structure:
+   `jobs/ratings/<MODULE NAME>`
+
+Errors:
+   - **400** - Bad syntax
+   - **405** - Method not allowed
+
+.. note::
+   Though the URL structure begins with `jobs/`, these methods do not start
+   any Celery tasks or jobs.
+
+
+Functions
+---------
+   
 
 .. moduleauthor:: Martin Runelöv <mrunelov@kth.se
 .. moduleauthor:: Daniel Molin <dmol@kth.se>
@@ -28,6 +48,16 @@ def render_ratings():
     """
     Fetches the current user and renders the Ratings tab
 
+    Method:
+        POST
+    
+    Returns:
+        *html* (str): The html used to render the Ratings tab
+
+        *producers* (dict): A dictionary of the producers that the currently logged in user has rated
+
+        *information* (dict): A dictionary of the information that the currently logged in user has rated
+    
     """
     if not request.method == 'POST':
         abort(405)
@@ -44,6 +74,20 @@ def render_ratings():
 
 @app.route('/jobs/ratings/rate_producer', methods=['GET', 'POST'])
 def rate_producer():
+    """
+    Rates a producer
+
+    Method:
+        POST
+
+    Parameters:
+        *producer* (str): The producer to be rated
+
+        *tag* (str): The tag with which to rate
+
+        *rating* (str): The rating with which to rate
+
+    """
     if not request.method == 'POST':
         abort(405)
     try:
@@ -57,6 +101,18 @@ def rate_producer():
 
 @app.route('/jobs/ratings/rate_information', methods=['GET', 'POST'])
 def rate_information():
+    """
+    Rates information
+
+    Method:
+        POST
+
+    Parameters:
+        *information* (str): The information to be rated
+
+        *rating* (str): The rating with which to rate
+   
+    """
     if not request.method == 'POST':
         abort(405)
     try:
@@ -73,15 +129,26 @@ def create_group():
     """
     Creates a group with the specified name.
 
+    Method:
+        POST
+
+    Parameters:
+        *name* (str): The name of the group that will be created
+        *tag* (str): The tag to associate with the group
+
+    Returns:
+        The name of the created group.
+        
     """
     if not request.method == 'POST':
         abort(405)
     try:
         user = extractor.get_user(session['user_name'])
-        user.create_group(request.form['name'])
+        user.create_group(request.form['name'], request.form['tag'])
 
         return request.form['name']
-    except:
+    except Exception, e:
+        log(e)        
         abort(400)
 
     # TODO: Render json
@@ -89,7 +156,18 @@ def create_group():
 @app.route('/jobs/ratings/rate_group', methods=['GET', 'POST'])
 def rate_group():
     """
-    Rate a group.
+    Rates a group
+
+    Method:
+        POST
+
+    Parameters:
+        *name* (str): The name of the group to be rated
+
+        *rating* (str): The rating with which to rate
+
+    Returns:
+        A status string (currently without purpose)
 
     """
     if not request.method == 'POST':
@@ -98,12 +176,11 @@ def rate_group():
         user = extractor.get_user(session['user_name'])
         
         if len(extractor.get_group(session['user_name'],request.form['name']).producers) > 0:
-            user.rate_group(request.form['name'], request.form['tag'], request.form['rating'])
+            user.rate_group(request.form['name'], request.form['rating'])
         else:
             abort(400)
         return "Success"
-    except Exception, e:
-        log(e)
+    except:
         return "Fail"
         abort(400)
 
@@ -113,7 +190,17 @@ def rate_group():
 @app.route('/jobs/ratings/get_used_prod_tags', methods=['GET', 'POST'])
 def get_used_prod_tags():
     """
-    Returns a list of all tags that the user has rated producers with.
+    Get a list of all tags that the user has rated producers with.
+    
+    Method:
+       POST
+
+    Returns:
+       A dict containing the used tags::
+
+          {
+             "tags" : tags_used ([(str), ]), 
+          }
 
     """
     if not request.method == 'POST':
@@ -131,7 +218,17 @@ def get_used_prod_tags():
 @app.route('/jobs/ratings/get_used_info_tags', methods=['GET', 'POST'])
 def get_used_info_tags():
     """
-    Returns a list of all tags that the user has rated information with
+    Get a list of all tags that the user has rated information with.
+
+    Method:
+       POST
+
+    Returns:
+       A dict containing the used tags::
+
+          {
+             "tags" : tags_used ([(str), ]), 
+          }
 
     """
     if not request.method == 'POST':

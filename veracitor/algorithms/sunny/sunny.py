@@ -15,18 +15,23 @@ def sunny(graph, source, sink, tag="weight"):
     Decides which nodes to include using logic sampling in sample_bounds,
     then calculates a trust value between the source and the sink nodes using 
     the TidalTrust algorithm.
+
+    Specified in *Kuter, Golbeck (2010)*.
     
-    source: Identifier for the start node in graph
+    Args:
+       source (str): Identifier for the start node in graph
     
-    sink: Identifier for the end node in graph
+       sink (str): Identifier for the end node in graph
     
-    graph: A NetworkX DiGraph
+       graph (networkX.DiGraph): The trust network
     
-    tag: A tag identifier that defines which attribute in graph should
-    be used as trust ratings in the calculation (DiGraph[x][y][tag] = rating)
+    Kwargs:
+       tag (str): A tag identifier that defines which attribute in graph
+       should be used as trust ratings in the calculation (DiGraph[x][y][tag] = rating)
     
-    Returns: A dict containing the results, with keywords trust, threshold,
-    paths_used, nodes_used, nodes_unused, source, sink, tag.
+    Returns:
+       A dict containing the results, with keywords trust, threshold,
+       paths_used, nodes_used, nodes_unused, source, sink, tag.
         
     """
     epsilon = 0.2
