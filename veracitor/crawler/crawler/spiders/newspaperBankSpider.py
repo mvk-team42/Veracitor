@@ -31,9 +31,7 @@ class NewspaperBankSpider(CrawlSpider):
                     "http://www.listofnewspapers.com/en/europe/swedish-newspapers-in-sweden.html",
                     "http://www.listofnewspapers.com/en/north-america/usa-newspapers-in-united-states-of-america.html",
                     ]
-                
-        
-        
+ 
         domain = "www.listofnewspapers.com"
 
         self.rules = (
@@ -47,7 +45,8 @@ class NewspaperBankSpider(CrawlSpider):
         )
         log.msg("initiated")
         super(NewspaperBankSpider, self).__init__(*args, **kwargs)
+     
         
     def parse_webpage_link(self, response):
         log.msg("found link")
-        MetaNewspaperSpider.scrape_meta(response)
+        return MetaNewspaperSpider.scrape_meta(response)

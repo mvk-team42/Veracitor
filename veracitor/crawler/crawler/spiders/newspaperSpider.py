@@ -54,16 +54,4 @@ class NewspaperSpider(CrawlSpider):
                 return True
         return False
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+  

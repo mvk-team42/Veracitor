@@ -5,9 +5,16 @@ from scrapy.contrib.loader.processor import TakeFirst
 from urlparse import urlparse
 from os.path import realpath, dirname
 from scrapy import log
+from scrapy.http.response.text import *
+from scrapy.utils.python import unicode_to_str
+import urllib2 
 
 from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader
+from ....database import *
+from .metaNewspaperSpider import MetaNewspaperSpider
+
+
 
 
 class ArticleSpider(BaseSpider):
@@ -34,6 +41,13 @@ class ArticleSpider(BaseSpider):
         domain = urlparse(response.url)[1]
         loader = ArticleLoader(item=ArticleItem(), response=response)
         
+        mainpage_domain = "http://" + urlparse(response.url)[1]
+        log.msg("page: "+str(mainpage_domain))
+        if not extractor.contains_producer_with_url(mainpage_domain):
+            # Construct a response object and send to scrape_meta
+            mainpage_body = urllib2.urlopen(mainpage_domain).read()
+            mainpage_response = TextResponse(url=mainpage_domain,body=unicode_to_str(mainpage_body, 'utf-8'),encoding='utf-8')
+            yield MetaNewspaperSpider.scrape_meta(mainpage_response)
         
         for field in ArticleItem.fields.iterkeys():
             #log.msg("field: " + field)
@@ -41,4 +55,4 @@ class ArticleSpider(BaseSpider):
                 loader.add_xpath(field, xpath)
         loader.add_value("url", response.url)
                 
-        return loader.load_item()
+        yield loader.load_item()
