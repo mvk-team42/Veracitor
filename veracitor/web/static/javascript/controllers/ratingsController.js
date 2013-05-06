@@ -28,6 +28,7 @@ var RatingsController = function (controller) {
 	    add_event_handlers(data.producers, data.information);
 	    populate_prod_tag_dropdown();
 	    populate_info_tag_dropdown();
+	    $('.left #groups').change();
 	});
     };
 
@@ -66,12 +67,27 @@ var RatingsController = function (controller) {
 	    $('.right #tag-name-info-span').text($('.right #info-tags').val());
 	});
 
+	
+	$(".left #groups").change(function() {
+	    var selectedValue = $(this).find(":selected").val();
+	    if( selectedValue != 'all' ) {
+		$("#rate-group").removeAttr("disabled");
+
+		//TODO: Filter list on group
+	    }
+	    else {
+		$("#rate-group").attr("disabled", "disabled");
+	    }
+	});
+
 	$("#new-group").click(function(evt) {
 	    show_new_group_form();
 	});
 
 	$("#rate-group").click(function(evt) {
-	    show_rate_group_form();
+	 //   if(!$("#groups").val() == 'all') {
+		show_rate_group_form();
+	   // }
 	});
 
 	$('#producer-list').accordion({ collapsible: true, active: false, header: "h3"});

@@ -17,9 +17,7 @@ import itertools
 from numpy import array
 import math
 
-tag = "cooking"
-
-def sample_bounds(bayesianNetwork, source, sink, bounds, k=10):
+def sample_bounds(bayesianNetwork, source, sink, bounds, p_conf, tag, k=10):
     """
     The main function in the sampling procedure. 
 
@@ -44,7 +42,7 @@ def sample_bounds(bayesianNetwork, source, sink, bounds, k=10):
         # Top sort the nodes to traverse parents before children
         top_sort_nodes = nx.topological_sort(bayesianNetwork.reverse(),[sink])
         for n in top_sort_nodes:
-            if not bayesianNetwork.successors(n):
+            if n in bayesianNetwork.successors(sink):
                 if not 'decision' in nodes[n]: 
                     nodes[n]['xmin'] = 0
                     nodes[n]['xmax'] = 1
@@ -59,7 +57,7 @@ def sample_bounds(bayesianNetwork, source, sink, bounds, k=10):
                 parents = bayesianNetwork.successors(n)
                 # If this is the first run, calculate probabilities
                 if not bounds:
-                    probability_set = get_probability_set(bayesianNetwork, n)
+                    probability_set = get_probability_set(bayesianNetwork, n, tag, p_conf)
                 # Else, use the previously sampled probabilities
                 else:
                     probability_set = set([bounds[n]])
@@ -86,7 +84,7 @@ def sample_bounds(bayesianNetwork, source, sink, bounds, k=10):
 
 
 
-def get_probability_set(network, node):
+def get_probability_set(network, node, tag, p_conf):
     """
     Calculates the set of possible probabilites of 'node' being true (included). 
 
@@ -100,7 +98,7 @@ def get_probability_set(network, node):
     for p in permutations:
         product = 1
         for (n,xmax) in p:
-            p_value = p_confidence(node,n)
+            p_value = p_conf[(node,n,tag)]
             if xmax:
                 m1 = nodes[n]['xmax']
                 m2 = nodes[n]['xmin']
@@ -111,43 +109,3 @@ def get_probability_set(network, node):
         probabilities.add(1-product)
 
     return probabilities
-    
-def p_confidence(p1, p2, weights=(0.7, 0.2, 0.1, 0.8)):
-    """
-    Implementation of *Equation (1)* from *Kuter, Golbeck 2010*. 
-
-    Args:
-       *p1, p2 (node identifiers)*: The nodes to calculate confidence
-       between.
-
-    Kwargs:
-       *weights (tuple)*: The weights to be used in the equation. Default
-       is the example weights from *Kuter, Golbeck 2010*.
-
-    Returns:
-       Returns the confidence ``P(p1|p2)``.
-       
-    """
-
-    ## TODO: use something other than networkModel (for example a network
-    ##       sent in by sunny? <@:-)-X--<
-    overall_difference = networkModel.get_overall_difference(p1, p2, [tag])
-    difference_on_extremes = networkModel.get_difference_on_extremes(p1, p2, [tag])
-    max_difference = networkModel.get_max_rating_difference(p1, p2, [tag])
-    belief_coefficient = networkModel.get_belief_coefficient(p1, p2, [tag])
-
-    # TODO remove prints.
-    #print "overall_difference: " + str(overall_difference)
-    #print "diff on extremes: " + str(difference_on_extremes)
-    #print "max_difference " + str(max_difference)
-    #print "belief_coefficient: " + str(belief_coefficient)
-
-    if difference_on_extremes is None:
-        return belief_coefficient * \
-            math.fabs(1 - 2 * (weights[3]*overall_difference + \
-                                   (1 - weights[3])*max_difference)) 
-    else:
-        return belief_coefficient* \
-            math.fabs(1 - 2 * (weights[0]*overall_difference + \
-                                   weights[1]*max_difference + \
-                                   weights[2]*difference_on_extremes))
