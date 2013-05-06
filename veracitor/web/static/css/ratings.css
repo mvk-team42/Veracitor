@@ -46,3 +46,7 @@
     color: green;
     font-style: bold;
 }
+
+#ratings_view div#rate-border-div {
+    float: left;
+}

@@ -51,6 +51,18 @@ def render_ratings():
     """
     Fetches the current user and renders the Ratings tab
 
+    Method:
+        POST
+    
+    Returns:
+        *html* (str): The html used to render the Ratings tab
+        *producers* (dict): A dictionary of the producers that the currently logged in user has rated
+        *information* (dict): A dictionary of the information that the currently logged in user has rated
+
+    Errors:
+        400 - Bad syntax
+        405 - Method not allowed
+    
     """
     if not request.method == 'POST':
         abort(405)
@@ -67,6 +79,22 @@ def render_ratings():
 
 @app.route('/jobs/ratings/rate_producer', methods=['GET', 'POST'])
 def rate_producer():
+    """
+    Rates a producer
+
+    Method:
+        POST
+
+    Parameters:
+        *producer* (str): The producer to be rated
+        *tag* (str): The tag with which to rate
+        *rating* (str): The rating with which to rate
+
+    Errors:
+        400 - Bad syntax
+        405 - Method not allowed
+
+    """
     if not request.method == 'POST':
         abort(405)
     try:
@@ -80,6 +108,21 @@ def rate_producer():
 
 @app.route('/jobs/ratings/rate_information', methods=['GET', 'POST'])
 def rate_information():
+    """
+    Rates information
+
+    Method:
+        POST
+
+    Parameters:
+        *information* (str): The information to be rated
+        *rating* (str): The rating with which to rate
+
+    Errors:
+        400 - Bad syntax
+        405 - Method not allowed
+
+    """
     if not request.method == 'POST':
         abort(405)
     try:
@@ -95,6 +138,19 @@ def rate_information():
 def create_group():
     """
     Creates a group with the specified name.
+
+    Method:
+        POST
+
+    Parameters:
+        *name* (str): The name of the group that will be created
+
+    Returns:
+        The name of the created group
+        
+    Errors:
+        400 - Bad syntax
+        405 - Method not allowed
 
     """
     if not request.method == 'POST':
@@ -112,7 +168,21 @@ def create_group():
 @app.route('/jobs/ratings/rate_group', methods=['GET', 'POST'])
 def rate_group():
     """
-    Rate a group.
+    Rates a group
+
+    Method:
+        POST
+
+    Parameters:
+        *name* (str): The name of the group to be rated
+        *rating* (str): The rating with which to rate
+
+    Errors:
+        400 - Bad syntax
+        405 - Method not allowed
+
+    Returns:
+        A status string (currently without purpose)
 
     """
     if not request.method == 'POST':
@@ -121,12 +191,11 @@ def rate_group():
         user = extractor.get_user(session['user_name'])
         
         if len(extractor.get_group(session['user_name'],request.form['name']).producers) > 0:
-            user.rate_group(request.form['name'], request.form['tag'], request.form['rating'])
+            user.rate_group(request.form['name'], request.form['rating'])
         else:
             abort(400)
         return "Success"
-    except Exception, e:
-        log(e)
+    except:
         return "Fail"
         abort(400)
 
