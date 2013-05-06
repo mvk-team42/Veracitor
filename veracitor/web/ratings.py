@@ -5,7 +5,23 @@
 
 """
 .. module:: ratings
-    :synopsis: Defines server logic for the ratings tab
+      :synopsis: Defines server logic for the ratings tab
+
+REST API implementation for server requests concerning the ratings tab.
+   
+This applies to all functions:
+   
+URL Structure:
+   `jobs/ratings/<MODULE NAME>`
+
+Errors:
+   - **400** - Bad syntax
+   - **405** - Method not allowed
+
+.. note:
+   Though the URL structure begins with `jobs/`, these methods do not start
+   any Celery tasks or jobs.
+   
 
 .. moduleauthor:: Martin Runelöv <mrunelov@kth.se
 .. moduleauthor:: Daniel Molin <dmol@kth.se>
@@ -113,7 +129,17 @@ def rate_group():
 @app.route('/jobs/ratings/get_used_prod_tags', methods=['GET', 'POST'])
 def get_used_prod_tags():
     """
-    Returns a list of all tags that the user has rated producers with.
+    Get a list of all tags that the user has rated producers with.
+    
+    Method:
+       POST
+
+    Returns:
+       A dict containing the used tags::
+
+          {
+             "tags" : *tags_used* ([(str), ]), 
+          }
 
     """
     if not request.method == 'POST':
@@ -131,7 +157,17 @@ def get_used_prod_tags():
 @app.route('/jobs/ratings/get_used_info_tags', methods=['GET', 'POST'])
 def get_used_info_tags():
     """
-    Returns a list of all tags that the user has rated information with
+    Get a list of all tags that the user has rated information with.
+
+    Method:
+       POST
+
+    Returns:
+       A dict containing the used tags::
+
+          {
+             "tags" : *tags_used* ([(str), ]), 
+          }
 
     """
     if not request.method == 'POST':
