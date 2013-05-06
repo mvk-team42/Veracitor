@@ -24,12 +24,13 @@
 
 <p>Become a user of Veracitor!</p>
 
-<form action="/register" method="post">
+<form>
+    <p class="error"></p>
     <label for="username">Username:</label>
     <input name="username" type="text" />
     <label for="password">Password:</label>
     <input name="password" type="password" />
-    <input type="submit" value="Register" />
+    <input id="register-button" type="submit" value="Register" />
 </form>
 
 {% endif %}

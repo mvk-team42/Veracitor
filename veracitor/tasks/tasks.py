@@ -4,6 +4,8 @@
 # Used to load up celery aswell as to define the taskmgr
 # for the tasks.
 
+
+
 from __future__ import absolute_import
 
 from celery import Celery
@@ -14,7 +16,8 @@ taskmgr = Celery(main='veracitor.tasks.tasks.taskmgr',
                  include=['veracitor.tasks.crawler',
                           'veracitor.tasks.algorithms',
                           'veracitor.tasks.search',
-                          'veracitor.tasks.test'])
+                          'veracitor.tasks.test',
+                          'veracitor.tasks.login'])
 
 try:
     import os
@@ -26,6 +29,10 @@ except:
         raise Error("Unable to load celery configuration.'")
 
 ci.init_interface()
+
+from veracitor.database import  *
+
+nm = networkModel.build_network_from_db()
 
 
 if __name__ == '__main__':
