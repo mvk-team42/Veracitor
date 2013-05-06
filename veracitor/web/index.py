@@ -24,7 +24,6 @@ def index():
     """
     Initializes the web page.
     """
-
     uname = session.get('user_name')
     if not uname:
         veracitor = {

@@ -54,4 +54,8 @@ def logout():
     session.pop("error", None)
     return redirect(url_for("index"))
     
-    
+
+
+@app.route("/register")
+def register():
+    pass
