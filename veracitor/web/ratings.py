@@ -7,6 +7,9 @@
 .. module:: ratings
       :synopsis: Defines server logic for the ratings tab
 
+Description
+-----------
+
 REST API implementation for server requests concerning the ratings tab.
    
 This applies to all functions:
@@ -18,9 +21,13 @@ Errors:
    - **400** - Bad syntax
    - **405** - Method not allowed
 
-.. note:
+.. note::
    Though the URL structure begins with `jobs/`, these methods do not start
    any Celery tasks or jobs.
+
+
+Functions
+---------
    
 
 .. moduleauthor:: Martin Runelöv <mrunelov@kth.se
