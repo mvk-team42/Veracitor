@@ -26,59 +26,67 @@ def index():
     """
 
     uname = session.get('user_name')
+
+    if uname:
+        session.pop('error', None)
+
+        try:
+            session['user'] = extractor.get_user(uname)
+            veracitor = {
+                'user_name': uname,
+                'title' : 'Veracitor',
+                'tabs' : [
+                    {
+                        'name' : 'Search',
+                        'key' : 'search',
+                        'viewid' : 'search_view',
+                        'menuid' : 'search_menu',
+                        'url' : 'tabs/search_tab.html'
+                        },
+                    {
+                        'name' : 'Network',
+                        'key' : 'network',
+                        'viewid' : 'network_view',
+                        'menuid' : 'network_menu',
+                        'url' : 'tabs/network_tab.html'
+                        },
+                    {
+                        'name' : 'Ratings',
+                        'key' : 'ratings',
+                        'viewid' : 'ratings_view',
+                        'menuid' : 'ratings_menu',
+                        'url' : 'tabs/ratings_tab.html'
+                        },
+                    {
+                        'name' : 'Account',
+                        'key' : 'account',
+                        'viewid' : 'account_view',
+                        'menuid' : 'account_menu',
+                        'url' : 'tabs/account_tab.html'
+                        }]
+                }
+        except:
+            session['error'] = 'User %s not found' % uname
+            session.pop('user_name', None)
+            uname = None
+
     if not uname:
         veracitor = {
             'title' : 'Veracitor',
-            'tabs' : [
-                {
+            'tabs' : [{
                     'name' : 'Login',
                     'key' : 'login',
                     'viewid' : 'login_view',
                     'menuid' : 'login_menu',
                     'url' : 'tabs/login_tab.html'
                     },
-                {
+                      {
                     'name' : 'Account',
                     'key' : 'account',
                     'viewid' : 'account_view',
                     'menuid' : 'account_menu',
                     'url' : 'tabs/account_tab.html'
                     }]
-        }
-    else:
-        session['user'] = extractor.get_user(uname)
-        veracitor = {
-            'user_name': uname,
-            'title' : 'Veracitor',
-            'tabs' : [
-                {
-                    'name' : 'Search',
-                    'key' : 'search',
-                    'viewid' : 'search_view',
-                    'menuid' : 'search_menu',
-                    'url' : 'tabs/search_tab.html'
-                    },
-                {
-                    'name' : 'Network',
-                    'key' : 'network',
-                    'viewid' : 'network_view',
-                    'menuid' : 'network_menu',
-                    'url' : 'tabs/network_tab.html'
-                    },
-                {
-                    'name' : 'Ratings',
-                    'key' : 'ratings',
-                    'viewid' : 'ratings_view',
-                    'menuid' : 'ratings_menu',
-                    'url' : 'tabs/ratings_tab.html'
-                    },
-                {
-                    'name' : 'Account',
-                    'key' : 'account',
-                    'viewid' : 'account_view',
-                    'menuid' : 'account_menu',
-                    'url' : 'tabs/account_tab.html'
-                    }]
-        }
+            }
 
     return render_template('index.html', vera=veracitor)
