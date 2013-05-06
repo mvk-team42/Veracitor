@@ -7,9 +7,6 @@
 .. module:: ratings
       :synopsis: Defines server logic for the ratings tab
 
-Description
------------
-
 REST API implementation for server requests concerning the ratings tab.
    
 This applies to all functions:
@@ -56,12 +53,10 @@ def render_ratings():
     
     Returns:
         *html* (str): The html used to render the Ratings tab
-        *producers* (dict): A dictionary of the producers that the currently logged in user has rated
-        *information* (dict): A dictionary of the information that the currently logged in user has rated
 
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
+        *producers* (dict): A dictionary of the producers that the currently logged in user has rated
+
+        *information* (dict): A dictionary of the information that the currently logged in user has rated
     
     """
     if not request.method == 'POST':
@@ -87,12 +82,10 @@ def rate_producer():
 
     Parameters:
         *producer* (str): The producer to be rated
-        *tag* (str): The tag with which to rate
-        *rating* (str): The rating with which to rate
 
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
+        *tag* (str): The tag with which to rate
+
+        *rating* (str): The rating with which to rate
 
     """
     if not request.method == 'POST':
@@ -116,12 +109,9 @@ def rate_information():
 
     Parameters:
         *information* (str): The information to be rated
+
         *rating* (str): The rating with which to rate
-
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
-
+   
     """
     if not request.method == 'POST':
         abort(405)
@@ -146,12 +136,8 @@ def create_group():
         *name* (str): The name of the group that will be created
 
     Returns:
-        The name of the created group
+        The name of the created group.
         
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
-
     """
     if not request.method == 'POST':
         abort(405)
@@ -175,11 +161,8 @@ def rate_group():
 
     Parameters:
         *name* (str): The name of the group to be rated
-        *rating* (str): The rating with which to rate
 
-    Errors:
-        400 - Bad syntax
-        405 - Method not allowed
+        *rating* (str): The rating with which to rate
 
     Returns:
         A status string (currently without purpose)
