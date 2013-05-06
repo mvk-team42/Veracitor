@@ -1,7 +1,7 @@
 /* RATINGS VIEW */
 
 #ratings_view #producer-list-container, #ratings_view #information-list-container {
-    width: 340px;
+    width: 360px;
 }
 
 #ratings_view h3 {
@@ -24,13 +24,10 @@
     margin-top: 2px;
 }
 
-#ratings_view div#rate-border-div {
-    margin-top: 2px;
-}
 
 #ratings_view > .content .left {
     float: left;
-    margin-right: 150px;
+    margin-right: 140px;
     width: 340px;
 }
 
@@ -43,4 +40,9 @@
     float:right;
     font-size: 10px;
     padding: 0px 5px;
+}
+
+#ratings_view span.header-span {
+    color: green;
+    font-style: bold;
 }
