@@ -1,5 +1,4 @@
 {% block content %}
-{% if user %}
 
 <div class="table">
   <div class="left">
@@ -17,7 +16,7 @@
     <label for="groups">Group:</label>
     <select name="groups" id="groups">
       <option value="all">-</option>
-      {% for group in user.groups  %}
+      {% for group in renderDict.groups  %}
       <option value="{{ group.name }}">{{ group.name  }}</option>
       {% endfor %}
     </select>
@@ -32,12 +31,6 @@
 	  <option value="4">4</option>
 	  <option value="5">5</option>
 	</select>
-	<label for='rate-group-tag' id='tag_label'>Tag:</label>
-	<select id='rate-group-tag'>
-	  <!-- TODO: Populate with actual tags!  -->
-	  <option value='crime'>Crime</option>
-	  <option value='gardening'>Gardening</option>
-	</select>
 	<input type="button" value="Rate group" id="rate-group-submit"/>
       </form>
     </div>
@@ -48,9 +41,9 @@
       <form id="new-group-form">
 	<label for='create-group-tag' id='tag_label'>Tag:</label>
 	<select id='create-group-tag'>
-	  <!-- TODO: Populate with actual tags!  -->
-	  <option value='crime'>Crime</option>
-	  <option value='gardening'>Gardening</option>
+	  {% for tag in renderDict.tags  %}
+	      <option value='{{ tag  }}'>{{ tag  }}</option>
+	  {% endfor %}
 	</select>
 	<input id="name" type="text" placeholder="Group name"/>
 	<input type="button" value="Create group" id="create-group"/>
@@ -89,7 +82,7 @@
 	</div>
       </div>
     </div>
-    {% for producer in user.source_ratings  %}
+    {% for producer in renderDict.source_ratings  %}
     <div class='{{producer.tag}}'>
       <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
       <div>
@@ -110,7 +103,7 @@
 <!-- Disabled producer filtering. TODO: Maybe implement
   <label for "producers">Producer:</label>
     <select name="producers" id="producers">
-      {% for producer in user.source_ratings  %}
+      {% for producer in source_ratings  %}
       <option value="{{ producer.name  }}">{{ producer.name  }}
 	{% endfor  %}
     </select>
@@ -118,6 +111,7 @@
 -->
     <label for="info-tags">Tag:</label>
     <select name="tags" class="tags" id="info-tags">
+      <!-- TODO: remove these dummy-tags -->
       <option value="crime">Crime</option>
       <option value="gardening">Gardening</option>
     </select>
@@ -140,7 +134,7 @@
 	  </div>
 	</div>
 	<!-- TODO: Fixa tag-filtrering! -->
-	{% for information in user.info_ratings  %}
+	{% for information in renderDict.info_ratings  %}
 	<h3>{{ information.name }} <div class='rating'>{{ information.rating }}</div></h3>
 	<div>
 	  <p>URL: <a href="{{ information.url }}">{{ information.url  }}</a></p>
@@ -151,5 +145,4 @@
     
 </div>
 </div>
-{% endif %}
 {% endblock %}

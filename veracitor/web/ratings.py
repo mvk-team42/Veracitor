@@ -62,10 +62,13 @@ def render_ratings():
     if not request.method == 'POST':
         abort(405)
     try:
-        userDict = utils.get_user_as_dict(session['user_name'])
-        producers = userDict['source_ratings']
-        information = userDict['info_ratings']
-        html = render_template('tabs/ratings_tab_content.html', user=userDict)
+        renderDict = {}
+        renderDict = utils.get_user_as_dict(session['user_name'])
+        renderDict['tags'] = get_all_tags()
+        producers = renderDict['source_ratings']
+        information = renderDict['info_ratings']
+        html = render_template('tabs/ratings_tab_content.html', renderDict=renderDict)
+
     except Exception, e:
         log(e)
         abort(400)
@@ -239,5 +242,13 @@ def get_used_info_tags():
         tags_used = list(set((tag.name for tag in ir.information.tags) for ir in user.info_ratings))
 
         return jsonify(tags=tags_used)
+    except:
+        abort(400)
+
+
+def get_all_tags():
+    try:
+        tag_names = [tag.name for tag in extractor.get_all_tags()]
+        return tag_names
     except:
         abort(400)

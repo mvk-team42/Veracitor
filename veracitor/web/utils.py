@@ -7,6 +7,8 @@ from veracitor.database import extractor
 from veracitor.web import app
 from veracitor.database import extractor
 
+log = app.logger.debug
+
 class JSONEnc(JSONEncoder):
 
     def default(self, o):
@@ -38,7 +40,7 @@ def get_user_as_dict(username):
 
     source_ratings = []
     for s in user_obj.source_ratings.keys():
-        for tag in s.keys():
+        for tag in user_obj.source_ratings[s]:
             source_ratings.append({
                     'name' : s,
                     'tag' : tag,
@@ -53,11 +55,11 @@ def get_user_as_dict(username):
                 'url': iurl,
                 })
 
-    groups = [{'name' : g,
-               'description' : extractor.get_group(g).description,
-               'producers' : [p.name for p in extractor.get_group(g).producers],
-               'rating' : user_obj.groups_ratings[g]}
-              for g in user_obj.groups.keys()]
+    
+    groups = [{'name' : g.name,
+               'description' : g.description,
+               'producers' : [p.name for p in g.producers]}
+              for g in user_obj.groups]
 
     user_dict = {'name' : user_obj.name,
                 'description' : user_obj.description,
