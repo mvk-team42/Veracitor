@@ -238,18 +238,20 @@ def get_common_info_ratings(producer_name1, producer_name2, tag_names):
     #print p2_info_ratings['dn_ledare1']
     #print "****"
     common_info_ratings = []
+    tmp_string = ""
     val = 0;
     for k, v in p1_info_ratings.iteritems():
         try:
             val = p2_info_ratings[k]    
         except Exception: 
             print "Excheitpion"
-        print extractor.get_information(k)
-        if __contains_common_tags(extractor.get_information(k).tags,
+        
+        tmp_string = k.replace("|",".")
+      
+        if __contains_common_tags(extractor.get_information(tmp_string).tags,
                                   tag_names):
             common_info_ratings.append( (v, val) )
-
-    print "****"           
+           
    
     
     return common_info_ratings
@@ -263,7 +265,8 @@ def __contains_common_tags(tags_1, tag2_names):
 
 
 def get_extreme_info_ratings(producer_name, tag_names):
-    """Returns a list of info ratings who differ from the mean by
+    """Returns a dictionary mapping information titles
+    with ratings set on them who differ from the mean by
     one standard deviation of the specified producer (I.E. ratings that
     are unusually extreme relative to specified producer's ratings).
     Returned ratings need to have been set under at least one of
@@ -278,7 +281,8 @@ def get_extreme_info_ratings(producer_name, tag_names):
         {Information.title : rating_value }. Ignoring tags, let's say a producer
         has made the ratings 4, 6, 5, 1 and 10. This function would calculate
         the mean of these (I.E. 5) and the standard deviation of these
-        (2.925747...) and return title of Informations with a rating that
+        (2.925747...) and return a dictionary
+        mapping the title of Informations with a rating that
         deviates from the mean by the standard deviation. In this
         case the Information ratings with the ratings 1 and 10 would be returned
         in a dictionary.
@@ -290,22 +294,25 @@ def get_extreme_info_ratings(producer_name, tag_names):
     relevant_info_ratings_ints = []
     total_sum = 0.0
     for k,v in producer.info_ratings.iteritems():
-        for tag in extractor.get_information(k).tags:
+        for tag in extractor.get_information(k.replace("|", ".")).tags:
             if tag.name in tag_names:
                 relevant_info_ratings[k] = v
                 relevant_info_ratings_ints.append(v)
                 total_sum += v
                 break
     
+
     mean = (total_sum)/len(relevant_info_ratings_ints)
 
     extremes = {}
     np_array = array(relevant_info_ratings_ints)
+
     std = np_array.std()
+    
     for k,v in relevant_info_ratings.iteritems():
         diff = math.fabs(v - mean)
         if diff > std:
-            extremes[k] = v
+            extremes[k.replace("|", ".")] = v
 
     return extremes
     

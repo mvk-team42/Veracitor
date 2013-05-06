@@ -43,16 +43,15 @@ class User(producer.Producer):
     pw_hash = StringField()
     email = StringField()
     
-    def rate_group(self, name_of_group, name_of_tag, rating):
+    def rate_group(self, name_of_group, rating):
        
         if(type(name_of_group) is str and\
-           type(name_of_tag) is str and\
            type(rating) is int):
        
             if(not self.__user_owns_group(name_of_group)):
                 return False
             self.group_ratings[name_of_group] = rating
-            self.__rate_all_members(name_of_group, name_of_tag, rating)
+            self.__rate_all_members(name_of_group, rating)
             return True
 
         else:
@@ -60,13 +59,19 @@ class User(producer.Producer):
     
     
 
-    def create_group(self, group_name):
+    def create_group(self, group_name, tag_name):
         
         if(self.__user_owns_group(group_name)):
             return False
+        try:
+            tag = extractor.get_tag(tag_name)
+        except dbExceptions.NotInDatabase:
+            errMsg = "The tag specified does not exist"
+            raise dbExceptions.NotInDatabase(errMsg)
         new_group = group.Group(name=group_name,
                                 owner=self,
-                                time_created=datetime.datetime.now())
+                                time_created=datetime.datetime.now(),
+                                tag=tag)
         
         new_group.save()
         #self.groups.append(new_group)
@@ -74,11 +79,10 @@ class User(producer.Producer):
         return True
         
     
-    def __rate_all_members(self, group_to_rate, considered_tag, rating):
+    def __rate_all_members(self, group_to_rate, rating):
         group_to_rate = extractor.get_group(self.name, group_to_rate)
-        considered_tag = extractor.get_tag(considered_tag)
         for p in group_to_rate.producers:
-            self.rate_source(p, considered_tag, rating)
+            self.rate_source(p, group_to_rate.tag, rating)
     
     def __user_owns_group(self, group_name):
         try:

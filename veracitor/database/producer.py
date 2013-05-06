@@ -48,7 +48,7 @@ class Producer(Document):
     def rate_information(self, information_to_rate, rating):
         if(type(information_to_rate) is information.Information and\
            type(rating) is int):
-            self.info_ratings[information_to_rate.url] = rating
+            self.info_ratings[self.__convert_url(information_to_rate.url)] = rating
         else:
             raise TypeError("Problem with type of input variables.")
 
@@ -62,7 +62,7 @@ class Producer(Document):
         return self.source_ratings[req_source.name][tag.name]
 
     def get_info_rating(self, req_info):
-        return self.info_ratings[req_info.url]
+        return self.info_ratings[self.__convert_url(req_info.url)]
     
     def save(self):
         """
@@ -83,7 +83,7 @@ class Producer(Document):
             networkModel.notify_producer_was_added(self)
         else:
             networkModel.notify_producer_was_updated(self)
-        
+       
         super(Producer, self).save()
 
     def delete(self):
@@ -108,6 +108,9 @@ class Producer(Document):
             networkModel.notify_producer_was_removed(self)
             
         super(Producer, self).delete()
+    
+    def __convert_url(self, url):
+        return url.replace(".", "|")
 
 # Demonstrates use of rating methods
 if __name__ == "__main__":

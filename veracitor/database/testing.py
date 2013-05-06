@@ -29,25 +29,29 @@ class GeneralSetup(unittest.TestCase):
         
         self.user1 = user.User(name="alfred", password="123")
         self.user1.save()
-        self.user1.create_group("Group1")
+        self.user1.create_group("Group1", "Gardening")
         self.user1.save()
 
         self.user2 = user.User(name="fredrik", password="123")
         self.user2.save()
-        self.user2.create_group("Group2")
+        self.user2.create_group("Group2", "Cooking")
         self.user2.save()
         
         self.group1 = extractor.get_group(self.user1.name,"Group1")
        
-        self.info1 = information.Information(title="dn_ledare1", url="wwwdnse",
+        self.info1 = information.Information(title="dn_ledare1", url="www.dn.se",
                                              time_published=datetime.datetime.now())
         self.info1.tags.append(self.tag1)
         self.info1.save()
-        self.info2 = information.Information(title="svd_ledare1", url="wwwsvdse",
+        self.info2 = information.Information(title="svd_ledare1", url="www.svd.se",
+                                             time_published=datetime.datetime.now())
+        self.info3 = information.Information(title="cnn_article", url="www.cnn.com",
                                              time_published=datetime.datetime.now())
         self.info2.tags.append(self.tag1) 
         self.info2.tags.append(self.tag2)          
         self.info2.save()
+        self.info3.tags.append(self.tag2)
+        self.info3.save()
 
         self.prod1 = producer.Producer(name="DN", type_of="newspaper")
         self.prod1.save() 
@@ -64,10 +68,18 @@ class GeneralSetup(unittest.TestCase):
         self.group1.save()
 
         self.prod1.rate_information(self.info1, 5)
-        self.prod2.rate_information(self.info1, 4)     
+        self.prod2.rate_information(self.info1, 4)  
+        self.prod3.rate_information(self.info1, 3)   
         self.prod1.save()
         self.prod2.save()             
+        self.prod3.save()
 
+        self.prod4 = producer.Producer(name="Expressen", type_of="newspaper")
+        self.prod4.save()
+        self.prod4.rate_information(self.info1, 1)
+        self.prod4.rate_information(self.info2, 2)
+        self.prod4.rate_information(self.info3, 6)
+        self.prod4.save()
         
 
     def tearDown(self):
@@ -131,12 +143,12 @@ class TestGroupThings(GeneralSetup):
         
         self.assertRaises(Exception, extractor.get_group, "Hurrman", self.group1.name)
         
-        assert self.user1.create_group("GHURR") == True
+        assert self.user1.create_group("GHURR", "Gardening") == True
         
-        assert self.user1.create_group("GHURR") == False
+        assert self.user1.create_group("GHURR", "Gardening") == False
         
-        assert self.user1.rate_group(str(self.group1.name), self.tag1.name, 1) == True
-        assert self.user1.rate_group("Group2", self.tag1.name, 1) == False
+        assert self.user1.rate_group(str(self.group1.name), 1) == True
+        assert self.user1.rate_group("Group2", 1) == False
        
 class TestNetworkModelThings(GeneralSetup):
 
@@ -152,14 +164,23 @@ class TestNetworkModelThings(GeneralSetup):
         #print self.prod2.info_ratings
         assert networkModel.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag1.name])\
             == [(self.prod1.get_info_rating(self.info1), self.prod2.get_info_rating(self.info1))]
-        #assert networkModel.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag2.name])\
-       #     == []
-        """
+        assert networkModel.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag2.name])\
+            == []
+        
         assert networkModel.get_common_info_ratings(self.prod1.name, self.prod3.name,[self.tag1.name, self.tag2.name])\
-            == [(self.info_rating1, self.info_rating1,)]
+            == [(self.prod1.get_info_rating(self.info1), self.prod3.get_info_rating(self.info1))]
+        
         assert networkModel.get_common_info_ratings(self.prod2.name, self.prod3.name,[self.tag2.name])\
-            == [(self.info_rating3, self.info_rating4,)
-        """
+            == []
+        
+        
+        assert networkModel.get_overall_difference(self.prod1.name, self.prod2.name, [self.tag1.name])\
+            == 1.0
+        assert networkModel.get_extreme_info_ratings(self.prod4.name, [self.tag1.name, self.tag2.name])\
+            == {self.info3.url : 6}
+
+        assert networkModel.get_max_rating_difference(self.prod1.name, self.prod4.name, [self.tag1.name, self.tag2.name])\
+            == 4
 
     
 
