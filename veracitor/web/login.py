@@ -1,15 +1,25 @@
-### This is a dirty hack to fix a temporary login.
+### This is a dirty hack to fix a temporary login/register.
 ### It's really insecure and shouldn't really be used at all.
 
-from flask import session, redirect, render_template, request, url_for
+"""
+.. module:: login
+    :synopsis: Implements login/register functions for the web client.
+
+.. moduleauthor:: Anton Erholt <aerholt@kth.se>
+
+"""
+
+from flask import session, redirect, render_template, request, url_for, abort, jsonify
 #from werkzeug.security import generate_password_hash, check_password_hash
 from veracitor.web import app
+from veracitor.web.utils import store_job_result
+from veracitor.tasks import login
 
 from veracitor.database import *
 
 
 @app.route("/login", methods=["GET","POST"])
-def login():
+def login_user():
     """
     
     """
@@ -54,4 +64,36 @@ def logout():
     session.pop("error", None)
     return redirect(url_for("index"))
     
+
+
+@app.route("/register", methods=['POST', 'GET'])
+def register_user():
+    """Scrapes an article from a URL and adds it to the database.
+
+    URL Structure:
+        ``/register``
+
+    Method:
+        POST
+
+    Parameters:
+        username (str): The username to be registered.
+        password (str): The password to be used with the username to login.
+    Returns:
+        Upon success, returns an object with the job_id, ex::
+
+        {"job_id": "ff92-23ad-232a-2334s-23"}
+
+    Result when finished:
+        *user_created (boolean)* : [True | False]
+        *error (str)* : A string containing the error if any.
     
+    Errors:
+       * **405** -- Method not allowed
+
+    """
+    if request.method != 'POST':
+        abort(405)
+    res = login.register.delay(request.form.get('username'), request.form.get('password'))
+    store_job_result(res)
+    return jsonify(job_id=res.id)
