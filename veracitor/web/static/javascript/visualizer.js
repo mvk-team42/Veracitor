@@ -231,13 +231,10 @@ var Visualizer = function (controller) {
         }
 
         cy.nodes('#' + source).css({
-            'width': 80,
-            'height': 80,
-            'border-width': 0,
-            'shape': 'ellipse'
+            'background-color': color.node.user.background,
+            'border-color': color.node.user.border,
+            'shape': 'rectangle'
         });
-        var animation = new Animation('/static/images/node_loading.png', 4, 2, '0:7', 500);
-        animation.animate(cy.nodes('#' + source));
 
         cy.layout({
             'name': 'arbor'
@@ -255,6 +252,14 @@ var Visualizer = function (controller) {
         var node = this;
 
         if (node.hasClass('ghost')) {
+            var a = new Animation('/static/images/node_loading.png', 4, 2, '0:7', 500);
+            node.css({
+                'width': 80,
+                'height': 80,
+                'border-width': 0
+            });
+            a.animate(node);
+
             $.post('/jobs/network/neighbors', {
                 'name': node.id(),
                 'depth': 1
@@ -301,7 +306,16 @@ var Visualizer = function (controller) {
                 for (i in ghosts) {
                     cy.nodes('#' + ghosts[i]).addClass('ghost');
                 }
+                a.stop();
                 node.removeClass('ghost');
+                node.css({
+                    'background-image': '',
+                    'background-color': color.node.select.background,
+                    'border-color': color.node.select.border,
+                    'width': 30,
+                    'height': 30,
+                    'border-width': 3
+                });
 
                 cy.layout();
             }).fail(function (data) {
