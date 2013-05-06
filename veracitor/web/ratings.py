@@ -138,7 +138,7 @@ def get_used_prod_tags():
        A dict containing the used tags::
 
           {
-             "tags" : *tags_used* ([(str), ]), 
+             "tags" : tags_used ([(str), ]), 
           }
 
     """
@@ -166,7 +166,7 @@ def get_used_info_tags():
        A dict containing the used tags::
 
           {
-             "tags" : *tags_used* ([(str), ]), 
+             "tags" : tags_used ([(str), ]), 
           }
 
     """

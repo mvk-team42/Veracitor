@@ -17,3 +17,8 @@
 ---------------------------
 .. automodule:: veracitor.web.search
    :members:
+
+:mod:`web.ratings` -- Ratings tab functionality
+-----------------------------------------------
+.. automodule:: veracitor.web.ratings
+   :members:
