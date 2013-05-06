@@ -77,6 +77,8 @@ def _save_act_in_gtd_object(act,gtd_producer):
     information = None
     if not extractor.contains_information(act_url):
         #TODO lägg till information i GTDs information list
+        if act["summary"] == None:
+            act["summary"] = act["attacktype"] + " - ATTACKER: " + act["attacker"] + " - TARGET: " + act["target"]
         information = information.Information(url = act_url,
             title = "GTD Entry",
             summary = act["summary"],
