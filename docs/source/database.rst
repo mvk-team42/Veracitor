@@ -39,4 +39,7 @@
 .. automodule:: veracitor.database.tag
    :members:
 
-
+:mod:`database.dbExceptions` -- Exceptions for the database interaction
+-----------------------------------------------------------------------
+.. automodule:: veracitor.database.dbExceptions
+   :members:
