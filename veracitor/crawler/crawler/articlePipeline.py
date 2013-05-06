@@ -44,7 +44,7 @@ def add_to_database(article):
     # lägg till urlen artikeln är på
 
     #utgår från att article["publishers"] är en sträng med space-separerade publishers, t.ex. "DN SVD NYT"
-    publisher_strings = re.sub("[^\w]", " ",  article["publishers"]).split()
+    publisher_strings = re.sub("[-]", ",",  article["publishers"]).split(",")
     log.msg("pubStrings: " + str(tag_strings))
     publishers = [extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in publisher_strings]
     
