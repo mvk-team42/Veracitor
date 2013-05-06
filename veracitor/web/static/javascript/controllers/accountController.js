@@ -26,11 +26,11 @@ var AccountController = function (controller) {
                   var res = d.result;
                   if (res['user_created']) {
                     $(".register-content").html("User created! Please use login tab to login.");
-                  } else if (res['error']) {
-                    $(".register-content .error").html(d['error']);
+                  } else if (typeof(res['error']) !== 'undefined' && res['error'] !== null) {
+                    $(".register-content .error").html(res['error']);
                   }
                 });
-                $('.error').html("Registering...");
+                $('.register-content .error').html("Registering...");
               });
       });
     };
