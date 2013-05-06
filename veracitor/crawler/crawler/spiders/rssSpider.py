@@ -33,22 +33,21 @@ class RssSpider(CrawlSpider):
         xxs = XmlXPathSelector(response)
         items = []
         requests = []
-        for item in xxs.select('//item'):
+        for item_tag in xxs.select('//item'):
             items.append(ArticleItem())
-            if len(item.select("title")) > 0:
-                items[-1]["title"] = item.select("title/text()")[0].extract()  
-            if len(item.select("pubDate")) > 0:
-                items[-1]["time_published"] =  item.select("pubDate/text()")[0].extract()
-            if len(item.select("link")) > 0:
-                items[-1]["url"] = item.select("link/text()")[0].extract()
-            if len(item.select("description")) > 0:
-                items[-1]["summary"] = item.select("description/text()")[0].extract()   
+            if len(item_tag.select("title")) > 0:
+                items[-1]["title"] = item_tag.select("title/text()")[0].extract()  
+            if len(item_tag.select("pubDate")) > 0:
+                items[-1]["time_published"] =  item_tag.select("pubDate/text()")[0].extract()
+            if len(item_tag.select("link")) > 0:
+                items[-1]["url"] = item_tag.select("link/text()")[0].extract()
+            if len(item_tag.select("description")) > 0:
+                items[-1]["summary"] = item_tag.select("description/text()")[0].extract()   
             
             request = Request(items[-1]["url"], callback=self.extract_author_from_link)
             request.meta["item"] = items[-1]
             yield request
-
-        
+   
     def extract_author_from_link(self, response):
         current_dir = dirname(realpath(__file__))
         meta = WebpageMeta(current_dir + '/../webpageMeta.xml')

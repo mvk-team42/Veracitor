@@ -42,7 +42,7 @@ class ArticleItem(Item):
         if field in self:
             return unicode(self[field])
         else:
-            return "unknown"
+            return "safe_string_unknown"
 
 
 class ArticleLoader(XPathItemLoader):
@@ -67,6 +67,7 @@ class ProducerItem(Item):
     source_ratings = Field()
     info_ratings = Field()
     type_of = Field()
+    rss_urls = Field()
 
     
     
