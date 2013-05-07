@@ -118,6 +118,9 @@ class User(producer.Producer):
                     return False
                 return True
         return False
+
+    def __safe_string(self, url):
+        return url.replace(".", "|")
         
     
 
