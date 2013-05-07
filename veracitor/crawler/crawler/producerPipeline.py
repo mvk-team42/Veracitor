@@ -69,7 +69,7 @@ def add_to_xml(producer_item, tree, xml_file):
     
 def add_to_database(producer_item):
     new_producer = producer.Producer(
-        name = producer_item["name"],
+        name = producer_item["name"], #.replace(".",",").replace("$",","),
         description = producer_item["description"],
         url = producer_item["url"],
         infos = [],

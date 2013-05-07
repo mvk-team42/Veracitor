@@ -66,15 +66,19 @@ def add_to_database(article):
         # Add trust between publishers
         for publisher2 in publishers:
             if not publisher==publisher2:
+                log.msg("publisher2 name: " + publisher2.name)
                 for tag in tags:
                     publisher.rate_source(publisher2, tag, 5)
         publisher.save()
 
 def get_publisher_objects(publisher_strings):
     publisher_strings = re.sub("[-&]", ",", publisher_strings).split(",")
+    #publisher_strings = [string.replace(".",",").replace("$",",") for string in publisher_strings]
     log.msg("pubStrings: " + str(publisher_strings))
     publishers = []
     for publisher_string in publisher_strings:
+        if publisher_string == 'unknown':
+            continue
         if extractor.contains_producer_with_name(publisher_string):
             publishers.append(extractor.get_producer(publisher_string))
         else:
@@ -87,11 +91,8 @@ def get_publisher_objects(publisher_strings):
                 else:
                     not_found.append(split_publisher)
             if len(not_found) != 0:
-                new_producer = producer.Producer(
-                        name = " ".join(not_found),
-                        type_of = "unknown")
-                new_producer.save()
-                publishers.append(new_producer)
+                producer = extractor.get_producer_create_if_needed(" ".join(not_found))
+                publishers.append(producer)
     return publishers
 
     
