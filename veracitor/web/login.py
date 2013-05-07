@@ -64,6 +64,7 @@ def login_user():
 def logout():
     session.pop("user_name", None)
     session.pop("error", None)
+    session.pop("crawls", None)
     return redirect(url_for("index"))
     
 
