@@ -10,9 +10,8 @@ from os.path import dirname, realpath
 from urlparse import urlparse
 from time import strptime, mktime
 import xml.etree.ElementTree as ET
-import re
 
-from .items import ArticleItem
+from .items import ArticleItem, ProducerItem
 from .webpageMeta import WebpageMeta
 from .spiders.newspaperBankSpider import NewspaperBankSpider
 from .spiders.newspaperSpider import NewspaperSpider
@@ -29,6 +28,8 @@ def process_producer(producer_item, spider):
     tree = ET.parse(xml_file)
     webpages = tree.getroot()
     # Might wanna httpify all uses of producer.url ??
+
+    fix_fields(producer_item)
 
     if producer_item["name"]=="":
         producer_item["name"] = producer_item["url"]
@@ -77,3 +78,16 @@ def add_to_database(producer_item):
         info_ratings = {},
         type_of = "Newspaper")
     new_producer.save()
+
+def fix_fields(producer_item):
+    for field in ProducerItem.fields.iterkeys():
+        fix_field(producer_item, field)
+
+def fix_field(producer_item, field):
+    if field in producer_item:
+        log.msg("producer_item["+field+"]: "+unicode(producer_item[field]))
+        if isinstance(producer_item[field], str):
+            if producer_item[field].strip() != "":
+                producer_item[field] = re.sub("\s+", " ", producer_item[field].strip())
+                return
+    producer_item[field] = "unknown"

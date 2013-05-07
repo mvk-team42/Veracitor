@@ -91,7 +91,7 @@ def get_publisher_objects(publisher_strings):
                 else:
                     not_found.append(split_publisher)
             if len(not_found) != 0:
-                producer = extractor.get_producer_create_if_needed(" ".join(not_found))
+                producer = extractor.producer_create_if_needed(" ".join(not_found), "unknown")
                 publishers.append(producer)
     return publishers
 
@@ -112,7 +112,15 @@ def fix_fields(article):
     fix_time_published(article)
     shorten_summary(article)
     for field in ArticleItem.fields.iterkeys():
-        fix_field(article, field)  
+        fix_field(article, field)
+        
+def fix_field(article, field):
+    if field in article:
+        if article[field].strip() != "":
+            article[field] = re.sub("\s+", " ", article[field].strip())
+            log.msg("article["+field+"]: "+article[field])
+            return
+    article[field] = "unknown"
             
 def fix_time_published(article):
     if "time_published" in article:
@@ -182,11 +190,3 @@ def parse_datetime(article):
 def shorten_summary(article):
     if "summary" in article:
         article["summary"] = article["summary"][:200]
-        
-def fix_field(article, field):
-        if field in article:
-            log.msg("article["+field+"]: "+article[field])
-            if article[field].strip() != "":
-                article[field] = article[field].strip().replace("\n", "")
-                return
-        article[field] = "unknown"
