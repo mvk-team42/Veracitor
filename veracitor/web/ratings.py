@@ -178,11 +178,8 @@ def rate_group():
     try:
         user = extractor.get_user(session['user_name'])
         if len(extractor.get_group(user.name,request.form['name']).producers.keys()) > 0:
-            log("INSIDE IF")
             user.rate_group(str(request.form['name']), int(request.form['rating']))
-            log("RATED GROUP")
             user.save()
-            log("SUCCESS RATING!")
         else:
             abort(400)
 
