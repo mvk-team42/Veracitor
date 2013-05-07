@@ -38,6 +38,7 @@ class GeneralSetup(unittest.TestCase):
         self.user2.save()
         
         self.group1 = extractor.get_group(self.user1.name,"Group1")
+        self.group2 = extractor.get_group(self.user2.name,"Group2")
        
         self.info1 = information.Information(title="dn_ledare1", url="www.dn.se",
                                              time_published=datetime.datetime.now())
@@ -64,8 +65,7 @@ class GeneralSetup(unittest.TestCase):
 
         self.prod1.rate_source(self.prod2, self.tag1, 2)
 
-        self.group1.producers.append(self.prod1)
-        self.group1.save()
+        
 
         self.prod1.rate_information(self.info1, 5)
         self.prod2.rate_information(self.info1, 4)  
@@ -80,6 +80,17 @@ class GeneralSetup(unittest.TestCase):
         self.prod4.rate_information(self.info2, 2)
         self.prod4.rate_information(self.info3, 6)
         self.prod4.save()
+
+        self.prod5 = producer.Producer(name="RealClear", type_of="newspaper")
+        self.prod5.save()
+        self.prod6 = producer.Producer(name="TheSun", type_of="newspaper")
+        self.prod6.save()
+        self.user2.add_to_group(self.group2.name, self.prod5)
+        self.user2.add_to_group(self.group2.name, self.prod6)
+        self.user2.save()
+        self.user2.rate_group(str(self.group2.name), 4)
+        self.user2.save()
+        
         
 
     def tearDown(self):
@@ -138,8 +149,6 @@ class TestGroupThings(GeneralSetup):
         assert extractor.contains_group(self.user1.groups[0].name) == True        
         assert extractor.contains_group("Not a group!!") == False
         
-        assert extractor.get_group(self.group1.owner.name, self.group1.name).producers[0]\
-            == self.prod1
         
         self.assertRaises(Exception, extractor.get_group, "Hurrman", self.group1.name)
         
@@ -147,8 +156,12 @@ class TestGroupThings(GeneralSetup):
         
         assert self.user1.create_group("GHURR", "Gardening") == False
         
-        assert self.user1.rate_group(str(self.group1.name), 1) == True
-        assert self.user1.rate_group("Group2", 1) == False
+        assert self.user2.get_group_rating(self.group2.name) == 4
+        assert self.user2.get_source_rating(self.prod5, self.tag2) == 4
+        assert self.user2.get_source_rating(self.prod6, self.tag2) == 4
+        assert self.user2.remove_from_group(self.group2.name, self.prod5) == True
+        assert self.user2.remove_from_group(self.group2.name, self.prod2) == False
+        assert self.user2.remove_from_group(self.group2.name, self.prod6) == True
        
 class TestNetworkModelThings(GeneralSetup):
 

@@ -74,15 +74,16 @@ class User(producer.Producer):
                                 tag=tag)
         
         new_group.save()
-        #self.groups.append(new_group)
+        
+        
 
         return True
         
     
     def __rate_all_members(self, group_to_rate, rating):
         group_to_rate = extractor.get_group(self.name, group_to_rate)
-        for p in group_to_rate.producers:
-            self.rate_source(p, group_to_rate.tag, rating)
+        for producer_key,producer_obj in group_to_rate.producers.iteritems():
+            self.rate_source(producer_obj, group_to_rate.tag, rating)
     
     def __user_owns_group(self, group_name):
         try:
@@ -95,20 +96,41 @@ class User(producer.Producer):
             return None
     
     def get_group_rating(self, req_group_name):
-        return self.groups[req_group_name]
-    
+        return self.group_ratings[req_group_name]
+
+    def add_to_group(self, req_group_name, producer_to_be_added):
+        
+        for group in self.groups:
+            if group.name == req_group_name:
+                group.producers[str(producer_to_be_added.name)] = producer_to_be_added
+                group.save()
+                return True
+                
+        return False
+
+    def remove_from_group(self, req_group_name, producer_to_be_deleted):
+        for group in self.groups:
+            if group.name == req_group_name:
+                try:
+                    del group.producers[producer_to_be_deleted.name]
+                except KeyError:
+                    return False
+                return True
+        return False
+        
     
 
     
     
 def testing():
-    u1 = extractor.get_user("hurse")
-    u1.save()
-    p1 = extractor.get_producer("mrunelov")
-    p1.save()
-    u1.create_group("de_stable")
-    u1.groups[0].append(p1)
-    u1.rate_group("de_stable", "Trust", 5)
+    p2 = extractor.get_producer("Prod2")
+    u1 = extractor.get_user("alfred")
+    print u1.add_to_group("group1", p2)
+    u1.rate_group("group1", 10)
+    print u1.group_ratings
+    print u1.source_ratings
+    for p in u1.groups[0].producers.keys():
+        print p
     
     
     
