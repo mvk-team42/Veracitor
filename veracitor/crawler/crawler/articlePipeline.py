@@ -40,14 +40,16 @@ def add_to_database(article):
     #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
     tag_strings = re.sub("[^\w]", " ",  article["tags"]).split()
     tags = [extractor.get_tag_create_if_needed(tag_str) for tag_str in tag_strings]
+    if len(tags) == 0:
+        tags.append(extractor.get_tag_create_if_needed("unknown"))
 
-    # lägg till urlen artikeln är på
+    publishers = get_publisher_objects(article["publishers"]) #[extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in publisher_strings]
+    domain = "http://" + urlparse(article["url"])[1]
+    try:
+        publishers.append(extractor.get_producer_with_url(domain))
+    except:
+        pass
 
-    #utgår från att article["publishers"] är en sträng med space-separerade publishers, t.ex. "DN SVD NYT"
-    publisher_strings = re.sub("[-]", ",",  article["publishers"]).split(",")
-    log.msg("pubStrings: " + str(tag_strings))
-    publishers = [extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in publisher_strings]
-    
     info = information.Information(
                         title = article["title"],
                         summary = article["summary"],
@@ -61,7 +63,37 @@ def add_to_database(article):
     for publisher in publishers:
         log.msg("publisher name: " + publisher.name)
         publisher.infos.append(info)
+        # Add trust between publishers
+        for publisher2 in publishers:
+            if not publisher==publisher2:
+                for tag in tags:
+                    publisher.rate_source(publisher2, tag, 5)
         publisher.save()
+
+def get_publisher_objects(publisher_strings):
+    publisher_strings = re.sub("[-&]", ",", publisher_strings).split(",")
+    log.msg("pubStrings: " + str(publisher_strings))
+    publishers = []
+    for publisher_string in publisher_strings:
+        if extractor.contains_producer_with_name(publisher_string):
+            publishers.append(extractor.get_producer(publisher_string))
+        else:
+            # If not found, split on whitespace and try again
+            split_publishers = publisher_string.split()
+            not_found = []
+            for split_publisher in split_publishers:
+                if extractor.contains_producer_with_name(split_publisher):
+                    publishers.append(extractor.get_producer(split_publisher))
+                else:
+                    not_found.append(split_publisher)
+            if len(not_found) != 0:
+                new_producer = producer.Producer(
+                        name = " ".join(not_found),
+                        type_of = "unknown")
+                new_producer.save()
+                publishers.append(new_producer)
+    return publishers
+
     
 def print_if_unknown(article):
     for field in Articlearticle.fields.iterkeys():
@@ -152,6 +184,7 @@ def shorten_summary(article):
         
 def fix_field(article, field):
         if field in article:
+            log.msg("article["+field+"]: "+article[field])
             if article[field].strip() != "":
                 article[field] = article[field].strip().replace("\n", "")
                 return
