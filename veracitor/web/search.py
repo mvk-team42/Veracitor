@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, a
 
 import json
 import ast
+from datetime import datetime
 
 from veracitor.web import app
 from veracitor.web.utils import store_job_result
@@ -64,18 +65,17 @@ def search_information():
         abort(405)
     try:
         title_part = request.form['title_part']
-        log(title_part)
-        log(request.form)
         tags = ast.literal_eval(request.form['tags'])
-        log(tags)
-
         
         try:
-            startD = request.form['start_date']
-            endD = request.form['end_date']
+            startD = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
+            endD = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
+
             res = search.get_information.delay(title_part, tags,
                              startD=startD, endD=endD)
-        except:
+        except Exception as exp:
+            log("Exception: "+str(type(exp))+"\nMsg: "+exp.message+
+                "\n(KeyError is allowed here; no start/end date specified.)");
             res = search.get_information.delay(title_part, tags)
 
         store_job_result(res)

@@ -11,6 +11,7 @@ from mongoengine import *
 import networkModel
 import tag
 import information
+
 from dbExceptions import NetworkModelException
 connect('mydb')
 
@@ -37,8 +38,7 @@ class Producer(Document):
     meta = {'allow_inheritance':'On'}
     
     def rate_source(self, source_to_rate, considered_tag, rating):
-        if(type(source_to_rate) is Producer and\
-           type(considered_tag) is tag.Tag and\
+        if(type(considered_tag) is tag.Tag and\
            type(rating) is int):
             try:
                 self.source_ratings[self.__safe_string(source_to_rate.name)]\
