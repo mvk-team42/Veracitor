@@ -20,11 +20,15 @@ import datetime
 ### Crawler jobs ###
 
 # TODO:
+
 # This should probably be more tied to the user and
 # perhaps logged more thoroughly.
 
 # The crawls are currently saved in the current session, but should
 # probably be stored in the database when enhancing.
+
+# The crawls stored in session are currently removed on logout. See
+# login.py - logout.
 
 @app.route('/jobs/crawler/scrape_article', methods=['GET', 'POST'])
 def scrape_article():
