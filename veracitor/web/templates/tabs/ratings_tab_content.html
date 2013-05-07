@@ -3,57 +3,57 @@
 <div class="table">
   <div class="left">
     <h2>Rated producers</h2>
-    <div display='block'>
+    <div display='block' id="filters">
       <label for="prod-tags">Tag:</label>
       <select name="tags" class="tags" id="prod-tags">  
 	<!--
 	    Populated from controller/js.
 	  -->
       </select>
-    </div>
-    <div display="block">
-      <div id="group-info-div">
-	<div id="group-form-border-div">
-	  <label for="groups">Group:</label>
-	  <select name="groups" id="groups">
-	    <option value="all">-</option>
-	    <!-- TODO: Fix group rating! -->
-	    {% for group in renderDict.groups  %}
+      <div display="block">	
+	<div id="group-info-div">
+	  <div id="group-form-border-div">
+	    <label for="groups">Group:</label>
+	    <select name="groups" id="groups">
+	      <option value="all">-</option>
+	      <!-- TODO: Fix group rating! -->
+	      {% for group in renderDict.groups  %}
 	    {% if renderDict.group_ratings.group %}
-	    <option value="{{ group.name }}">{{ group.name }} - {{ renderDict.group_ratings.group  }}</option>
-	    {% else  %}
-	    <option value="{{ group.name }}">{{ group.name }}</option>
-	    {% endif  %}
-	    {% endfor %}
-	  </select>
-	  <input type="button" value="Rate group" id="rate-group"/>
-	  <div id="rate-group-form-div" style="display:none;">
-	    <form id="rate-group-form">
-	      <label for='rate-group-rating' id='rating_label'>Rating:</label>
-	      <select id='rate-group-rating'>
+	      <option value="{{ group.name }}">{{ group.name }} - {{ renderDict.group_ratings.group  }}</option>
+	      {% else  %}
+	      <option value="{{ group.name }}">{{ group.name }}</option>
+	      {% endif  %}
+	      {% endfor %}
+	    </select>
+	    <input type="button" value="Rate group" id="rate-group"/>
+	    <div id="rate-group-form-div" style="display:none;">
+	      <form id="rate-group-form">
+		<label for='rate-group-rating' id='rating_label'>Rating:</label>
+		<select id='rate-group-rating'>
 		<option value="1">1</option>
 		<option value="2">2</option>
 		<option value="3">3</option>
 		<option value="4">4</option>
 		<option value="5">5</option>
-	      </select>
-	      <input type="button" value="Rate group" id="rate-group-submit"/>
-	    </form>
+		</select>
+		<input type="button" value="Rate group" id="rate-group-submit"/>
+	      </form>
+	    </div>
 	  </div>
+	  <input type="button" value="+ New group" id='new-group'/>
 	</div>
-	<input type="button" value="+ New group" id='new-group'/>
-      </div>
-      <div id="new-group-form-div" style="display:none;">
-	<form id="new-group-form">
-	  <label for='create-group-tag' id='tag_label'>Tag:</label>
-	  <select id='create-group-tag'>
-	    {% for tag in renderDict.tags  %}
-	    <option value='{{ tag  }}'>{{ tag  }}</option>
-	    {% endfor %}
+	<div id="new-group-form-div" style="display:none;">
+	  <form id="new-group-form">
+	    <label for='create-group-tag' id='tag_label'>Tag:</label>
+	    <select id='create-group-tag'>
+	      {% for tag in renderDict.tags  %}
+	      <option value='{{ tag  }}'>{{ tag  }}</option>
+	      {% endfor %}
 	  </select>
-	  <input id="name" type="text" placeholder="Group name"/>
-	  <input type="button" value="Create group" id="create-group"/>
-	</form>
+	    <input id="name" type="text" placeholder="Group name"/>
+	    <input type="button" value="Create group" id="create-group"/>
+	  </form>
+	</div>
       </div>
     </div>
     <div id='producer-list-container'>
@@ -74,25 +74,25 @@
 	      <p>{{ producer.description }}</p>
 	      <input type="button" id="{{ producer.name  }}" value="View in network" class="view_in_network"/>
 	    </div>
-      </div>
+	  </div>
 	</div>
 	{% endfor %}
       </div>
     </div>
   </div>
-
-<div class="right">
-  <h2>Rated information</h2>
+  
+  <div class="right">
+    <h2>Rated information</h2>
   <div display='block'>
-<!-- Disabled producer filtering. TODO: Maybe implement
-  <label for "producers">Producer:</label>
-    <select name="producers" id="producers">
-      {% for producer in source_ratings  %}
-      <option value="{{ producer.name  }}">{{ producer.name  }}
-	{% endfor  %}
+    <!-- Disabled producer filtering. TODO: Maybe implement
+	 <label for "producers">Producer:</label>
+	 <select name="producers" id="producers">
+	   {% for producer in source_ratings  %}
+	   <option value="{{ producer.name  }}">{{ producer.name  }}
+	     {% endfor  %}
     </select>
-    <br/>
--->
+	 <br/>
+	 -->
     <label for="info-tags">Tag:</label>
     <select name="tags" class="tags" id="info-tags">
       <!-- TODO: remove these dummy-tags -->
@@ -100,8 +100,8 @@
       <option value="gardening">Gardening</option>
     </select>
   </div>
-    <div id='information-list-container'>
-      <div id='information-list'>
+  <div id='information-list-container'>
+    <div id='information-list'>
 	<div class='crime'>
 	  <h3>Article1 <div class='rating'>4</div></h3>
 	  <div>
@@ -121,9 +121,8 @@
 	  <p>URL: <a href="{{ information.url }}">{{ information.url  }}</a></p>
 	</div>
 	{% endfor %}
-      </div>
     </div>
-    
-</div>
-</div>
+  </div>
+  </div>
+ </div>
 {% endblock %}

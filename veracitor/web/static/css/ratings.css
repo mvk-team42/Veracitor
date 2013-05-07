@@ -19,12 +19,19 @@
     top: 4px;
 }
 
+#ratings_view #producer-list-container {
+    margin-top: 0px;
+}
 
 
 #ratings_view div#new-group-form-div {
     border: 1px solid;
     margin-top: 2px;
     float: left;
+}
+
+#ratings_view div#filters {
+    overflow: hidden;
 }
 
 #ratings_view div#group-form-border-div {
