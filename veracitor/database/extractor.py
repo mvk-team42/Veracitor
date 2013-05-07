@@ -35,6 +35,12 @@ def get_producer(requested_name):
     extr_producer = producer.Producer.objects(name=requested_name)
     __checkIfEmpty(extr_producer)
     return extr_producer[0]
+    
+def get_producer_with_url(url):
+    extr_producer = producer.Producer.objects(url=url)
+    __checkIfEmpty(extr_producer)
+    return extr_producer[0]
+    
 
 
 def producer_create_if_needed(requested_name, type_if_new):
