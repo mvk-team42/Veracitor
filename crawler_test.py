@@ -1,4 +1,5 @@
 import veracitor.crawler.crawlInterface as ci
+import veracitor.crawler.gtdParser as gtdp
 from veracitor.database import *
 from veracitor.logger import logger
 
@@ -16,8 +17,8 @@ def a(item, id):
 #logger.log("testing",logger.Level.debug,logger.Area.crawler)
 
 #ci.set_callback(a)
-ci.init_interface()
-ci.add_newspaper("www.svd.se")
+#ci.init_interface()
+#ci.add_newspaper("www.svd.se")
 #ci.test_rss("http://penguin-news.com/index.php?format=feed&type=rss")
 #ci.start_continuous_scrape()
 #ci.create_newspaper_bank()
@@ -26,10 +27,13 @@ ci.add_newspaper("www.svd.se")
 #ci.scrape_article("http://www.svd.se/nyheter/inrikes/mamman-dog-i-vantan-pa-dottern_8152288.svd")
 #ci.scrape_article("http://www.guardian.co.uk/uk/2013/may/07/jimmy-tarbuck-arrested-allegation-assault-teenage-boy")
 #ci.scrape_article("http://www.svd.se/nyheter/inrikes/utbrett-fiskfusk-avslojat_8046058.svd")
+#ci.scrape_article("http://www.dn.se/nyheter/sverige/barn-som-sett-vald-utan-ersattning")
 #ci.request_scrape("www.penguin-news.com")
 #ci.request_scrape("www.unt.se")
-ci.request_scrape("www.svd.se")
+#ci.request_scrape("www.svd.se")
 #ci.create_newspaper_bank()
+
+gtdp.parse()
 
 
 
