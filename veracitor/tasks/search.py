@@ -45,21 +45,9 @@ def get_information(title_part, tags,
     
     logger.info('res: %s', str(res))
 
-    return(title_part + str(tags) + str(startD) + str(endD))
-
     if res:
-        info = [{
-                'title' : r.title,
-                'summary' : r.summary,
-                'url' : r.url,
-                'time_published' : r.time_published,
-                'tags' : [t.name for t in r.tags],
-                'publishers' : [p.name for p in r.publishers],
-                'references' : [ref.name for ref in r.references],
-                } for r in res]
-        
         return {
-            'data' : info
+            'data' : [extractor.entity_to_dict(i) for i in res]
             }
     else:
         return {}
