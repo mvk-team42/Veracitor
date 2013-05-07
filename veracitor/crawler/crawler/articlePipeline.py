@@ -40,6 +40,8 @@ def add_to_database(article):
     #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
     tag_strings = re.sub("[^\w]", " ",  article["tags"]).split()
     tags = [extractor.get_tag_create_if_needed(tag_str) for tag_str in tag_strings]
+    if len(tags) == 0:
+        tags.append(extractor.get_tag_create_if_needed("unknown"))
 
     publishers = get_publisher_objects(article["publishers"]) #[extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in publisher_strings]
     domain = "http://" + urlparse(article["url"])[1]
@@ -61,6 +63,11 @@ def add_to_database(article):
     for publisher in publishers:
         log.msg("publisher name: " + publisher.name)
         publisher.infos.append(info)
+        # Add trust between publishers
+        for publisher2 in publishers:
+            if not publisher==publisher2:
+                for tag in tags:
+                    publisher.rate_source(publisher2, tag, 5)
         publisher.save()
 
 def get_publisher_objects(publisher_strings):
@@ -177,6 +184,7 @@ def shorten_summary(article):
         
 def fix_field(article, field):
         if field in article:
+            log.msg("article["+field+"]: "+article[field])
             if article[field].strip() != "":
                 article[field] = article[field].strip().replace("\n", "")
                 return

@@ -20,7 +20,7 @@ class ArticleItem(Item):
     time_published = Field()
     url = Field()
     tags = Field()
-    regerences = Field()
+    references = Field()
     
     def __str__(self):
         return unicode(self).encode('utf-8')
@@ -69,14 +69,3 @@ class ProducerItem(Item):
     type_of = Field()
     rss_urls = Field()
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

@@ -41,17 +41,20 @@ class Producer(Document):
            type(considered_tag) is tag.Tag and\
            type(rating) is int):
             try:
-                self.source_ratings[source_to_rate.name][considered_tag.name] = rating
+                self.source_ratings[self.__safe_string(source_to_rate.name)]\
+                                   [considered_tag.name] = rating
             except KeyError:
-                self.source_ratings[source_to_rate.name] = {}
-                self.source_ratings[source_to_rate.name][considered_tag.name] = rating
+                self.source_ratings[self.__safe_string(source_to_rate.name)]\
+                                    = {}
+                self.source_ratings[self.__safe_string(source_to_rate.name)]\
+                                   [considered_tag.name] = rating
         else:
             raise TypeError("Problem with type of input variables.")
 
     def rate_information(self, information_to_rate, rating):
         if(type(information_to_rate) is information.Information and\
            type(rating) is int):
-            self.info_ratings[self.__convert_url(information_to_rate.url)] = rating
+            self.info_ratings[self.__safe_string(information_to_rate.url)] = rating
         else:
             raise TypeError("Problem with type of input variables.")
 
@@ -62,10 +65,11 @@ class Producer(Document):
         return self.info_ratings
     
     def get_source_rating(self, req_source, tag):
-        return self.source_ratings[req_source.name][tag.name]
+        return self.source_ratings[self.__safe_string(req_source.name)]\
+                                  [tag.name]
 
     def get_info_rating(self, req_info):
-        return self.info_ratings[self.__convert_url(req_info.url)]
+        return self.info_ratings[self.__safe_string(req_info.url)]
     
     def save(self):
         """
@@ -112,7 +116,7 @@ class Producer(Document):
             
         super(Producer, self).delete()
     
-    def __convert_url(self, url):
+    def __safe_string(self, url):
         return url.replace(".", "|")
 
 # Demonstrates use of rating methods
