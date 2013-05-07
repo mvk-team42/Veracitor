@@ -69,7 +69,7 @@ you are in your virtualenv now.
 
 ##### Celery
 
-Use `celery -A veracitor.tasks.tasks.taskmgr worker -B`
+Use `celery -A veracitor.tasks.tasks.taskmgr worker -l INFO -B`
 to start the celery daemon from the Veracitor folder.
 
 The celery worker daemon processes tasks sent out from the web part of
