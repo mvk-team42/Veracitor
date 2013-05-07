@@ -200,43 +200,18 @@ var SearchController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-		console.log(data);
-		/*
-                if (data.result.data) {
-                    search_result = data.result.data;
+                search_result = data.result.data.producers;
 
-                    var table = $('<table>')
-                        .append($('<thead>')
-                                .append($('<tr>')
-                                        .append($('<th>').html('Name'))
-                                        .append($('<th>').html('Type'))));
-                    var body = $('<tbody>');
+		$('#search-result').html(data.result.html);
+                $('#search-result .result').click(function (evt) {
+                    var prod = search_result[$(this).index()];
 
-                    for (var i in search_result) {
-                        body.append($('<tr>').addClass('result clickable')
-                                    .append($('<td>').addClass('name')
-                                            .html(data.result.data[i].name))
-                                    .append($('<td>').addClass('type')
-                                            .html(data.result.data[i].type_of)));
-                    }
-
-                    table.append(body);
-                    $('#search-result').html(table);
-
-                    $('#search-result .result').click(function (evt) {
-                        var prod = search_result[$(this).index()];
-
-                        controller.network.visualize_producer_in_network(prod, 3);
-                        controller.switch_to_tab('network');
-                    });
-                } else {
-                    $('#search-result').html('<h2>Nothing found</h2><p>Click the <i>Add a source or information</i> tab to add what you were looking for to the database.</p>');
-                }*/
+                    controller.network.visualize_producer_in_network(prod, 3);
+                    controller.switch_to_tab('network');
+                });               
             });
         })
         .fail(function (data) {
-            console.log(data);
-
             $("#search-result").html("<h2>Server error.</h2>");
         });
     };

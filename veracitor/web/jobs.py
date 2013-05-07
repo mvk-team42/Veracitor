@@ -16,6 +16,8 @@ from flask import request, redirect, url_for, render_template, abort, jsonify,\
     make_response
 from veracitor.web import app
 
+log = app.logger.debug
+
 ### Job statistics ###
 
 @app.route("/jobs/job_ids", methods=['POST'])
@@ -122,6 +124,7 @@ def get_job_result():
         abort(405)
     try:
         res = app.results[request.form['job_id']]
+        log(res)
     except Exception, err:
         abort(404)
 

@@ -22,12 +22,10 @@ def get_producers(name, type_of):
     logger.info('res: %s', str(res))
 
     if res:
-        producers = []
-        for r in res:
-            producers.append(extractor.entity_to_dict(r))
-
         return {
-            'data': producers,
+            'data': {
+                'producers': [ extractor.entity_to_dict(p) for p in res ]
+             },
             'template_url': 'tabs/search_results.html'
         }
     else:
@@ -44,7 +42,10 @@ def get_information(title_part, tags,
 
     if res:
         return {
-            'data' : [extractor.entity_to_dict(i) for i in res]
+            'data' : {
+                "information" : [extractor.entity_to_dict(i) for i in res]
+                },
+            'template_url':'tabs/search_results.html',
             }
     else:
         return {}
