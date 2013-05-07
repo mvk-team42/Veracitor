@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <webpages>
 
     <default>
@@ -187,5 +186,4 @@
             </qualification>
         </article-paths>
     </webpage>
-</webpages>
-
+<webpage domain="http://www.dn.se" name="Nyheter - DN.SE"><rss-urls><rss>http://www.dn.se/toppnyheter-rss</rss><rss>http://www.dn.se/ekonomi-rss</rss><rss>http://www.dn.se/sport-rss</rss><rss>http://www.dn.se/debatt-rss</rss><rss>http://www.dn.se/ledare-rss</rss><rss>http://www.dn.se/kultur-rss</rss></rss-urls></webpage></webpages>

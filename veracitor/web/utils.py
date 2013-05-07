@@ -6,6 +6,8 @@ from bson.json_util import default
 from veracitor.web import app
 from veracitor.database import *
 
+from flask import session
+
 log = app.logger.debug
 
 class JSONEnc(JSONEncoder):
@@ -69,3 +71,12 @@ def get_user_as_dict(username):
                 'info_ratings' : info_ratings}
 
     return user_dict
+
+def get_session_dict(name):
+    """
+    
+    """
+    running_crawls =  session.get('running_crawls')
+    if running_crawls == None:
+        running_crawls = {}
+    
