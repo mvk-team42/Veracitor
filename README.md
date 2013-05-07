@@ -51,7 +51,12 @@ Install and setup [mongodb](http://www.mongodb.org/).
 ### Step four
 
 Change settings in `settings.py` and `celeryconf.py` according to your
-environment.
+environment. Add the environment variable VERACITOR_SETTINGS to your
+env. Make sure it contains the absolute path to the settings file,
+ex. (on Ubuntu Linux) append this to `~/.bashrc` :
+
+    `export VERACITOR_SETTINGS="/path/to/Veracitor/settings.py"`
+
 
 ### Step five
 
@@ -63,11 +68,11 @@ you are in your virtualenv now.
 ##### Celery
 
 Use `celery -A veracitor.tasks.tasks.taskmgr worker -B`
-to start the celery daemon.
+to start the celery daemon from the Veracitor folder.
 
 The celery worker daemon processes tasks sent out from the web part of
 the application.
 
 ##### Flask dev webserver
 
-Use `python start_webserver.py` to start the dev webserver.
+Use `python start_webserver.py` to start the dev webserver from the Veracitor folder.
