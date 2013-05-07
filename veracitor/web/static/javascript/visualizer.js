@@ -252,14 +252,6 @@ var Visualizer = function (controller) {
         var node = this;
 
         if (node.hasClass('ghost')) {
-            var a = new Animation('/static/images/node_loading.png', 4, 2, '0:7', 500);
-            node.css({
-                'width': 80,
-                'height': 80,
-                'border-width': 0
-            });
-            a.animate(node);
-
             $.post('/jobs/network/neighbors', {
                 'name': node.id(),
                 'depth': 1
@@ -269,55 +261,56 @@ var Visualizer = function (controller) {
                 var ghosts = [];
 
                 for (i in data.neighbors) {
-                    nodes.push({
-                        'group': 'nodes',
-                        'data': {
-                            'id': data.neighbors[i].name,
-                            'data': data.neighbors[i]
-                        }
-                    });
-
-                    for (j in data.neighbors[i].source_ratings) {
-                        edges.push({
-                            'group': 'edges',
+                    if (cy.nodes('#' + data.neighbors[i].name).empty()) {
+                        nodes.push({
+                            'group': 'nodes',
                             'data': {
-                                'id': data.neighbors[i].name + '-' + data.neighbors[i].source_ratings[j].name,
-                                'source': data.neighbors[i].name,
-                                'target': data.neighbors[i].source_ratings[j].name
+                                'id': data.neighbors[i].name,
+                                'data': data.neighbors[i]
                             }
                         });
+                    }
 
-                        if (cy.nodes('#' + data.neighbors[i].source_ratings[j].name).empty()) {
+                    for (j in data.neighbors[i].source_ratings) {
+                        if (cy.edges('#' + data.neighbors[i].name + '-' + j).empty()) {
+                            edges.push({
+                                'group': 'edges',
+                                'data': {
+                                    'id': data.neighbors[i].name + '-' + j,
+                                    'source': data.neighbors[i].name,
+                                    'target': j
+                                }
+                            });
+                        }
+
+                        if (cy.nodes('#' + j).empty()) {
                             nodes.push({
                                 'group': 'nodes',
                                 'data': {
-                                    'id': data.neighbors[i].source_ratings[j].name
+                                    'id': j
                                 }
                             });
-                            ghosts.push(data.neighbors[i].source_ratings[j].name);
+                            ghosts.push(j);
                         }
                     }
                 }
 
-                cy.nodes().lock();
-                cy.add(nodes);
-                cy.add(edges);
+                if (nodes.length > 0) {
+                    cy.nodes().lock();
+                    cy.add(nodes);
+                    cy.add(edges);
 
-                for (i in ghosts) {
-                    cy.nodes('#' + ghosts[i]).addClass('ghost');
+                    for (i in ghosts) {
+                        cy.nodes('#' + ghosts[i]).addClass('ghost');
+                    }
+                    node.removeClass('ghost');
+
+                    cy.layout();
+                } else {
+                    if (edges.length > 0) {
+                        cy.add(edges);
+                    }
                 }
-                a.stop();
-                node.removeClass('ghost');
-                node.css({
-                    'background-image': '',
-                    'background-color': color.node.select.background,
-                    'border-color': color.node.select.border,
-                    'width': 30,
-                    'height': 30,
-                    'border-width': 3
-                });
-
-                cy.layout();
             }).fail(function (data) {
                 console.log(data);
             });

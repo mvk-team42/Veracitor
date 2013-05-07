@@ -59,7 +59,7 @@ def get_user_as_dict(username):
     
     groups = [{'name' : g.name,
                'description' : g.description,
-               'producers' : [p.name for p in g.producers]}
+               'producers' : [pname for pname in g.producers.keys()]}
               for g in user_obj.groups]
 
     user_dict = {'name' : user_obj.name,

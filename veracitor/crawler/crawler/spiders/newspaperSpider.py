@@ -35,6 +35,7 @@ class NewspaperSpider(CrawlSpider):
         self.rules = (
             Rule(
                 SgmlLinkExtractor(allow_domains=domain, deny=self.meta.get_article_deny_urls(domain)), 
+                follow=True,
                 callback="scrape_article"
             ),
         )
