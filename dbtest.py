@@ -26,15 +26,33 @@ def generate_test_data():
     john.save()
 
     prod1.rate_source(prod2, trust, 5)
+    try:
+        prod1.infos = [information.Information(title='Info1',url='www.info1.com').save(),
+                       information.Information(title='Info2',url='www.info2.com').save()]
+    except:
+        pass
 
     prod2.rate_source(prod1, trust, 5)
     prod2.rate_source(prod3, trust, 5)
     prod2.rate_source(prod4, trust, 5)
     prod2.rate_source(prod5, trust, 5)
+    try:
+        prod2.infos = [information.Information(title='Info3',url='www.info3.com').save(),
+                       information.Information(title='Info4',url='www.info4.com').save(),
+                       information.Information(title='Info5',url='www.info5.com').save()]
+    except:
+        pass
 
     prod3.rate_source(prod1, trust, 5)
     prod3.rate_source(prod5, trust, 5)
     prod3.rate_source(prod6, trust, 5)
+    try:
+        prod3.infos = [information.Information(title='Info6',url='www.info6.com').save(),
+                       information.Information(title='Info7',url='www.info7.com').save(),
+                       information.Information(title='Info8',url='www.info8.com').save(),
+                       information.Information(title='Info9',url='www.info9.com').save()]
+    except:
+        pass
 
     prod5.rate_source(prod2, trust, 5)
     prod5.rate_source(prod3, trust, 5)
