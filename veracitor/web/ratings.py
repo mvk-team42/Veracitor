@@ -176,12 +176,16 @@ def rate_group():
     if not request.method == 'POST':
         abort(405)
     try:
+        log("CALLED RATE_GROUP!")
         user = extractor.get_user(session['user_name'])
-        
+        log(extractor.get_group(session['user_name'], request.form['name']).producers)
         if len(extractor.get_group(session['user_name'],request.form['name']).producers) > 0:
-            user.rate_group(request.form['name'], request.form['rating'])
+          bla = user.rate_group(request.form['name'], request.form['rating'])
+          
+          log(bla)
         else:
             abort(400)
+
         return "Success"
     except:
         return "Fail"
