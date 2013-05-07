@@ -212,7 +212,9 @@ def get_used_prod_tags():
     try:
         user = extractor.get_user(session['user_name'])
 
-        tags_used = list(set([sr.tag.name for sr in user.source_ratings]))
+        tags_used = [] 
+        for sr in user.source_ratings:
+            tags_used.append(user.source_ratings[sr].keys())
 
         return jsonify(tags=tags_used)
     except:

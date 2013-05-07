@@ -277,3 +277,15 @@
     width: 100%;
 }
 
+#crawler-result table td {
+    font-size: 10pt;
+}
+
+#crawl-result-content .body {
+    padding: 20px;
+}
+
+#crawl-result-content .body h1 {
+    margin: 5px 0;
+    font-size: 20pt;   
+}

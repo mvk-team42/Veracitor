@@ -22,16 +22,11 @@ def get_producers(name, type_of):
     logger.info('res: %s', str(res))
 
     if res:
-        producers = []
-        for r in res:
-            producers.append({'name' : r.name,
-                              'description' : r.description,
-                              'url' : r.url,
-                              'type_of' : r.type_of,
-                              'source_ratings' : r.source_ratings})
-
         return {
-            'data': producers
+            'data': {
+                'producers': [ extractor.entity_to_dict(p) for p in res ]
+             },
+            'template_url': 'tabs/search_results.html'
         }
     else:
         return {}
@@ -47,7 +42,10 @@ def get_information(title_part, tags,
 
     if res:
         return {
-            'data' : [extractor.entity_to_dict(i) for i in res]
+            'data' : {
+                "information" : [extractor.entity_to_dict(i) for i in res]
+                },
+            'template_url':'tabs/search_results.html',
             }
     else:
         return {}

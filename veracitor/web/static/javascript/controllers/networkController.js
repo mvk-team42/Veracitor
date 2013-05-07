@@ -91,10 +91,53 @@ var NetworkController = function (controller) {
        Displays information about the given producer.
      */
     this.display_producer_information = function (prod) {
+        // A reference to this controller
+        var network_controller = this;
+
         $('#network-info-view .title').html(prod.name);
         $('#network-info-view .description').html(prod.description);
         $('#network-info-view .url').html($('<a>').attr('href', prod.url).html(prod.url));
         $('#network-info-view .type').html(prod.type_of);
+
+        var ul = $('<ul>');
+        for (var i in prod.infos) {
+            ul.append($('<li>')
+                      .append($('<p>').html(prod.infos[i].title))
+                      .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
+                      .append(get_rating_dropdown_html())
+                      .append($('<input>').attr({
+                          'type': 'button',
+                          'value': 'Rate information'
+                      }).click((function ( url ) {
+                          return function ( evt ) {
+                              var rating = $(this).parent().find(':selected').html();
+                              network_controller.rate_information(url, rating);
+                          };
+                      })(prod.infos[i].url))));
+        }
+        $('#network-info-view .informations').html(ul);
+    };
+
+    this.rate_information = function ( url, rating ) {
+        $.post('/jobs/network/rate_information', {
+            'prod': vera.user_name,
+            'url': url,
+            'rating': rating
+        }, function (data) {
+            console.log('Rated!');
+        }).fail(function (data) {
+            console.log(data);
+        });
+    };
+
+    var get_rating_dropdown_html = function () {
+        var select = $('<select>').addClass('rating');;
+
+        for (var i = 1; i <= 5; i += 1) {
+            select.append($('<option>').attr('value', i).html(i));
+        }
+
+        return select;
     };
 
     /**
