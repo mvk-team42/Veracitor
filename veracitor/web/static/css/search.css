@@ -270,3 +270,10 @@
     margin: 5px 0;
     display: inline-block;
 }
+
+
+/* ADD SOURCE OR INFORMATION */
+#add-entity-content input[name="search-text"] {
+    width: 100%;
+}
+
