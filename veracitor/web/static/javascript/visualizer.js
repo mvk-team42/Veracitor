@@ -269,6 +269,8 @@ var Visualizer = function (controller) {
                                 'data': data.neighbors[i]
                             }
                         });
+                    } else if (data.neighbors[i].name === node.id()) {
+                        node.data('data', data.neighbors[i]);
                     }
 
                     for (j in data.neighbors[i].source_ratings) {
@@ -311,9 +313,13 @@ var Visualizer = function (controller) {
                         cy.add(edges);
                     }
                 }
+
+                controller.display_producer_information(node.data().data);
             }).fail(function (data) {
                 console.log(data);
             });
+        } else {
+            controller.display_producer_information(node.data().data);
         }
     };
 
