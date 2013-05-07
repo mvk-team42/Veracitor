@@ -66,15 +66,19 @@ def add_to_database(article):
         # Add trust between publishers
         for publisher2 in publishers:
             if not publisher==publisher2:
+                log.msg("publisher2 name: " + publisher2.name)
                 for tag in tags:
                     publisher.rate_source(publisher2, tag, 5)
         publisher.save()
 
 def get_publisher_objects(publisher_strings):
     publisher_strings = re.sub("[-&]", ",", publisher_strings).split(",")
+    #publisher_strings = [string.replace(".",",").replace("$",",") for string in publisher_strings]
     log.msg("pubStrings: " + str(publisher_strings))
     publishers = []
     for publisher_string in publisher_strings:
+        if publisher_string == 'unknown':
+            continue
         if extractor.contains_producer_with_name(publisher_string):
             publishers.append(extractor.get_producer(publisher_string))
         else:
@@ -87,11 +91,8 @@ def get_publisher_objects(publisher_strings):
                 else:
                     not_found.append(split_publisher)
             if len(not_found) != 0:
-                new_producer = producer.Producer(
-                        name = " ".join(not_found),
-                        type_of = "unknown")
-                new_producer.save()
-                publishers.append(new_producer)
+                producer = extractor.producer_create_if_needed(" ".join(not_found), "unknown")
+                publishers.append(producer)
     return publishers
 
     
@@ -111,7 +112,15 @@ def fix_fields(article):
     fix_time_published(article)
     shorten_summary(article)
     for field in ArticleItem.fields.iterkeys():
-        fix_field(article, field)  
+        fix_field(article, field)
+        
+def fix_field(article, field):
+    if field in article:
+        if article[field].strip() != "":
+            article[field] = re.sub("\s+", " ", article[field].strip())
+            log.msg("article["+field+"]: "+article[field])
+            return
+    article[field] = "unknown"
             
 def fix_time_published(article):
     if "time_published" in article:
@@ -181,11 +190,3 @@ def parse_datetime(article):
 def shorten_summary(article):
     if "summary" in article:
         article["summary"] = article["summary"][:200]
-        
-def fix_field(article, field):
-        if field in article:
-            log.msg("article["+field+"]: "+article[field])
-            if article[field].strip() != "":
-                article[field] = article[field].strip().replace("\n", "")
-                return
-        article[field] = "unknown"

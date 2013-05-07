@@ -1,16 +1,41 @@
+{% if data.information %}
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Type</th>
+      <th>Title</th>
+      <th>URL</th>
     </tr>
 </head>
 <tbody>
-  {% for d in data %}
-  <tr class='row'>
-    <td class='name'>{{ d._data.name }}</td>
-    <td class='type'>{{ d.type_ }}</td>
+  {% for d in data.information %}
+  <tr class='result clickable'>
+    <td class='title'>{{ d.title }}</td>
+    <td class='url'>{{ d.url }}</td>
   </tr>
   {% endfor %}
 </tbody>
 </table>
+
+{% elif data.producers %}
+<table>
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+  </tr>
+</head>
+<tbody>
+  {% for d in data.producers %}
+  <tr class='result clickable'>
+    <td class='name'>{{ d.name }}</td>
+    <td class='type'>{{ d.type_of }}</td>
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+{% else %}
+<h2>Nothing found</h2>
+
+{% endif %}
+

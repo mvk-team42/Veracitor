@@ -16,8 +16,9 @@ from flask import request, redirect, url_for, render_template, abort, jsonify,\
     make_response
 from veracitor.web import app
 
-### Job statistics ###
+log = app.logger.debug
 
+### Job statistics ###
 @app.route("/jobs/job_ids", methods=['POST'])
 def get_job_ids():
     """
@@ -48,6 +49,7 @@ def get_job_ids():
 
     return jsonify(keys=keys)
 
+
 @app.route("/jobs/job_state", methods=['POST'])
 def get_job_state():
     """
@@ -73,7 +75,6 @@ def get_job_state():
        405 - Method not allowed
        404 - No job with that id.
 
-
     """
     if not request.method == 'POST':
         abort(405)
@@ -86,6 +87,7 @@ def get_job_state():
         return jsonify(state=str(app.results[job_id].state))
     except:
         abort(404)
+
 
 @app.route("/jobs/job_result", methods=['POST'])
 def get_job_result():
@@ -122,6 +124,7 @@ def get_job_result():
         abort(405)
     try:
         res = app.results[request.form['job_id']]
+        log(res)
     except Exception, err:
         abort(404)
 

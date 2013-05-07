@@ -44,6 +44,10 @@ class MetaNewspaperSpider(BaseSpider):
         producer_item["rss_urls"] = MetaNewspaperSpider.extract_rss_urls(response.url, hxs, meta)
         producer_item["description"] = MetaNewspaperSpider.extract_description(response.url, hxs, meta)
         producer_item["url"] = response.url
+        producer_item["infos"] = []
+        producer_item["source_ratings"] = []
+        producer_item["info_ratings"] = []
+        producer_item["type_of"] = "newspaper"
 
         return producer_item
          

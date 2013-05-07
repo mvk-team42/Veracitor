@@ -6,6 +6,8 @@ from bson.json_util import default
 from veracitor.web import app
 from veracitor.database import *
 
+from flask import session
+
 log = app.logger.debug
 
 class JSONEnc(JSONEncoder):
@@ -43,7 +45,7 @@ def get_user_as_dict(username):
             source_ratings.append({
                     'name' : s,
                     'tag' : tag,
-                    'rating': s[tag] ,
+                    'rating': user_obj.source_ratings[s][tag] ,
                     'description': extractor.get_producer(s).description})
 
     info_ratings = []
@@ -57,7 +59,7 @@ def get_user_as_dict(username):
     
     groups = [{'name' : g.name,
                'description' : g.description,
-               'producers' : [p.name for p in g.producers]}
+               'producers' : [pname for pname in g.producers.keys()]}
               for g in user_obj.groups]
 
     user_dict = {'name' : user_obj.name,
@@ -65,8 +67,16 @@ def get_user_as_dict(username):
                 'type_of' : user_obj.type_of,
                 'source_ratings' : source_ratings,
                 'groups' : groups,
-                'group_ratings' : [{'group':gr.group, 'rating':gr.rating}
-                                   for gr in user_obj.group_ratings],
+                'group_ratings' : user_obj.group_ratings,
                 'info_ratings' : info_ratings}
 
     return user_dict
+
+def get_session_dict(name):
+    """
+    
+    """
+    running_crawls =  session.get('running_crawls')
+    if running_crawls == None:
+        running_crawls = {}
+    

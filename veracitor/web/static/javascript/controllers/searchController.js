@@ -20,7 +20,9 @@ var SearchController = function (controller) {
 
     // Array of source results
     var search_results = [];
-
+  
+    var crawl_results = [];
+  
     /**
       Initialize the search tab:
       - Setup event handlers
@@ -38,6 +40,8 @@ var SearchController = function (controller) {
     this.on_tab_active = function () {
         // set focus to the database search field
         $("#database-search-field").focus();
+        $("#crawl-result-content").hide();
+        update_crawler_results();
     };
 
     /**
@@ -126,6 +130,14 @@ var SearchController = function (controller) {
                 break;
 
                 case 1:
+		    if(document.getElementById("time-period-yes").checked){
+   			var values = $('#slider').slider("option", "values");
+			request_database_info_search(search_text, [], values[0], values[1])
+		    }
+   		    else{
+			request_database_info_search(search_text, [], null, null)
+		    }
+
                 break;
             }
         });
@@ -133,11 +145,15 @@ var SearchController = function (controller) {
         // database search tab click event
         $("#database-search-tab").click(function (evt) {
             set_active_tab(0);
+          $("#search-result-content").show();
+          $("#crawl-result-content").hide();
         });
 
         // add entity tab click event
         $("#add-entity-tab").click(function (evt) {
             set_active_tab(1);
+          $("#search-result-content").hide();
+          $("#crawl-result-content").show();
         });
 
         // add search type radio source button click event
@@ -152,6 +168,25 @@ var SearchController = function (controller) {
 
         set_active_tab(0);
         set_active_search_type(active_search_type);
+
+        // Start crawl click event
+        $("#crawler-search-button").click(function (evt) {
+
+          var url = $("#crawler-search-field").val();
+          var scrape_type = $("input[name='scrape_type']:checked").val();
+          console.log(scrape_type);
+          switch(scrape_type) {
+            case "source":
+              request_source_crawl(url);
+              break;
+            case "article":
+              request_article_crawl(url);
+              break;
+            default:
+              break;
+          }
+        });
+
     }
 
     /**
@@ -192,41 +227,18 @@ var SearchController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                if (data.result.data) {
-                    search_result = data.result.data;
+                search_result = data.result.data.producers;
 
-                    var table = $('<table>')
-                        .append($('<thead>')
-                                .append($('<tr>')
-                                        .append($('<th>').html('Name'))
-                                        .append($('<th>').html('Type'))));
-                    var body = $('<tbody>');
+		$('#search-result').html(data.result.html);
+                $('#search-result .result').click(function (evt) {
+                    var prod = search_result[$(this).index()];
 
-                    for (var i in search_result) {
-                        body.append($('<tr>').addClass('result clickable')
-                                    .append($('<td>').addClass('name')
-                                            .html(data.result.data[i].name))
-                                    .append($('<td>').addClass('type')
-                                            .html(data.result.data[i].type_of)));
-                    }
-
-                    table.append(body);
-                    $('#search-result').html(table);
-
-                    $('#search-result .result').click(function (evt) {
-                        var prod = search_result[$(this).index()];
-
-                        controller.network.visualize_producer_in_network(prod, 3);
-                        controller.switch_to_tab('network');
-                    });
-                } else {
-                    $('#search-result').html('<h2>Nothing found</h2><p>Click the <i>Add a source or information</i> tab to add what you were looking for to the database.</p>');
-                }
+                    controller.network.visualize_producer_in_network(prod, 3);
+                    controller.switch_to_tab('network');
+                });               
             });
         })
         .fail(function (data) {
-            console.log(data);
-
             $("#search-result").html("<h2>Server error.</h2>");
         });
     };
@@ -259,6 +271,62 @@ var SearchController = function (controller) {
         });
     };
 
+    var request_database_info_search = function(search_text, tags, start_date, end_date){
+	console.log(search_text + " " + tags + " " + start_date + " " + end_date);
+    }
+
+    /**
+       Requests an article crawl as specified by the web server.
+       Also dispatches an update for the dom with the users current
+       crawling jobs.
+     */
+    function request_article_crawl(url) {
+      $.post("/jobs/crawler/scrape_article", {"url":url}, function(data) {
+        $("#crawler-result table").html("<thead>Fetching crawls...</thead>")
+        update_crawler_results();
+      });
+    }
+ 
+    /**
+       Requests a source crawl as specified by the web server.
+       Also dispatches an update for the dom with the users current
+       crawling jobs.
+     */
+    function request_source_crawl(url) {
+      $.post("/jobs/crawler/add_newspaper", {"url":url}, function(data) {
+        $("#crawler-result table").html("<thead>Fetching crawls...</thead>")
+        update_crawler_results();
+      });
+      
+    }
+
+    /**
+       Sends a request for getting the users crawler jobs and updates
+       the ui accordingly.
+     */
+    function update_crawler_results() {
+      $.post("/jobs/crawler/crawls", function(data) {
+        var crawls = [], i, html="<thead><td>Type</td><td>URL</td></thead>";
+        for (id in data)  {
+          data[id]["id"] = id;
+          crawls.push(data[id]);
+        }
+        crawls.sort(function(a,b){
+          return parseDate(a['start_time']) < parseDate(b['start_time']);
+        });
+        for (i=0; i<crawls.length;i++) {
+          var c = crawls[i];
+          html += "<tr><td id=\"" + c['id']+ "\">" + c['type'] + "</td><td>" + c['url'] + "</td></tr>";
+        }
+        $("#crawler-result table").html(html);
+      });
+    }
+
+    function parseDate(input) {
+      var parts = input.match(/(\d+)/g);
+      return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+    }
+  
     /**
         Makes a web search request to the Controller with the spec-
         ified search term. The response data is handled by dis-

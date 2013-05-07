@@ -50,6 +50,9 @@ nosetests.xml
 celerybeat-schedule
 celerybeat.pid
 
-#local server-settings
+# local server-settings
 veracitor/web/settings.py
 settings.py
+
+# excel files
+*.xlsx

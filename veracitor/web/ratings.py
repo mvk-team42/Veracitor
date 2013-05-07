@@ -176,13 +176,10 @@ def rate_group():
     if not request.method == 'POST':
         abort(405)
     try:
-        log("CALLED RATE_GROUP!")
         user = extractor.get_user(session['user_name'])
-        log(extractor.get_group(session['user_name'], request.form['name']).producers)
         if len(extractor.get_group(session['user_name'],request.form['name']).producers) > 0:
-          bla = user.rate_group(request.form['name'], request.form['rating'])
-          
-          log(bla)
+            user.rate_group(request.form['name'], int(request.form['rating']))
+            user.save()
         else:
             abort(400)
 
@@ -215,7 +212,9 @@ def get_used_prod_tags():
     try:
         user = extractor.get_user(session['user_name'])
 
-        tags_used = list(set([sr.tag.name for sr in user.source_ratings]))
+        tags_used = [] 
+        for sr in user.source_ratings:
+            tags_used.append(user.source_ratings[sr].keys())
 
         return jsonify(tags=tags_used)
     except:
