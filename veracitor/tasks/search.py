@@ -45,6 +45,8 @@ def get_information(title_part, tags,
     
     logger.info('res: %s', str(res))
 
+    return(title_part + str(tags) + str(startD) + str(endD))
+
     if res:
         info = [{
                 'title' : r.title,

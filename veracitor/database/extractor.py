@@ -275,7 +275,7 @@ def search_informations(possible_info, tags, startD, endD):
             possible_info (str): A title which will partly match a title
                                  of a information object.
 
-            tags ([str]): A list of tag names.
+            tags ([str]): A list of tag names. If empty, searches for all tags.
 
             startD (datetime.Date): Lower bound of the time frame.
 
@@ -284,18 +284,22 @@ def search_informations(possible_info, tags, startD, endD):
         Returns:
             A list of zero or more information objects.
     """
-    infos = information.Information.objects(title=re.compile('(?i)'+possible_info),
-                                            time_published__lte=endD,
-                                            time_published__gte=startD)
-    to_be_ret = []
-    for i in range (len(infos)):
-        tmp_info_tags = [t.name for t in infos[i].tags]
-        for j in range (len(tags)):
-            if tags[j] in tmp_info_tags:
-                to_be_ret.append(infos[i])
-                break
+    infos = information.Information.objects(title=re.compile('(?i)'+possible_info))#,
+#                                            time_published__lte=endD,
+ #                                           time_published__gte=startD)
 
-    return to_be_ret
+    to_be_ret = []
+    if len(tags) > 0:
+        for i in range (len(infos)):
+            tmp_info_tags = [t.name for t in infos[i].tags]
+            for j in range (len(tags)):
+                if tags[j] in tmp_info_tags:
+                    to_be_ret.append(infos[i])
+                    break
+                
+        return to_be_ret
+    else:
+        return infos
 
 def entity_to_dict( o ):
     if isinstance(o, producer.Producer):
