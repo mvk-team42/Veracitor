@@ -59,20 +59,12 @@ def get_shortest_path():
 
     for node in nodes:
         prod = extractor.get_producer(node)
-        source_ratings = []
 
-        for s in prod.source_ratings:
-            source_ratings.append({'name' : s.source.name,
-                                   'tag' : s.tag.name,
-                                   'rating': s.rating})
-            if s.source.name not in nodes:
-                data['ghosts'].append(s.source.name)
+        for k, v in prod.source_ratings.items():
+            if k not in nodes:
+                data['ghosts'].append(k)
 
-        data['nodes'].append({'name' : prod.name,
-                      'description' : prod.description,
-                      'url' : prod.url,
-                      'type_of' : prod.type_of,
-                      'source_ratings' : source_ratings})
+        data['nodes'].append(extractor.entity_to_dict(prod))
 
     return jsonify(path=data)
 
@@ -138,14 +130,7 @@ def get_neighbors():
 
     for node in neighbors:
         prod = extractor.get_producer(node)
-        source_ratings = [{'name' : s.source.name,
-                           'tag' : s.tag.name,
-                           'rating': s.rating }
-                          for s in prod.source_ratings]
-        data[node] = {'name' : prod.name,
-                      'description' : prod.description,
-                      'url' : prod.url,
-                      'type_of' : prod.type_of,
-                      'source_ratings' : source_ratings}
+
+        data[node] = extractor.entity_to_dict(prod)
 
     return jsonify(neighbors=data)

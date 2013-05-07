@@ -17,6 +17,11 @@ function SuperController(vera) {
         'LEFT' : '-100%',
         'RIGHT' : '100%'
     };
+    /** Event key codes */
+    var key = {
+        'left': 37,
+        'right': 39
+    };
 
     // The time interval between callback checks
     var CALLBACK_CHECK_TIME = 100;
@@ -32,6 +37,23 @@ function SuperController(vera) {
     controller.ratings = new RatingsController(this);
     controller.account = new AccountController(this);
     controller.login = new LoginController(this);
+
+    (function () {
+        // Bind key combination shift + alt + left/right to switching
+        // between the different tabs (for fast GUI testing)
+        window.addEventListener('keydown', function (evt) {
+            if (evt.altKey && evt.shiftKey) {
+                switch (evt.keyCode) {
+                case key.left:
+                    controller.switch_to_tab_index(active_tab - 1);
+                    break;
+                case key.right:
+                    controller.switch_to_tab_index(active_tab + 1);
+                    break;
+                }
+            }
+        });
+    })();
 
     /**
         Handles the event fired when a menu tab is clicked.

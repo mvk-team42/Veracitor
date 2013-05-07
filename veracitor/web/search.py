@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, abort
 
 import json
 
@@ -28,7 +28,7 @@ def search_producers():
 
     Returns:
         Upon success, returns an object with the job_id, ex:
-        {"job_id": "baad-f00d-dead-beefs-15"}
+        {"job_id": "baad-f00d-dead-beef-15"}
 
     Result when finished:
         An object with the producer data found.
@@ -50,3 +50,41 @@ def search_producers():
     res = search.get_producers.delay(name, type_of)
     store_job_result(res)
     return jsonify(job_id=res.id)
+
+@app.route('/jobs/search/information', methods=['GET', 'POST'])
+def search_information():
+    """
+    Performs a search in the database for information that matches the given
+    parameters.
+    
+    """
+    
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        title_part = request.form['title_part']
+        log(title_part)
+        tags = request.form['tags']
+        log(tags)
+        
+        try:
+            startD = request.form['start_date']
+            endD = request.form['end_date']
+            res = search.get_information(title_part, tags,
+                             startD=startD, endD=endD)
+        except:
+            res = seach.get_information(title_part, tags)
+
+        store_job_result(res)
+        return jsonify(job_id=res.id)
+            
+    except Exception as exp:
+        log("Exception: "+str(type(exp)));
+        abort(400)
+
+    res = search.get_producers.delay(name, type_of)
+    store_job_result(res)
+    return jsonify(job_id=res.id)
+
+    
+    

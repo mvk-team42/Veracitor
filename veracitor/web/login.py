@@ -16,6 +16,7 @@ from veracitor.web.utils import store_job_result
 from veracitor.tasks import login
 
 from veracitor.database import *
+log = app.logger.debug
 
 
 @app.route("/login", methods=["GET","POST"])
@@ -23,6 +24,7 @@ def login_user():
     """
     
     """
+    log("FAKUGOOBY!")
     if "user_name" in session:
         return redirect(url_for('index'))
 

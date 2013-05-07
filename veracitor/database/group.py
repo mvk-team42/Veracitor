@@ -28,7 +28,7 @@ class Group(Document):
     description = StringField()
     owner = ReferenceField(user.User, required=True)
     tag = ReferenceField('Tag', required=True)
-    producers = ListField(ReferenceField('Producer'))
+    producers = DictField()
     time_created = DateTimeField(required=True)
     
     def save(self):

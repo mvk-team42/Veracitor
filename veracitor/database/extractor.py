@@ -35,6 +35,12 @@ def get_producer(requested_name):
     extr_producer = producer.Producer.objects(name=requested_name)
     __checkIfEmpty(extr_producer)
     return extr_producer[0]
+    
+def get_producer_with_url(url):
+    extr_producer = producer.Producer.objects(url=url)
+    __checkIfEmpty(extr_producer)
+    return extr_producer[0]
+    
 
 
 def producer_create_if_needed(requested_name, type_if_new):
@@ -102,7 +108,7 @@ def get_group(owner_name, group_name):
     extr_owner = get_user(owner_name)
 
     extr_group = group.Group.objects(owner=extr_owner, name=group_name)
-  
+
     __checkIfEmpty(extr_group)
 
     return extr_group[0]
@@ -268,8 +274,11 @@ def search_informations(possible_info, tags, startD, endD):
         Args:
             possible_info (str): A title which will partly match a title
                                  of a information object.
-            tags ([tag.Tag]): A list of tag objects.
+
+            tags ([str]): A list of tag names.
+
             startD (datetime.Date): Lower bound of the time frame.
+
             endD (datetime.Date): Upper bound of the time frame.
 
         Returns:
@@ -280,7 +289,7 @@ def search_informations(possible_info, tags, startD, endD):
                                             time_published__gte=startD)
     to_be_ret = []
     for i in range (len(infos)):
-        tmp_info_tags = infos[i].tags
+        tmp_info_tags = [t.name for t in infos[i].tags]
         for j in range (len(tags)):
             if tags[j] in tmp_info_tags:
                 to_be_ret.append(infos[i])
@@ -288,42 +297,42 @@ def search_informations(possible_info, tags, startD, endD):
 
     return to_be_ret
 
-def db_to_dict( o ):
+def entity_to_dict( o ):
     if isinstance(o, producer.Producer):
-        infos = [ db_to_dict(i) for i in o.infos ]
-        source_ratings = [ db_to_dict(r) for r in o.source_ratings ]
-        info_ratings = [ db_to_dict(r) for r in o.info_ratings ]
         data = {'name': o.name,
                 'first_name': o.first_name,
                 'last_name': o.last_name,
                 'description': o.description,
                 'url': o.url,
-                'infos': infos,
-                'source_ratings': source_ratings,
-                'info_ratings': info_ratings,
+                'infos': [ entity_to_dict(i) for i in o.infos ],
+                'source_ratings': o.source_ratings,
+                'info_ratings': o.info_ratings,
                 'type_of': o.type_of}
         if isinstance(o, user.User):
-            # TODO
-            #dict['time_joined'] = o.time_joined
-            data['group_ratings'] = [ db_to_dict(r) for r in o.group_ratings ]
-            data['groups'] = [ db_to_dict(r) for r in o.groups ]
+            #dict['time_joined'] = TODO
+            data['group_ratings'] = o.group_ratings
+            data['groups'] = [ entity_to_dict(g) for g in o.groups ]
             data['email'] = o.email
         return data
     if isinstance(o, information.Information):
-        # TODO
-        return {}
+        return {'title': o.title,
+                'summary': o.summary,
+                'url': o.url,
+                #'time_published': TODO
+                'tags': [ entity_to_dict(t) for t in o.tags ],
+                'publishers': [ p.name for p in o.publishers ],
+                #'references': TODO
+                }
     if isinstance(o, tag.Tag):
-        # TODO
-        return {}
+        return {'name': o.name,
+                'description': o.description,
+                #'parent': TODO
+                'valid_strings': o.valid_strings}
     if isinstance(o, group.Group):
-        # TODO
-        return {}
-    if isinstance(o, producer.SourceRating):
-        # TODO
-        return {}
-    if isinstance(o, producer.InformationRating):
-        # TODO
-        return {}
-    if isinstance(o, user.GroupRating):
-        # TODO
-        return {}
+        return {'name': o.name,
+                'description': o.description,
+                'owner': o.owner.name,
+                'tag': entity_to_dict(o.tag),
+                'producers': [ p for p in o.producers.keys() ],
+                #'time_created': TODO
+                }
