@@ -38,8 +38,8 @@ def get_producers(name, type_of):
 
 @taskmgr.task
 def get_information(title_part, tags,
-                    startD=datetime.date(datetime.MINYEAR, 1, 1),
-                    endD=datetime.date(datetime.MAXYEAR, 12, 30)):
+                    startD=None,
+                    endD=None):
 
     res = extractor.search_informations(title_part, tags, startD, endD)
     

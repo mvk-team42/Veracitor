@@ -259,7 +259,7 @@ def contains_tag(tag_name):
     t = tag.Tag.objects(name=tag_name)
     return len(t) != 0
 
-def search_informations(possible_info, tags, startD, endD):
+def search_informations(possible_info, tags, startD=None, endD=None):
     """
         Searches the database for information objects whose name includes
         a specified name, with at least one tag matching one or more provided
@@ -278,9 +278,12 @@ def search_informations(possible_info, tags, startD, endD):
         Returns:
             A list of zero or more information objects.
     """
-    infos = information.Information.objects(title=re.compile('(?i)'+possible_info))#,
-#                                            time_published__lte=endD,
- #                                           time_published__gte=startD)
+    if startD and endD:
+        infos = information.Information.objects(title=re.compile('(?i)'+possible_info),
+                                                time_published__lte=endD,
+                                                time_published__gte=startD)
+    else:
+        infos = information.Information.objects(title=re.compile('(?i)'+possible_info))
 
     to_be_ret = []
     if len(tags) > 0:
