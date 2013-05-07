@@ -11,6 +11,7 @@ from ..database import *
 
 from celery.utils.log import get_task_logger
 
+import datetime
 
 logger = get_task_logger(__name__)
 
@@ -32,5 +33,21 @@ def get_producers(name, type_of):
         return {
             'data': producers
         }
+    else:
+        return {}
+
+@taskmgr.task
+def get_information(title_part, tags,
+                    startD=None,
+                    endD=None):
+
+    res = extractor.search_informations(title_part, tags, startD, endD)
+    
+    logger.info('res: %s', str(res))
+
+    if res:
+        return {
+            'data' : [extractor.entity_to_dict(i) for i in res]
+            }
     else:
         return {}

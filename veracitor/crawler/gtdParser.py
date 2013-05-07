@@ -54,8 +54,6 @@ def _save_act_in_gtd_object(act,gtd_producer):
     sources = []
 
     for source_string in source_strings:
-        # hur blir det om source == None?
-        #TODO gör koppling mellan GTD och denna source
         source = None
         if not extractor.contains_producer_with_name(source_string): #db-method
             source = producer.Producer(name = source_string,
@@ -76,7 +74,6 @@ def _save_act_in_gtd_object(act,gtd_producer):
 
     information = None
     if not extractor.contains_information(act_url):
-        #TODO lägg till information i GTDs information list
         if act["summary"] == None:
             act["summary"] = act["attacktype"] + " - ATTACKER: " + act["attacker"] + " - TARGET: " + act["target"]
         information = information.Information(url = act_url,

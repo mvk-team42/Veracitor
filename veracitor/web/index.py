@@ -36,7 +36,7 @@ def index():
                 'title' : 'Veracitor',
                 'tabs' : [
                     {
-                        'name' : 'Search',
+                        'name' : 'Search & Add',
                         'key' : 'search',
                         'viewid' : 'search_view',
                         'menuid' : 'search_menu',

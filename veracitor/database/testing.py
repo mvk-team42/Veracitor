@@ -171,10 +171,7 @@ class TestNetworkModelThings(GeneralSetup):
                                                     == 3
     
     def test_global_info_ratings(self):
-        #print self.prod1.get_info_rating(self.info1)
-        #print self.prod2.get_info_rating(self.info1)
-        #print self.prod1.info_ratings
-        #print self.prod2.info_ratings
+
         assert networkModel.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag1.name])\
             == [(self.prod1.get_info_rating(self.info1), self.prod2.get_info_rating(self.info1))]
         assert networkModel.get_common_info_ratings(self.prod1.name, self.prod2.name,[self.tag2.name])\

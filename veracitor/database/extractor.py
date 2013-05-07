@@ -35,12 +35,6 @@ def get_producer(requested_name):
     extr_producer = producer.Producer.objects(name=requested_name)
     __checkIfEmpty(extr_producer)
     return extr_producer[0]
-    
-def get_producer_with_url(url):
-    extr_producer = producer.Producer.objects(url=url)
-    __checkIfEmpty(extr_producer)
-    return extr_producer[0]
-    
 
 
 def producer_create_if_needed(requested_name, type_if_new):
@@ -265,7 +259,7 @@ def contains_tag(tag_name):
     t = tag.Tag.objects(name=tag_name)
     return len(t) != 0
 
-def search_informations(possible_info, tags, startD, endD):
+def search_informations(possible_info, tags, startD=None, endD=None):
     """
         Searches the database for information objects whose name includes
         a specified name, with at least one tag matching one or more provided
@@ -274,25 +268,35 @@ def search_informations(possible_info, tags, startD, endD):
         Args:
             possible_info (str): A title which will partly match a title
                                  of a information object.
-            tags ([tag.Tag]): A list of tag objects.
+
+            tags ([str]): A list of tag names. If empty, searches for all tags.
+
             startD (datetime.Date): Lower bound of the time frame.
+
             endD (datetime.Date): Upper bound of the time frame.
 
         Returns:
             A list of zero or more information objects.
     """
-    infos = information.Information.objects(title=re.compile('(?i)'+possible_info),
-                                            time_published__lte=endD,
-                                            time_published__gte=startD)
-    to_be_ret = []
-    for i in range (len(infos)):
-        tmp_info_tags = infos[i].tags
-        for j in range (len(tags)):
-            if tags[j] in tmp_info_tags:
-                to_be_ret.append(infos[i])
-                break
+    if startD and endD:
+        infos = information.Information.objects(title=re.compile('(?i)'+possible_info),
+                                                time_published__lte=endD,
+                                                time_published__gte=startD)
+    else:
+        infos = information.Information.objects(title=re.compile('(?i)'+possible_info))
 
-    return to_be_ret
+    to_be_ret = []
+    if len(tags) > 0:
+        for i in range (len(infos)):
+            tmp_info_tags = [t.name for t in infos[i].tags]
+            for j in range (len(tags)):
+                if tags[j] in tmp_info_tags:
+                    to_be_ret.append(infos[i])
+                    break
+
+        return to_be_ret
+    else:
+        return infos
 
 def entity_to_dict( o ):
     if isinstance(o, producer.Producer):
@@ -306,30 +310,42 @@ def entity_to_dict( o ):
                 'info_ratings': o.info_ratings,
                 'type_of': o.type_of}
         if isinstance(o, user.User):
-            #dict['time_joined'] = TODO
             data['group_ratings'] = o.group_ratings
             data['groups'] = [ entity_to_dict(g) for g in o.groups ]
             data['email'] = o.email
+            if o.time_joined:
+                data['time_joined'] = {'year': o.time_joined.year,
+                                       'month': o.time_joined.month,
+                                       'day': o.time_joined.day,
+                                       'time': o.time_joined.isoformat()}
         return data
     if isinstance(o, information.Information):
-        return {'title': o.title,
+        data = {'title': o.title,
                 'summary': o.summary,
                 'url': o.url,
-                #'time_published': TODO
                 'tags': [ entity_to_dict(t) for t in o.tags ],
                 'publishers': [ p.name for p in o.publishers ],
-                #'references': TODO
-                }
+                'references': [ i.url for i in o.references ]}
+        if o.time_published:
+            data['time_published'] = {'year': o.time_published.year,
+                                      'month': o.time_published.month,
+                                      'day': o.time_published.day,
+                                      'time': o.time_published.isoformat()}
+        return data
     if isinstance(o, tag.Tag):
         return {'name': o.name,
                 'description': o.description,
-                #'parent': TODO
+                'parent': o.parent.name,
                 'valid_strings': o.valid_strings}
     if isinstance(o, group.Group):
-        return {'name': o.name,
+        data = {'name': o.name,
                 'description': o.description,
                 'owner': o.owner.name,
                 'tag': entity_to_dict(o.tag),
-                'producers': [ p for p in o.producers.keys() ],
-                #'time_created': TODO
-                }
+                'producers': [ p.name for p in o.producers ]}
+        if o.time_created:
+            data['time_created'] = {'year': o.time_created.year,
+                                    'month': o.time_created.month,
+                                    'day': o.time_created.day,
+                                    'time': o.time_created.isoformat()}
+        return data

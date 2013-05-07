@@ -37,7 +37,7 @@ try:
     nm = networkModel.build_network_from_db()
 except:
     import sys
-    print "FOOOBAR!"
+    print "Unable to build networkModel"
     sys.exit(-1)
 
 

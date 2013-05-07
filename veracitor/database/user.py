@@ -102,7 +102,8 @@ class User(producer.Producer):
         
         for group in self.groups:
             if group.name == req_group_name:
-                group.producers[str(producer_to_be_added.name)] = producer_to_be_added
+                group.producers[self.__safe_string(producer_to_be_added.name)]\
+                                = producer_to_be_added
                 group.save()
                 return True
                 
@@ -112,7 +113,7 @@ class User(producer.Producer):
         for group in self.groups:
             if group.name == req_group_name:
                 try:
-                    del group.producers[producer_to_be_deleted.name]
+                    del group.producers[self.__safe_string(producer_to_be_deleted.name)]
                 except KeyError:
                     return False
                 return True
