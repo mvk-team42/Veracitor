@@ -69,14 +69,3 @@ class ProducerItem(Item):
     type_of = Field()
     rss_urls = Field()
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
