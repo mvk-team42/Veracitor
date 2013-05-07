@@ -129,13 +129,13 @@ var RatingsController = function (controller) {
     function show_rate_group_form() {
 	$('#rate-group').css('display','none');
 	$('#rate-group-form-div').fadeIn();
-	$('#rate-group-form-div').css('border','1px solid');
+	$('#group-form-border-div').css('border','1px solid');
     }
 
     function hide_rate_group_form() {
 	$('#rate-group-form-div').fadeOut();
 	$('#rate-group').show();
-	$('#rate-group-form-div').css('border','');
+	$('#group-form-border-div').css('border','');
     }
 
     function show_new_group_form() {

@@ -12,73 +12,74 @@
       </select>
     </div>
     <div display="block">
-    <div id="group-info-div">
-    <label for="groups">Group:</label>
-    <select name="groups" id="groups">
-      <option value="all">-</option>
-      <!-- TODO: Fix group rating! -->
-      {% for group in renderDict.groups  %}
-      {% if renderDict.group_ratings.group %}
-      <option value="{{ group.name }} - {{ renderDict.group_ratings.group  }}">{{ group.name  }}</option>
-      {% else  %}
-      <option value="{{ group.name }} - {{ renderDict.group_ratings.group  }}">{{ group.name  }}</option>
-      {% endif  %}
-      {% endfor %}
-    </select>
-    <input type="button" value="Rate group" id="rate-group"/>
-    <div id="rate-group-form-div" style="display:none;">
-      <br/>
-      <form id="rate-group-form">
-	<label for='rate-group-rating' id='rating_label'>Rating:</label>
-	<select id='rate-group-rating'>
-	  <option value="1">1</option>
-	  <option value="2">2</option>
-	  <option value="3">3</option>
-	  <option value="4">4</option>
-	  <option value="5">5</option>
-	</select>
-	<input type="button" value="Rate group" id="rate-group-submit"/>
-      </form>
-    </div>
-    <input type="button" value="+ New group" id='new-group'/>
-    </div>
-    <div id="new-group-form-div" style="display:none;">
-      <form id="new-group-form">
-	<label for='create-group-tag' id='tag_label'>Tag:</label>
-	<select id='create-group-tag'>
-	  {% for tag in renderDict.tags  %}
-	      <option value='{{ tag  }}'>{{ tag  }}</option>
-	  {% endfor %}
-	</select>
-	<input id="name" type="text" placeholder="Group name"/>
-	<input type="button" value="Create group" id="create-group"/>
-      </form>
-    </div>
-    </div>
-      <div id='producer-list-container'>
- <div id='producer-list'>
-   <div class='gardening'>
-     <h3>Producer1 <div class='rating'>9</div></h3>
-     <div>
-       <div class='description'>
-	 <p>Description of Producer1 bla bla blbababd desc desc bla.</p>
+      <div id="group-info-div">
+	<div id="group-form-border-div">
+	  <label for="groups">Group:</label>
+	  <select name="groups" id="groups">
+	    <option value="all">-</option>
+	    <!-- TODO: Fix group rating! -->
+	    {% for group in renderDict.groups  %}
+	    {% if renderDict.group_ratings.group %}
+	    <option value="{{ group.name }}">{{ group.name }} - {{ renderDict.group_ratings.group  }}</option>
+	    {% else  %}
+	    <option value="{{ group.name }}">{{ group.name }}</option>
+	    {% endif  %}
+	    {% endfor %}
+	  </select>
+	  <input type="button" value="Rate group" id="rate-group"/>
+	  <div id="rate-group-form-div" style="display:none;">
+	    <form id="rate-group-form">
+	      <label for='rate-group-rating' id='rating_label'>Rating:</label>
+	      <select id='rate-group-rating'>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+	      </select>
+	      <input type="button" value="Rate group" id="rate-group-submit"/>
+	    </form>
+	  </div>
 	</div>
+	<input type="button" value="+ New group" id='new-group'/>
+      </div>
+      <div id="new-group-form-div" style="display:none;">
+	<form id="new-group-form">
+	  <label for='create-group-tag' id='tag_label'>Tag:</label>
+	  <select id='create-group-tag'>
+	    {% for tag in renderDict.tags  %}
+	    <option value='{{ tag  }}'>{{ tag  }}</option>
+	    {% endfor %}
+	  </select>
+	  <input id="name" type="text" placeholder="Group name"/>
+	  <input type="button" value="Create group" id="create-group"/>
+	</form>
       </div>
     </div>
-    {% for producer in renderDict.source_ratings  %}
-    <div class='{{producer.tag}}'>
-      <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
-      <div>
-	<div class='description'>
-	  <p>{{ producer.description }}</p>
-	  <input type="button" id="{{ producer.name  }}" value="View in network" class="view_in_network"/>
+    <div id='producer-list-container'>
+      <div id='producer-list'>
+	<div class='gardening'>
+	  <h3>Producer1 <div class='rating'>9</div></h3>
+	  <div>
+	    <div class='description'>
+	      <p>Description of Producer1 bla bla blbababd desc desc bla.</p>
+	    </div>
+	  </div>
 	</div>
+	{% for producer in renderDict.source_ratings  %}
+	<div class='{{producer.tag}}'>
+	  <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
+	  <div>
+	    <div class='description'>
+	      <p>{{ producer.description }}</p>
+	      <input type="button" id="{{ producer.name  }}" value="View in network" class="view_in_network"/>
+	    </div>
+      </div>
+	</div>
+	{% endfor %}
       </div>
     </div>
-    {% endfor %}
   </div>
-</div>
-</div>
 
 <div class="right">
   <h2>Rated information</h2>
