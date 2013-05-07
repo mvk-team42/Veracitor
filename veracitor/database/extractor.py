@@ -330,6 +330,6 @@ def entity_to_dict( o ):
                 'description': o.description,
                 'owner': o.owner.name,
                 'tag': entity_to_dict(o.tag),
-                'producers': [ p.name for p in o.producers ],
+                'producers': [ p for p in o.producers.keys() ],
                 #'time_created': TODO
                 }
