@@ -191,9 +191,9 @@ var Visualizer = function (controller) {
                 edges.push({
                     'group': 'edges',
                     'data': {
-                        'id': path[i].name + '-' + path[i].source_ratings[j].name,
+                        'id': path[i].name + '-' + j,
                         'source': path[i].name,
-                        'target': path[i].source_ratings[j].name
+                        'target': j
                     }
                 });
             }
