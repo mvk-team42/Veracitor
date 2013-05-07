@@ -268,8 +268,11 @@ def search_informations(possible_info, tags, startD, endD):
         Args:
             possible_info (str): A title which will partly match a title
                                  of a information object.
-            tags ([tag.Tag]): A list of tag objects.
+
+            tags ([str]): A list of tag names.
+
             startD (datetime.Date): Lower bound of the time frame.
+
             endD (datetime.Date): Upper bound of the time frame.
 
         Returns:
@@ -280,7 +283,7 @@ def search_informations(possible_info, tags, startD, endD):
                                             time_published__gte=startD)
     to_be_ret = []
     for i in range (len(infos)):
-        tmp_info_tags = infos[i].tags
+        tmp_info_tags = [t.name for t in infos[i].tags]
         for j in range (len(tags)):
             if tags[j] in tmp_info_tags:
                 to_be_ret.append(infos[i])
