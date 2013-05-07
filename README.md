@@ -52,10 +52,12 @@ Install and setup [mongodb](http://www.mongodb.org/).
 
 Change settings in `settings.py` and `celeryconf.py` according to your
 environment. Add the environment variable VERACITOR_SETTINGS to your
-env. Make sure it contains the absolute path to the settings file,
-ex. (on Ubuntu Linux) append this to `~/.bashrc` :
+env. Make sure it contains the absolute path to the settings file.
 
-    `export VERACITOR_SETTINGS="/path/to/Veracitor/settings.py"`
+Example:
+Ubuntu Linux - append this to `~/.bashrc` :
+
+    export VERACITOR_SETTINGS="/path/to/Veracitor/settings.py"
 
 
 ### Step five
@@ -67,7 +69,7 @@ you are in your virtualenv now.
 
 ##### Celery
 
-Use `celery -A veracitor.tasks.tasks.taskmgr worker -B`
+Use `celery -A veracitor.tasks.tasks.taskmgr worker -l INFO -B`
 to start the celery daemon from the Veracitor folder.
 
 The celery worker daemon processes tasks sent out from the web part of

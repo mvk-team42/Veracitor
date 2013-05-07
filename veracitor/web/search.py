@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, abort
 
 import json
+import ast
 
 from veracitor.web import app
 from veracitor.web.utils import store_job_result
@@ -64,22 +65,24 @@ def search_information():
     try:
         title_part = request.form['title_part']
         log(title_part)
-        tags = request.form['tags']
+        log(request.form)
+        tags = ast.literal_eval(request.form['tags'])
         log(tags)
+
         
         try:
             startD = request.form['start_date']
             endD = request.form['end_date']
-            res = search.get_information(title_part, tags,
+            res = search.get_information.delay(title_part, tags,
                              startD=startD, endD=endD)
         except:
-            res = seach.get_information(title_part, tags)
+            res = search.get_information.delay(title_part, tags)
 
         store_job_result(res)
         return jsonify(job_id=res.id)
             
     except Exception as exp:
-        log("Exception: "+str(type(exp)));
+        log("Exception: "+str(type(exp))+"\nMsg: "+exp.message);
         abort(400)
 
     res = search.get_producers.delay(name, type_of)

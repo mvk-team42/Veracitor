@@ -46,14 +46,32 @@
             <input type="button" id="database-search-button" value="Search" />
         </div>
         <div id="add-entity-content" class="content">
-            <input type="text" id="crawler-search-field" name="search-text" />
-            <input type="button" id="crawler-search-button" name="search-button" value="Search" />
+          <p>Starts a web crawl of given article/source URL.<br>Adds any
+            relevant information found to the database.</p>
+          <form>
+            <label for="search-text">URL:
+            <input type="text" id="crawler-search-field"
+            name="search-text" />
+            </label><br>
+
+            <input type="radio" value="article"
+                   name="scrape_type" />            
+            <label for="article">Article</label>
+            <br>
+
+            <input type="radio" value="source" name="scrape_type" />            
+            <label for="source">Source</label>
+            <br>
+            <input type="button"
+            id="crawler-search-button" name="search-button"
+            value="Start crawl" />
+          </form>
         </div>
     </div>
 </div>
 <div id="search-result-content"  class="search-column">
     <div class="body">
-        <h1>Search result</h1>
+        <h1>Results</h1>
 
         <div id="search-result"></div>
     </div>
