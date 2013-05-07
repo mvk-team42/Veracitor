@@ -35,11 +35,24 @@
                 <div class="content" id="information-search">
                     <div class="overlay">
                     </div>
-                    <div>Time period: <div id="time-period"></div></div>
-                    <div id="slider-container">
+		    <form class="time-options">
+                      <input type="radio" name="time-period" id="time-period-yes"
+			     value="Time period:" checked/>
+		      <label for="time-period-yes">
+			Time period: 
+		      </label>
+		      <div id="time-period"></div>
+                      <div id="slider-container">
                         <div id="slider-labels"></div>
                         <div id="slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false"></div>
-                    </div>
+                      </div>
+		      <input type="radio" name="time-period" id="time-period-no"
+			     value="Don't filter by time period." />
+		      <label for="time-period-no">
+			Don't filter by time period.
+		      </label>
+		    </form>
+		    
                 </div>
             </div>
 

@@ -335,12 +335,12 @@ def entity_to_dict( o ):
     if isinstance(o, tag.Tag):
         return {'name': o.name,
                 'description': o.description,
-                'parent': o.parent.name,
+                 # TODO 'parent': [ t.name for t in o.parent ],
                 'valid_strings': o.valid_strings}
     if isinstance(o, group.Group):
         data = {'name': o.name,
                 'description': o.description,
-                'owner': o.owner.name,
+                # TODO 'owner': o.owner.name,
                 'tag': entity_to_dict(o.tag),
                 'producers': [ p.name for p in o.producers ]}
         if o.time_created:

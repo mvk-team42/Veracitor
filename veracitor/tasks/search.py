@@ -24,14 +24,11 @@ def get_producers(name, type_of):
     if res:
         producers = []
         for r in res:
-            producers.append({'name' : r.name,
-                              'description' : r.description,
-                              'url' : r.url,
-                              'type_of' : r.type_of,
-                              'source_ratings' : r.source_ratings})
+            producers.append(extractor.entity_to_dict(r))
 
         return {
-            'data': producers
+            'data': producers,
+            'template_url': 'tabs/search_results.html'
         }
     else:
         return {}

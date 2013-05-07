@@ -126,6 +126,14 @@ var SearchController = function (controller) {
                 break;
 
                 case 1:
+		    if(document.getElementById("time-period-yes").checked){
+   			var values = $('#slider').slider("option", "values");
+			request_database_info_search(search_text, [], values[0], values[1])
+		    }
+   		    else{
+			request_database_info_search(search_text, [], null, null)
+		    }
+
                 break;
             }
         });
@@ -192,6 +200,8 @@ var SearchController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
+		console.log(data);
+		/*
                 if (data.result.data) {
                     search_result = data.result.data;
 
@@ -221,7 +231,7 @@ var SearchController = function (controller) {
                     });
                 } else {
                     $('#search-result').html('<h2>Nothing found</h2><p>Click the <i>Add a source or information</i> tab to add what you were looking for to the database.</p>');
-                }
+                }*/
             });
         })
         .fail(function (data) {
@@ -258,6 +268,10 @@ var SearchController = function (controller) {
             $("#search-result").html("<h2>Server error.</h2>");
         });
     };
+
+    var request_database_info_search = function(search_text, tags, start_date, end_date){
+	console.log(search_text + " " + tags + " " + start_date + " " + end_date);
+    }
 
     /**
         Makes a web search request to the Controller with the spec-

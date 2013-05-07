@@ -1,16 +1,34 @@
 <table>
+  {% if data.information %}
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Type</th>
+      <th>Title</th>
+      <th>URL</th>
     </tr>
 </head>
 <tbody>
   {% for d in data %}
   <tr class='row'>
-    <td class='name'>{{ d._data.name }}</td>
-    <td class='type'>{{ d.type_ }}</td>
+    <td class='title'>{{ d.title }}</td>
+    <td class='url'>{{ d.url }}</td>
   </tr>
   {% endfor %}
 </tbody>
+
+{% elseif data.producers %}
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+  </tr>
+</head>
+<tbody>
+  {% for d in data %}
+  <tr class='row'>
+    <td class='name'>{{ d.name }}</td>
+    <td class='type'>{{ d.type_of }}</td>
+  </tr>
+  {% endfor %}
+</tbody>
+{% endif %}
 </table>
