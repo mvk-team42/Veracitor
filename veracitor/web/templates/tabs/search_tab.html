@@ -55,11 +55,11 @@
             </label><br>
 
             <input type="radio" value="article"
-                   name="scrape_type" />            
+                   name="scrape_type" checked />            
             <label for="article">Article</label>
             <br>
 
-            <input type="radio" value="source" name="scrape_type" />            
+            <input type="radio" value="source" name="scrape_type" />
             <label for="source">Source</label>
             <br>
             <input type="button"
@@ -72,8 +72,17 @@
 <div id="search-result-content"  class="search-column">
     <div class="body">
         <h1>Results</h1>
-
         <div id="search-result"></div>
     </div>
+</div>
+<div id="crawl-result-content" class="search-column">
+    <div class="body">
+        <h1>Scrapes</h1>
+        <div id="crawler-result">
+          <table></table>
+        </div>
+    </div>
+</div>
+
 </div>
 {% endblock %}
