@@ -134,3 +134,49 @@ def get_neighbors():
         data[node] = extractor.entity_to_dict(prod)
 
     return jsonify(neighbors=data)
+
+@app.route('/jobs/network/rate_information', methods=['GET','POST'])
+def rate_information():
+    """Rates an information object under a given tag from a given producer.
+
+    URL Structure:
+        /jobs/network/rate_information
+
+    Method:
+        POST
+
+    Parameters:
+        prod (str): The producer.
+        url (str): The URL.
+        rating (int): The rating.
+
+    Returns:
+        Nothing.
+
+    Errors:
+        400 - Bad syntax/No name/type in request
+        405 - Method not allowed
+
+    """
+    log('hello?')
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        prod = request.form['prod']
+        log(prod)
+        url = request.form['url']
+        log(url)
+        rating = int(request.form['rating'])
+        log(rating)
+    except:
+        abort(400)
+
+    try:
+        p = extractor.get_producer(prod)
+        i = extractor.get_information(url)
+
+        p.rate_information(i, rating)
+    except:
+        abort(666)
+
+    return ''

@@ -1,22 +1,5 @@
 /* NETWORK VIEW */
 
-#network table {
-    width: 600px;
-    border-collapse: collapse;
-}
-
-#network td {
-    border: 1px solid #bbb;
-}
-
-#network ul {
-    /* TODO */
-}
-
-#network li {
-    /* TODO */
-}
-
 /* NETWORK HOLDER */
 
 #network-holder {
@@ -74,6 +57,21 @@
 
 #network-info-view > .body p {
     margin: 2px 0;
+}
+
+#network-info-view .informations ul {
+    padding: 0;
+
+    list-style-type; none;
+}
+
+#network-info-view .informations li {
+    margin-top: -1px;
+    padding: 5px;
+
+    font-size: 10pt;
+
+    border: 1px solid #aaa;
 }
 
 #network-graph {

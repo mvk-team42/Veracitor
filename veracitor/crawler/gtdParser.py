@@ -1,7 +1,10 @@
 import openpyxl.reader.excel
 import openpyxl.workbook as workbook
 from pprint import pprint
-from time import strptime
+from datetime import datetime
+from time import strptime, mktime
+from os.path import realpath, dirname
+import sys
 from ..database import *
 
 _GTD_INCIDENT_URL = "http://www.start.umd.edu/gtd/search/IncidentSummary.aspx?gtdid="
@@ -23,35 +26,46 @@ _column_names = {
 }
 
 def add_GTD_to_database():
-    new_producer = producer.Producer(
-            name = _GTD_PRODUCER_NAME,
-            description = "Global Terrorism Database",
-            url = "http://www.start.umd.edu/gtd/",
-            infos = [],
-            source_ratings = [],
-            type_of = "Database")
-    new_producer.save()
-
-
+    if not extractor.contains_producer_with_name(_GTD_PRODUCER_NAME):
+        new_producer = producer.Producer(
+                name = _GTD_PRODUCER_NAME,
+                description = "Global Terrorism Database",
+                url = "http://www.start.umd.edu/gtd/",
+                type_of = "Database")
+        new_producer.save()
 
 def parseGTD(filepath, **kwargs):
     workbook = openpyxl.reader.excel.load_workbook(filepath, use_iterators=True)
     sheet = workbook.get_active_sheet()
     acts = _parse_sheet(sheet, **kwargs)
     acts = acts[1:] #Labels on first row
+    print "number of acts: " + str(len(acts))
     
     GTD = extractor.get_producer(_GTD_PRODUCER_NAME)
 
     for act in acts:
         _save_act_in_gtd_object(act,GTD)
     
-    GTD.save()
-        
+    try:
+        GTD.save()
+    except:
+        print "EXCEPTION! Printing infos"
+        for info in GTD.infos:
+            print unicode(info)
+        sys.exit()
+
 def _save_act_in_gtd_object(act,gtd_producer):
     act_url = _GTD_INCIDENT_URL + act["id"]
     act_tag = _safe_get_tag(act["attacktype"])
     source_strings = [ _strip_source(src) for src in [act["source1"], act["source2"], act["source3"]] if src != None]
     sources = []
+
+    if act["summary"] == None:
+        act["summary"] = act["attacktype"] + " - ATTACKER: " + act["attacker"] + " - TARGET: " + act["target"]
+    if act["month"] == "0.0":
+        act["month"] = "1.0"
+    if act["day"] == "0.0":
+        act["day"] = "1.0"
 
     for source_string in source_strings:
         source = None
@@ -59,9 +73,6 @@ def _save_act_in_gtd_object(act,gtd_producer):
             source = producer.Producer(name = source_string,
                 description = "No description. (found through GTD)",
                 url = None,
-                infos = [],
-                source_ratings = [],
-                info_ratings = [],
                 type_of = "Unknown")
                 
             source.save()
@@ -72,20 +83,22 @@ def _save_act_in_gtd_object(act,gtd_producer):
         gtd_producer.rate_source(source, terrorism_tag, 5)
         gtd_producer.rate_source(source, act_tag, 5)
 
-    information = None
     if not extractor.contains_information(act_url):
-        if act["summary"] == None:
-            act["summary"] = act["attacktype"] + " - ATTACKER: " + act["attacker"] + " - TARGET: " + act["target"]
-        information = information.Information(url = act_url,
+        information_object = information.Information(url = act_url,
             title = "GTD Entry",
             summary = act["summary"],
-            time_published = strptime(act["year"]+"-"+act["mont"]+"-"+act["day"],"%Y-"),
+            time_published = datetime.fromtimestamp(mktime(strptime(act["year"]+"-"+act["month"]+"-"+act["day"],"%Y.0-%m.0-%d.0"))),
             tags = [terrorism_tag, act_tag],
             publishers = [gtd_producer] + sources,
             references =  [])
-        information.save()
-        
-    gtd_producer.infos += information
+        information_object.save()
+    else:
+        information_object = extractor.get_information(act_url)
+
+    print "information type: " + str(type(information_object))
+
+    gtd_producer.infos.append(information_object)
+    print "saved act: " + str(act["summary"])
 
 def _safe_get_tag(name):
     try:
@@ -126,8 +139,13 @@ def _strip_source(source):
     
     
 if __name__ == "__main__":
-    global terrorism_tag = _safe_get_tag("Terrorism")
+    parse()
+
+def parse():
+    global terrorism_tag
+    terrorism_tag = _safe_get_tag("Terrorism")
     add_GTD_to_database()
-    add_terrorism_tag()
-    acts = parseGTD('Downloads/globalterrorismdb_1012dist.xlsx', limit_number_rows = 4)
+
+    current_dir = dirname(realpath(__file__))
+    acts = parseGTD(current_dir + '/globalterrorismdb_1012dist.xlsx', limit_number_rows = 4)
     pprint(acts)
