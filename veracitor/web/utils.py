@@ -62,13 +62,14 @@ def get_user_as_dict(username):
                'producers' : [pname for pname in g.producers.keys()]}
               for g in user_obj.groups]
 
+    
     user_dict = {'name' : user_obj.name,
                 'description' : user_obj.description,
                 'type_of' : user_obj.type_of,
                 'source_ratings' : source_ratings,
                 'groups' : groups,
                 'group_ratings' : user_obj.group_ratings,
-                'info_ratings' : info_ratings}
+                 'info_ratings' : info_ratings}
 
     return user_dict
 
