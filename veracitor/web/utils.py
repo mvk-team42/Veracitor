@@ -80,11 +80,4 @@ def get_user_as_dict(username):
 def __safe_string(url):
     return url.replace("|", ".")
 
-def get_session_dict(name):
-    """
-    
-    """
-    running_crawls =  session.get('running_crawls')
-    if running_crawls == None:
-        running_crawls = {}
     

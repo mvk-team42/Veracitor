@@ -124,18 +124,19 @@ def get_job_result():
         abort(405)
     try:
         res = app.results[request.form['job_id']]
-        log(res)
     except Exception, err:
         abort(404)
 
+            
     if not res.ready():
         return make_response('', 204)
-    elif not res.result.get('template_url') == None:
-        try:
-            res.result['html'] = render_template(res.result['template_url'], 
-                                                 data=res.result['data'])
-        except KeyError:
-            raise Exception('Couldn\'t parse template.')
-        return jsonify(result=res.result)
-    else:
-        return jsonify(result=res.result)
+        
+    try:
+        template_url = res.result.get('template_url')
+        res.result['html'] = render_template(res.result['template_url'], 
+                                             data=res.result['data'])
+    except:
+        pass
+        
+    return jsonify(result=res.result)
+    
