@@ -298,30 +298,20 @@ def search_informations(possible_info, tags, startD=None, endD=None):
     else:
         return infos
 
-def entity_to_dict( o , max_depth=3, curr_depth=0):
-    _max_depth = max_depth
-    _curr_depth = curr_depth+1
-    
-    if _curr_depth > _max_depth:
-        return
-
+def entity_to_dict( o ):
     if isinstance(o, producer.Producer):
         data = {'name': o.name,
                 'first_name': o.first_name,
                 'last_name': o.last_name,
                 'description': o.description,
                 'url': o.url,
-                'infos': [ entity_to_dict(i,
-                                          max_depth=_max_depth,
-                                          curr_depth=_curr_depth) for i in o.infos ],
+                'infos': [ entity_to_dict(i) for i in o.infos ],
                 'source_ratings': o.source_ratings,
                 'info_ratings': o.info_ratings,
                 'type_of': o.type_of}
         if isinstance(o, user.User):
             data['group_ratings'] = o.group_ratings
-            data['groups'] = [ entity_to_dict(g,
-                                              max_depth=_max_depth,
-                                              curr_depth=_curr_depth) for g in o.groups ]
+            data['groups'] = [ entity_to_dict(g) for g in o.groups ]
             data['email'] = o.email
             if o.time_joined:
                 data['time_joined'] = {'year': o.time_joined.year,
@@ -333,12 +323,8 @@ def entity_to_dict( o , max_depth=3, curr_depth=0):
         data = {'title': o.title,
                 'summary': o.summary,
                 'url': o.url,
-                'tags': [ entity_to_dict(t,
-                                         max_depth=_max_depth,
-                                         curr_depth=_curr_depth) for t in o.tags ],
-                'publishers': [ entity_to_dict(p ,
-                                               max_depth=_max_depth,
-                                               curr_depth=_curr_depth) for p in o.publishers ],
+                'tags': [ entity_to_dict(t) for t in o.tags ],
+                'publishers': [ p.name for p in o.publishers ],
                 'references': [ i.url for i in o.references ]}
         if o.time_published:
             data['time_published'] = {'year': o.time_published.year,
@@ -355,9 +341,7 @@ def entity_to_dict( o , max_depth=3, curr_depth=0):
         data = {'name': o.name,
                 'description': o.description,
                 'owner': o.owner.name,
-                'tag': entity_to_dict(o.tag,
-                                      max_depth=_max_depth,
-                                      curr_depth=_curr_depth),
+                'tag': entity_to_dict(o.tag),
                 # TODO 'producers': o.producers
                 }
         if o.time_created:

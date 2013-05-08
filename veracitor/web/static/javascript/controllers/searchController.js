@@ -218,12 +218,14 @@ var SearchController = function (controller) {
         with 'empty' fields (except from the required search term).
      */
     var request_database_producer_search = function (search_term, type, start_date,
-                                                end_date) {
-        $("#search-result").html("Searching...")
+                                                     end_date) {
+        $("#search-result").html("Searching...");
         $.post("/jobs/search/producers", {
             'name' : search_term,
             'type' : type
-        }, function(data) {insert_database_search_results(data, "producers");})
+        }, function(data) {
+	    insert_database_search_results(data, "producers");
+	})
             .fail(function (data) {
 		$("#search-result").html("<h2>Server error.</h2>");
             });
@@ -245,7 +247,9 @@ var SearchController = function (controller) {
 
         $.post("/jobs/search/information", 
 	       paramObject,
-	       function(data){insert_database_search_results(data, "information");})
+	       function(data){
+		   insert_database_search_results(data, "information");
+	       })
             .fail(function (data) {
 		$("#search-result").html("<h2>Server error.</h2>");
             });
