@@ -177,8 +177,8 @@ def rate_group():
         abort(405)
     try:
         user = extractor.get_user(session['user_name'])
-        if len(extractor.get_group(session['user_name'],request.form['name']).producers) > 0:
-            user.rate_group(request.form['name'], int(request.form['rating']))
+        if len(extractor.get_group(user.name,request.form['name']).producers.keys()) > 0:
+            user.rate_group(str(request.form['name']), int(request.form['rating']))
             user.save()
         else:
             abort(400)

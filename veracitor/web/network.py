@@ -1,7 +1,7 @@
 
 import itertools
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 
 import networkx as nx
 
@@ -179,4 +179,21 @@ def rate_information():
     except:
         abort(666)
 
+    return ''
+
+
+@app.route('/jobs/network/add_to_group', methods=['GET','POST'])
+def add_to_group():
+
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        user = extractor.get_user(session['user_name'])
+        producer = extractor.get_producer(request.form['producer'])
+        user.add_to_group(request.form['group_name'], producer)
+        return "Success"
+    except Exception, e:
+        log(e)
+        abort(400)
+    
     return ''

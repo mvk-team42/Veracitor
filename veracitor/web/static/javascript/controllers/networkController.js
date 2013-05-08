@@ -17,8 +17,20 @@ var NetworkController = function (controller) {
        This function is called by the super controller when the tab is opened.
      */
     this.on_tab_active = function () {
-
+	add_event_handlers();
     };
+
+    function add_event_handlers() {
+	$('#add-to-group').click(function(evt) {
+	    $.post('/jobs/network/add_to_group',
+		   {
+		       'group_name' : $('#group_name').val(),
+		       'producer' : $('h1.title').text()
+		       
+		   }, function(data) {
+		   });
+	});
+    }
 
     /**
        Request a SUNNY value.

@@ -18,13 +18,17 @@
 	      <option value="all">-</option>
 	      <!-- TODO: Fix group rating! -->
 	      {% for group in renderDict.groups  %}
-	    {% if renderDict.group_ratings.group %}
-	      <option value="{{ group.name }}">{{ group.name }} - {{ renderDict.group_ratings.group  }}</option>
+	      {% if group.name in renderDict.group_ratings %}
+	      <option value="{{ group.name }}">{{ group.name }} - {{ renderDict.group_ratings[group.name] }}</option>
 	      {% else  %}
 	      <option value="{{ group.name }}">{{ group.name }}</option>
 	      {% endif  %}
 	      {% endfor %}
 	    </select>
+	    <!-- Working inline rating circle. Not implemented
+	    <span class="rating">5
+	    </span>
+	    -->
 	    <input type="button" value="Rate group" id="rate-group"/>
 	    <div id="rate-group-form-div" style="display:none;">
 	      <form id="rate-group-form">
