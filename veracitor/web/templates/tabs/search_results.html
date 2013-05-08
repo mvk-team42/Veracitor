@@ -4,6 +4,7 @@
     <tr>
       <th>Title</th>
       <th>URL</th>
+      <th>Publisher/author</th>
     </tr>
 </head>
 <tbody>
@@ -11,6 +12,7 @@
   <tr class='result clickable'>
     <td class='title'>{{ d.title }}</td>
     <td class='url'>{{ d.url }}</td>
+    <td class='producer'>{{ d.publishers[0].name }}</td>
   </tr>
   {% endfor %}
 </tbody>
@@ -27,7 +29,7 @@
 <tbody>
   {% for d in data.producers %}
   <tr class='result clickable'>
-    <td class='name'>{{ d.name }}</td>
+    <td class='name producer'>{{ d.name }}</td>
     <td class='type'>{{ d.type_of }}</td>
   </tr>
   {% endfor %}

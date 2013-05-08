@@ -1,7 +1,7 @@
 
 import itertools
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, abort
 
 import networkx as nx
 
@@ -24,6 +24,7 @@ def get_shortest_path():
 
     Parameters:
         source (str): The name of the source producer.
+
         target (str): The name of the target producer.
 
     Returns:
@@ -37,9 +38,11 @@ def get_shortest_path():
     if not request.method == 'POST':
         abort(405)
     try:
+        log(request.form)
         source = request.form['source']
         target = request.form['target']
-    except:
+    except Exception as e:
+        log("Exception: "+str(e)+"\nMsg: "+e.message+"\n");
         abort(400)
 
     # TODO fix the global network...
