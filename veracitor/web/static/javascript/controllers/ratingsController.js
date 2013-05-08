@@ -156,7 +156,6 @@ var RatingsController = function (controller) {
 	       function(data){
 		   var tags_list = $('.left #prod-tags');
 		   $.each(data.tags, function(i, val){
-		       console.log(val);
 		       tags_list.append(
 			   $('<option></option>').val(val).html(val));
 		   });
