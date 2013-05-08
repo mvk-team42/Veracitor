@@ -324,7 +324,7 @@ def entity_to_dict( o ):
                 'summary': o.summary,
                 'url': o.url,
                 'tags': [ entity_to_dict(t) for t in o.tags ],
-                'publishers': [ p.name for p in o.publishers ],
+                'publishers': [ entity_to_dict(p) for p in o.publishers ],
                 'references': [ i.url for i in o.references ]}
         if o.time_published:
             data['time_published'] = {'year': o.time_published.year,
