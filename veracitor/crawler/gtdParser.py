@@ -62,10 +62,6 @@ def _save_act_in_gtd_object(act,gtd_producer):
 
     if act["summary"] == None:
         act["summary"] = act["attacktype"] + " - ATTACKER: " + act["attacker"] + " - TARGET: " + act["target"]
-    if act["month"] == "0.0":
-        act["month"] = "1.0"
-    if act["day"] == "0.0":
-        act["day"] = "1.0"
 
     for source_string in source_strings:
         source = None
@@ -87,7 +83,7 @@ def _save_act_in_gtd_object(act,gtd_producer):
         information_object = information.Information(url = act_url,
             title = "GTD Entry",
             summary = act["summary"],
-            time_published = datetime.fromtimestamp(mktime(strptime(act["year"]+"-"+act["month"]+"-"+act["day"],"%Y.0-%m.0-%d.0"))),
+            time_published = _get_datetime(act),
             tags = [terrorism_tag, act_tag],
             publishers = [gtd_producer] + sources,
             references =  [])
@@ -109,6 +105,12 @@ def _safe_get_tag(name):
                 valid_strings = [name])
         new_tag.save()
         return new_tag
+
+def _get_datetime(act):
+    year = int(float(act["year"]))
+    month = min(max(int(float(act["month"])),1),12)
+    day = min(max(int(float(act["day"])), 1), 31)
+    datetime.fromtimestamp(mktime(strptime(year+"-"+month+"-"+day,"%Y-%m-%d")))
 
 
 """ 
@@ -147,5 +149,5 @@ def parse():
     add_GTD_to_database()
 
     current_dir = dirname(realpath(__file__))
-    acts = parseGTD(current_dir + '/globalterrorismdb_1012dist.xlsx', limit_number_rows = 4)
+    acts = parseGTD(current_dir + '/globalterrorismdb_1012dist.xlsx', limit_number_rows = 0)
     pprint(acts)
