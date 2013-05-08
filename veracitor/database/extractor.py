@@ -301,6 +301,9 @@ def search_informations(possible_info, tags, startD=None, endD=None):
 def entity_to_dict( o , max_depth=3, curr_depth=0):
     _max_depth = max_depth
     _curr_depth = curr_depth+1
+    
+    if _curr_depth > _max_depth:
+        return
 
     if isinstance(o, producer.Producer):
         data = {'name': o.name,
