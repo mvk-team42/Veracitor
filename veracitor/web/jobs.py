@@ -124,7 +124,6 @@ def get_job_result():
         abort(405)
     try:
         res = app.results[request.form['job_id']]
-        log(res)
     except Exception, err:
         abort(404)
 
