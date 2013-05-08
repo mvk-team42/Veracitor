@@ -38,7 +38,8 @@ class Producer(Document):
     meta = {'allow_inheritance':'On'}
     
     def rate_source(self, source_to_rate, considered_tag, rating):
-        if(type(considered_tag) is tag.Tag and\
+        if(isinstance(source_to_rate, Producer) and\
+           type(considered_tag) is tag.Tag and\
            type(rating) is int):
             try:
                 self.source_ratings[self.__safe_string(source_to_rate.name)]\
