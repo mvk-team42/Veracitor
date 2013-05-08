@@ -39,7 +39,7 @@ def parseGTD(filepath, **kwargs):
     sheet = workbook.get_active_sheet()
     acts = _parse_sheet(sheet, **kwargs)
     acts = acts[1:] #Labels on first row
-    print "number of acts: " + str(len(acts))
+    print "number of acts: " + unicode(len(acts))
     
     GTD = extractor.get_producer(_GTD_PRODUCER_NAME)
 
@@ -60,8 +60,7 @@ def _save_act_in_gtd_object(act,gtd_producer):
     source_strings = [ _strip_source(src) for src in [act["source1"], act["source2"], act["source3"]] if src != None]
     sources = []
 
-    if act["summary"] == None:
-        act["summary"] = act["attacktype"] + " - ATTACKER: " + act["attacker"] + " - TARGET: " + act["target"]
+    _fix_summary(act)
 
     for source_string in source_strings:
         source = None
@@ -91,10 +90,10 @@ def _save_act_in_gtd_object(act,gtd_producer):
     else:
         information_object = extractor.get_information(act_url)
 
-    print "information type: " + str(type(information_object))
+    print "information type: " + unicode(type(information_object))
 
     gtd_producer.infos.append(information_object)
-    print "saved act: " + str(act["summary"])
+    print "saved act: " + unicode(act["summary"])
 
 def _safe_get_tag(name):
     try:
@@ -106,11 +105,20 @@ def _safe_get_tag(name):
         new_tag.save()
         return new_tag
 
+def _fix_summary(act):
+    if act["summary"] == None:
+        act["summary"] = _safe_get_string(act["attacktype"]) + " - ATTACKER: " + _safe_get_string(act["attacker"]) + " - TARGET: " + _safe_get_string(act["target"])
+
+def _safe_get_string(string):
+    if string == None:
+        return "unknown"
+    return string
+
 def _get_datetime(act):
     year = int(float(act["year"]))
     month = min(max(int(float(act["month"])),1),12)
     day = min(max(int(float(act["day"])), 1), 31)
-    datetime.fromtimestamp(mktime(strptime(year+"-"+month+"-"+day,"%Y-%m-%d")))
+    datetime.fromtimestamp(mktime(strptime(unicode(year)+"-"+unicode(month)+"-"+unicode(day),"%Y-%m-%d")))
 
 
 """ 
