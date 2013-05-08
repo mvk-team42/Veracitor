@@ -201,7 +201,7 @@ def get_crawls():
 
     crawls =  session.get('crawls')
     if crawls == None:
-        make_response('', 204)
-    
-    return jsonify(session.get('crawls'))
+        return make_response('', 204)
+    else:
+        return jsonify(session.get('crawls'))
 
