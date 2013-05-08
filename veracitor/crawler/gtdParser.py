@@ -38,8 +38,6 @@ def parseGTD(filepath, **kwargs):
     workbook = openpyxl.reader.excel.load_workbook(filepath, use_iterators=True)
     sheet = workbook.get_active_sheet()
     acts = _parse_sheet(sheet, **kwargs)
-    acts = acts[1:] #Labels on first row
-    print "number of acts: " + unicode(len(acts))
     
     GTD = extractor.get_producer(_GTD_PRODUCER_NAME)
 
@@ -126,21 +124,22 @@ def _get_datetime(act):
     terrorist-acts where every act is represented as a dict of attributes
 """
 def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
-    acts = []
+    row_number = 1
     for row in sheet.iter_rows():
+        if row_number == 1
+            continue
+        if limit_number_rows == row_number:
+            break
         act = {}
         for cell in row:
-            if limit_number_rows > 0 and cell.row > limit_number_rows:
-                return acts
             if cell.column in _column_names:
                 if cell.internal_value == None:
                     act[_column_names[cell.column]] = None
                 else:
                     act[_column_names[cell.column]] = unicode(cell.internal_value)
-        acts.append(act)
+        yield act
         if print_acts:
             print act
-    return acts
     
 def _strip_source(source):
     source = source.split('"')[-1]
