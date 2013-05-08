@@ -265,15 +265,17 @@ var SearchController = function (controller) {
         controller.set_job_callback(job_id, function (data) {
             if(data.result.data){
 		search_result = data.result.data[type];
+		console.log(search_result);
+		console.log(data.result);
 		
 	    	$('#search-result').html(data.result.html);
 		$('#search-result .result').click(function (evt) {
-		    var prod = {};
+		    var prod;
 		    if(type === "information"){
 			prod = search_result[$(this).index()].publishers[0];
 		    }
 		    else if (type === "producers"){
-			prod = search_result[$(this).index()];
+			prod = search_result[$(this).index()].name;
 		    }
 
 		    console.log(type + "\n" + prod);

@@ -43,7 +43,7 @@ def get_information(title_part, tags,
     if res:
         return {
             'data' : {
-                "information" : [extractor.entity_to_dict(i, max_depth=2) for i in res]
+                'information' : [extractor.entity_to_dict(i) for i in res]
                 },
             'template_url':'tabs/search_results.html',
             }
