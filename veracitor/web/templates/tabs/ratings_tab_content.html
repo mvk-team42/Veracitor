@@ -26,19 +26,19 @@
 	      {% endfor %}
 	    </select>
 	    <!-- Working inline rating circle. Not implemented
-	    <span class="rating">5
-	    </span>
-	    -->
+		 <span class="rating">5
+		 </span>
+		 -->
 	    <input type="button" value="Rate group" id="rate-group"/>
 	    <div id="rate-group-form-div" style="display:none;">
 	      <form id="rate-group-form">
 		<label for='rate-group-rating' id='rating_label'>Rating:</label>
 		<select id='rate-group-rating'>
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
+		  <option value="1">1</option>
+		  <option value="2">2</option>
+		  <option value="3">3</option>
+		  <option value="4">4</option>
+		  <option value="5">5</option>
 		</select>
 		<input type="button" value="Rate group" id="rate-group-submit"/>
 	      </form>
@@ -53,7 +53,7 @@
 	      {% for tag in renderDict.tags  %}
 	      <option value='{{ tag  }}'>{{ tag  }}</option>
 	      {% endfor %}
-	  </select>
+	    </select>
 	    <input id="name" type="text" placeholder="Group name"/>
 	    <input type="button" value="Create group" id="create-group"/>
 	  </form>
@@ -77,8 +77,64 @@
 	    <div class='description'>
 	      <p>{{ producer.description }}</p>
 	      <input type="button" value="View in network" class="view_in_network"/>
-	      <input type="hidden" value="{{ producer }}"
-	    </div>
+	      <input type="hidden" value="{{ producer }}">
+		     </div>
+	  </div>
+	</div>
+	{% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <h2>Rated information</h2>
+    <div display='block'>
+      <!-- Disabled producer filtering. TODO: Maybe implement
+	   <label for "producers">Producer:</label>
+	   <select name="producers" id="producers">
+	     {% for producer in source_ratings  %}
+	     <option value="{{ producer.name  }}">{{ producer.name  }}
+	       {% endfor  %}
+	   </select>
+	   <br/>
+	   -->
+      <label for="info-tags">Tag:</label>
+      <select name="tags" class="tags" id="info-tags">
+	<!-- TODO: remove these dummy-tags -->
+	<option value="crime">Crime</option>
+	<option value="gardening">Gardening</option>
+      </select>
+    </div>
+    <div id='information-list-container'>
+      <div id='information-list'>
+<!-- Test data
+	<div class='crime'>
+	  <h3>Ledare - DN - 2013-02-04 <div class='rating'>4</div></h3>
+	  <div>
+	    <p>Information about Article1</p>
+	  </div>
+	</div>
+	<div class='gardening'>
+	  <h3>Article2 <div class='rating'>7</div></h3>
+	  <div>
+	    <p>Information about Article2</p>
+	  </div>
+	</div>
+	<div class='crime'>
+	  <h3>Ledare - DN - 2013-01-02 <div class='rating'>9</div></h3>
+	  <div>
+	    <p>
+	      Blablablabla
+	    </p>
+	  </div>
+	</div>
+-->
+	<!-- TODO: Fixa tag-filtrering! -->
+	{% for information in renderDict.info_ratings  %}
+	<div class="crime">
+	  <h3>{{ information.title }} <div class='rating'>{{ information.rating }}</div></h3>
+	  <div>
+	    <p>URL: <a href="{{ information.url }}">{{ information.url  }}</a></p>
 	  </div>
 	</div>
 	{% endfor %}
@@ -86,48 +142,5 @@
     </div>
   </div>
 </div>
-</div>
+  {% endblock %}
   
-  <div class="right">
-    <h2>Rated information</h2>
-  <div display='block'>
-    <!-- Disabled producer filtering. TODO: Maybe implement
-	 <label for "producers">Producer:</label>
-	 <select name="producers" id="producers">
-	   {% for producer in source_ratings  %}
-	   <option value="{{ producer.name  }}">{{ producer.name  }}
-	     {% endfor  %}
-    </select>
-	 <br/>
-	 -->
-    <label for="info-tags">Tag:</label>
-    <select name="tags" class="tags" id="info-tags">
-      <!-- TODO: remove these dummy-tags -->
-      <option value="crime">Crime</option>
-      <option value="gardening">Gardening</option>
-    </select>
-  </div>
-  <div id='information-list-container'>
-    <div id='information-list'>
-      <div class='crime'>
-	<h3>Article1 <div class='rating'>4</div></h3>
-	<div>
-	  <p>Information about Article1</p>
-	</div>
-      </div>
-      <div class='gardening'>
-	<h3>Article2 <div class='rating'>7</div></h3>
-	<div>
-	  <p>Information about Article2</p>
-	</div>
-      </div>
-      <!-- TODO: Fixa tag-filtrering! -->
-      {% for information in renderDict.info_ratings  %}
-      <h3>{{ information.name }} <div class='rating'>{{ information.rating }}</div></h3>
-      <div>
-	<p>URL: <a href="{{ information.url }}">{{ information.url  }}</a></p>
-      </div>
-      </div>
-      {% endfor %}
-</div>
-{% endblock %}

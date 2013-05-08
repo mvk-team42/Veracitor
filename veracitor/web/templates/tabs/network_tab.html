@@ -6,11 +6,23 @@
         <div id="network-info-view">
             <div class="body">
                 <h1 class="title">Title</h1>
-                <p><b>Description:</b><span class="description"></span></p>
-                <p><b>URL:</b><span class="url"></span></p>
-                <p><b>Source type:</b><span class="type"></span></p>
-                <p><b>Informations:</b></p>
-                <span class="informations"></span>
+                <p><b>Description: </b><span class="description"></span></p>
+                <p><b>URL: </b><span class="url"></span></p>
+                <p><b>Source type: </b><span class="type"></span></p>
+                <p><b>Informations: </b></p>
+                <span class="informations">
+
+                </span>
+                <select>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                <input type="button" value="Rate producer" />
+                <input type="button" value="Compute trust" />
+                <br/>
                 <input type="text" placeholder="Group name" id="group_name" />
                 <input type="button" value="Add to group" id="add-to-group" />
             </div>
@@ -21,11 +33,13 @@
             <div class="background"></div>
             <div id="cytoscape"></div>
         </div>
+        <!--
         <div id="network-toolbox">
             <div class="body">
                 <p><b>Tool-box</b></p>
             </div>
         </div>
+        -->
     </div>
 </div>
 {% endblock %}
