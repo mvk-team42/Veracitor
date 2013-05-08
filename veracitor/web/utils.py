@@ -39,39 +39,46 @@ def store_job_result(result):
 def get_user_as_dict(username):
     user_obj = extractor.get_user(username)
 
-    source_ratings = []
-    for s in user_obj.source_ratings.keys():
-        for tag in user_obj.source_ratings[s]:
-            source_ratings.append({
-                    'name' : s,
-                    'tag' : tag,
-                    'rating': user_obj.source_ratings[s][tag] ,
-                    'description': extractor.get_producer(s).description})
-
-    info_ratings = []
-    for iurl in user_obj.info_ratings.keys():
-        info_ratings.append({
-                'title': extractor.get_information(iurl).title,
-                'rating': user_obj.info_ratings[iurl],
-                'url': iurl,
-                })
-
+    try:
+        source_ratings = []
+        for s in user_obj.source_ratings.keys():
+            for tag in user_obj.source_ratings[s]:
+                source_ratings.append({
+                        'name' : s,
+                        'tag' : tag,
+                        'rating': user_obj.source_ratings[s][tag] ,
+                        'description': extractor.get_producer(__safe_string(s)).description})        
+                        
+        info_ratings = []
+        for iurl in user_obj.info_ratings.keys():
+            info_ratings.append({
+                    'title': extractor.get_information(iurl).title,
+                    'rating': user_obj.info_ratings[iurl],
+                    'url': iurl,
+                    })
+            
+            
+        groups = [{'name' : g.name,
+                   'description' : g.description,
+                   'producers' : [pname for pname in g.producers.keys()]}
+                  for g in user_obj.groups]
+        
+        
+        user_dict = {'name' : user_obj.name,
+                     'description' : user_obj.description,
+                     'type_of' : user_obj.type_of,
+                     'source_ratings' : source_ratings,
+                     'groups' : groups,
+                     'group_ratings' : user_obj.group_ratings,
+                     'info_ratings' : info_ratings}
+        
+        return user_dict
+    except Exception, e:
+        log(e)
+        return ""
     
-    groups = [{'name' : g.name,
-               'description' : g.description,
-               'producers' : [pname for pname in g.producers.keys()]}
-              for g in user_obj.groups]
-
-    
-    user_dict = {'name' : user_obj.name,
-                'description' : user_obj.description,
-                'type_of' : user_obj.type_of,
-                'source_ratings' : source_ratings,
-                'groups' : groups,
-                'group_ratings' : user_obj.group_ratings,
-                 'info_ratings' : info_ratings}
-
-    return user_dict
+def __safe_string(url):
+    return url.replace("|", ".")
 
 def get_session_dict(name):
     """

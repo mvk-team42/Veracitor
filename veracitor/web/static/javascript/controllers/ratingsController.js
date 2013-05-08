@@ -39,16 +39,14 @@ var RatingsController = function (controller) {
     /**
        Add event handlers to the ratings view.
      */
-    function add_event_handlers(producers, information) {
-	for(var p in producers) {
-	    producer = producers[p];
-	    $('div.description #' + producer.name)
-		.click(function(evt) {
-		    controller.network.visualize_producer_in_network(producer, -1);
-		    controller.switch_to_tab('network');
-		});
-	}
-
+    function add_event_handlers(producers,information) {
+	$('div.description')
+	    .click(function(evt) {
+		var producer = $(this).children('input[type="hidden"]').val()
+		controller.network.visualize_producer_in_network(producer, -1);
+		controller.switch_to_tab('network');
+	    });
+    
 	$('#ratings_view form').submit(function(evt) {
 	    return false;
 	});
