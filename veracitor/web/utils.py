@@ -73,11 +73,4 @@ def get_user_as_dict(username):
 
     return user_dict
 
-def get_session_dict(name):
-    """
-    
-    """
-    running_crawls =  session.get('running_crawls')
-    if running_crawls == None:
-        running_crawls = {}
     
