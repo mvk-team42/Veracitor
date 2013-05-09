@@ -50,6 +50,14 @@ var Visualizer = function (controller) {
                 cy.on('layoutstop', function () {
                     cy.nodes().unlock();
                 });
+
+                // Fixes vanishing graph issue when resizing the window
+                $(window).resize(function () {
+                    // notify the renderer that the viewport has changed
+                    cy.notify({
+                        'type': 'viewport'
+                    });
+                });
             },
             style: cytoscape.stylesheet()
                 .selector("node")
@@ -345,6 +353,7 @@ var Visualizer = function (controller) {
         cy.elements().remove();
     };
 
+/*
     var Animation = function ( url, w, h, frames, time ) {
         var images;
         var animation_cycle;
@@ -470,4 +479,5 @@ var Visualizer = function (controller) {
             animating = false;
         };
     };
+*/
 };
