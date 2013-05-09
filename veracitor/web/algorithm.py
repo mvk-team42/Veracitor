@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from flask import request, redirect, url_for, render_template, abort, jsonify,\
     make_response
 from veracitor.web import app

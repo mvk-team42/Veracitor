@@ -75,6 +75,12 @@ to start the celery daemon from the Veracitor folder.
 The celery worker daemon processes tasks sent out from the web part of
 the application.
 
+By default the celeryd saves the results in a mongodb called
+`celery_db`, in a collection called `veracitor_taskmeta_collection`.
+This collection may need to be cleared after a while, see Issue #23
+(unless the celery beat is functioning).
+
 ##### Flask dev webserver
 
-Use `python start_webserver.py` to start the dev webserver from the Veracitor folder.
+Use `python start_webserver.py` to start the dev webserver from the
+Veracitor folder.
