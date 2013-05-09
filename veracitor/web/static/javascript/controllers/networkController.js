@@ -39,25 +39,28 @@ var NetworkController = function (controller) {
 	    user = data;
 	});
 	
-	$('#add-to-group').click(function(evt) {
-	    $.post('/jobs/network/add_to_group', {
-		'group_name': $('#group_name').val(),
-		'producer': $('h1.title').text()
-	    }, function(data) {
+
+        $('#add-to-group').click(function(evt) {
+            $.post('/jobs/network/add_to_group', {
+                'group_name': $('#group_name').val(),
+                'producer': $('h1.title').text()
+            }, function(data) {
+                // TODO: display success/fail
                 console.log(data);
-	    });
-	});
-	
+            });
+        });
+
         $('#network_rate_producer > .button').click(function ( evt ) {
-            var rating = $('#network_rate_producer > .rating:selected').html();
-	    
+            var rating = $('#network_rate_producer > .rating > option:selected').html();
+
             $.post('/jobs/network/rate/producer', {
-                'prod_source': vera.user_name,
-                'prod_target': selected_producer.name,
-                'tag': $('#rate-producer-tag').toLowerCase(),
+                'source': vera.user_name,
+                'target': selected_producer.name,
+                'tag': $('#rate-producer-tag').val(),
                 'rating': rating,
             }, function ( data ) {
-                console.log(data);
+                // TODO: show success/fail
+                console.log(data.data.target.name + ' rated');
                 visualizer.fetch_neighbors(data.data.source.name);
             })
                 .fail(function ( data ) {
@@ -65,22 +68,22 @@ var NetworkController = function (controller) {
                 });
         });
 
-	$('#compute-trust').click( function(evt){
-	    request_tidaltrust_value(vera.user_name,
-				     selected_producer.name,
-				     $("#compute-trust-tag"));
-	});
+        $('#compute-trust').click( function(evt){
+            request_tidaltrust_value(vera.user_name,
+                                     selected_producer.name,
+                                     $("#compute-trust-tag"));
+        });
 
-	$('.network-info-piece span.question-mark').click(function(evt){
-	    $($(this)[0].parentNode.parentNode).find(".tip-text").toggle();
-	});
+        $('.network-info-piece span.question-mark').click(function(evt){
+            $($(this)[0].parentNode.parentNode).find(".tip-text").toggle();
+        });
     };
 
     /**
        Request a TidalTrust value.
     */
     function request_tidaltrust_value(source, sink, tag) {
-	console.log(source + sink + tag);
+        console.log(source + sink + tag);
         $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
@@ -89,7 +92,7 @@ var NetworkController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                console.log(data.result);
+                // TODO: display success/fail
 
                 $('#calculated-trust').html(data.result.trust);
             });
@@ -116,11 +119,12 @@ var NetworkController = function (controller) {
             'source': vera.user_name,
             'target': prod
         }, function (data) {
+            network_controller.display_producer_information(data.path.target);
+
             if (data.path.nodes.length > 0) {
                 hide_network_information();
-                network_controller.display_producer_information(data.path.target);
 
-                active_producer = data.path.source;
+                selected_producer = data.path.source;
 
                 visualizer.visualize_path_in_network(data.path.source.name,
                                                      data.path.target.name,
@@ -130,7 +134,7 @@ var NetworkController = function (controller) {
                 display_network_information('No path found');
             }
         }).fail(function (data) {
-            console.log(data);
+            // TODO: display fail
         });
 
     };
@@ -142,7 +146,7 @@ var NetworkController = function (controller) {
         // A reference to this controller
         var network_controller = this;
 
-        active_producer = prod;
+        selected_producer = prod;
 
         $('#network-info-view .title').html(prod.name);
         $('#network-info-view .description').html(prod.description);
@@ -176,9 +180,9 @@ var NetworkController = function (controller) {
             'url': url,
             'rating': rating
         }, function (data) {
-            console.log('Rated!');
+            // TODO: display success/fail
         }).fail(function (data) {
-            console.log(data);
+            // TODO: display fail
         });
     };
 
