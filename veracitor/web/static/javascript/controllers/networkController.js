@@ -12,31 +12,56 @@
 var NetworkController = function (controller) {
 
     var visualizer = new Visualizer(this);
+    var network_info;
+
+    var selected_producer = null;
 
     /**
        This function is called by the super controller when the tab is opened.
      */
     this.on_tab_active = function () {
-	add_event_handlers();
+
     };
 
-    function add_event_handlers() {
-	$('#add-to-group').click(function(evt) {
-	    $.post('/jobs/network/add_to_group',
-		   {
-		       'group_name' : $('#group_name').val(),
-		       'producer' : $('h1.title').text()
-		       
-		   }, function(data) {
-		   });
-	});
-    }
+    /**
+       Initialize variables and events.
+     */
+    var initialize = function () {
+        network_info = $('#network-graph > .info');
+
+        display_network_information('Use the search to find producers and information.');
+
+	    $('#add-to-group').click(function(evt) {
+	        $.post('/jobs/network/add_to_group', {
+		        'group_name': $('#group_name').val(),
+		        'producer': $('h1.title').text()
+		    }, function(data) {
+                console.log(data);
+            });
+	    });
+
+        $('#network_rate_producer > .button').click(function ( evt ) {
+            var rating = $('#network_rate_producer > .rating:selected').html();
+
+            $.post('/jobs/network/rate/producer', {
+                'prod_source': vera.user_name,
+                'prod_target': active_producer.name,
+                'tag': ,
+                'rating': rating
+                }, function ( data ) {
+                    console.log(data);
+                })
+                .fail(function ( data ) {
+                    // TODO
+                });
+        });
+    };
 
     /**
        Request a SUNNY value.
     */
     function request_sunny_value(source, sink, tag) {
-         $.post('/jobs/algorithms/tidal_trust', {
+        $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
             'tag': tag
@@ -71,12 +96,18 @@ var NetworkController = function (controller) {
             'source': vera.user_name,
             'target': prod
         }, function (data) {
-            console.log(data);
+            if (data.path.nodes.length > 0) {
+                hide_network_information();
 
-            visualizer.visualize_path_in_network(data.path.source,
-                                                 data.path.target,
-                                                 data.path.nodes,
-                                                 data.path.ghosts);
+                // TODO
+
+                visualizer.visualize_path_in_network(data.path.source,
+                                                     data.path.target,
+                                                     data.path.nodes,
+                                                     data.path.ghosts);
+            } else {
+                display_network_information('No path found');
+            }
         }).fail(function (data) {
             console.log(data);
         });
@@ -121,15 +152,15 @@ var NetworkController = function (controller) {
                       }).click((function ( url ) {
                           return function ( evt ) {
                               var rating = $(this).parent().find(':selected').html();
-                              network_controller.rate_information(url, rating);
+                              rate_information(url, rating);
                           };
                       })(prod.infos[i].url))));
         }
         $('#network-info-view .informations').html(ul);
     };
 
-    this.rate_information = function ( url, rating ) {
-        $.post('/jobs/network/rate_information', {
+    var rate_information = function ( url, rating ) {
+        $.post('/jobs/network/rate/information', {
             'prod': vera.user_name,
             'url': url,
             'rating': rating
@@ -156,5 +187,23 @@ var NetworkController = function (controller) {
     this.visualize_trust_network = function (network) {
         visualizer.visualize_trust_network(network);
     };
+
+    var display_network_information = function ( info ) {
+        network_info.css('display', 'block');
+        network_info.find('.content').html($('<p>').html(info));
+
+        try {
+            visualizer.clear_graph();
+        } catch (exc) {
+            // cytoscape has not yet loaded
+        }
+    };
+
+    var hide_network_information = function () {
+        network_info.css('display', 'none');
+    };
+
+    // Initialize this controller
+    initialize();
 
 }

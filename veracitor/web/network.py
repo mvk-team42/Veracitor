@@ -138,9 +138,9 @@ def get_neighbors():
 
     return jsonify(neighbors=data)
 
-@app.route('/jobs/network/rate_information', methods=['GET','POST'])
-def rate_information():
-    """Rates an information object under a given tag from a given producer.
+@app.route('/jobs/network/rate/information', methods=['GET','POST'])
+def network_rate_information():
+    """Rates an information object under its tag from a given producer.
 
     URL Structure:
         /jobs/network/rate_information
@@ -158,34 +158,85 @@ def rate_information():
 
     Errors:
         400 - Bad syntax/No name/type in request
+        404 - Not found
         405 - Method not allowed
 
     """
-    log('hello?')
     if not request.method == 'POST':
         abort(405)
     try:
         prod = request.form['prod']
-        log(prod)
         url = request.form['url']
-        log(url)
         rating = int(request.form['rating'])
-        log(rating)
     except:
         abort(400)
 
     try:
         p = extractor.get_producer(prod)
         i = extractor.get_information(url)
-
-        p.rate_information(i, rating)
     except:
-        abort(666)
+        abort(404)
 
-    return ''
+    p.rate_information(i, rating)
 
+    return jsonify(data={'prod': extractor.entity_to_dict(p),
+                         'info': extractor.entity_to_dict(i),
+                         'rating': rating})
 
-@app.route('/jobs/network/add_to_group', methods=['GET','POST'])
+@app.route('/jobs/network/rate/producer', methods=['GET','POST'])
+def network_rate_producer():
+    """Rates a producer object under a given tag from a given producer.
+
+    URL Structure:
+        /jobs/network/rate_information
+
+    Method:
+        POST
+
+    Parameters:
+        prod_source (str): The source producer.
+        prod_target (str): The target producer.
+        tag (str): The tag.
+        rating (int): The rating.
+
+    Returns:
+        Nothing.
+
+    Errors:
+        400 - Bad syntax/No name/type in request
+        404 - Not found
+        405 - Method not allowed
+
+    """
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        source = request.form['prod_source']
+        target = request.form['prod_target']
+        tag = request.form['tag']
+        rating = request.form['rating']
+    except:
+        abort(400)
+
+    try:
+        log(source)
+        ps = extractor.get_producer(source)
+        log(target)
+
+        pt = extractor.get_producer(target)
+        log(t)
+        t = extractor.get_tag(tag)
+    except:
+        abort(404)
+
+    ps.rate_source(pt, t, rating)
+
+    return jsonify(data={'prod_source': extractor.entity_to_dict(ps),
+                         'prod_target': extractor.entity_to_dict(pt),
+                         'tag': extractor.entity_to_dict(t),
+                         'rating': rating})
+
+@app.route('/jobs/network/addtogroup', methods=['GET','POST'])
 def add_to_group():
 
     if not request.method == 'POST':
@@ -198,5 +249,5 @@ def add_to_group():
     except Exception, e:
         log(e)
         abort(400)
-    
+
     return ''

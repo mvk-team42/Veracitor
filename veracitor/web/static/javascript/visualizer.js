@@ -323,6 +323,10 @@ var Visualizer = function (controller) {
         }
     };
 
+    this.clear_graph = function () {
+        cy.elements().remove();
+    };
+
     var Animation = function ( url, w, h, frames, time ) {
         var images;
         var animation_cycle;

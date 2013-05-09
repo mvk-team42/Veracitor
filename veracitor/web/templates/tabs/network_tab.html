@@ -13,14 +13,16 @@
                 <span class="informations">
 
                 </span>
-                <select>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-                <input type="button" value="Rate producer" />
+                <div id="network_rate_producer">
+                    <select class="rating">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <input type="button" class="button" value="Rate producer" />
+                </div>
                 <input type="button" value="Compute trust" />
                 <br/>
                 <input type="text" placeholder="Group name" id="group_name" />
@@ -30,16 +32,16 @@
     </div>
     <div class="right">
         <div id="network-graph">
-            <div class="background"></div>
             <div id="cytoscape"></div>
+            <div class="info">
+                <div class="content"></div>
+            </div>
         </div>
-        <!--
         <div id="network-toolbox">
             <div class="body">
                 <p><b>Tool-box</b></p>
             </div>
         </div>
-        -->
     </div>
 </div>
 {% endblock %}
