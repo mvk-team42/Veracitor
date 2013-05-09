@@ -4,10 +4,10 @@
     :synopsis: The producer module contains classes needed to represent the producer entity model.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
-.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
+.. moduleauthor:: Fredrik Öman <frdo@kth.se>
 """
 
-from mongoengine import *  
+from mongoengine import *
 import networkModel
 import tag
 import information
@@ -36,7 +36,7 @@ class Producer(Document):
     type_of = StringField(required=True)
     # To allow the User class to inherhit from this.
     meta = {'allow_inheritance':'On'}
-    
+
     def rate_source(self, source_to_rate, considered_tag, rating):
         if(isinstance(source_to_rate, Producer) and\
            type(considered_tag) is tag.Tag and\
@@ -49,6 +49,7 @@ class Producer(Document):
                                     = {}
                 self.source_ratings[self.__safe_string(source_to_rate.name)]\
                                    [considered_tag.name] = rating
+            self.save()
         else:
             raise TypeError("Problem with type of input variables.")
 
@@ -64,21 +65,21 @@ class Producer(Document):
 
     def get_all_info_ratings(self):
         return self.info_ratings
-    
+
     def get_source_rating(self, req_source, tag):
         return self.source_ratings[self.__safe_string(req_source.name)]\
                                   [tag.name]
 
     def get_info_rating(self, req_info):
         return self.info_ratings[self.__safe_string(req_info.url)]
-    
+
     def save(self):
         """
-        Overrides save() inherhited from Document. 
+        Overrides save() inherhited from Document.
         Figures out whether to update the networkModel
         or to insert the saved producer into the networkModel.
-        Follows this with the regular save() call in Document. 
-        
+        Follows this with the regular save() call in Document.
+
         Raises:
             NetworkModelException: If there is no global network created
             (and therefore no network to insert or update the saved producer
@@ -91,7 +92,7 @@ class Producer(Document):
             networkModel.notify_producer_was_added(self)
         else:
             networkModel.notify_producer_was_updated(self)
-       
+
         super(Producer, self).save()
 
     def delete(self):
@@ -106,7 +107,7 @@ class Producer(Document):
 
             NetworkModelException: If there is no global network created
             (and therefore no network to delete the producer from).
-        
+
         """
         if networkModel.graph is None:
             raise NetworkModelException("There is no Global Network created!")
@@ -114,9 +115,9 @@ class Producer(Document):
             return
         else:
             networkModel.notify_producer_was_removed(self)
-            
+
         super(Producer, self).delete()
-    
+
     def __safe_string(self, url):
         return url.replace(".", "|")
 
@@ -129,10 +130,8 @@ if __name__ == "__main__":
     #p1.rate_source(p2, "hgurur", 1)
     print p1.get_all_source_ratings()
     print information.Information
-        
+
     i1 = information.Information(name="korre", url="seaweed.com")
     p1.rate_information(i1, 2)
     print p1.get_source_rating(p2, t1)
     print p1.get_info_rating(i1)
-    
-

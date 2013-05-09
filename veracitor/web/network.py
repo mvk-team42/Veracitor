@@ -54,8 +54,8 @@ def get_shortest_path():
         nodes = []
 
     data = {
-        'source': source,
-        'target': target,
+        'source': extractor.entity_to_dict(extractor.get_producer(source)),
+        'target': extractor.entity_to_dict(extractor.get_producer(target)),
         'nodes': [],
         'ghosts': []
     }
@@ -194,8 +194,8 @@ def network_rate_producer():
         POST
 
     Parameters:
-        prod_source (str): The source producer.
-        prod_target (str): The target producer.
+        source (str): The source producer.
+        target (str): The target producer.
         tag (str): The tag.
         rating (int): The rating.
 
@@ -211,28 +211,24 @@ def network_rate_producer():
     if not request.method == 'POST':
         abort(405)
     try:
-        source = request.form['prod_source']
-        target = request.form['prod_target']
+        source = request.form['source']
+        target = request.form['target']
         tag = request.form['tag']
-        rating = request.form['rating']
+        rating = int(request.form['rating'])
     except:
         abort(400)
 
     try:
-        log(source)
         ps = extractor.get_producer(source)
-        log(target)
-
         pt = extractor.get_producer(target)
-        log(t)
         t = extractor.get_tag(tag)
     except:
         abort(404)
 
     ps.rate_source(pt, t, rating)
 
-    return jsonify(data={'prod_source': extractor.entity_to_dict(ps),
-                         'prod_target': extractor.entity_to_dict(pt),
+    return jsonify(data={'source': extractor.entity_to_dict(ps),
+                         'target': extractor.entity_to_dict(pt),
                          'tag': extractor.entity_to_dict(t),
                          'rating': rating})
 

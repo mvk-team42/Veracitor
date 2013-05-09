@@ -41,15 +41,17 @@ var NetworkController = function (controller) {
 	    });
 
         $('#network_rate_producer > .button').click(function ( evt ) {
-            var rating = $('#network_rate_producer > .rating:selected').html();
+            var rating = $('#network_rate_producer > .rating > option:selected').html();
 
             $.post('/jobs/network/rate/producer', {
-                'prod_source': vera.user_name,
-                'prod_target': active_producer.name,
-                'tag': ,
+                'source': vera.user_name,
+                'target': active_producer.name,
+                'tag': 'Trust',
                 'rating': rating
                 }, function ( data ) {
                     console.log(data);
+
+                    visualizer.fetch_neighbors(data.data.source.name);
                 })
                 .fail(function ( data ) {
                     // TODO
@@ -98,11 +100,12 @@ var NetworkController = function (controller) {
         }, function (data) {
             if (data.path.nodes.length > 0) {
                 hide_network_information();
+                network_controller.display_producer_information(data.path.target);
 
-                // TODO
+                active_producer = data.path.source;
 
-                visualizer.visualize_path_in_network(data.path.source,
-                                                     data.path.target,
+                visualizer.visualize_path_in_network(data.path.source.name,
+                                                     data.path.target.name,
                                                      data.path.nodes,
                                                      data.path.ghosts);
             } else {
@@ -134,6 +137,8 @@ var NetworkController = function (controller) {
     this.display_producer_information = function (prod) {
         // A reference to this controller
         var network_controller = this;
+
+        active_producer = prod;
 
         $('#network-info-view .title').html(prod.name);
         $('#network-info-view .description').html(prod.description);
