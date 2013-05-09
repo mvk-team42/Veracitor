@@ -85,9 +85,3 @@ def search_information():
         log("Exception: "+str(type(exp))+"\nMsg: "+exp.message);
         abort(400)
 
-    res = search.get_producers.delay(name, type_of)
-    store_job_result(res)
-    return jsonify(job_id=res.id)
-
-    
-    

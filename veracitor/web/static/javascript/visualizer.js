@@ -11,6 +11,9 @@
  */
 var Visualizer = function (controller) {
 
+    // A reference to this object
+    var visualizer = this;
+
     var color = {
         node: {
             select: {
@@ -251,76 +254,90 @@ var Visualizer = function (controller) {
     var node_click_event = function (evt) {
         var node = this;
 
-        if (node.hasClass('ghost')) {
-            $.post('/jobs/network/neighbors', {
-                'name': node.id(),
-                'depth': 1
-            }, function (data) {
-                var nodes = [];
-                var edges = [];
-                var ghosts = [];
-
-                for (i in data.neighbors) {
-                    if (cy.nodes('#' + data.neighbors[i].name).empty()) {
-                        nodes.push({
-                            'group': 'nodes',
-                            'data': {
-                                'id': data.neighbors[i].name,
-                                'data': data.neighbors[i]
-                            }
-                        });
-                    } else if (data.neighbors[i].name === node.id()) {
-                        node.data('data', data.neighbors[i]);
-                    }
-
-                    for (j in data.neighbors[i].source_ratings) {
-                        if (cy.edges('#' + data.neighbors[i].name + '-' + j).empty()) {
-                            edges.push({
-                                'group': 'edges',
-                                'data': {
-                                    'id': data.neighbors[i].name + '-' + j,
-                                    'source': data.neighbors[i].name,
-                                    'target': j
-                                }
-                            });
-                        }
-
-                        if (cy.nodes('#' + j).empty()) {
-                            nodes.push({
-                                'group': 'nodes',
-                                'data': {
-                                    'id': j
-                                }
-                            });
-                            ghosts.push(j);
-                        }
-                    }
-                }
-
-                if (nodes.length > 0) {
-                    cy.nodes().lock();
-                    cy.add(nodes);
-                    cy.add(edges);
-
-                    for (i in ghosts) {
-                        cy.nodes('#' + ghosts[i]).addClass('ghost');
-                    }
-                    node.removeClass('ghost');
-
-                    cy.layout();
-                } else {
-                    if (edges.length > 0) {
-                        cy.add(edges);
-                    }
-                }
-
-                controller.display_producer_information(node.data().data);
-            }).fail(function (data) {
-                console.log(data);
-            });
+        if (typeof node.hasClass('ghost') !== 'undefined') {
+            visualizer.fetch_neighbors(node.id());
         } else {
             controller.display_producer_information(node.data().data);
         }
+    };
+
+    this.fetch_neighbors = function ( id, callback ) {
+        $.post('/jobs/network/neighbors', {
+            'name': id,
+            'depth': 1
+        }, function (data) {
+            var node = cy.nodes('#' + id);
+            var nodes = [];
+            var edges = [];
+            var ghosts = [];
+
+            for (i in data.neighbors) {
+                if (cy.nodes('#' + data.neighbors[i].name).empty()) {
+                    nodes.push({
+                        'group': 'nodes',
+                        'data': {
+                            'id': data.neighbors[i].name,
+                            'data': data.neighbors[i]
+                        }
+                    });
+                } else if (!node.empty() && data.neighbors[i].name === id) {
+                    node.data('data', data.neighbors[i]);
+                }
+
+                for (j in data.neighbors[i].source_ratings) {
+                    if (cy.edges('#' + data.neighbors[i].name + '-' + j).empty()) {
+                        edges.push({
+                            'group': 'edges',
+                            'data': {
+                                'id': data.neighbors[i].name + '-' + j,
+                                'source': data.neighbors[i].name,
+                                'target': j
+                            }
+                        });
+                    }
+
+                    if (cy.nodes('#' + j).empty()) {
+                        nodes.push({
+                            'group': 'nodes',
+                            'data': {
+                                'id': j
+                            }
+                        });
+                        ghosts.push(j);
+                    }
+                }
+            }
+
+            if (nodes.length > 0) {
+                cy.nodes().lock();
+                cy.add(nodes);
+                cy.add(edges);
+
+                for (i in ghosts) {
+                    cy.nodes('#' + ghosts[i]).addClass('ghost');
+                }
+                node = cy.nodes('#' + id);
+                node.removeClass('ghost');
+
+                cy.layout();
+            } else {
+                if (edges.length > 0) {
+                    cy.add(edges);
+                }
+            }
+
+            controller.display_producer_information(node.data().data);
+
+            if (typeof callback !== 'undefined') {
+                callback();
+            }
+        }).fail(function (data) {
+            console.log(data);
+        });
+    };
+
+    this.clear_graph = function () {
+        cy.elements().remove();
     };
 
     var Animation = function ( url, w, h, frames, time ) {

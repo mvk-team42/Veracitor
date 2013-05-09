@@ -35,49 +35,39 @@
                 <div class="content" id="information-search">
                     <div class="overlay">
                     </div>
-		    <form class="time-options">
-                      <input type="radio" name="time-period" id="time-period-yes"
-			     value="Time period:" checked/>
-		      <label for="time-period-yes">
-			Time period: 
-		      </label>
-		      <div id="time-period"></div>
-                      <div id="slider-container">
-                        <div id="slider-labels"></div>
-                        <div id="slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false"></div>
-                      </div>
-		      <input type="radio" name="time-period" id="time-period-no"
-			     value="Don't filter by time period." />
-		      <label for="time-period-no">
-			Don't filter by time period.
-		      </label>
-		    </form>
-		    
+                    <form class="time-options">
+                        <input type="radio" name="time-period" id="time-period-yes" value="Time period:" checked/>
+                        <label for="time-period-yes">Time period:</label>
+                        <div id="time-period"></div>
+                        <div id="slider-container">
+                            <div id="slider-labels"></div>
+                            <div id="slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false"></div>
+                        </div>
+                        <input type="radio" name="time-period" id="time-period-no" value="Don't filter by time period." />
+                        <label for="time-period-no">Don't filter by time period.</label>
+                    </form>
                 </div>
             </div>
 
             <input type="button" id="database-search-button" value="Search" />
         </div>
         <div id="add-entity-content" class="content">
-          <p>Starts a web crawl of given article/source URL.<br>Adds any
-            relevant information found to the database.</p>
+          <p>Starts a web crawl of given article/source URL.<br/>Adds any relevant information found to the database.</p>
           <form>
-            <label for="search-text">URL:
-            <input type="text" id="crawler-search-field"
-            name="search-text" />
-            </label><br>
+              <label for="search-text">URL:
+                  <input type="text" id="crawler-search-field" name="search-text" />
+              </label>
+              <br/>
 
-            <input type="radio" value="article"
-                   name="scrape_type" checked />            
-            <label for="article">Article</label>
-            <br>
+              <input type="radio" value="article" name="scrape_type" checked />
+              <label for="article">Article</label>
+              <br/>
 
-            <input type="radio" value="source" name="scrape_type" />
-            <label for="source">Source</label>
-            <br>
-            <input type="button"
-            id="crawler-search-button" name="search-button"
-            value="Start crawl" />
+              <input type="radio" value="source" name="scrape_type" />
+              <label for="source">Source</label>
+              <br/>
+
+              <input type="button" id="crawler-search-button" name="search-button" value="Start crawl" />
           </form>
         </div>
     </div>
@@ -95,7 +85,5 @@
           <table></table>
         </div>
     </div>
-</div>
-
 </div>
 {% endblock %}

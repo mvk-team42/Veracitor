@@ -12,31 +12,79 @@
 var NetworkController = function (controller) {
 
     var visualizer = new Visualizer(this);
+    var network_info;
+
+    var selected_producer = null;
+    var user;
 
     /**
        This function is called by the super controller when the tab is opened.
      */
     this.on_tab_active = function () {
-	add_event_handlers();
+
     };
 
-    function add_event_handlers() {
-	$('#add-to-group').click(function(evt) {
-	    $.post('/jobs/network/add_to_group',
-		   {
-		       'group_name' : $('#group_name').val(),
-		       'producer' : $('h1.title').text()
-		       
-		   }, function(data) {
-		   });
+    /**
+       Initialize variables and events.
+     */
+    var initialize = function () {
+        network_info = $('#network-graph > .info');
+	console.log(vera);
+
+        display_network_information('Use the search to find producers and information.');
+
+	$.post('/utils/get_user', {
+	    'user_name': vera.user_name
+	}, function(data){
+	    user = data;
 	});
-    }
+	
+
+        $('#add-to-group').click(function(evt) {
+            $.post('/jobs/network/add_to_group', {
+                'group_name': $('#group_name').val(),
+                'producer': $('h1.title').text()
+            }, function(data) {
+                // TODO: display success/fail
+                console.log(data);
+            });
+        });
+
+        $('#network_rate_producer > .button').click(function ( evt ) {
+            var rating = $('#network_rate_producer > .rating > option:selected').html();
+
+            $.post('/jobs/network/rate/producer', {
+                'source': vera.user_name,
+                'target': selected_producer.name,
+                'tag': $('#rate-producer-tag').val(),
+                'rating': rating,
+            }, function ( data ) {
+                // TODO: show success/fail
+                console.log(data.data.target.name + ' rated');
+                visualizer.fetch_neighbors(data.data.source.name);
+            })
+                .fail(function ( data ) {
+                    // TODO
+                });
+        });
+
+        $('#compute-trust').click( function(evt){
+            request_tidaltrust_value(vera.user_name,
+                                     selected_producer.name,
+                                     $("#compute-trust-tag"));
+        });
+
+        $('.network-info-piece span.question-mark').click(function(evt){
+            $($(this)[0].parentNode.parentNode).find(".tip-text").toggle();
+        });
+    };
 
     /**
-       Request a SUNNY value.
+       Request a TidalTrust value.
     */
-    function request_sunny_value(source, sink, tag) {
-         $.post('/jobs/algorithms/tidal_trust', {
+    function request_tidaltrust_value(source, sink, tag) {
+        console.log(source + sink + tag);
+        $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
             'tag': tag
@@ -44,7 +92,7 @@ var NetworkController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                console.log(data.result);
+                // TODO: display success/fail
 
                 $('#calculated-trust').html(data.result.trust);
             });
@@ -69,34 +117,26 @@ var NetworkController = function (controller) {
 
         $.post('/jobs/network/path', {
             'source': vera.user_name,
-            'target': prod.name
+            'target': prod
         }, function (data) {
-            network_controller.display_producer_information(prod);
+            network_controller.display_producer_information(data.path.target);
 
-            console.log(data);
+            if (data.path.nodes.length > 0) {
+                hide_network_information();
 
-            visualizer.visualize_path_in_network(data.path.source,
-                                                 data.path.target,
-                                                 data.path.nodes,
-                                                 data.path.ghosts);
+                selected_producer = data.path.source;
+
+                visualizer.visualize_path_in_network(data.path.source.name,
+                                                     data.path.target.name,
+                                                     data.path.nodes,
+                                                     data.path.ghosts);
+            } else {
+                display_network_information('No path found');
+            }
         }).fail(function (data) {
-            console.log(data);
+            // TODO: display fail
         });
 
-        /*
-        $.post('/jobs/network/neighbors', {
-            'name': session.user.name,
-            'depth': depth
-        }, function (data) {
-            network_controller.display_producer_information(prod);
-
-            console.log(data);
-
-            visualizer.visualize_producer_in_network(prod, data.neighbors, depth);
-        }).fail(function (data) {
-            console.log(data);
-        });
-        */
     };
 
     /**
@@ -105,6 +145,8 @@ var NetworkController = function (controller) {
     this.display_producer_information = function (prod) {
         // A reference to this controller
         var network_controller = this;
+
+        selected_producer = prod;
 
         $('#network-info-view .title').html(prod.name);
         $('#network-info-view .description').html(prod.description);
@@ -123,22 +165,24 @@ var NetworkController = function (controller) {
                       }).click((function ( url ) {
                           return function ( evt ) {
                               var rating = $(this).parent().find(':selected').html();
-                              network_controller.rate_information(url, rating);
+                              rate_information(url, rating);
                           };
                       })(prod.infos[i].url))));
         }
         $('#network-info-view .informations').html(ul);
+
+	//for (var i in 
     };
 
-    this.rate_information = function ( url, rating ) {
-        $.post('/jobs/network/rate_information', {
+    var rate_information = function ( url, rating ) {
+        $.post('/jobs/network/rate/information', {
             'prod': vera.user_name,
             'url': url,
             'rating': rating
         }, function (data) {
-            console.log('Rated!');
+            // TODO: display success/fail
         }).fail(function (data) {
-            console.log(data);
+            // TODO: display fail
         });
     };
 
@@ -158,5 +202,23 @@ var NetworkController = function (controller) {
     this.visualize_trust_network = function (network) {
         visualizer.visualize_trust_network(network);
     };
+
+    var display_network_information = function ( info ) {
+        network_info.css('display', 'block');
+        network_info.find('.content').html($('<p>').html(info));
+
+        try {
+            visualizer.clear_graph();
+        } catch (exc) {
+            // cytoscape has not yet loaded
+        }
+    };
+
+    var hide_network_information = function () {
+        network_info.css('display', 'none');
+    };
+
+    // Initialize this controller
+    initialize();
 
 }

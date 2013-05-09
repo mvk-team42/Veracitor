@@ -1,5 +1,5 @@
 /* ACCOUNT VIEW */
 
-.register-content .error {
+#account_view .register-content .error {
     color: #f00;
 }

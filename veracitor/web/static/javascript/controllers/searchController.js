@@ -20,9 +20,9 @@ var SearchController = function (controller) {
 
     // Array of source results
     var search_results = [];
-  
+
     var crawl_results = [];
-  
+
     /**
       Initialize the search tab:
       - Setup event handlers
@@ -126,17 +126,17 @@ var SearchController = function (controller) {
                     if (value === 'Producer') {
                         value = '';
                     }
-                    request_database_search(search_text, value, null, null);
+                    request_database_producer_search(search_text, value, null, null);
                 break;
 
                 case 1:
-		    if(document.getElementById("time-period-yes").checked){
-   			var values = $('#slider').slider("option", "values");
-			request_database_info_search(search_text, [], values[0], values[1])
-		    }
-   		    else{
-			request_database_info_search(search_text, [], null, null)
-		    }
+            if(document.getElementById("time-period-yes").checked){
+               var values = $('#slider').slider("option", "values");
+            request_database_info_search(search_text, [], values[0]+"-1-1", values[1]+"-1-1")
+            }
+               else{
+            request_database_info_search(search_text, [], null, null)
+            }
 
                 break;
             }
@@ -174,7 +174,10 @@ var SearchController = function (controller) {
 
           var url = $("#crawler-search-field").val();
           var scrape_type = $("input[name='scrape_type']:checked").val();
-          console.log(scrape_type);
+
+          // TODO: remove all console.logs
+          console.log('scrape_type: ' + scrape_type);
+
           switch(scrape_type) {
             case "source":
               request_source_crawl(url);
@@ -217,31 +220,71 @@ var SearchController = function (controller) {
         certain tags or time period (start and end date) the request is made
         with 'empty' fields (except from the required search term).
      */
-    var request_database_search = function (search_term, type, start_date,
-                                                end_date) {
-        $("#search-result").html("Searching...")
+    var request_database_producer_search = function (search_term, type, start_date,
+                                                     end_date) {
+        $("#search-result").html("Searching...");
         $.post("/jobs/search/producers", {
             'name' : search_term,
             'type' : type
-        }, function (data) {
-            var job_id = data['job_id'];
+        }, function(data) {
+        insert_database_search_results(data, "producers");
+    })
+            .fail(function (data) {
+        $("#search-result").html("<h2>Server error.</h2>");
+            });
+    };
 
-            controller.set_job_callback(job_id, function (data) {
-                search_result = data.result.data.producers;
+    var request_database_info_search = function (search_text, tags, start_date, end_date) {
+        $("#search-result").html("Searching...")
 
-		$('#search-result').html(data.result.html);
+        var paramObject = {
+            'title_part' : search_text,
+            'tags' : JSON.stringify(tags),
+        };
+
+        if (start_date !== null && end_date !== null) {
+            paramObject['start_date'] = start_date;
+            paramObject['end_date'] = end_date;
+        }
+
+        $.post("/jobs/search/information", paramObject, function(data) {
+            insert_database_search_results(data, "information");
+        })
+            .fail(function (data) {
+                $("#search-result").html("<h2>Server error.</h2>");
+            });
+    };
+
+    /**
+     * Fetches the search results from an info or source search, renders the table html
+     * and inserts it into the search results div table area thingy.
+     */
+    var insert_database_search_results = function(job_data, type){
+        var job_id = job_data['job_id'];
+
+        controller.set_job_callback(job_id, function (data) {
+            if(data.result.data){
+                search_result = data.result.data[type];
+
+                $('#search-result').html(data.result.html);
                 $('#search-result .result').click(function (evt) {
-                    var prod = search_result[$(this).index()];
+                    var prod;
+                    if(type === "information"){
+                        prod = search_result[$(this).index()].publishers[0];
+                    } else if (type === "producers"){
+                        prod = search_result[$(this).index()].name;
+                    }
 
                     controller.network.visualize_producer_in_network(prod, 3);
                     controller.switch_to_tab('network');
-                });               
-            });
-        })
-        .fail(function (data) {
-            $("#search-result").html("<h2>Server error.</h2>");
+                });
+            } else {
+                $("#search-result").html("<h2>No results found.</h2>");
+            }
         });
     };
+
+
 
     /**
         Makes a database add request to the server with the specified
@@ -271,10 +314,6 @@ var SearchController = function (controller) {
         });
     };
 
-    var request_database_info_search = function(search_text, tags, start_date, end_date){
-	console.log(search_text + " " + tags + " " + start_date + " " + end_date);
-    }
-
     /**
        Requests an article crawl as specified by the web server.
        Also dispatches an update for the dom with the users current
@@ -286,7 +325,7 @@ var SearchController = function (controller) {
         update_crawler_results();
       });
     }
- 
+
     /**
        Requests a source crawl as specified by the web server.
        Also dispatches an update for the dom with the users current
@@ -297,7 +336,7 @@ var SearchController = function (controller) {
         $("#crawler-result table").html("<thead>Fetching crawls...</thead>")
         update_crawler_results();
       });
-      
+
     }
 
     /**
@@ -326,7 +365,7 @@ var SearchController = function (controller) {
       var parts = input.match(/(\d+)/g);
       return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
     }
-  
+
     /**
         Makes a web search request to the Controller with the spec-
         ified search term. The response data is handled by dis-
