@@ -36,6 +36,7 @@ var NetworkController = function (controller) {
 		        'group_name': $('#group_name').val(),
 		        'producer': $('h1.title').text()
 		    }, function(data) {
+                // TODO: display success/fail
                 console.log(data);
             });
 	    });
@@ -48,11 +49,12 @@ var NetworkController = function (controller) {
                 'target': active_producer.name,
                 'tag': 'Trust',
                 'rating': rating
-                }, function ( data ) {
-                    console.log(data);
+            }, function ( data ) {
+                // TODO: show success/fail
+                console.log(data.data.target.name + ' rated');
 
-                    visualizer.fetch_neighbors(data.data.source.name);
-                })
+                visualizer.fetch_neighbors(data.data.source.name);
+            })
                 .fail(function ( data ) {
                     // TODO
                 });
@@ -71,7 +73,7 @@ var NetworkController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                console.log(data.result);
+                // TODO: display success/fail
 
                 $('#calculated-trust').html(data.result.trust);
             });
@@ -98,9 +100,10 @@ var NetworkController = function (controller) {
             'source': vera.user_name,
             'target': prod
         }, function (data) {
+            network_controller.display_producer_information(data.path.target);
+
             if (data.path.nodes.length > 0) {
                 hide_network_information();
-                network_controller.display_producer_information(data.path.target);
 
                 active_producer = data.path.source;
 
@@ -112,7 +115,7 @@ var NetworkController = function (controller) {
                 display_network_information('No path found');
             }
         }).fail(function (data) {
-            console.log(data);
+            // TODO: display fail
         });
 
         /*
@@ -170,9 +173,9 @@ var NetworkController = function (controller) {
             'url': url,
             'rating': rating
         }, function (data) {
-            console.log('Rated!');
+            // TODO: display success/fail
         }).fail(function (data) {
-            console.log(data);
+            // TODO: display fail
         });
     };
 

@@ -97,6 +97,7 @@ def get_neighbors():
     if not request.method == 'POST':
         abort(405)
     try:
+        log(request.form)
         name = request.form['name']
         depth = request.form['depth']
     except:
@@ -211,6 +212,7 @@ def network_rate_producer():
     if not request.method == 'POST':
         abort(405)
     try:
+        log(request.form)
         source = request.form['source']
         target = request.form['target']
         tag = request.form['tag']
@@ -232,7 +234,7 @@ def network_rate_producer():
                          'tag': extractor.entity_to_dict(t),
                          'rating': rating})
 
-@app.route('/jobs/network/addtogroup', methods=['GET','POST'])
+@app.route('/jobs/network/add_to_group', methods=['GET','POST'])
 def add_to_group():
 
     if not request.method == 'POST':

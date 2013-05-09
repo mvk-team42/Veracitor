@@ -174,7 +174,10 @@ var SearchController = function (controller) {
 
           var url = $("#crawler-search-field").val();
           var scrape_type = $("input[name='scrape_type']:checked").val();
-          console.log(scrape_type);
+
+          // TODO: remove all console.logs
+          console.log('scrape_type: ' + scrape_type);
+
           switch(scrape_type) {
             case "source":
               request_source_crawl(url);
@@ -231,27 +234,24 @@ var SearchController = function (controller) {
             });
     };
 
-    var request_database_info_search = function(search_text, tags, start_date, end_date){
-    console.log(search_text + " " + tags + " " + start_date + " " + end_date);
-    $("#search-result").html("Searching...")
+    var request_database_info_search = function (search_text, tags, start_date, end_date) {
+        $("#search-result").html("Searching...")
 
-    paramObject = {
+        var paramObject = {
             'title_part' : search_text,
             'tags' : JSON.stringify(tags),
         };
 
-    if(start_date !== null && end_date !== null){
-        paramObject['start_date'] = start_date;
-        paramObject['end_date'] = end_date;
-    }
+        if (start_date !== null && end_date !== null) {
+            paramObject['start_date'] = start_date;
+            paramObject['end_date'] = end_date;
+        }
 
-        $.post("/jobs/search/information",
-           paramObject,
-           function(data){
-           insert_database_search_results(data, "information");
-           })
+        $.post("/jobs/search/information", paramObject, function(data) {
+            insert_database_search_results(data, "information");
+        })
             .fail(function (data) {
-        $("#search-result").html("<h2>Server error.</h2>");
+                $("#search-result").html("<h2>Server error.</h2>");
             });
     };
 
@@ -265,8 +265,6 @@ var SearchController = function (controller) {
         controller.set_job_callback(job_id, function (data) {
             if(data.result.data){
                 search_result = data.result.data[type];
-                console.log(search_result);
-                console.log(data.result);
 
                 $('#search-result').html(data.result.html);
                 $('#search-result .result').click(function (evt) {

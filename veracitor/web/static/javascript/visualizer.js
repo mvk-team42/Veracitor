@@ -262,17 +262,14 @@ var Visualizer = function (controller) {
     };
 
     this.fetch_neighbors = function ( id, callback ) {
-        var node = cy.nodes('#' + id);
-
         $.post('/jobs/network/neighbors', {
-            'name': node.id(),
+            'name': id,
             'depth': 1
         }, function (data) {
+            var node = cy.nodes('#' + id);
             var nodes = [];
             var edges = [];
             var ghosts = [];
-
-            console.log(data);
 
             for (i in data.neighbors) {
                 if (cy.nodes('#' + data.neighbors[i].name).empty()) {
@@ -283,7 +280,7 @@ var Visualizer = function (controller) {
                             'data': data.neighbors[i]
                         }
                     });
-                } else if (data.neighbors[i].name === node.id()) {
+                } else if (!node.empty() && data.neighbors[i].name === id) {
                     node.data('data', data.neighbors[i]);
                 }
 
@@ -319,6 +316,7 @@ var Visualizer = function (controller) {
                 for (i in ghosts) {
                     cy.nodes('#' + ghosts[i]).addClass('ghost');
                 }
+                node = cy.nodes('#' + id);
                 node.removeClass('ghost');
 
                 cy.layout();
