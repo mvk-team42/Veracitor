@@ -69,7 +69,7 @@ var NetworkController = function (controller) {
 
         $.post('/jobs/network/path', {
             'source': vera.user_name,
-            'target': prod.name
+            'target': prod
         }, function (data) {
             visualizer.visualize_path_in_network(data.path.source,
                                                  data.path.target,
