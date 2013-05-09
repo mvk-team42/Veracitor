@@ -24,7 +24,7 @@ def login_user():
     """
     
     """
-    log("FAKUGOOBY!")
+
     if "user_name" in session:
         return redirect(url_for('index'))
 
