@@ -6,7 +6,7 @@ from bson.json_util import default
 from veracitor.web import app
 from veracitor.database import *
 
-from flask import session
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, abort
 
 log = app.logger.debug
 
@@ -47,7 +47,7 @@ def get_user_as_dict(username):
                         'name' : s,
                         'tag' : tag,
                         'rating': user_obj.source_ratings[s][tag] ,
-                        'description': extractor.get_producer(__safe_string(s)).description})        
+                        'description': extractor.get_producer(__safe_string(s)).description})  
                         
         info_ratings = []
         for iurl in user_obj.info_ratings.keys():
@@ -76,6 +76,15 @@ def get_user_as_dict(username):
     except Exception, e:
         log(e)
         return ""
+
+@app.route('/utils/get_user', methods=['GET', 'POST'])
+def get_user():
+    """
+    Extracts a user from the database and returns it. Only use when you KNOW
+    the name of the user, and that it exists.
+
+    """
+    return jsonify(extractor.entity_to_dict(extractor.get_user(request.form["user_name"])));
     
 def __safe_string(url):
     return url.replace("|", ".")

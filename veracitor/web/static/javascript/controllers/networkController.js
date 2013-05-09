@@ -15,6 +15,7 @@ var NetworkController = function (controller) {
     var network_info;
 
     var selected_producer = null;
+    var user;
 
     /**
        This function is called by the super controller when the tab is opened.
@@ -28,8 +29,15 @@ var NetworkController = function (controller) {
      */
     var initialize = function () {
         network_info = $('#network-graph > .info');
+	console.log(vera);
 
         display_network_information('Use the search to find producers and information.');
+
+	$.post('/utils/get_user', {
+	    'user_name': vera.user_name
+	}, function(data){
+	    user = data;
+	});
 	
 	$('#add-to-group').click(function(evt) {
 	    $.post('/jobs/network/add_to_group', {
@@ -158,6 +166,8 @@ var NetworkController = function (controller) {
                       })(prod.infos[i].url))));
         }
         $('#network-info-view .informations').html(ul);
+
+	//for (var i in 
     };
 
     var rate_information = function ( url, rating ) {
