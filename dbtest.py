@@ -21,6 +21,7 @@ def generate_test_data():
     prod4 = extractor.producer_create_if_needed("Prod4", "TestProducer")
     prod5 = extractor.producer_create_if_needed("Prod5", "TestProducer")
     prod6 = extractor.producer_create_if_needed("Prod6", "TestProducer")
+    prod7 = extractor.producer_create_if_needed("Prod7", "TestProducer")
 
     john.rate_source(prod1, trust, 5)
     john.save()
@@ -46,6 +47,7 @@ def generate_test_data():
     prod3.rate_source(prod1, trust, 5)
     prod3.rate_source(prod5, trust, 5)
     prod3.rate_source(prod6, trust, 5)
+    prod3.rate_source(prod7, trust, 5)
     try:
         prod3.infos = [information.Information(title='Info6',url='www.info6.com').save(),
                        information.Information(title='Info7',url='www.info7.com').save(),
@@ -60,11 +62,14 @@ def generate_test_data():
 
     prod6.rate_source(prod5, trust, 5)
 
+    prod7.rate_source(prod3, trust, 5)
+
     prod1.save()
     prod2.save()
     prod3.save()
     prod5.save()
     prod6.save()
+    prod7.save()
 
 def tear_down():
     for t in tag.Tag.objects:

@@ -118,7 +118,7 @@ def get_neighbors():
             for node in layer:
                 if node not in neighbors:
                     neighbors.append(node)
-                    neighbor_queue += gn.successors(node)# + gn.predecessors(node)
+                    neighbor_queue += gn.successors(node)
             layer = neighbor_queue
     else:
         layer = [name]
@@ -127,7 +127,8 @@ def get_neighbors():
             for node in layer:
                 if node not in neighbors:
                     neighbors.append(node)
-                    neighbor_queue += gn.successors(node)# + gn.predecessors(node)
+                    neighbor_queue += gn.successors(node)
+                    # exponential growth :(
             layer = neighbor_queue
 
     data = {}
