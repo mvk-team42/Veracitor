@@ -74,6 +74,14 @@
     border: 1px solid #aaa;
 }
 
+#network-info-view .network-info-piece {
+    margin: 10px 0px 10px 0px;
+    padding: 0 0 8px 8px;
+    
+    border: 1px solid #aaa;
+
+}
+
 #network-graph {
     position: absolute;
     left: 0; right: 10px;

@@ -30,37 +30,48 @@ var NetworkController = function (controller) {
         network_info = $('#network-graph > .info');
 
         display_network_information('Use the search to find producers and information.');
-
-	    $('#add-to-group').click(function(evt) {
-	        $.post('/jobs/network/add_to_group', {
-		        'group_name': $('#group_name').val(),
-		        'producer': $('h1.title').text()
-		    }, function(data) {
+	
+	$('#add-to-group').click(function(evt) {
+	    $.post('/jobs/network/add_to_group', {
+		'group_name': $('#group_name').val(),
+		'producer': $('h1.title').text()
+	    }, function(data) {
                 console.log(data);
-            });
 	    });
-
+	});
+	
         $('#network_rate_producer > .button').click(function ( evt ) {
             var rating = $('#network_rate_producer > .rating:selected').html();
-
+	    
             $.post('/jobs/network/rate/producer', {
                 'prod_source': vera.user_name,
-                'prod_target': active_producer.name,
-                'tag': ,
-                'rating': rating
-                }, function ( data ) {
-                    console.log(data);
-                })
+                'prod_target': selected_producer.name,
+                'tag': $('#rate-producer-tag').toLowerCase(),
+                'rating': rating,
+            }, function ( data ) {
+                console.log(data);
+            })
                 .fail(function ( data ) {
                     // TODO
                 });
         });
+
+	$('#compute-trust').click( function(evt){
+	    request_tidaltrust_value(vera.user_name,
+				     selected_producer.name,
+				     $("#compute-trust-tag"));
+	});
+
+	$('.network-info-piece span.question-mark').click(function(evt){
+	    $($(this)[0].parentNode.parentNode).find(".tip-text").toggle();
+	});
     };
 
     /**
-       Request a SUNNY value.
+       Request a TidalTrust value.
     */
-    function request_sunny_value(source, sink, tag) {
+    function request_tidaltrust_value(source, sink, tag) {
+	console.log(source + sink + tag);
         $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
@@ -112,20 +123,6 @@ var NetworkController = function (controller) {
             console.log(data);
         });
 
-        /*
-        $.post('/jobs/network/neighbors', {
-            'name': session.user.name,
-            'depth': depth
-        }, function (data) {
-            network_controller.display_producer_information(prod);
-
-            console.log(data);
-
-            visualizer.visualize_producer_in_network(prod, data.neighbors, depth);
-        }).fail(function (data) {
-            console.log(data);
-        });
-        */
     };
 
     /**
