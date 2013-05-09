@@ -74,11 +74,20 @@ var NetworkController = function (controller) {
         $('#compute-trust').click( function(evt){
             request_tidaltrust_value(vera.user_name,
                                      selected_producer.name,
-                                     $("#compute-trust-tag"));
+                                     $("#compute-trust-tag").val());
         });
 
+        /**
+         * Toggle tip-text when clicking question mark icons. Needs the structure of the
+         * dom to be like this:
+         *
+         * <p>
+         *   text <infobutton>
+         * </p>
+         * <div tip-text></div>
+         */
         $('.network-info-piece span.question-mark').click(function(evt){
-            $($(this)[0].parentNode.parentNode).find(".tip-text").toggle();
+            $(this).parent().next().toggle();
         });
     };
 
@@ -86,7 +95,7 @@ var NetworkController = function (controller) {
        Request a TidalTrust value.
     */
     function request_tidaltrust_value(source, sink, tag) {
-        console.log(source + sink + tag);
+        console.log(source +" "+ sink +" " + tag);
         $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
@@ -96,8 +105,10 @@ var NetworkController = function (controller) {
 
             controller.set_job_callback(job_id, function (data) {
                 // TODO: display success/fail
-
-                $('#calculated-trust').html(data.result.trust);
+                console.log(data);
+                $('#network-compute-trust .feedback #trust-result').html(data.result.trust);
+                $('#network-compute-trust .feedback #trust-result-threshold').html(data.result.threshold);
+                $('#network-compute-trust .feedback').toggle();
             });
         })
         .fail(function () {

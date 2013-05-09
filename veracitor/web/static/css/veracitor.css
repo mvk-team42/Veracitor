@@ -209,6 +209,12 @@ span.icon.information{
     background-image:url(../images/icon-information.png);
 }
 
+div.feedback {
+    display:none;
+}
+
+
+
 /* SIDE TAB */
 
 #content > .view > .side-tab {

@@ -87,6 +87,11 @@ def get_user():
     return jsonify(extractor.entity_to_dict(extractor.get_user(request.form["user_name"])));
     
 def __safe_string(url):
+    """
+    Help method to change url representation.
+    TODO: Remove any need for this beyond private methods in the database module
+    
+    """
     return url.replace("|", ".")
 
     
