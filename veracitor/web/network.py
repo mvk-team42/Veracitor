@@ -1,7 +1,7 @@
 
 import itertools
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, abort
 
 import networkx as nx
 
@@ -135,8 +135,8 @@ def get_neighbors():
 
     return jsonify(neighbors=data)
 
-@app.route('/jobs/network/rate_information', methods=['GET','POST'])
-def rate_information():
+@app.route('/jobs/network/rate/information', methods=['GET','POST'])
+def network_rate_information():
     """Rates an information object under a given tag from a given producer.
 
     URL Structure:
@@ -155,34 +155,31 @@ def rate_information():
 
     Errors:
         400 - Bad syntax/No name/type in request
+        404 - Not found
         405 - Method not allowed
 
     """
-    log('hello?')
     if not request.method == 'POST':
         abort(405)
     try:
         prod = request.form['prod']
-        log(prod)
         url = request.form['url']
-        log(url)
         rating = int(request.form['rating'])
-        log(rating)
     except:
         abort(400)
 
     try:
         p = extractor.get_producer(prod)
         i = extractor.get_information(url)
-
-        p.rate_information(i, rating)
     except:
-        abort(666)
+        abort(404)
 
-    return ''
+    p.rate_information(i, rating)
+    return jsonify(data={'prod': extractor.entity_to_dict(p),
+                         'info': extractor.entity_to_dict(i),
+                         'rating': rating})
 
-
-@app.route('/jobs/network/add_to_group', methods=['GET','POST'])
+@app.route('/jobs/network/addtogroup', methods=['GET','POST'])
 def add_to_group():
 
     if not request.method == 'POST':
@@ -195,5 +192,5 @@ def add_to_group():
     except Exception, e:
         log(e)
         abort(400)
-    
+
     return ''

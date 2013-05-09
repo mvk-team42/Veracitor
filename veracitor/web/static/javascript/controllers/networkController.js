@@ -12,31 +12,31 @@
 var NetworkController = function (controller) {
 
     var visualizer = new Visualizer(this);
+    var network_info;
 
     /**
        This function is called by the super controller when the tab is opened.
      */
     this.on_tab_active = function () {
-	add_event_handlers();
+	    add_event_handlers();
     };
 
     function add_event_handlers() {
-	$('#add-to-group').click(function(evt) {
-	    $.post('/jobs/network/add_to_group',
-		   {
-		       'group_name' : $('#group_name').val(),
-		       'producer' : $('h1.title').text()
-		       
-		   }, function(data) {
-		   });
-	});
+	    $('#add-to-group').click(function(evt) {
+	        $.post('/jobs/network/addtogroup', {
+		        'group_name' : $('#group_name').val(),
+		        'producer' : $('h1.title').text()
+		    }, function(data) {
+                console.log(data);
+            });
+	    });
     }
 
     /**
        Request a SUNNY value.
     */
     function request_sunny_value(source, sink, tag) {
-         $.post('/jobs/algorithms/tidal_trust', {
+        $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
             'tag': tag
@@ -71,10 +71,6 @@ var NetworkController = function (controller) {
             'source': vera.user_name,
             'target': prod.name
         }, function (data) {
-            network_controller.display_producer_information(prod);
-
-            console.log(data);
-
             visualizer.visualize_path_in_network(data.path.source,
                                                  data.path.target,
                                                  data.path.nodes,
@@ -131,7 +127,7 @@ var NetworkController = function (controller) {
     };
 
     this.rate_information = function ( url, rating ) {
-        $.post('/jobs/network/rate_information', {
+        $.post('/jobs/network/rate/information', {
             'prod': vera.user_name,
             'url': url,
             'rating': rating
@@ -157,6 +153,10 @@ var NetworkController = function (controller) {
      */
     this.visualize_trust_network = function (network) {
         visualizer.visualize_trust_network(network);
+    };
+
+    var display_network_information = function ( info ) {
+
     };
 
 }
