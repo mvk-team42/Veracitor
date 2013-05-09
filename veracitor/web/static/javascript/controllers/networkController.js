@@ -42,12 +42,12 @@ var NetworkController = function (controller) {
         });
 
         $('#network_rate_producer > .button').click(function ( evt ) {
-            var rating = $('#network_rate_producer > .rating:selected').html();
+            var rating = $('#network_rate_producer > .rating > option:selected').html();
 
             $.post('/jobs/network/rate/producer', {
-                'prod_source': vera.user_name,
-                'prod_target': selected_producer.name,
-                'tag': $('#rate-producer-tag').toLowerCase(),
+                'source': vera.user_name,
+                'target': selected_producer.name,
+                'tag': $('#rate-producer-tag').val(),
                 'rating': rating,
             }, function ( data ) {
                 // TODO: show success/fail
@@ -115,7 +115,7 @@ var NetworkController = function (controller) {
             if (data.path.nodes.length > 0) {
                 hide_network_information();
 
-                active_producer = data.path.source;
+                selected_producer = data.path.source;
 
                 visualizer.visualize_path_in_network(data.path.source.name,
                                                      data.path.target.name,
@@ -137,7 +137,7 @@ var NetworkController = function (controller) {
         // A reference to this controller
         var network_controller = this;
 
-        active_producer = prod;
+        selected_producer = prod;
 
         $('#network-info-view .title').html(prod.name);
         $('#network-info-view .description').html(prod.description);
