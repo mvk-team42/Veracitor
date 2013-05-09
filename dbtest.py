@@ -23,6 +23,11 @@ def generate_test_data():
     prod6 = extractor.producer_create_if_needed("Prod6", "TestProducer")
     prod7 = extractor.producer_create_if_needed("Prod7", "TestProducer")
 
+    john.first_name = 'John'
+    john.last_name = 'Turesson'
+    john.description = 'John Turesson is a web developer in the Veracitor project managed by Team 42, created in the mvk project at KTH.'
+    john.url = 'http://www.nada.kth.se/~johntu/'
+    john.email = 'johntu@kth.se'
     john.rate_source(prod1, trust, 5)
     john.save()
 

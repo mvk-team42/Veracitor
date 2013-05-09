@@ -165,7 +165,7 @@ div.hr {
     overflow: auto;
 }
 
-#content > .view > .content h1 {
+#content > .view > .content > h1 {
     margin: 0 0 20px 0;
 
     font-size: 35pt;
@@ -188,17 +188,17 @@ p.tip-text {
 span.icon{
     line-height:24px;
     margin:0px 2px -2px 2px;
-    
+
     display: inline-block;
-    
+
     padding: 0px;
-    
+
     width:16px;
     height:16px;
     background-size:100% auto;
     background-position: center;
     background-repeat:no-repeat;
-    
+
 }
 
 span.icon.question-mark{

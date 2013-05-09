@@ -194,7 +194,8 @@ var Visualizer = function (controller) {
                 'data': {
                     'id': path[i].name,
                     'data': path[i]
-                }
+                },
+                'classes': path[i].type_of
             });
             existing_nodes.push(path[i].name);
 
@@ -215,7 +216,8 @@ var Visualizer = function (controller) {
                 'group': 'nodes',
                 'data': {
                     'id': ghosts[i]
-                }
+                },
+                'classes': 'ghost'
             });
         }
 
@@ -224,7 +226,8 @@ var Visualizer = function (controller) {
         cy.add(edges);
 
         for (i = 0; i < existing_nodes.length; i += 1) {
-            cy.nodes('#' + existing_nodes[i]).css({
+            node = cy.nodes('#' + existing_nodes[i]);
+            node.css({
                 'background-color': color.node.select.background,
                 'border-color': color.node.select.border,
                 'shape': 'ellipse'
@@ -237,11 +240,7 @@ var Visualizer = function (controller) {
             }
         }
 
-        for (i in ghosts) {
-            cy.nodes('#' + ghosts[i]).addClass('ghost');
-        }
-
-        cy.nodes('#' + source).css({
+        cy.nodes('.User').css({
             'background-color': color.node.user.background,
             'border-color': color.node.user.border,
             'shape': 'rectangle'
@@ -276,6 +275,7 @@ var Visualizer = function (controller) {
             'name': id,
             'depth': 1
         }, function (data) {
+            var edge_id;
             var node = cy.nodes('#' + id);
             var nodes = [];
             var edges = [];
@@ -288,25 +288,25 @@ var Visualizer = function (controller) {
                         'data': {
                             'id': data.neighbors[i].name,
                             'data': data.neighbors[i]
-                        }
+                        },
+                        'classes': data.neighbors[i].type_of
                     });
                 } else if (!node.empty() && data.neighbors[i].name === id) {
                     node.data('data', data.neighbors[i]);
+                    node.addClass(data.neighbors[i].type_of);
                 }
 
                 for (var key in data.neighbors[i].source_ratings) {
-                    if (cy.edges('#' + data.neighbors[i].name + '-' + key).empty()) {
+                    edge_id = data.neighbors[i].name + '-' + key;
+                    if (cy.edges('#' + edge_id).empty()) {
                         edges.push({
                             'group': 'edges',
                             'data': {
-                                'id': data.neighbors[i].name + '-' + key,
+                                'id': edge_id,
                                 'source': data.neighbors[i].name,
                                 'target': key
                             }
                         });
-                        console.log('exist not: ' + data.neighbors[i].name + '-' + key);
-                    } else {
-                        console.log('exist: ' + data.neighbors[i].name + '-' + key);
                     }
 
                     if (cy.nodes('#' + key).empty()) {
@@ -314,7 +314,8 @@ var Visualizer = function (controller) {
                             'group': 'nodes',
                             'data': {
                                 'id': key
-                            }
+                            },
+                            'classes': 'ghost'
                         });
                         ghosts.push(key);
                     }
@@ -322,20 +323,23 @@ var Visualizer = function (controller) {
             }
 
             if (nodes.length > 0) {
-                cy.nodes().lock();
+                // TODO: This causes display errors with arbor.js
+                //cy.nodes().lock();
+
                 cy.add(nodes);
                 cy.add(edges);
-
-                for (i in ghosts) {
-                    cy.nodes('#' + ghosts[i]).addClass('ghost');
-                }
-                node = cy.nodes('#' + id);
-                node.removeClass('ghost');
-            } else {
-                if (edges.length > 0) {
-                    cy.add(edges);
-                }
+            } else if (edges.length > 0) {
+                cy.add(edges);
             }
+
+            cy.nodes('.User').css({
+                'background-color': color.node.user.background,
+                'border-color': color.node.user.border,
+                'shape': 'rectangle'
+            });
+
+            node = cy.nodes('#' + id);
+            node.removeClass('ghost');
 
             controller.display_producer_information(node.data().data);
 
