@@ -42,12 +42,12 @@ class Producer(Document):
            type(considered_tag) is tag.Tag and\
            type(rating) is int):
             try:
-                self.source_ratings[self.__safe_string(source_to_rate.name)]\
+                self.source_ratings[(source_to_rate.name)]\
                                    [considered_tag.name] = rating
             except KeyError:
-                self.source_ratings[self.__safe_string(source_to_rate.name)]\
+                self.source_ratings[(source_to_rate.name)]\
                                     = {}
-                self.source_ratings[self.__safe_string(source_to_rate.name)]\
+                self.source_ratings[(source_to_rate.name)]\
                                    [considered_tag.name] = rating
             self.save()
         else:
@@ -56,7 +56,7 @@ class Producer(Document):
     def rate_information(self, information_to_rate, rating):
         if(type(information_to_rate) is information.Information and\
            type(rating) is int):
-            self.info_ratings[self.__safe_string(information_to_rate.url)] = rating
+            self.info_ratings[(information_to_rate.url)] = rating
         else:
             raise TypeError("Problem with type of input variables.")
 
@@ -67,11 +67,11 @@ class Producer(Document):
         return self.info_ratings
 
     def get_source_rating(self, req_source, tag):
-        return self.source_ratings[self.__safe_string(req_source.name)]\
+        return self.source_ratings[req_source.name]\
                                   [tag.name]
 
     def get_info_rating(self, req_info):
-        return self.info_ratings[self.__safe_string(req_info.url)]
+        return self.info_ratings[req_info.url]
 
     def save(self):
         """
@@ -93,7 +93,21 @@ class Producer(Document):
         else:
             networkModel.notify_producer_was_updated(self)
 
+        self.prepare_ratings_for_saving()
         super(Producer, self).save()
+        self.prepare_ratings_for_using()
+
+    def prepare_ratings_for_saving(self):
+        for rating in self.source_ratings.keys():
+            self.source_ratings[self.__safe_string(rating)] = self.source_ratings.pop(rating)
+        for rating in self.info_ratings.keys():
+            self.info_ratings[self.__safe_string(rating)] = self.info_ratings.pop(rating)
+        
+    def prepare_ratings_for_using(self):
+        for rating in self.source_ratings.keys():
+            self.source_ratings[self.__unsafe_string(rating)] = self.source_ratings.pop(rating)
+        for rating in self.info_ratings.keys():
+            self.info_ratings[self.__unsafe_string(rating)] = self.info_ratings.pop(rating)
 
     def delete(self):
         """
@@ -120,18 +134,6 @@ class Producer(Document):
 
     def __safe_string(self, url):
         return url.replace(".", "|")
+    def __unsafe_string(self, _str):
+        return _str.replace("|", ".")
 
-# Demonstrates use of rating methods
-if __name__ == "__main__":
-    p1 = Producer(name="fax", type_of="mule")
-    p2 = Producer(name="fux", type_of="donkey")
-    t1 = tag.Tag(name="gardening")
-    p1.rate_source(p2, t1, 5)
-    #p1.rate_source(p2, "hgurur", 1)
-    print p1.get_all_source_ratings()
-    print information.Information
-
-    i1 = information.Information(name="korre", url="seaweed.com")
-    p1.rate_information(i1, 2)
-    print p1.get_source_rating(p2, t1)
-    print p1.get_info_rating(i1)

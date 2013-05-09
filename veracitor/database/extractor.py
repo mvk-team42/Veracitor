@@ -34,7 +34,13 @@ def get_producer(requested_name):
 	"""
     extr_producer = producer.Producer.objects(name=requested_name)
     __checkIfEmpty(extr_producer)
-    return extr_producer[0]
+    #print extr_producer[0].source_ratings
+    
+    prod = extr_producer[0]
+    
+    prod.prepare_ratings_for_using()
+    return prod
+
 
 
 def producer_create_if_needed(requested_name, type_if_new):
