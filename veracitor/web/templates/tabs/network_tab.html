@@ -2,69 +2,89 @@
 
 {% block content %}
 <div id="network-holder">
-    <div class="left">
-        <div id="network-info-view">
-            <div class="body">
-                <h1 class="title">Title</h1>
-                <p><b>Description: </b><span class="description"></span></p>
-                <p><b>URL: </b><span class="url"></span></p>
-                <p><b>Source type: </b><span class="type"></span></p>
-                <p><b>Informations: </b></p>
-                <span class="informations">
-
-                </span>
-		<p><b>Your ratings:</p></b>
-		<div class="ratings"></div>
-		<p><b>Actions:</p></b>
-                <div id="network_rate_producer" class="network-info-piece">
-		  <p>Rate producer <span class="icon question-mark"></span></p>
-		  <p class="tip-text">
-		    Give a trust rating to selected producer using a specific tag.
-		  </p>
-		  <input type="text" placeholder="Tag" size="15" id="rate-producer-tag" />
-		  <select class="rating">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                  <input type="button" class="button" value="Rate producer" />
-                </div>
-		<div id="network-compute-trust" class="network-info-piece">
-		  <p>Compute trust <span class="icon question-mark"></span></p>
-		  <p class="tip-text">
-		    Get an assessment on how much you should trust the selected producer
-		    based on how much other nodes trust it.
-		  </p>
-		  <input type="text" placeholder="Tag" size="15" id="compute-trust-tag" />
-                  <input type="button" value="Compute trust" id="compute-trust"/>
-		</div>
-
-		<div id="network-add-group" class="network-info-piece">
-		  <p>Add to group <span class="icon question-mark"></span></p>
-		  <p class="tip-text">
-		    Add the selected producer to one of your groups (group management, such
-		    as adding an editing groups, is done under the Ratings tag).
-		  </p>
-                  <input type="text" placeholder="Group name" id="group_name" />
-                  <input type="button" value="Add to group" id="add-to-group" />
-		</div>
-            </div>
+  <div class="left">
+    <div id="network-info-view">
+      <div class="body">
+        <h1 class="title">Title</h1>
+        <p><b>Description: </b><span class="description"></span></p>
+        <p><b>URL: </b><span class="url"></span></p>
+        <p><b>Source type: </b><span class="type"></span></p>
+        <p><b>Informations: </b></p>
+        <span class="informations">
+          
+        </span>
+	<p><b>Your ratings:</p></b>
+	<div class="ratings"></div>
+	<p><b>Actions:</p></b>
+        <div id="network_rate_producer" class="network-info-piece">
+	  <p>Rate producer <span class="icon question-mark"></span></p>
+	  <p class="tip-text">
+	    Give a trust rating to selected producer using a specific tag.
+	  </p>
+	  <input type="text" placeholder="Tag" size="15" id="rate-producer-tag" />
+	  <select class="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+          <input type="button" class="button" value="Rate producer" />
+	  <div class="feedback"></div>
         </div>
+	<div id="network-compute-trust" class="network-info-piece">
+	  <p>Compute trust <span class="icon question-mark"></span></p>
+	  <p class="tip-text">
+	    Get an assessment on how much you should trust the selected producer
+	    based on how much other nodes trust it.
+	  </p>
+	  <input type="text" placeholder="Tag" size="15" id="compute-trust-tag" />
+          <input type="button" value="Compute trust" id="compute-trust"/>
+	  <div class="feedback">
+            <p>
+              Trust: <span id="trust-result"></span>
+              <span class="icon question-mark"></span>
+            </p>
+            <p class="tip-text">
+              Based on how you have rated your neighbours, and how they have rated
+              theirs, and so on and so on, this is the trust value for how reliable
+              one would consider the selected producer to be.
+            </p>
+            <p>
+              Threshold: <span id="trust-result-threshold"></span>
+              <span class="icon question-mark"></span>
+            </p>
+            <p class="tip-text">
+              The lowest trust rating of the edges used in the trust calculation.
+            </p>
+          </div>
+	</div>
+        
+        <div id="network-add-group" class="network-info-piece">
+	  <p>Add to group <span class="icon question-mark"></span></p>
+	  <p class="tip-text">
+	    Add the selected producer to one of your groups (group management, such
+	    as adding an editing groups, is done under the Ratings tag).
+	  </p>
+          <input type="text" placeholder="Group name" id="group_name" />
+          <input type="button" value="Add to group" id="add-to-group" />
+	  <div class="feedback"></div>
+	</div>
+      </div>
     </div>
-    <div class="right">
-        <div id="network-graph">
-            <div id="cytoscape"></div>
-            <div class="info">
-                <div class="content"></div>
-            </div>
-        </div>
-        <div id="network-toolbox">
-            <div class="body">
-                <p><b>Tool-box</b></p>
-            </div>
-        </div>
+  </div>
+  <div class="right">
+    <div id="network-graph">
+      <div id="cytoscape"></div>
+      <div class="info">
+        <div class="content"></div>
+      </div>
     </div>
+    <div id="network-toolbox">
+      <div class="body">
+        <p><b>Tool-box</b></p>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

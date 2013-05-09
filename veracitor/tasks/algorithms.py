@@ -9,6 +9,9 @@ except:
 
 from ..algorithms.tidaltrust import compute_trust
 from ..database import networkModel as nm
+from celery.utils.log import get_task_logger
+
+logger = get_task_logger(__name__)
 
 @taskmgr.task
 def sunny(source, sink, tag, network):
@@ -25,8 +28,23 @@ def tidaltrust(source, sink, tag):
     network = nm.get_global_network()
 
     # Calc trust
-    trust = compute_trust(network=network,
-                          source=source,
-                          sink=sink, tag=tag)
+    try:
+        trust = compute_trust(network=network,
+                              source=source,
+                              sink=sink, tag=tag)
+        return trust
 
-    return trust
+    except Exception as e:
+        logger.info("Exception: "+str(e)+"\nMsg: "+e.msg);
+        
+        return {"trust": None,
+                "threshold": None,
+                "paths_used": [],
+                "nodes_used": [],
+                "nodes_unused": [],
+                "source": source,
+                "sink": sink,
+                "tag": tag,
+                }
+
+
