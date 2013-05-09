@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Titillium+Web:200,400,600);
+@import url(http://fonts.googleapis.com/css?family=Titillium+Web:100,200,400,600);
 
 body {
     margin: 0px;
@@ -175,6 +175,38 @@ div.hr {
 
 #content > .view > .content p {
     margin: 10px 0 3px 0;
+}
+
+p.tip-text {
+    font-size: 10pt;
+    font-weight: 200;
+    margin: 0px;
+    padding: 0px;
+    display:none;
+}
+
+span.icon{
+    line-height:24px;
+    margin:0px 2px -2px 2px;
+    
+    display: inline-block;
+    
+    padding: 0px;
+    
+    width:16px;
+    height:16px;
+    background-size:100% auto;
+    background-position: center;
+    background-repeat:no-repeat;
+    
+}
+
+span.icon.question-mark{
+    background-image:url(../images/icon-question-mark.png);
+ }
+
+span.icon.information{
+    background-image:url(../images/icon-information.png);
 }
 
 /* SIDE TAB */
