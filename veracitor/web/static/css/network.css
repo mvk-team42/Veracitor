@@ -86,21 +86,30 @@
 }
 
 #network-graph > .info {
-    width: 100%; height: 100%;
+    position: absolute;
+    left: 0; right: 0;
+    top: 0; bottom: 0;
 
-    vertical-align: middle;
     text-align: center;
 
     display: none;
+    z-index: 100;
 }
 
-#network-graph > .info > p {
+#network-graph > .info > .content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
     font-size: 16pt;
     font-weight: 600;
+    vertical-align: middle;
 }
 
 #cytoscape {
-    width: 100%; height: 100%;
+    position: absolute;
+    left: 0; right: 0;
+    top: 0; bottom: 0;
 }
 
 #network-toolbox {

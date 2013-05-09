@@ -140,7 +140,7 @@ def get_neighbors():
 
 @app.route('/jobs/network/rate/information', methods=['GET','POST'])
 def network_rate_information():
-    """Rates an information object under a given tag from a given producer.
+    """Rates an information object under its tag from a given producer.
 
     URL Structure:
         /jobs/network/rate_information
@@ -178,8 +178,62 @@ def network_rate_information():
         abort(404)
 
     p.rate_information(i, rating)
+
     return jsonify(data={'prod': extractor.entity_to_dict(p),
                          'info': extractor.entity_to_dict(i),
+                         'rating': rating})
+
+@app.route('/jobs/network/rate/producer', methods=['GET','POST'])
+def network_rate_producer():
+    """Rates a producer object under a given tag from a given producer.
+
+    URL Structure:
+        /jobs/network/rate_information
+
+    Method:
+        POST
+
+    Parameters:
+        prod_source (str): The source producer.
+        prod_target (str): The target producer.
+        tag (str): The tag.
+        rating (int): The rating.
+
+    Returns:
+        Nothing.
+
+    Errors:
+        400 - Bad syntax/No name/type in request
+        404 - Not found
+        405 - Method not allowed
+
+    """
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        source = request.form['prod_source']
+        target = request.form['prod_target']
+        tag = request.form['tag']
+        rating = request.form['rating']
+    except:
+        abort(400)
+
+    try:
+        log(source)
+        ps = extractor.get_producer(source)
+        log(target)
+
+        pt = extractor.get_producer(target)
+        log(t)
+        t = extractor.get_tag(tag)
+    except:
+        abort(404)
+
+    ps.rate_source(pt, t, rating)
+
+    return jsonify(data={'prod_source': extractor.entity_to_dict(ps),
+                         'prod_target': extractor.entity_to_dict(pt),
+                         'tag': extractor.entity_to_dict(t),
                          'rating': rating})
 
 @app.route('/jobs/network/addtogroup', methods=['GET','POST'])
