@@ -257,7 +257,9 @@ var Visualizer = function (controller) {
         if (typeof node.hasClass('ghost') !== 'undefined') {
             visualizer.fetch_neighbors(node.id());
         } else {
-            controller.display_producer_information(node.data().data);
+            controller.display_producer_information(node.data().data, function () {
+                this.layout();
+            });
         }
     };
 
@@ -318,8 +320,6 @@ var Visualizer = function (controller) {
                 }
                 node = cy.nodes('#' + id);
                 node.removeClass('ghost');
-
-                cy.layout();
             } else {
                 if (edges.length > 0) {
                     cy.add(edges);
@@ -329,7 +329,10 @@ var Visualizer = function (controller) {
             controller.display_producer_information(node.data().data);
 
             if (typeof callback !== 'undefined') {
-                callback();
+                (function () {
+                    this = cy;
+                    callback();
+                })();
             }
         }).fail(function (data) {
             console.log(data);

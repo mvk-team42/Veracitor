@@ -48,11 +48,11 @@ var SearchController = function (controller) {
        Initialize the time period slider.
      */
     function initialize_time_period_slider() {
-     var range = {
-            min: 1970,
-            max: 2013,
-            step: 10,
-            range: 0
+        var range = {
+            'min': 1970,
+            'max': 2013,
+            'step': 10,
+            'range': 0
         };
         range.range = range.max - range.min;
 
@@ -121,23 +121,21 @@ var SearchController = function (controller) {
             var search_text = $("#database-search-field").val();
 
             switch(active_search_type) {
-                case 0:
-                    var value = $("#search-type-source input[name='source_type']:checked").val();
-                    if (value === 'Producer') {
-                        value = '';
-                    }
-                    request_database_producer_search(search_text, value, null, null);
+            case 0:
+                var value = $("#search-type-source input[name='source_type']:checked").val();
+                if (value === 'Producer') {
+                    value = '';
+                }
+                request_database_producer_search(search_text, value, null, null);
                 break;
 
-                case 1:
-            if(document.getElementById("time-period-yes").checked){
-               var values = $('#slider').slider("option", "values");
-            request_database_info_search(search_text, [], values[0]+"-1-1", values[1]+"-1-1")
-            }
-               else{
-            request_database_info_search(search_text, [], null, null)
-            }
-
+            case 1:
+                if(document.getElementById("time-period-yes").checked){
+                    var values = $('#slider').slider("option", "values");
+                    request_database_info_search(search_text, [], values[0]+"-1-1", values[1]+"-1-1")
+                } else {
+                    request_database_info_search(search_text, [], null, null)
+                }
                 break;
             }
         });
@@ -145,15 +143,15 @@ var SearchController = function (controller) {
         // database search tab click event
         $("#database-search-tab").click(function (evt) {
             set_active_tab(0);
-          $("#search-result-content").show();
-          $("#crawl-result-content").hide();
+            $("#search-result-content").show();
+            $("#crawl-result-content").hide();
         });
 
         // add entity tab click event
         $("#add-entity-tab").click(function (evt) {
             set_active_tab(1);
-          $("#search-result-content").hide();
-          $("#crawl-result-content").show();
+            $("#search-result-content").hide();
+            $("#crawl-result-content").show();
         });
 
         // add search type radio source button click event
@@ -171,23 +169,17 @@ var SearchController = function (controller) {
 
         // Start crawl click event
         $("#crawler-search-button").click(function (evt) {
+            var url = $("#crawler-search-field").val();
+            var scrape_type = $("input[name='scrape_type']:checked").val();
 
-          var url = $("#crawler-search-field").val();
-          var scrape_type = $("input[name='scrape_type']:checked").val();
-
-          // TODO: remove all console.logs
-          console.log('scrape_type: ' + scrape_type);
-
-          switch(scrape_type) {
+            switch(scrape_type) {
             case "source":
-              request_source_crawl(url);
-              break;
+                request_source_crawl(url);
+                break;
             case "article":
-              request_article_crawl(url);
-              break;
-            default:
-              break;
-          }
+                request_article_crawl(url);
+                break;
+            }
         });
 
     }
@@ -227,10 +219,10 @@ var SearchController = function (controller) {
             'name' : search_term,
             'type' : type
         }, function(data) {
-        insert_database_search_results(data, "producers");
-    })
+            insert_database_search_results(data, "producers");
+        })
             .fail(function (data) {
-        $("#search-result").html("<h2>Server error.</h2>");
+                display_search_error(vera.const.search.server_error);
             });
     };
 
@@ -251,7 +243,7 @@ var SearchController = function (controller) {
             insert_database_search_results(data, "information");
         })
             .fail(function (data) {
-                $("#search-result").html("<h2>Server error.</h2>");
+                display_search_error(vera.const.search.server_error);
             });
     };
 
@@ -275,11 +267,11 @@ var SearchController = function (controller) {
                         prod = search_result[$(this).index()].name;
                     }
 
-                    controller.network.visualize_producer_in_network(prod, 3);
+                    controller.network.visualize_producer_in_network(prod);
                     controller.switch_to_tab('network');
                 });
             } else {
-                $("#search-result").html("<h2>No results found.</h2>");
+                display_search_error(vera.const.search.no_producers);
             }
         });
     };
@@ -306,11 +298,11 @@ var SearchController = function (controller) {
                 }, response.procedure.callback_url, response.procedure.id);
 
             } else {
-                $("#search-result").html("<h2>" + response.error.message + "</h2>");
+                display_search_error(response.error.message);
             }
         })
         .fail(function () {
-            $("#search-result").html("<h2>Server error.</h2>");
+            display_search_error(vera.const.search.server_error);
         });
     };
 
@@ -361,9 +353,13 @@ var SearchController = function (controller) {
       });
     }
 
+    var display_server_error = function ( error ) {
+        $("#search-result").html($('<h2>').html(error));
+    };
+
     function parseDate(input) {
-      var parts = input.match(/(\d+)/g);
-      return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+        var parts = input.match(/(\d+)/g);
+        return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
     }
 
     /**

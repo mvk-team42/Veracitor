@@ -11,7 +11,8 @@
  */
 var NetworkController = function (controller) {
 
-    var visualizer = new Visualizer(this);
+    var network_controller = this;
+    var visualizer = new Visualizer(network_controller);
     var network_info;
 
     var selected_producer = null;
@@ -29,16 +30,15 @@ var NetworkController = function (controller) {
      */
     var initialize = function () {
         network_info = $('#network-graph > .info');
-	console.log(vera);
 
         display_network_information('Use the search to find producers and information.');
 
-	$.post('/utils/get_user', {
-	    'user_name': vera.user_name
-	}, function(data){
-	    user = data;
-	});
-	
+        $.post('/utils/get_user', {
+            'user_name': vera.user_name
+        }, function(data){
+            user = data;
+        });
+
 
         $('#add-to-group').click(function(evt) {
             $.post('/jobs/network/add_to_group', {
@@ -60,8 +60,11 @@ var NetworkController = function (controller) {
                 'rating': rating,
             }, function ( data ) {
                 // TODO: show success/fail
-                console.log(data.data.target.name + ' rated');
-                visualizer.fetch_neighbors(data.data.source.name);
+                visualizer.fetch_neighbors(data.source.name, (function ( target ) {
+                    return function () {
+                        network_controller.visualize_producer_in_network(target);
+                    };
+                })(data.target.name));
             })
                 .fail(function ( data ) {
                     // TODO
@@ -112,9 +115,7 @@ var NetworkController = function (controller) {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
-    this.visualize_producer_in_network = function (prod, depth) {
-        var network_controller = this;
-
+    this.visualize_producer_in_network = function (prod) {
         $.post('/jobs/network/path', {
             'source': vera.user_name,
             'target': prod
@@ -136,7 +137,6 @@ var NetworkController = function (controller) {
         }).fail(function (data) {
             // TODO: display fail
         });
-
     };
 
     /**
@@ -170,8 +170,6 @@ var NetworkController = function (controller) {
                       })(prod.infos[i].url))));
         }
         $('#network-info-view .informations').html(ul);
-
-	//for (var i in 
     };
 
     var rate_information = function ( url, rating ) {
@@ -187,7 +185,7 @@ var NetworkController = function (controller) {
     };
 
     var get_rating_dropdown_html = function () {
-        var select = $('<select>').addClass('rating');;
+        var select = $('<select>').addClass('rating');
 
         for (var i = 1; i <= 5; i += 1) {
             select.append($('<option>').attr('value', i).html(i));

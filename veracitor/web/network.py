@@ -229,10 +229,10 @@ def network_rate_producer():
 
     ps.rate_source(pt, t, rating)
 
-    return jsonify(data={'source': extractor.entity_to_dict(ps),
-                         'target': extractor.entity_to_dict(pt),
-                         'tag': extractor.entity_to_dict(t),
-                         'rating': rating})
+    return jsonify({'source': extractor.entity_to_dict(ps),
+                    'target': extractor.entity_to_dict(pt),
+                    'tag': extractor.entity_to_dict(t),
+                    'rating': rating})
 
 @app.route('/jobs/network/add_to_group', methods=['GET','POST'])
 def add_to_group():
