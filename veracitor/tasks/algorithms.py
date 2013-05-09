@@ -34,8 +34,8 @@ def tidaltrust(source, sink, tag):
                               sink=sink, tag=tag)
         return trust
 
-    except Exception as e:
-        logger.info("Exception: "+str(e)+"\nMsg: "+e.msg);
+    except KeyError as e:
+        logger.info("Exception: "+str(e)+"\nMsg: "+e.message);
         
         return {"trust": None,
                 "threshold": None,

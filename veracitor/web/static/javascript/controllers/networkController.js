@@ -104,11 +104,24 @@ var NetworkController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                // TODO: display success/fail
-                console.log(data);
-                $('#network-compute-trust .feedback #trust-result').html(data.result.trust);
-                $('#network-compute-trust .feedback #trust-result-threshold').html(data.result.threshold);
-                $('#network-compute-trust .feedback').toggle();
+                // TODO: display success/
+                //console.log(data);
+                if(data.result.trust !== null){
+                    $('#network-compute-trust .feedback.win #trust-result')
+                        .html(data.result.trust);
+                    $('#network-compute-trust .feedback.win #trust-result-threshold')
+                        .html(data.result.threshold);
+                    $('#network-compute-trust .feedback.win').show();
+                }
+                else {
+                    $('#network-compute-trust .feedback.fail #fail-message')
+                        .html(
+                           // TODO: Display something interesting here?
+                        );
+                    $('#network-compute-trust .feedback.fail').show();                    
+                }
+
+                
             });
         })
         .fail(function () {
@@ -181,6 +194,9 @@ var NetworkController = function (controller) {
                       })(prod.infos[i].url))));
         }
         $('#network-info-view .informations').html(ul);
+
+        $(".feedback").hide();
+        $(".tip-text").hide();
     };
 
     var rate_information = function ( url, rating ) {

@@ -40,7 +40,7 @@
 	  </p>
 	  <input type="text" placeholder="Tag" size="15" id="compute-trust-tag" />
           <input type="button" value="Compute trust" id="compute-trust"/>
-	  <div class="feedback">
+	  <div class="feedback win">
             <p>
               Trust: <span id="trust-result"></span>
               <span class="icon question-mark"></span>
@@ -57,6 +57,15 @@
             <p class="tip-text">
               The lowest trust rating of the edges used in the trust calculation.
             </p>
+          </div>
+          <div class="feedback fail">
+            <p>Trust calculation failed. <span class="icon question-mark"></span></p>
+            <p class="tip-text">
+              Trust calculations fail when there is no path between the source node (you)
+              and the sink node, or when the trust could not be calculated accurately enough.
+              Make sure you specified the correct tag when calculating the trust. 
+            </p>
+            <p id="fail-message"></p>
           </div>
 	</div>
         
