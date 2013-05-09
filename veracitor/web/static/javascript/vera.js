@@ -141,6 +141,15 @@
         controller.switch_to_tab_index(active_tab);
     }
 
+    // global constants
+    vera.const = {
+        'search': {
+            'searching': 'Searching...',
+            'no_producers': 'No producers found.',
+            'no_information': 'No information found.'
+        }
+    };
+
     // Initialize when the document has loaded
     $(document).ready(init);
 

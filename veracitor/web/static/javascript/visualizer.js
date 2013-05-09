@@ -255,7 +255,9 @@ var Visualizer = function (controller) {
         var node = this;
 
         if (typeof node.hasClass('ghost') !== 'undefined') {
-            visualizer.fetch_neighbors(node.id());
+            visualizer.fetch_neighbors(node.id(), function () {
+                cy.layout();
+            });
         } else {
             controller.display_producer_information(node.data().data);
         }
@@ -271,7 +273,7 @@ var Visualizer = function (controller) {
             var edges = [];
             var ghosts = [];
 
-            for (i in data.neighbors) {
+            for (var i in data.neighbors) {
                 if (cy.nodes('#' + data.neighbors[i].name).empty()) {
                     nodes.push({
                         'group': 'nodes',
@@ -284,26 +286,29 @@ var Visualizer = function (controller) {
                     node.data('data', data.neighbors[i]);
                 }
 
-                for (j in data.neighbors[i].source_ratings) {
-                    if (cy.edges('#' + data.neighbors[i].name + '-' + j).empty()) {
+                for (var key in data.neighbors[i].source_ratings) {
+                    if (cy.edges('#' + data.neighbors[i].name + '-' + key).empty()) {
                         edges.push({
                             'group': 'edges',
                             'data': {
-                                'id': data.neighbors[i].name + '-' + j,
+                                'id': data.neighbors[i].name + '-' + key,
                                 'source': data.neighbors[i].name,
-                                'target': j
+                                'target': key
                             }
                         });
+                        console.log('exist not: ' + data.neighbors[i].name + '-' + key);
+                    } else {
+                        console.log('exist: ' + data.neighbors[i].name + '-' + key);
                     }
 
-                    if (cy.nodes('#' + j).empty()) {
+                    if (cy.nodes('#' + key).empty()) {
                         nodes.push({
                             'group': 'nodes',
                             'data': {
-                                'id': j
+                                'id': key
                             }
                         });
-                        ghosts.push(j);
+                        ghosts.push(key);
                     }
                 }
             }
@@ -318,8 +323,6 @@ var Visualizer = function (controller) {
                 }
                 node = cy.nodes('#' + id);
                 node.removeClass('ghost');
-
-                cy.layout();
             } else {
                 if (edges.length > 0) {
                     cy.add(edges);
@@ -329,7 +332,9 @@ var Visualizer = function (controller) {
             controller.display_producer_information(node.data().data);
 
             if (typeof callback !== 'undefined') {
-                callback();
+                (function () {
+                    callback();
+                })();
             }
         }).fail(function (data) {
             console.log(data);
