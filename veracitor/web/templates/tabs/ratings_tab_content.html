@@ -80,7 +80,7 @@
 	  </div>
 	</div>
 	{% for producer in renderDict.source_ratings %}
-	<div class='{{ producer.tag }}'>
+	<div class='{{ producer.tag }}' id='{{ producer.name }}'>
 	  <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
 	  <div>
 	    <div class='description'>
