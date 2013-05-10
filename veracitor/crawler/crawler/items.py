@@ -50,7 +50,7 @@ class ArticleLoader(XPathItemLoader):
     Used for easier construction of ArticleItem
     """
     default_output_processor = TakeFirst()
-    time_published_out = Join()
+    time_published_out = TakeFirst()
     summary_out = Join()
     title_out = Join()
     

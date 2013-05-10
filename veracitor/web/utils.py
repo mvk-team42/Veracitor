@@ -41,24 +41,23 @@ def get_user_as_dict(username):
 
     try:
         source_ratings = []
+        
         for s in user_obj.source_ratings.keys():
             for tag in user_obj.source_ratings[s]:
                 source_ratings.append({
                         'name' : s,
                         'tag' : tag,
                         'rating': user_obj.source_ratings[s][tag] ,
-                        'description': extractor.get_producer(s).description})  
-                        
+                        'description': extractor.get_producer(__safe_string(s)).description})  
+             
         info_ratings = []
-        
         for iurl in user_obj.info_ratings.keys():
-            log(iurl)
             info_ratings.append({
-                    'title': extractor.get_information(iurl).title,
-                    'rating': user_obj.info_ratings[__safe_string(iurl)],
-                    'url': iurl,
+                    'title': extractor.get_information(__safe_string(iurl)).title,
+                    'rating': user_obj.info_ratings[iurl],
+                    'url': __safe_string(iurl),
                     })
-            
+        
         groups = [{'name' : g.name,
                    'description' : g.description,
                    'producers' : [pname for pname in g.producers.keys()]}
@@ -86,7 +85,22 @@ def get_user():
 
     """
     return jsonify(extractor.entity_to_dict(extractor.get_user(request.form["user_name"])));
-    
+
+@app.route('/utils/get_all_tags', methods=['GET', 'POST'])    
+def get_all_tags():
+    """
+    Extracs all tags in the database and returns them as a dict::
+
+       {
+       "tag_names": [str]
+       }
+    """
+    try:
+        tag_names = [tag.name for tag in extractor.get_all_tags()]
+        return jsonify(tag_names=tag_names)
+    except:
+        abort(400)
+
 def __safe_string(url):
     """
     Help method to change url representation.
@@ -94,5 +108,8 @@ def __safe_string(url):
     
     """
     return url.replace("|", ".")
+
+
+
 
     
