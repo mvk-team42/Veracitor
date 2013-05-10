@@ -38,12 +38,16 @@ def parseGTD(filepath, **kwargs):
     workbook = openpyxl.reader.excel.load_workbook(filepath, use_iterators=True)
     sheet = workbook.get_active_sheet()
     acts = _parse_sheet(sheet, **kwargs)
+    print "Sheet parsed"
     
     GTD = extractor.get_producer(_GTD_PRODUCER_NAME)
 
+    print "before loop"
     for act in acts:
+        print "processing act"
         _save_act_in_gtd_object(act,GTD)
-    
+    print "after loop"
+
     try:
         GTD.save()
     except:
@@ -88,10 +92,10 @@ def _save_act_in_gtd_object(act,gtd_producer):
     else:
         information_object = extractor.get_information(act_url)
 
-    print "information type: " + unicode(type(information_object))
+    print "information type: " + unicode(type(information_object)).encode(encoding="utf-8", errors="replace")
 
     gtd_producer.infos.append(information_object)
-    print "saved act: " + unicode(act["summary"])
+    print "saved act: " + unicode(act["summary"]).encode(encoding="utf-8", errors="replace")
 
 def _safe_get_tag(name):
     try:
@@ -126,7 +130,8 @@ def _get_datetime(act):
 def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
     row_number = 1
     for row in sheet.iter_rows():
-        if row_number == 1
+        if row_number == 1:
+            row_number += 1
             continue
         if limit_number_rows == row_number:
             break
@@ -140,6 +145,7 @@ def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
         yield act
         if print_acts:
             print act
+        row_number += 1
     
 def _strip_source(source):
     source = source.split('"')[-1]

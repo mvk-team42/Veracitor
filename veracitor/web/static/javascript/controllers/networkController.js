@@ -209,7 +209,8 @@ var NetworkController = function (controller) {
         $('#network-info-view .type').html(prod.type_of);
 
         var ul = $('<ul>');
-        for (var i in prod.infos) {
+        var i = 0;
+        for (i; i < prod.infos.length; i++) {
             ul.append($('<li>')
                       .append($('<p>').html(prod.infos[i].title))
                       .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
