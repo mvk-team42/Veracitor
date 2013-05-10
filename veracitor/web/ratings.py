@@ -66,9 +66,8 @@ def render_ratings():
         renderDict = {}
         renderDict = utils.get_user_as_dict(session['user_name'])
         renderDict['prodtags'] = get_used_prod_tags()
-        renderDict['infotags'] = get_used_info_tags()
         log(renderDict['prodtags'])
-        log(renderDict['infotags'])
+        renderDict['infotags'] = get_used_info_tags()
         producers = renderDict['source_ratings']
         information = renderDict['info_ratings']
         html = render_template('tabs/ratings_tab_content.html', renderDict=renderDict)
@@ -217,11 +216,9 @@ def get_used_prod_tags():
 
         tags_used = [] 
         for sr in user.source_ratings:
-            log(user.source_ratings[sr].keys())
             tags_used.extend(user.source_ratings[sr].keys())
             
-        
-        return tags_used
+        return list(set(tags_used))
     except:
         abort(400)
 
@@ -244,14 +241,14 @@ def get_used_info_tags():
     if not request.method == 'POST':
         abort(405)
     try:
-        # TODO: Try this! (nested list comprehension)
         user = extractor.get_user(session['user_name'])
         tags_used = []
-        for info_rating in user.info_ratings:
+        for info_rating in user.info_ratings.keys():
             tags_used.extend(extractor.get_information(__safe_string(info_rating)).tags)
 
-        return tags_used
-    except:
+        return list(set(tags_used))
+    except Exception, e:
+        log(e)
         abort(400)
 
 

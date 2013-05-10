@@ -41,7 +41,6 @@ def get_user_as_dict(username):
 
     try:
         source_ratings = []
-        
         for s in user_obj.source_ratings.keys():
             for tag in user_obj.source_ratings[s]:
                 source_ratings.append({
@@ -49,20 +48,20 @@ def get_user_as_dict(username):
                         'tag' : tag,
                         'rating': user_obj.source_ratings[s][tag] ,
                         'description': extractor.get_producer(__safe_string(s)).description})  
-             
+            
         info_ratings = []
+        
         for iurl in user_obj.info_ratings.keys():
             info_ratings.append({
                     'title': extractor.get_information(__safe_string(iurl)).title,
                     'rating': user_obj.info_ratings[iurl],
                     'url': __safe_string(iurl),
                     })
-        
+         
         groups = [{'name' : g.name,
                    'description' : g.description,
                    'producers' : [pname for pname in g.producers.keys()]}
                   for g in user_obj.groups]
-        
         
         user_dict = {'name' : user_obj.name,
                      'description' : user_obj.description,
