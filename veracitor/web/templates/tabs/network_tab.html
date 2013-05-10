@@ -21,13 +21,13 @@
 	      <p class="tip-text">
 	        Give a trust rating to selected producer using a specific tag.
 	      </p>
-	      <input type="text" placeholder="Tag" size="15" id="rate-producer-tag" />
+	      <select id="rate-producer-tag" class="tag-dropdown"></select>
 	      <select class="rating">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
           </select>
           <input type="button" class="button" value="Rate producer" />
 	      <div class="feedback"></div>
@@ -38,11 +38,11 @@
 	        Get an assessment on how much you should trust the selected producer
 	        based on how much other nodes trust it.
 	      </p>
-	      <input type="text" placeholder="Tag" size="15" id="compute-trust-tag" />
+	      <select id="compute-trust-tag" class="tag-dropdown"></select>
           <input type="button" value="Compute trust" id="compute-trust"/>
 	      <div class="feedback win">
             <p>
-              Trust: <span id="trust-result"></span>
+              Trust: <span id="trust-result" class="rating"></span>
               <span class="icon question-mark"></span>
             </p>
             <p class="tip-text">
@@ -75,7 +75,7 @@
 	        Add the selected producer to one of your groups (group management, such
 	        as adding an editing groups, is done under the Ratings tag).
 	      </p>
-          <input type="text" placeholder="Group name" id="group_name" />
+          <select id="group_name"></select>
           <input type="button" value="Add to group" id="add-to-group" />
 	      <div class="feedback"></div>
 	    </div>
@@ -91,7 +91,7 @@
     </div>
     <div id="network-toolbox">
       <div class="body">
-        <label>Tag<select id="global-tags"></select></label>
+        <label>Tag<select id="global-tags" class="tag-dropdown"></select></label>
       </div>
     </div>
   </div>
