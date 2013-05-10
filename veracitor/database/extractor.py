@@ -36,9 +36,9 @@ def get_producer(requested_name):
     extr_producer = producer.Producer.objects(name=requested_name)
     __checkIfEmpty(extr_producer)
     #print extr_producer[0].source_ratings
-    
+
     prod = extr_producer[0]
-    
+
     prod.prepare_ratings_for_using()
     return prod
 
@@ -316,18 +316,18 @@ def entity_to_dict( o ):
                 'description': o.description,
                 'url': o.url,
                 'infos': [ entity_to_dict(i) for i in o.infos ],
-                'source_ratings': o.source_ratings,
-                'info_ratings': o.info_ratings,
-                'type_of': o.type_of}
+                'source_ratings': unpipeify(o.source_ratings),
+                'info_ratings': unpipeify(o.info_ratings),
+                'type_of': o.type_of }
         if isinstance(o, user.User):
-            data['group_ratings'] = o.group_ratings
+            data['group_ratings'] = unpipeify(o.group_ratings)
             data['groups'] = [ entity_to_dict(g) for g in o.groups ]
             data['email'] = o.email
             if o.time_joined:
                 data['time_joined'] = {'year': o.time_joined.year,
                                        'month': o.time_joined.month,
                                        'day': o.time_joined.day,
-                                       'time': o.time_joined.isoformat()}
+                                       'time': o.time_joined.isoformat() }
         return data
     if isinstance(o, information.Information):
         data = {'title': o.title,
@@ -335,18 +335,18 @@ def entity_to_dict( o ):
                 'url': o.url,
                 'tags': [ entity_to_dict(t) for t in o.tags ],
                 'publishers': [ p.name for p in o.publishers ],
-                'references': [ i.url for i in o.references ]}
+                'references': [ i.url for i in o.references ] }
         if o.time_published:
             data['time_published'] = {'year': o.time_published.year,
                                       'month': o.time_published.month,
                                       'day': o.time_published.day,
-                                      'time': o.time_published.isoformat()}
+                                      'time': o.time_published.isoformat() }
         return data
     if isinstance(o, tag.Tag):
         return {'name': o.name,
                 'description': o.description,
                 'parent': [ t.name for t in o.parent ],
-                'valid_strings': o.valid_strings}
+                'valid_strings': o.valid_strings }
     if isinstance(o, group.Group):
         data = {'name': o.name,
                 'description': o.description,
@@ -358,5 +358,19 @@ def entity_to_dict( o ):
             data['time_created'] = {'year': o.time_created.year,
                                     'month': o.time_created.month,
                                     'day': o.time_created.day,
-                                    'time': o.time_created.isoformat()}
+                                    'time': o.time_created.isoformat() }
         return data
+
+"""
+Converts pipelines to dots.
+"""
+def unpipeify( o ):
+    if isinstance(o, str):
+        return o.replace('|', '.')
+    if isinstance(o, dict):
+        data = {}
+        for k, v in o.items():
+            data[unpipeify(k)] = unpipeify(v)
+        return data
+    if isinstance(o, list):
+        return [ unpipeify(i) for i in o ]
