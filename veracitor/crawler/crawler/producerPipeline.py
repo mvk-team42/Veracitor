@@ -90,4 +90,8 @@ def fix_field(producer_item, field):
             if producer_item[field].strip() != "":
                 producer_item[field] = re.sub("\s+", " ", producer_item[field].strip())
                 return
-    producer_item[field] = "unknown"
+    #rss_urls is expected to be in list format, when it is sent to pipeline.        
+    if field == "rss_urls":
+        producer_item[field] = []
+    else:
+        producer_item[field] = "unknown"
