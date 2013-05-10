@@ -8,8 +8,8 @@
 """
 
 from mongoengine import *
-import producer
 import group
+import producer
 import tag
 import extractor
 import datetime
@@ -121,9 +121,6 @@ class User(producer.Producer):
 
     def __safe_string(self, url):
         return url.replace(".", "|")
-        
-    
-
     
     
 def testing():
