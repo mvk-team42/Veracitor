@@ -31,29 +31,44 @@ function SuperController(vera) {
     // A pointer to this object
     var controller = this;
 
-    // Setup controllers
-    controller.search = new SearchController(this);
-    controller.network = new NetworkController(this);
-    controller.ratings = new RatingsController(this);
-    controller.account = new AccountController(this);
-    controller.login = new LoginController(this);
+    /**
+       Initializes this controller.
+     */
+    this.initialize = function () {
+        // Setup controllers
+        if (typeof vera.search !== 'undefined') {
+            controller.search = new SearchController(this);
+        }
+        if (typeof vera.network !== 'undefined') {
+            controller.network = new NetworkController(this);
+        }
+        if (typeof vera.ratings !== 'undefined') {
+            controller.ratings = new RatingsController(this);
+        }
+        if (typeof vera.account !== 'undefined') {
+            controller.account = new AccountController(this);
+        }
+        if (typeof vera.login !== 'undefined') {
+            controller.login = new LoginController(this);
+        }
 
-    (function () {
-        // Bind key combination shift + alt + left/right to switching
-        // between the different tabs (for fast GUI testing)
-        window.addEventListener('keydown', function (evt) {
-            if (evt.altKey && evt.shiftKey) {
-                switch (evt.keyCode) {
-                case key.left:
-                    controller.switch_to_tab_index(active_tab - 1);
-                    break;
-                case key.right:
-                    controller.switch_to_tab_index(active_tab + 1);
-                    break;
+        (function () {
+            // Bind key combination shift + alt + left/right to switching
+            // between the different tabs (for fast GUI testing)
+            window.addEventListener('keydown', function (evt) {
+                if (evt.altKey && evt.shiftKey) {
+                    switch (evt.keyCode) {
+                    case key.left:
+                        controller.switch_to_tab_index(active_tab - 1);
+                        break;
+                    case key.right:
+                        controller.switch_to_tab_index(active_tab + 1);
+                        break;
+                    }
                 }
-            }
-        });
-    })();
+            });
+        })();
+    };
 
     /**
         Handles the event fired when a menu tab is clicked.
