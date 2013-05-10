@@ -38,8 +38,8 @@ def add_to_database(article):
     log.msg(article["url"] + " is new, adding to database")
         
     #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
-    tag_strings = re.sub("[^\w]", " ",  article["tags"]).split()
-    tags = [extractor.get_tag_create_if_needed(tag_str) for tag_str in tag_strings]
+    tag_strings = article["tags"].split(',')
+    tags = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in tag_strings]
     if len(tags) == 0:
         tags.append(extractor.get_tag_create_if_needed("unknown"))
 
@@ -93,7 +93,7 @@ def get_publisher_objects(publishers_string):
                 else:
                     not_found.append(split_publisher)
             if len(not_found) != 0:
-                producer = extractor.producer_create_if_needed(" ".join(not_found), "journalist")
+                producer = extractor.producer_create_if_needed(" ".join(not_found), "Journalist")
                 publishers.append(producer)
     return publishers
 
@@ -140,7 +140,7 @@ def fix_time_published(article):
         replace_words_in_time_published(article)
                 
 def remove_words_from_time_published(article):
-    pattern = re.compile('published:|publicerad:|published|publicerad|am|pm', re.IGNORECASE)
+    pattern = re.compile('published:|publicerad:|published|publicerad|am|pm|\son\s|\sden\s', re.IGNORECASE)
     article["time_published"] = pattern.sub("", article["time_published"])   
     
 def replace_words_in_time_published(article):
