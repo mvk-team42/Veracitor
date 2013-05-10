@@ -139,27 +139,31 @@
             }
         }
 
-        // Initialize the super controller
-        controller.initialize();
+        // Fetch all existing tags
+        $.get('/utils/get_all_tags', function (data) {
+            // global constants
+            vera.const = {
+                'search': {
+                    'searching': 'Searching...',
+                    'no_producers': 'No producers found.',
+                    'no_information': 'No information found.'
+                },
+                // Save the array of existing tags
+                'tags': data.tag_names
+            };
 
-        // Add click event to main header title text
-        document.getElementById("main-header").onclick = function(evt){
-            controller.switch_to_tab_index(0);
-        };
+            // Initialize the super controller
+            controller.initialize();
 
-        // activate the active tab
-        controller.switch_to_tab_index(active_tab);
+            // Add click event to main header title text
+            document.getElementById("main-header").onclick = function(evt){
+                controller.switch_to_tab_index(0);
+            };
+
+            // activate the active tab
+            controller.switch_to_tab_index(active_tab);
+        });
     }
-
-    // global constants
-    vera.const = {
-        'search': {
-            'searching': 'Searching...',
-            'no_producers': 'No producers found.',
-            'no_information': 'No information found.'
-        },
-        'tags': ['Trust','Terrorism','Crime','Cooking']
-    };
 
     // Initialize when the document has loaded
     $(document).ready(init);

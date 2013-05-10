@@ -11,6 +11,7 @@
 
         <datetime-formats>
             <format>%Y-%m-%d %H:%M</format>
+            <format>%Y-%m-%d</format>
             <format>%d %B %Y kl %H:%M</format>
             <format>%B %d, %Y</format>
             <format>%m/%d/%y %I:%M</format>
@@ -22,6 +23,7 @@
         
         <webpage-paths>
             <name>
+                <xpath>//meta[@name="application-name"]/@content</xpath>
                 <xpath>//title/text()</xpath>
             </name>
             <description>
@@ -35,12 +37,12 @@
 
         <article-paths>
             <qualification>
-                <xpath>//*[@id="article"]</xpath>
+                <xpath>//*[not(self::a) and @id="article"]</xpath>
                 <xpath>//meta[@content="article"]</xpath>
-                <xpath>//*[contains(@class,'article')]</xpath>
-                <xpath>//*[@id="article-content"]</xpath>
-                <xpath>//*[contains(@class,'articlePage')]</xpath>
-                <xpath>//*[contains(@role,'article')]</xpath>
+                <xpath>//*[not(self::a) and contains(@class,'article')]</xpath>
+                <xpath>//*[not(self::a) and @id="article-content"]</xpath>
+                <xpath>//*[not(self::a) and contains(@class,'articlePage')]</xpath>
+                <xpath>//*[not(self::a) and contains(@role,'article')]</xpath>
             </qualification>
         
             <title>
@@ -56,10 +58,12 @@
                 <xpath>//*[@id="main-article-info"]//*[@itemprop="description"]//text()</xpath>
                 <xpath>//*[contains(@class, "Ingress")]//child::text()</xpath>
                 <xpath>//article//text()</xpath>
+                <xpath>//meta[@name="description"]//@content</xpath>
             </summary>
             
             <tags>
-                <xpath>//meta[contains(@property,"article:tag")]/@content</xpath>    
+                <xpath>//meta[contains(@property,"article:tag")]/@content</xpath>  
+                <xpath>//meta[contains(@name, "keywords")]/@content</xpath>
             </tags>
 
             <publishers>
@@ -68,6 +72,7 @@
                 <xpath>//*[contains(@itemprop,"author")]//*[contains(@itemprop, "name")]//text()</xpath>
                 <xpath>//*[contains(@rel, "author")]//text()</xpath>
                 <xpath>//*[contains(@itemprop, "publisher")]//text()</xpath>
+                <xpath>//*[contains(@itemprop,"author")]//text()</xpath>              
             </publishers>
 
             <time_published>
@@ -78,6 +83,7 @@
                 <xpath>//*[contains(@class, "pubtime")]//text()</xpath>
                 <xpath>//meta[contains(@itemprop, "datePublished")]/@content</xpath>
                 <xpath>//*[contains(@class, "date")]//text()</xpath>
+                <xpath>//time//text()</xpath>
             </time_published>
         </article-paths>
     </default>

@@ -15,9 +15,9 @@
     <div display='block' id="filters">
       <label for="prod-tags">Tag:</label>
       <select name="tags" class="tags" id="prod-tags">  
-	<!--
-	    Populated from controller/js.
-	  -->
+	{% for prodtag in renderDict.prodtags %}
+	<option value="{{ prodtag }}">{{ prodtag }}</option>
+	{% endfor %}
       </select>
       <div display="block">	
 	<div id="group-info-div">
@@ -71,14 +71,6 @@
     </div>
     <div id='producer-list-container'>
       <div id='producer-list'>
-	<div class='gardening'>
-	  <h3>Producer1 <div class='rating'>9</div></h3>
-	  <div>
-	    <div class='description'>
-	      <p>Description of Producer1 bla bla blbababd desc desc bla.</p>
-	    </div>
-	  </div>
-	</div>
 	{% for producer in renderDict.source_ratings %}
 	<div class='{{ producer.tag }}' id='{{ producer.name }}'>
 	  <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
@@ -109,36 +101,14 @@
 	   -->
       <label for="info-tags">Tag:</label>
       <select name="tags" class="tags" id="info-tags">
-	<!-- TODO: remove these dummy-tags -->
-	<option value="crime">Crime</option>
-	<option value="gardening">Gardening</option>
+	<option value="none">-</option>
+	{% for infotag in renderDict.infotags %}
+	<option value="{{ infotag }}">{{ infotag }}</option>
+	{% endfor %}
       </select>
     </div>
     <div id='information-list-container'>
       <div id='information-list'>
-<!-- Test data
-	<div class='crime'>
-	  <h3>Ledare - DN - 2013-02-04 <div class='rating'>4</div></h3>
-	  <div>
-	    <p>Information about Article1</p>
-	  </div>
-	</div>
-	<div class='gardening'>
-	  <h3>Article2 <div class='rating'>7</div></h3>
-	  <div>
-	    <p>Information about Article2</p>
-	  </div>
-	</div>
-	<div class='crime'>
-	  <h3>Ledare - DN - 2013-01-02 <div class='rating'>9</div></h3>
-	  <div>
-	    <p>
-	      Blablablabla
-	    </p>
-	  </div>
-	</div>
--->
-	<!-- TODO: Fixa tag-filtrering! -->
 	{% for information in renderDict.info_ratings  %}
 	<div class="crime">
 	  <h3>{{ information.title }} <div class='rating'>{{ information.rating }}</div></h3>

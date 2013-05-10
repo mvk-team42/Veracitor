@@ -262,7 +262,7 @@ var Visualizer = function (controller) {
         var node = this;
 
         if (typeof node.hasClass('ghost') !== 'undefined') {
-            visualizer.fetch_neighbors(node.id(), function () {
+            visualizer.fetch_neighbors(node.id(), 1, function () {
                 cy.layout();
             });
         } else {
@@ -270,10 +270,10 @@ var Visualizer = function (controller) {
         }
     };
 
-    this.fetch_neighbors = function ( id, callback ) {
+    this.fetch_neighbors = function ( id, depth, callback ) {
         $.post('/jobs/network/neighbors', {
             'name': id,
-            'depth': 1
+            'depth': depth
         }, function (data) {
             var edge_id;
             var node = cy.nodes('#' + id);

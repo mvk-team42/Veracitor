@@ -53,7 +53,8 @@ def add_to_xml(producer_item, tree, xml_file):
 
     if already_in_xml:   # Get element and remove existing url-links
         webpage = webpages.find("webpage[@domain='"+producer_item["url"]+"']")
-        webpage.remove(webpage.find("rss-urls"))
+        if webpage.find("rss-urls") != None:
+            webpage.remove(webpage.find("rss-urls"))
     else:  # Create new element
         webpage = ET.Element("webpage", attrib={'domain':producer_item["url"], 'name':producer_item["name"]})
     rss_urls_tag = ET.Element("rss-urls")
@@ -86,8 +87,12 @@ def fix_fields(producer_item):
 def fix_field(producer_item, field):
     if field in producer_item:
         log.msg("producer_item["+field+"]: "+unicode(producer_item[field]))
-        if isinstance(producer_item[field], str):
+        if isinstance(producer_item[field], unicode) or isinstance(producer_item[field], str):
             if producer_item[field].strip() != "":
                 producer_item[field] = re.sub("\s+", " ", producer_item[field].strip())
                 return
-    producer_item[field] = "unknown"
+    #rss_urls is expected to be in list format, when it is sent to pipeline.        
+    if field == "rss_urls":
+        producer_item[field] = []
+    else:
+        producer_item[field] = "unknown"

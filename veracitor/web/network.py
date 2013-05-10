@@ -88,7 +88,7 @@ def _filter_network_by_tag(network, tag):
 
     """
     Gtagged = nx.DiGraph()
-    
+
 #    info=""+tag
 
     for n in network.nodes():
@@ -105,9 +105,9 @@ def _filter_network_by_tag(network, tag):
 
 #    log(info)
 #   log(nx.to_dict_of_dicts(Gtagged))
-            
+
     return Gtagged
-			
+
 
 @app.route('/jobs/network/neighbors', methods=['GET','POST'])
 def get_neighbors():
@@ -182,6 +182,8 @@ def get_neighbors():
             layer = neighbor_queue
 
     data = {}
+
+    log(neighbors)
 
     for node in neighbors:
         prod = extractor.get_producer(node)

@@ -74,6 +74,16 @@
     border: 1px solid #aaa;
 }
 
+div.informations{
+    max-height:500px;
+    overflow:auto;
+/*    border:1px solid #aaa;*/
+  
+
+    -webkit-box-shadow: inset 0px 0px 30px 0.1px #aaa;
+    box-shadow: inset 0px 0px 30px 0.1px #aaa;
+}
+
 #network-info-view .network-info-piece {
     margin: 10px 0px 10px 0px;
     padding: 0 0 8px 8px;

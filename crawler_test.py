@@ -17,7 +17,7 @@ def a(item, id):
 #logger.log("testing",logger.Level.debug,logger.Area.crawler)
 
 #ci.set_callback(a)
-#ci.init_interface()
+ci.init_interface()
 #ci.add_newspaper("www.svd.se")
 #ci.test_rss("http://penguin-news.com/index.php?format=feed&type=rss")
 #ci.start_continuous_scrape()
@@ -28,14 +28,16 @@ def a(item, id):
 #ci.scrape_article("http://www.guardian.co.uk/uk/2013/may/07/jimmy-tarbuck-arrested-allegation-assault-teenage-boy")
 #ci.scrape_article("http://www.svd.se/nyheter/inrikes/utbrett-fiskfusk-avslojat_8046058.svd")
 #ci.scrape_article("http://www.dn.se/nyheter/sverige/barn-som-sett-vald-utan-ersattning")
+#ci.scrape_article("http://www.nytimes.com/2013/05/10/us/disease-threatens-floridas-citrus-industry.html?hp&_r=0")
 #ci.request_scrape("www.penguin-news.com")
 #ci.request_scrape("www.unt.se")
 #ci.request_scrape("www.svd.se")
+#ci.request_scrape("www.nytimes.com")
+#ci.add_newspaper("www.guardian.co.uk")
+ci.add_newspaper("www.nytimes.com")
 #ci.create_newspaper_bank()
 
-gtdp.parse()
-
-
+#gtdp.parse()
 
 
 '''
