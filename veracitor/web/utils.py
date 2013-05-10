@@ -47,12 +47,12 @@ def get_user_as_dict(username):
                         'name' : s,
                         'tag' : tag,
                         'rating': user_obj.source_ratings[s][tag] ,
-                        'description': extractor.get_producer(__safe_string(s)).description})  
+                        'description': extractor.get_producer(s).description})  
                         
         info_ratings = []
         for iurl in user_obj.info_ratings.keys():
             info_ratings.append({
-                    'title': extractor.get_information(__safe_string(iurl)).title,
+                    'title': extractor.get_information(iurl).title,
                     'rating': user_obj.info_ratings[iurl],
                     'url': iurl,
                     })
@@ -85,13 +85,3 @@ def get_user():
 
     """
     return jsonify(extractor.entity_to_dict(extractor.get_user(request.form["user_name"])));
-    
-def __safe_string(url):
-    """
-    Help method to change url representation.
-    TODO: Remove any need for this beyond private methods in the database module
-    
-    """
-    return url.replace("|", ".")
-
-    

@@ -245,7 +245,7 @@ def get_used_info_tags():
         user = extractor.get_user(session['user_name'])
         tags_used = []
         for info_rating in user.info_ratings:
-            tags_used.append(extractor.get_information(__safe_string(info_rating)).tags)
+            tags_used.append(extractor.get_information(info_rating).tags)
 
         return jsonify(tags=tags_used)
     except:
@@ -258,12 +258,3 @@ def get_all_tags():
         return tag_names
     except:
         abort(400)
-
-
-def __safe_string(url):
-    """
-    Help method to change url representation.
-    TODO: Remove any need for this beyond private methods in the database module
-        
-    """
-    return url.replace("|", ".")
