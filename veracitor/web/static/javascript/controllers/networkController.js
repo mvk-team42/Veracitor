@@ -51,25 +51,10 @@ var NetworkController = function (controller) {
             });
         });
 
-        $('#network_rate_producer > .button').click(function ( evt ) {
+        $('#network_rate_producer > .button').click(function (evt) {
             var rating = $('#network_rate_producer > .rating > option:selected').html();
 
-            $.post('/jobs/network/rate/producer', {
-                'source': vera.user_name,
-                'target': selected_producer.name,
-                'tag': global_tag,
-                'rating': rating,
-            }, function ( data ) {
-                // TODO: show success/fail
-                visualizer.fetch_neighbors(data.source.name, (function ( target ) {
-                    return function () {
-                        network_controller.visualize_producer_in_network(target);
-                    };
-                })(data.target.name));
-            })
-                .fail(function ( data ) {
-                    // TODO
-                });
+            rate_producer(vera.user_name, selected_producer.name, global_tag, rating);
         });
 
         $('#compute-trust').click( function(evt){
@@ -201,6 +186,8 @@ var NetworkController = function (controller) {
         // A reference to this controller
         var network_controller = this;
 
+        console.log(prod);
+
         selected_producer = prod;
 
         $('#network-info-view .title').html(prod.name);
@@ -209,26 +196,45 @@ var NetworkController = function (controller) {
         $('#network-info-view .type').html(prod.type_of);
 
         var ul = $('<ul>');
-        var i = 0;
-        for (i; i < prod.infos.length; i++) {
-            ul.append($('<li>')
-                      .append($('<p>').html(prod.infos[i].title))
-                      .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
-                      .append(get_rating_dropdown_html())
-                      .append($('<input>').attr({
-                          'type': 'button',
-                          'value': 'Rate information'
-                      }).click((function ( url ) {
-                          return function ( evt ) {
-                              var rating = $(this).parent().find(':selected').html();
-                              rate_information(url, rating);
-                          };
-                      })(prod.infos[i].url))));
+        for (var i = 0; i < prod.infos.length; i++) {
+            if (prod.infos[i] !== null) { // initially an issue in the database
+                ul.append($('<li>')
+                          .append($('<p>').html(prod.infos[i].title))
+                          .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
+                          .append(get_rating_dropdown_html())
+                          .append($('<input>').attr({
+                              'type': 'button',
+                              'value': 'Rate information'
+                          }).click((function ( url ) {
+                              return function ( evt ) {
+                                  var rating = $(this).parent().find(':selected').html();
+                                  rate_information(url, rating);
+                              };
+                          })(prod.infos[i].url))));
+            }
         }
         $('#network-info-view .informations').html(ul);
 
         $(".feedback").hide();
         $(".tip-text").hide();
+    };
+
+    var rate_producer = function ( source, target, tag, rating ) {
+        $.post('/jobs/network/rate/producer', {
+            'source': source,
+            'target': target,
+            'tag': tag,
+            'rating': rating,
+        }, function ( data ) {
+            // TODO: show success/fail
+            visualizer.fetch_neighbors(data.source.name, 1, (function ( target ) {
+                return function () {
+                    network_controller.visualize_producer_in_network(target);
+                };
+            })(data.target.name));
+        }).fail(function ( data ) {
+            // TODO
+        });
     };
 
     var rate_information = function ( url, rating ) {
