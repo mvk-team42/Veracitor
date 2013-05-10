@@ -65,7 +65,10 @@ def render_ratings():
     try:
         renderDict = {}
         renderDict = utils.get_user_as_dict(session['user_name'])
-        renderDict['tags'] = get_all_tags()
+        renderDict['prodtags'] = get_used_prod_tags()
+        renderDict['infotags'] = get_used_info_tags()
+        log(renderDict['prodtags'])
+        log(renderDict['infotags'])
         producers = renderDict['source_ratings']
         information = renderDict['info_ratings']
         html = render_template('tabs/ratings_tab_content.html', renderDict=renderDict)
@@ -192,7 +195,6 @@ def rate_group():
     # TODO: Render json
 
 
-@app.route('/jobs/ratings/get_used_prod_tags', methods=['GET', 'POST'])
 def get_used_prod_tags():
     """
     Get a list of all tags that the user has rated producers with.
@@ -215,14 +217,15 @@ def get_used_prod_tags():
 
         tags_used = [] 
         for sr in user.source_ratings:
-            tags_used.append(user.source_ratings[sr].keys())
-
-        return jsonify(tags=tags_used)
+            log(user.source_ratings[sr].keys())
+            tags_used.extend(user.source_ratings[sr].keys())
+            
+        
+        return tags_used
     except:
         abort(400)
 
 
-@app.route('/jobs/ratings/get_used_info_tags', methods=['GET', 'POST'])
 def get_used_info_tags():
     """
     Get a list of all tags that the user has rated information with.
@@ -245,9 +248,9 @@ def get_used_info_tags():
         user = extractor.get_user(session['user_name'])
         tags_used = []
         for info_rating in user.info_ratings:
-            tags_used.append(extractor.get_information(__safe_string(info_rating)).tags)
+            tags_used.extend(extractor.get_information(__safe_string(info_rating)).tags)
 
-        return jsonify(tags=tags_used)
+        return tags_used
     except:
         abort(400)
 

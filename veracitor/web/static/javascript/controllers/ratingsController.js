@@ -26,9 +26,9 @@ var RatingsController = function (controller) {
 	    $('#ratings_view_content').html(data.html);
 	    //Must be called before populating tag dropdowns
 	    add_event_handlers(data.producers, data.information);
-	    populate_prod_tag_dropdown();
-	    populate_info_tag_dropdown();
 	    $('.left #groups').change();
+	    $('#prod-tags').change();
+	    $('#info-tags').change();
 	});
     };
 
@@ -55,14 +55,17 @@ var RatingsController = function (controller) {
 	    var selectedValue = $(this).find(":selected").val();
 	    $('#producer-list >').not('div.' + selectedValue).hide()
 	    $('#producer-list > div.' + selectedValue).show();
-	    $('.left #tag-name-prod-span').text($('.left #prod-tags').val());
 	});
 
 	$(".right #info-tags").change(function() {
 	    var selectedValue = $(this).find(":selected").val();
+	    if( selectedValue != 'none' ) {
 	    $('.right #information-list >').not('div.' + selectedValue).hide()
 	    $('.right #information-list > div.' + selectedValue).show();
-	    $('.right #tag-name-info-span').text($('.right #info-tags').val());
+	    }
+	    else {
+		$('.right #information-list >').show();
+	    }
 	});
 
 	
@@ -168,37 +171,4 @@ var RatingsController = function (controller) {
 	$('#new-group-form-div').fadeOut();
 	$('#new-group').show();
     }
-
-
-      /**
-     * Fills the dropdown list for producer rating tags with options
-     */
-    function populate_prod_tag_dropdown() {
-	$.post('/jobs/ratings/get_used_prod_tags',
-	       function(data){
-		   var tags_list = $('.left #prod-tags');
-		   $.each(data.tags, function(i, val){
-		       tags_list.append(
-			   $('<option></option>').val(val).html(val));
-		   });
-		   //Initial filtering
-		   $('.left #prod-tags').change();
-		   $('.left #tag-name-prod-span').text($('.left #prod-tags').val());
-	       });
-    }
-
-    function populate_info_tag_dropdown() {
-	$.post('/jobs/ratings/get_used_info_tags',
-	       function(data) {
-		   var tags_list = $('.right #info-tags');
-		   $.each(data.tags, function(i, val) {
-		       tags_list.append(
-			   $('<option></option>').val(val).html(val));
-		   });
-		   //Initial filtering
-		   $('.right #info-tags').change();
-		   $('.right #tag-name-info-span').text($('.right #info-tags').val());
-	       });
-    }
-    
 };
