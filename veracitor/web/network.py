@@ -133,7 +133,7 @@ def get_neighbors():
 
         try:
             tag = request.form['tag']
-        else:
+        except:
             tag = None
     except:
         abort(400)
