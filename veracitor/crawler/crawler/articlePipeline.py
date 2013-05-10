@@ -125,11 +125,11 @@ def fix_field(article, field):
     
 def fix_publisher(article):
     if "publishers" in article:
-        remove_colon_words_from_publishers(article):
+        remove_colon_words_from_publishers(article)
         article["publishers"] = article["publishers"].strip()
 
 def remove_colon_words_from_publishers(article):
-    pattern = re.compile("\S*+:")
+    pattern = re.compile("\S+:")
     article["publishers"] = pattern.sub("", article["publishers"])
             
 def fix_time_published(article):
