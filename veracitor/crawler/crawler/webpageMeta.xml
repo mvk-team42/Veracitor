@@ -72,6 +72,7 @@
                 <xpath>//*[contains(@itemprop,"author")]//*[contains(@itemprop, "name")]//text()</xpath>
                 <xpath>//*[contains(@rel, "author")]//text()</xpath>
                 <xpath>//*[contains(@itemprop, "publisher")]//text()</xpath>
+                <xpath>//*[contains(@itemprop,"author")]//text()</xpath>              
             </publishers>
 
             <time_published>
