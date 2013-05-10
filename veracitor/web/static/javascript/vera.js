@@ -149,7 +149,7 @@
                     'no_information': 'No information found.'
                 },
                 // Save the array of existing tags
-                'tags': data
+                'tags': data.tag_names
             };
 
             // Initialize the super controller
