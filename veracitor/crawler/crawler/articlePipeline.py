@@ -142,6 +142,8 @@ def fix_time_published(article):
 def remove_words_from_time_published(article):
     pattern = re.compile('published:|publicerad:|published|publicerad|am|pm|\son\s|\sden\s', re.IGNORECASE)
     article["time_published"] = pattern.sub("", article["time_published"])   
+    day_pattern = re.compile('monday|tuesday|wednesday|thursday|friday|saturday|sunday|måndag|tisdag|onsdag|torsdag|fredag|lördag|söndag', re.IGNORECASE)
+    article["time_published"] = pattern.sub("", article["time_published"])
     
 def replace_words_in_time_published(article):
     special_words = ["idag", "i dag", "today"]
