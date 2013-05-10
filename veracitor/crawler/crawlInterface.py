@@ -30,7 +30,7 @@ from .crawler.spiders.articleSpider import ArticleSpider
 from .crawler.spiders.newspaperSpider import NewspaperSpider
 from .crawler.webpageMeta import WebpageMeta
 from ..logger import logger
-from ..utils import _httpify
+from ..utils import httpify
 
 
 def init_interface():
