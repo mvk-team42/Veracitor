@@ -11,6 +11,7 @@
 
         <datetime-formats>
             <format>%Y-%m-%d %H:%M</format>
+            <format>%Y-%m-%d</format>
             <format>%d %B %Y kl %H:%M</format>
             <format>%B %d, %Y</format>
             <format>%m/%d/%y %I:%M</format>

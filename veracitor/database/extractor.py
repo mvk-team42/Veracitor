@@ -17,6 +17,7 @@ import group
 import re
 import datetime
 from dbExceptions import *
+from ..utils import httpify
 
 connect('mydb')
 
@@ -85,6 +86,7 @@ def get_information(info_url):
             NotInDataBase: The information object couldn't be found
                            in the database.
     """
+    info_url = httpify(info_url)
     extr_information = information.Information.objects(url=info_url)
     __checkIfEmpty(extr_information)
     return extr_information[0]
@@ -208,6 +210,7 @@ def contains_producer_with_url(producer_url):
         Returns:
             True if a match was found otherwise False.
     """
+    producer_url = httpify(producer_url)
     p = producer.Producer.objects(url=producer_url)
     return len(p) != 0
 
@@ -235,6 +238,7 @@ def contains_information(info_url):
         Returns:
             True if a match was found otherwise False.
     """
+    info_url = httpify(info_url)
     i = information.Information.objects(url=info_url)
     return len(i) != 0
 
