@@ -12,6 +12,7 @@
         <datetime-formats>
             <format>%Y-%m-%d %H:%M</format>
             <format>%d %B %Y kl %H:%M</format>
+            <format>%B %d, %Y</format>
         </datetime-formats>
 
         <rss-urls>
