@@ -85,7 +85,7 @@
 
             // Add click events
             vera.dom[key].menu.click(controller.menu_click);
-
+            
             // Set the active tab and initialize the tab positions
             if(tab == active_tab) {
                 vera.dom[key].view.css({
@@ -136,6 +136,11 @@
                 })(tab + 1));
             }
         }
+        
+        // Add click event to main header title text
+        document.getElementById("main-header").onclick = function(evt){
+            controller.switch_to_tab_index(0);
+        };
 
         // activate the active tab
         controller.switch_to_tab_index(active_tab);
