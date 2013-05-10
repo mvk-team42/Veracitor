@@ -38,6 +38,16 @@ var NetworkController = function (controller) {
             'user_name': vera.user_name
         }, function(data){
             user = data;
+
+            /**
+             * Populate the group select dropdown.
+             */
+            console.log(user);
+            for (var g in user.groups){
+                $("#group_name").append($('<option>')
+                                        .attr('value', user.groups[g].name)
+                                        .html(user.groups[g].name));
+            }
         });
 
 
@@ -79,7 +89,7 @@ var NetworkController = function (controller) {
          */
         global_tag = vera.const.tags[0];
         for (var t in vera.const.tags) {
-            $('#global-tags')
+            $(".tag-dropdown")
                 .append($('<option>')
                         .attr('value', vera.const.tags[t])
                         .html(vera.const.tags[t]));
@@ -89,6 +99,8 @@ var NetworkController = function (controller) {
            Fire event when a new tag is selected.
          */
         $('#global-tags').change(on_global_tag_change);
+
+      
     };
 
     /**
@@ -108,6 +120,10 @@ var NetworkController = function (controller) {
     */
     function request_tidaltrust_value(source, sink) {
         console.log(source +" "+ sink +" " + global_tag);
+
+        // first hide old feedback
+        $('#network-compute-trust .feedback').hide();
+
         $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
@@ -119,8 +135,7 @@ var NetworkController = function (controller) {
                 // TODO: display success/
                 //console.log(data);
 
-                // first hide old feedback
-                $('#network-compute-trust .feedback').hide();
+               
 
                 if(data.result.trust !== null){
                     $('#network-compute-trust .feedback.win #trust-result')

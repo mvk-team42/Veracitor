@@ -41,6 +41,16 @@ def get_producer(requested_name):
 
     prod.prepare_ratings_for_using()
     return prod
+ 
+ 
+def get_producer_with_url(url):
+    extr_producer = producer.Producer.objects(url=url)
+    __checkIfEmpty(extr_producer)
+
+    prod = extr_producer[0]
+    
+    prod.prepare_ratings_for_using()
+    return prod
 
 
 

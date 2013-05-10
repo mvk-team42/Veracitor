@@ -23,6 +23,7 @@
         
         <webpage-paths>
             <name>
+                <xpath>//meta[@name="application-name"]/@content</xpath>
                 <xpath>//title/text()</xpath>
             </name>
             <description>
@@ -57,10 +58,12 @@
                 <xpath>//*[@id="main-article-info"]//*[@itemprop="description"]//text()</xpath>
                 <xpath>//*[contains(@class, "Ingress")]//child::text()</xpath>
                 <xpath>//article//text()</xpath>
+                <xpath>//meta[@name="description"]//@content</xpath>
             </summary>
             
             <tags>
-                <xpath>//meta[contains(@property,"article:tag")]/@content</xpath>    
+                <xpath>//meta[contains(@property,"article:tag")]/@content</xpath>  
+                <xpath>//meta[contains(@name, "keywords")]/@content</xpath>
             </tags>
 
             <publishers>

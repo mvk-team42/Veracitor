@@ -376,9 +376,12 @@ div.rating {
     margin-right: auto;
 }
 
-ul.list li .rating, div.rating {
-    display: block;
+span.rating{
+    padding: 0 7px;
+    margin: 0 3px;
+}
 
+ul.list .rating, div.rating, span.rating{
     text-align: center;
     line-height: 28px;
 
@@ -404,3 +407,6 @@ ul.list li .rating, div.rating {
     -moz-border-radius: 15px;
     border-radius: 15px;
 }
+
+
+  
