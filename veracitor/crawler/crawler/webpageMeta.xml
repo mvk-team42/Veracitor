@@ -62,7 +62,8 @@
             </summary>
             
             <tags>
-                <xpath>//meta[contains(@property,"article:tag")]/@content</xpath>    
+                <xpath>//meta[contains(@property,"article:tag")]/@content</xpath>  
+                <xpath>//meta[contains(@name, "keywords")]/@content</xpath>
             </tags>
 
             <publishers>
