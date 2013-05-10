@@ -271,7 +271,7 @@ var SearchController = function (controller) {
                     controller.switch_to_tab('network');
                 });
             } else {
-                display_search_error(vera.const.search.no_producers);
+                display_search_error(vera.const.search['no_'+type]);
             }
         });
     };
@@ -360,6 +360,10 @@ var SearchController = function (controller) {
     function parseDate(input) {
         var parts = input.match(/(\d+)/g);
         return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+    }
+
+    function display_search_error(message){
+        $("#search-result").html(message);
     }
 
     /**

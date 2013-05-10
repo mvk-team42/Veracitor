@@ -13,6 +13,8 @@
             <format>%Y-%m-%d %H:%M</format>
             <format>%d %B %Y kl %H:%M</format>
             <format>%B %d, %Y</format>
+            <format>%m/%d/%y %I:%M</format>
+            <format>%m/%d/%y %H:%M</format>
         </datetime-formats>
 
         <rss-urls>
