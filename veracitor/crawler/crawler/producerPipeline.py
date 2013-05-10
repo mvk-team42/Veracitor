@@ -87,7 +87,7 @@ def fix_fields(producer_item):
 def fix_field(producer_item, field):
     if field in producer_item:
         log.msg("producer_item["+field+"]: "+unicode(producer_item[field]))
-        if isinstance(producer_item[field], str):
+        if isinstance(producer_item[field], unicode) or isinstance(producer_item[field], str):
             if producer_item[field].strip() != "":
                 producer_item[field] = re.sub("\s+", " ", producer_item[field].strip())
                 return
