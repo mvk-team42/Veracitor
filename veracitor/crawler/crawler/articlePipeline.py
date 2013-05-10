@@ -71,8 +71,8 @@ def add_to_database(article):
                     publisher.rate_source(publisher2, tag, 5)
         publisher.save()
 
-def get_publisher_objects(publisher_strings):
-    publisher_strings = re.sub("[-&]", ",", publisher_strings).split(",")
+def get_publisher_objects(publishers_string):
+    publisher_strings = re.sub("[-&]", ",", publishers_string).split(",")
     #publisher_strings = [string.replace(".",",").replace("$",",") for string in publisher_strings]
     log.msg("pubStrings: " + str(publisher_strings))
     publishers = []
@@ -110,6 +110,7 @@ def fix_fields(article):
         db-friendly format.
     """
     fix_time_published(article)
+    fix_publisher(article)
     shorten_summary(article)
     for field in ArticleItem.fields.iterkeys():
         fix_field(article, field)
@@ -121,6 +122,15 @@ def fix_field(article, field):
             log.msg("article["+field+"]: "+article[field])
             return
     article[field] = "unknown"
+    
+def fix_publisher(article):
+    if "publishers" in article:
+        remove_colon_words_from_publishers(article):
+        article["publishers"] = article["publishers"].strip()
+
+def remove_colon_words_from_publishers(article):
+    pattern = re.compile("\S*+:")
+    article["publishers"] = pattern.sub("", article["publishers"])
             
 def fix_time_published(article):
     if "time_published" in article:
