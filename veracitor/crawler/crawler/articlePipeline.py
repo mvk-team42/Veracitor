@@ -38,7 +38,7 @@ def add_to_database(article):
     log.msg(article["url"] + " is new, adding to database")
         
     #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
-    tag_strings = article["tags"].split(',')
+    tag_strings = article["tags"].replace(";", ",").split(',')
     tags = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in tag_strings]
     if len(tags) == 0:
         tags.append(extractor.get_tag_create_if_needed("unknown"))
