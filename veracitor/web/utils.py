@@ -89,9 +89,16 @@ def get_user():
 
 @app.route('/utils/get_all_tags', methods=['GET', 'POST'])    
 def get_all_tags():
+    """
+    Extracs all tags in the database and returns them as a dict::
+
+       {
+       "tag_names": [str]
+       }
+    """
     try:
         tag_names = [tag.name for tag in extractor.get_all_tags()]
-        return tag_names
+        return jsonify(tag_names=tag_names)
     except:
         abort(400)
 
