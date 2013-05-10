@@ -47,7 +47,7 @@ def get_user_as_dict(username):
                         'name' : s,
                         'tag' : tag,
                         'rating': user_obj.source_ratings[s][tag] ,
-                        'description': extractor.get_producer(__safe_string(s)).description})  
+                        'description': extractor.get_producer(s).description})  
                         
         info_ratings = []
         for iurl in user_obj.info_ratings.keys():

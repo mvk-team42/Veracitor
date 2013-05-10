@@ -2,6 +2,15 @@
 
 <div class="table">
   <div class="left">
+    <div display="none">
+      {% for group in renderDict.groups %}
+      <div class="group-members" id="{{ group.name }}">
+	{% for prodname in group.producers %}
+	<input type="hidden" value="{{ prodname }}">
+	{% endfor %}
+      </div>
+      {% endfor %}
+    </div>
     <h2>Rated producers</h2>
     <div display='block' id="filters">
       <label for="prod-tags">Tag:</label>
