@@ -135,6 +135,10 @@ var NetworkController = function (controller) {
     */
     function request_tidaltrust_value(source, sink) {
         console.log(source +" "+ sink +" " + global_tag);
+
+        // first hide old feedback
+        $('#network-compute-trust .feedback').hide();
+
         $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
@@ -146,8 +150,7 @@ var NetworkController = function (controller) {
                 // TODO: display success/
                 //console.log(data);
 
-                // first hide old feedback
-                $('#network-compute-trust .feedback').hide();
+               
 
                 if(data.result.trust !== null){
                     $('#network-compute-trust .feedback.win #trust-result')
