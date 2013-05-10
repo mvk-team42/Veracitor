@@ -11,18 +11,18 @@
         <p><b>Source type: </b><span class="type"></span></p>
         <p><b>Informations: </b></p>
         <span class="informations">
-          
+
         </span>
-	<p><b>Your ratings:</p></b>
-	<div class="ratings"></div>
-	<p><b>Actions:</p></b>
+	    <p><b>Your ratings:</p></b>
+	    <div class="ratings"></div>
+	    <p><b>Actions:</p></b>
         <div id="network_rate_producer" class="network-info-piece">
-	  <p>Rate producer <span class="icon question-mark"></span></p>
-	  <p class="tip-text">
-	    Give a trust rating to selected producer using a specific tag.
-	  </p>
-	  <input type="text" placeholder="Tag" size="15" id="rate-producer-tag" />
-	  <select class="rating">
+	      <p>Rate producer <span class="icon question-mark"></span></p>
+	      <p class="tip-text">
+	        Give a trust rating to selected producer using a specific tag.
+	      </p>
+	      <input type="text" placeholder="Tag" size="15" id="rate-producer-tag" />
+	      <select class="rating">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -30,17 +30,17 @@
             <option value="5">5</option>
           </select>
           <input type="button" class="button" value="Rate producer" />
-	  <div class="feedback"></div>
+	      <div class="feedback"></div>
         </div>
-	<div id="network-compute-trust" class="network-info-piece">
-	  <p>Compute trust <span class="icon question-mark"></span></p>
-	  <p class="tip-text">
-	    Get an assessment on how much you should trust the selected producer
-	    based on how much other nodes trust it.
-	  </p>
-	  <input type="text" placeholder="Tag" size="15" id="compute-trust-tag" />
+	    <div id="network-compute-trust" class="network-info-piece">
+	      <p>Compute trust <span class="icon question-mark"></span></p>
+	      <p class="tip-text">
+	        Get an assessment on how much you should trust the selected producer
+	        based on how much other nodes trust it.
+	      </p>
+	      <input type="text" placeholder="Tag" size="15" id="compute-trust-tag" />
           <input type="button" value="Compute trust" id="compute-trust"/>
-	  <div class="feedback win">
+	      <div class="feedback win">
             <p>
               Trust: <span id="trust-result"></span>
               <span class="icon question-mark"></span>
@@ -63,22 +63,22 @@
             <p class="tip-text">
               Trust calculations fail when there is no path between the source node (you)
               and the sink node, or when the trust could not be calculated accurately enough.
-              Make sure you specified the correct tag when calculating the trust. 
+              Make sure you specified the correct tag when calculating the trust.
             </p>
             <p id="fail-message"></p>
           </div>
-	</div>
-        
+	    </div>
+
         <div id="network-add-group" class="network-info-piece">
-	  <p>Add to group <span class="icon question-mark"></span></p>
-	  <p class="tip-text">
-	    Add the selected producer to one of your groups (group management, such
-	    as adding an editing groups, is done under the Ratings tag).
-	  </p>
+	      <p>Add to group <span class="icon question-mark"></span></p>
+	      <p class="tip-text">
+	        Add the selected producer to one of your groups (group management, such
+	        as adding an editing groups, is done under the Ratings tag).
+	      </p>
           <input type="text" placeholder="Group name" id="group_name" />
           <input type="button" value="Add to group" id="add-to-group" />
-	  <div class="feedback"></div>
-	</div>
+	      <div class="feedback"></div>
+	    </div>
       </div>
     </div>
   </div>
@@ -91,7 +91,7 @@
     </div>
     <div id="network-toolbox">
       <div class="body">
-        <p><b>Tool-box</b></p>
+        <label>Tag<select id="global-tags"></select></label>
       </div>
     </div>
   </div>

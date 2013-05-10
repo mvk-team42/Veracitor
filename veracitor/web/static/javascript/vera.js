@@ -147,7 +147,8 @@
             'searching': 'Searching...',
             'no_producers': 'No producers found.',
             'no_information': 'No information found.'
-        }
+        },
+        'tags': ['Trust','Terrorism','Crime','Cooking']
     };
 
     // Initialize when the document has loaded

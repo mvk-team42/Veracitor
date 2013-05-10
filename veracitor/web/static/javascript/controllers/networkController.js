@@ -15,6 +15,7 @@ var NetworkController = function (controller) {
     var visualizer = new Visualizer(network_controller);
     var network_info;
 
+    var global_tag = null;
     var selected_producer = null;
     var user;
 
@@ -56,7 +57,7 @@ var NetworkController = function (controller) {
             $.post('/jobs/network/rate/producer', {
                 'source': vera.user_name,
                 'target': selected_producer.name,
-                'tag': $('#rate-producer-tag').val(),
+                'tag': global_tag,
                 'rating': rating,
             }, function ( data ) {
                 // TODO: show success/fail
@@ -72,34 +73,60 @@ var NetworkController = function (controller) {
         });
 
         $('#compute-trust').click( function(evt){
-            request_tidaltrust_value(vera.user_name,
-                                     selected_producer.name,
-                                     $("#compute-trust-tag").val());
+            request_tidaltrust_value(vera.user_name, selected_producer.name);
         });
 
         /**
-         * Toggle tip-text when clicking question mark icons. Needs the structure of the
-         * dom to be like this:
-         *
-         * <p>
-         *   text <infobutton>
-         * </p>
-         * <div tip-text></div>
+           Toggle tip-text when clicking question mark icons. Needs the structure of the
+           dom to be like this:
+
+           <p>
+             text <infobutton>
+           </p>
+           <div tip-text></div>
          */
         $('.network-info-piece span.question-mark').click(function(evt){
             $(this).parent().next().toggle();
         });
+
+        /**
+           Fill the tag select dropdown with tags.
+         */
+        global_tag = vera.const.tags[0];
+        for (var t in vera.const.tags) {
+            $('#global-tags')
+                .append($('<option>')
+                        .attr('value', vera.const.tags[t])
+                        .html(vera.const.tags[t]));
+        }
+
+        /**
+           Fire event when a new tag is selected.
+         */
+        $('#global-tags').change(on_global_tag_change);
+    };
+
+    /**
+       This function is called when the global tag is changed.
+     */
+    var on_global_tag_change = function (evt) {
+        var tag = $(this).find(':selected').val();
+
+        if (tag !== global_tag) {
+            global_tag = tag;
+            console.log('Tag changed');
+        }
     };
 
     /**
        Request a TidalTrust value.
     */
-    function request_tidaltrust_value(source, sink, tag) {
-        console.log(source +" "+ sink +" " + tag);
+    function request_tidaltrust_value(source, sink) {
+        console.log(source +" "+ sink +" " + global_tag);
         $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
-            'tag': tag
+            'tag': global_tag
         }, function (data) {
             var job_id = data['job_id'];
 
@@ -118,10 +145,10 @@ var NetworkController = function (controller) {
                         .html(
                            // TODO: Display something interesting here?
                         );
-                    $('#network-compute-trust .feedback.fail').show();                    
+                    $('#network-compute-trust .feedback.fail').show();
                 }
 
-                
+
             });
         })
         .fail(function () {
