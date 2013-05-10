@@ -1,4 +1,4 @@
-def _httpify(url):
+def httpify(url):
     if url.startswith("http://"):
         return url
     return "http://" + url
