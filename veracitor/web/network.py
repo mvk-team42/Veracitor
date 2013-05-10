@@ -27,6 +27,9 @@ def get_shortest_path():
 
         target (str): The name of the target producer.
 
+    Optional parameters:
+        tag (str): If specified, only edges with this tag will be considered.
+
     Returns:
         An object with the found path.
 
@@ -41,12 +44,19 @@ def get_shortest_path():
         log(request.form)
         source = request.form['source']
         target = request.form['target']
+        try:
+            tag = request.form['target']
+        except:
+            tag = None
     except Exception as e:
         log("Exception: "+str(e)+"\nMsg: "+e.message+"\n");
         abort(400)
 
     # TODO fix the global network...
     gn = nm.build_network_from_db()
+
+    if not tag:
+        gn = _filter_network_by_tag(gn)
 
     try:
         nodes = nx.shortest_path(gn, source, target)
@@ -71,6 +81,22 @@ def get_shortest_path():
 
     return jsonify(path=data)
 
+def _filter_network_by_tag(self, network, tag):
+    """
+    Creates a graph from input network containing only the edges in network
+    that have a weight/rating under the specified tag.
+
+    """
+    Gtagged = nx.DiGraph()
+
+    for n in network.nodes():
+	for nn in network[n]:
+            if network[n][nn][tag]:
+                Gtagged.add_edge(n, nn, {tag:G[n][nn][tag]})
+
+    return Gtagged
+			
+
 @app.route('/jobs/network/neighbors', methods=['GET','POST'])
 def get_neighbors():
     """Returns the neighbors to the given source producer at
@@ -84,7 +110,11 @@ def get_neighbors():
 
     Parameters:
         name (str): The name of the source producer.
+
         depth (int): The neighbour depth.
+
+    Optional parameters:
+        tag (str): If specified, only edges with this tag will be considered.
 
     Returns:
         An object with the found neighbours.
@@ -100,11 +130,19 @@ def get_neighbors():
         log(request.form)
         name = request.form['name']
         depth = request.form['depth']
+
+        try:
+            tag = request.form['tag']
+        else:
+            tag = None
     except:
         abort(400)
 
     # TODO fix the global network...
     gn = nm.build_network_from_db()
+
+    if not tag:
+        gn = _filter_network_by_tag(gn, tag)
 
     neighbors = []
 

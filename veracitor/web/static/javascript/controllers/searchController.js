@@ -324,7 +324,7 @@ var SearchController = function (controller) {
        crawling jobs.
      */
     function request_source_crawl(url) {
-      $.post("/jobs/crawler/add_newspaper", {"url":url}, function(data) {
+      $.post("/jobs/crawler/request_scrape", {"url":url}, function(data) {
         $("#crawler-result table").html("<thead>Fetching crawls...</thead>")
         update_crawler_results();
       });
