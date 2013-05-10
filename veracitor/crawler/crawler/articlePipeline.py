@@ -47,7 +47,9 @@ def add_to_database(article):
     domain = "http://" + urlparse(article["url"])[1]
     try:
         publishers.append(extractor.get_producer_with_url(domain))
+        log.msg("got producer")
     except:
+        log.msg("failed to get producer....")
         pass
 
     info = information.Information(
@@ -138,7 +140,7 @@ def fix_time_published(article):
         replace_words_in_time_published(article)
                 
 def remove_words_from_time_published(article):
-    pattern = re.compile('published|publicerad|published:|publicerad:|am|pm', re.IGNORECASE)
+    pattern = re.compile('published:|publicerad:|published|publicerad|am|pm', re.IGNORECASE)
     article["time_published"] = pattern.sub("", article["time_published"])   
     
 def replace_words_in_time_published(article):
@@ -179,6 +181,7 @@ def parse_datetime(article):
     time = None
     
 #        log.msg("first time format: " + str(datetime_formats[0]))
+    log.msg("time string: "+unicode(article['time_published']))
     for time_format in datetime_formats:
         try:
             time = strptime(article['time_published'],time_format)
