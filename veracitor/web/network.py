@@ -45,7 +45,7 @@ def get_shortest_path():
         source = request.form['source']
         target = request.form['target']
         try:
-            tag = request.form['target']
+            tag = request.form['tag']
         except:
             tag = None
     except Exception as e:
@@ -55,8 +55,8 @@ def get_shortest_path():
     # TODO fix the global network...
     gn = nm.build_network_from_db()
 
-    if not tag:
-        gn = _filter_network_by_tag(gn)
+    if tag:
+        gn = _filter_network_by_tag(gn, tag)
 
     try:
         nodes = nx.shortest_path(gn, source, target)
@@ -81,19 +81,31 @@ def get_shortest_path():
 
     return jsonify(path=data)
 
-def _filter_network_by_tag(self, network, tag):
+def _filter_network_by_tag(network, tag):
     """
     Creates a graph from input network containing only the edges in network
     that have a weight/rating under the specified tag.
 
     """
     Gtagged = nx.DiGraph()
+    
+#    info=""+tag
 
     for n in network.nodes():
-	for nn in network[n]:
-            if network[n][nn][tag]:
-                Gtagged.add_edge(n, nn, {tag:G[n][nn][tag]})
+        #    info += "\n"+n
+        for nn in network[n]:
+            #       info += "\n\t"+str(network[n][nn])
+            try:
+                Gtagged.add_edge(n, nn, {tag:network[n][nn][tag]})
+            except:
+                pass
+    # except:
+    #     log(info)
+    #     return network
 
+#    log(info)
+#   log(nx.to_dict_of_dicts(Gtagged))
+            
     return Gtagged
 			
 
@@ -141,7 +153,7 @@ def get_neighbors():
     # TODO fix the global network...
     gn = nm.build_network_from_db()
 
-    if not tag:
+    if tag:
         gn = _filter_network_by_tag(gn, tag)
 
     neighbors = []

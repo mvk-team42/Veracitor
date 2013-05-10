@@ -133,6 +133,10 @@ var NetworkController = function (controller) {
             controller.set_job_callback(job_id, function (data) {
                 // TODO: display success/
                 //console.log(data);
+
+                // first hide old feedback
+                $('#network-compute-trust .feedback').hide();
+
                 if(data.result.trust !== null){
                     $('#network-compute-trust .feedback.win #trust-result')
                         .html(data.result.trust);
