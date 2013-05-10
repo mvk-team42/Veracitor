@@ -50,13 +50,14 @@ def get_user_as_dict(username):
                         'description': extractor.get_producer(s).description})  
                         
         info_ratings = []
+        
         for iurl in user_obj.info_ratings.keys():
+            log(iurl)
             info_ratings.append({
-                    'title': extractor.get_information(__safe_string(iurl)).title,
-                    'rating': user_obj.info_ratings[iurl],
+                    'title': extractor.get_information(iurl).title,
+                    'rating': user_obj.info_ratings[__safe_string(iurl)],
                     'url': iurl,
                     })
-            
             
         groups = [{'name' : g.name,
                    'description' : g.description,

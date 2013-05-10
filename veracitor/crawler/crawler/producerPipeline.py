@@ -31,7 +31,7 @@ def process_producer(producer_item, spider):
 
     fix_fields(producer_item)
 
-    if producer_item["name"]=="":
+    if producer_item["name"]=="unknown":
         producer_item["name"] = producer_item["url"]
 
     if extractor.contains_producer_with_name(producer_item["name"]):

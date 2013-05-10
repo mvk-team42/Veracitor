@@ -66,15 +66,37 @@ var RatingsController = function (controller) {
 	});
 
 	
+	/*
+	 * Filters the producer-list on groups.
+	 * It uses a hidden div with hidden input tags
+	 * that contains all the producers that are within a
+	 * certain group to do the filtering.
+	 */
 	$(".left #groups").change(function() {
 	    var selectedValue = $(this).find(":selected").val();
 	    if( selectedValue != 'all' ) {
 		$("#rate-group").removeAttr("disabled");
-
-		//TODO: Filter list on group
+		//Hide all producers
+		group_selector = '.left .group-members#' + selectedValue + ' input';
+		$('div#producer-list').children().addClass("hide");
+		$('div#producer-list').children().removeClass("show");
+		$(group_selector).each(function() {
+		    $('div#producer-list div#' + $(this).val()).addClass('show');
+		
+		});
+		$('div#producer-list div.hide').hide();
+		$('div#producer-list div.show').show();
+		producer_selector = 'div#producer-list div#' + $(this).val();
+		
+		    
 	    }
 	    else {
 		$("#rate-group").attr("disabled", "disabled");
+		$('div#producer-list').children().addClass("show");
+		$('div#producer-list').children().removeClass("hide");
+		
+		$('div#producer-list div.show').show();
+
 	    }
 	});
 
