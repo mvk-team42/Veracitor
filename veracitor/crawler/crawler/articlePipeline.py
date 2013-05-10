@@ -138,7 +138,7 @@ def fix_time_published(article):
         replace_words_in_time_published(article)
                 
 def remove_words_from_time_published(article):
-    pattern = re.compile('published|publicerad|published:|publicerad:|am|pm', re.IGNORECASE)
+    pattern = re.compile('published:|publicerad:|published|publicerad|am|pm', re.IGNORECASE)
     article["time_published"] = pattern.sub("", article["time_published"])   
     
 def replace_words_in_time_published(article):
