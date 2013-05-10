@@ -85,7 +85,22 @@ def get_user():
 
     """
     return jsonify(extractor.entity_to_dict(extractor.get_user(request.form["user_name"])));
-    
+
+@app.route('/utils/get_all_tags', methods=['GET', 'POST'])    
+def get_all_tags():
+    """
+    Extracs all tags in the database and returns them as a dict::
+
+       {
+       "tag_names": [str]
+       }
+    """
+    try:
+        tag_names = [tag.name for tag in extractor.get_all_tags()]
+        return jsonify(tag_names=tag_names)
+    except:
+        abort(400)
+
 def __safe_string(url):
     """
     Help method to change url representation.
@@ -93,5 +108,8 @@ def __safe_string(url):
     
     """
     return url.replace("|", ".")
+
+
+
 
     
