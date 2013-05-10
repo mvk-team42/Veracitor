@@ -38,6 +38,16 @@ var NetworkController = function (controller) {
             'user_name': vera.user_name
         }, function(data){
             user = data;
+
+            /**
+             * Populate the group select dropdown.
+             */
+            console.log(user);
+            for (var g in user.groups){
+                $("#group_name").append($('<option>')
+                                        .attr('value', user.groups[g].name)
+                                        .html(user.groups[g].name));
+            }
         });
 
 
@@ -94,7 +104,7 @@ var NetworkController = function (controller) {
          */
         global_tag = vera.const.tags[0];
         for (var t in vera.const.tags) {
-            $('#global-tags')
+            $(".tag-dropdown")
                 .append($('<option>')
                         .attr('value', vera.const.tags[t])
                         .html(vera.const.tags[t]));
@@ -104,6 +114,8 @@ var NetworkController = function (controller) {
            Fire event when a new tag is selected.
          */
         $('#global-tags').change(on_global_tag_change);
+
+      
     };
 
     /**
