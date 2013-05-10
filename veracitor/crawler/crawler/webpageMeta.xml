@@ -74,6 +74,7 @@
                 <xpath>//*[contains(@class, "timestamp")][1]//child::text()</xpath> 
                 <xpath>//*[contains(@class, "article-metadata")]//*[contains(@class, "publishdate")]//text()</xpath>
                 <xpath>//*[contains(@class, "pubtime")]//text()</xpath>
+                <xpath>//meta[contains(@itemprop, "datePublished")]/@content</xpath>
             </time_published>
         </article-paths>
     </default>
