@@ -47,7 +47,9 @@ def add_to_database(article):
     domain = "http://" + urlparse(article["url"])[1]
     try:
         publishers.append(extractor.get_producer_with_url(domain))
+        log.msg("got producer")
     except:
+        log.msg("failed to get producer....")
         pass
 
     info = information.Information(

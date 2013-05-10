@@ -53,7 +53,8 @@ def add_to_xml(producer_item, tree, xml_file):
 
     if already_in_xml:   # Get element and remove existing url-links
         webpage = webpages.find("webpage[@domain='"+producer_item["url"]+"']")
-        webpage.remove(webpage.find("rss-urls"))
+        if webpage.find("rss-urls") != None:
+            webpage.remove(webpage.find("rss-urls"))
     else:  # Create new element
         webpage = ET.Element("webpage", attrib={'domain':producer_item["url"], 'name':producer_item["name"]})
     rss_urls_tag = ET.Element("rss-urls")
