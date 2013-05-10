@@ -27,6 +27,9 @@ def get_shortest_path():
 
         target (str): The name of the target producer.
 
+    Optional parameters:
+        tag (str): If specified, only edges with this tag will be considered.
+
     Returns:
         An object with the found path.
 
@@ -107,7 +110,11 @@ def get_neighbors():
 
     Parameters:
         name (str): The name of the source producer.
+
         depth (int): The neighbour depth.
+
+    Optional parameters:
+        tag (str): If specified, only edges with this tag will be considered.
 
     Returns:
         An object with the found neighbours.
@@ -123,11 +130,19 @@ def get_neighbors():
         log(request.form)
         name = request.form['name']
         depth = request.form['depth']
+
+        try:
+            tag = request.form['tag']
+        else:
+            tag = None
     except:
         abort(400)
 
     # TODO fix the global network...
     gn = nm.build_network_from_db()
+
+    if not tag:
+        gn = _filter_network_by_tag(gn, tag)
 
     neighbors = []
 
