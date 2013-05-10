@@ -10,7 +10,6 @@
 from mongoengine import *
 import networkModel
 import tag
-import information
 
 from dbExceptions import NetworkModelException
 connect('mydb')
@@ -33,7 +32,6 @@ class Producer(Document):
     infos = ListField(ReferenceField('Information'))
     source_ratings = DictField()
     info_ratings = DictField()
-    type_of = StringField(required=True)
     # To allow the User class to inherhit from this.
     meta = {'allow_inheritance':'On'}
 
@@ -54,7 +52,7 @@ class Producer(Document):
             raise TypeError("Problem with type of input variables.")
 
     def rate_information(self, information_to_rate, rating):
-        if(type(information_to_rate) is information.Information and\
+        if(\
            type(rating) is int):
             self.info_ratings[(information_to_rate.url)] = rating
         else:
@@ -132,8 +130,37 @@ class Producer(Document):
 
         super(Producer, self).delete()
 
+   
+    def add_information(self, info_to_add):
+        for info in self.infos:
+            if info == info_to_add:
+                return False
+        self.infos.append(info_to_add)
+        for publisher in info_to_add.publishers:
+            if publisher == self:
+                return True
+        info_to_add.publishers.append(self)
+        return True
+
+    def delete_information(self, info_to_del):
+        found = False
+        for x in range(len(self.infos)):
+            if self.infos[x] == info_to_del:
+                del self.infos[x]
+                found = True
+                break
+        for x in range(len(info_to_del.publishers)):
+            if info_to_del.publishers[x] == self:
+                del info_to_del.publishers[x]
+                if found:
+                    return True
+        return False
+        
+                
+
     def __safe_string(self, url):
         return url.replace(".", "|")
     def __unsafe_string(self, _str):
         return _str.replace("|", ".")
+
 

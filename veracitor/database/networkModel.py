@@ -19,7 +19,6 @@ tag.name the rating was set.
 from networkx import to_dict_of_dicts, DiGraph
 from tag import *
 from producer import *
-from information import *
 from group import *
 from user import *
 from mongoengine import *

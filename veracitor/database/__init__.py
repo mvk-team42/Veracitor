@@ -1,5 +1,5 @@
 from mongoengine import *
 
 connect('mydb')
-__all__ = ["networkModel", "information", "extractor", "group",
-           "producer", "user", "tag", "dbExceptions"]
+__all__ = ["networkModel", "producer", "extractor", "group",
+           "information", "user", "tag", "dbExceptions"]
