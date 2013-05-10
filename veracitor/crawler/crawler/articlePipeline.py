@@ -179,6 +179,7 @@ def parse_datetime(article):
     time = None
     
 #        log.msg("first time format: " + str(datetime_formats[0]))
+    log.msg("time string: "+unicode(article['time_published']))
     for time_format in datetime_formats:
         try:
             time = strptime(article['time_published'],time_format)
