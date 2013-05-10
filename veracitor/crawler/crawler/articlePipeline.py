@@ -93,7 +93,7 @@ def get_publisher_objects(publishers_string):
                 else:
                     not_found.append(split_publisher)
             if len(not_found) != 0:
-                producer = extractor.producer_create_if_needed(" ".join(not_found), "journalist")
+                producer = extractor.producer_create_if_needed(" ".join(not_found), "Journalist")
                 publishers.append(producer)
     return publishers
 
