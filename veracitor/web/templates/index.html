@@ -41,7 +41,9 @@
 
 		<img id="veracitor-logo" src="{{ url_for('static', filename='images/veracitor_logo_2.png') }}" />
 
-		<h1>{{ vera.title }}</h1>
+		<h1 id="main-header">
+                  <a href="javascript:;">{{ vera.title }}</a>
+                </h1>
 
 		<ul id="menu">
 		    {% for tab in vera.tabs %}
