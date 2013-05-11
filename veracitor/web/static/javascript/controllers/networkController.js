@@ -182,7 +182,7 @@ var NetworkController = function (controller) {
             if (data.path.nodes.length > 0) {
                 hide_network_information();
 
-                selected_producer = data.path.source;
+                selected_producer = data.path.target;
 
                 visualizer.visualize_path_in_network(data.path.source.name,
                                                      data.path.target.name,
@@ -241,12 +241,7 @@ var NetworkController = function (controller) {
             'tag': tag,
             'rating': rating,
         }, function ( data ) {
-            // TODO: show success/fail
-            visualizer.fetch_neighbors(data.source.name, 1, (function ( target ) {
-                return function () {
-                    network_controller.visualize_producer_in_network(target);
-                };
-            })(data.target.name));
+            network_controller.visualize_producer_in_network(data.target.name);
         }).fail(function ( data ) {
             // TODO
         });
