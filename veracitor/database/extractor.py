@@ -17,7 +17,7 @@ import group
 import re
 import datetime
 from dbExceptions import *
-from ..utils import httpify
+from veracitor.utils import httpify
 
 connect('mydb')
 
