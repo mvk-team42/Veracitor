@@ -42,7 +42,6 @@ var NetworkController = function (controller) {
             /**
              * Populate the group select dropdown.
              */
-            console.log(user);
             for (var g in user.groups){
                 $("#group_name").append($('<option>')
                                         .attr('value', user.groups[g].name)
@@ -62,13 +61,16 @@ var NetworkController = function (controller) {
         });
 
         $('#network_rate_producer > .button').click(function (evt) {
+            var tag = $('#rate-producer-tag > option:selected').val();
             var rating = $('#network_rate_producer > .rating > option:selected').html();
 
-            rate_producer(vera.user_name, selected_producer.name, global_tag, rating);
+            rate_producer(vera.user_name, selected_producer.name, tag, rating);
         });
 
         $('#compute-trust').click( function(evt){
-            request_tidaltrust_value(vera.user_name, selected_producer.name);
+            var tag = $('#compute-trust-tag > option:selected').val();
+
+            request_tidaltrust_value(vera.user_name, selected_producer.name, tag);
         });
 
         /**
@@ -100,7 +102,7 @@ var NetworkController = function (controller) {
          */
         $('#global-tags').change(on_global_tag_change);
 
-      
+
     };
 
     /**
@@ -111,23 +113,23 @@ var NetworkController = function (controller) {
 
         if (tag !== global_tag) {
             global_tag = tag;
-            console.log('Tag changed');
+
+            $('#rate-producer-tag').val(global_tag);
+            $('#compute-trust-tag').val(global_tag);
         }
     };
 
     /**
        Request a TidalTrust value.
     */
-    function request_tidaltrust_value(source, sink) {
-        console.log(source +" "+ sink +" " + global_tag);
-
+    function request_tidaltrust_value(source, sink, tag) {
         // first hide old feedback
         $('#network-compute-trust .feedback').hide();
 
         $.post('/jobs/algorithms/tidal_trust', {
             'source': source,
             'sink': sink,
-            'tag': global_tag
+            'tag': tag
         }, function (data) {
             var job_id = data['job_id'];
 
@@ -135,7 +137,7 @@ var NetworkController = function (controller) {
                 // TODO: display success/
                 //console.log(data);
 
-               
+
 
                 if(data.result.trust !== null){
                     $('#network-compute-trust .feedback.win #trust-result')
@@ -200,8 +202,6 @@ var NetworkController = function (controller) {
     this.display_producer_information = function (prod) {
         // A reference to this controller
         var network_controller = this;
-
-        console.log(prod);
 
         selected_producer = prod;
 

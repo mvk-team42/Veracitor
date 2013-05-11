@@ -142,9 +142,6 @@ var Visualizer = function (controller) {
             }
         }
 
-        console.log(nodes);
-        console.log(edges);
-
         cy.elements().remove();
         cy.add(nodes);
         cy.add(edges);

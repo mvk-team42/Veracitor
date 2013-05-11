@@ -74,11 +74,15 @@
     border: 1px solid #aaa;
 }
 
+#network-info-view .tag-dropdown {
+    width: 200px;
+}
+
 div.informations{
     max-height:500px;
     overflow:auto;
 /*    border:1px solid #aaa;*/
-  
+
 
     -webkit-box-shadow: inset 0px 0px 30px 0.1px #aaa;
     box-shadow: inset 0px 0px 30px 0.1px #aaa;
@@ -151,4 +155,9 @@ div.informations{
 
 #network-toolbox > .body {
     padding: 5px 10px;
+}
+
+#network-toolbox .tag-dropdown {
+    width: 200px;
+    margin-left: 10px;
 }
