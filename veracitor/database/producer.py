@@ -32,6 +32,7 @@ class Producer(Document):
     infos = ListField(ReferenceField('Information'))
     source_ratings = DictField()
     info_ratings = DictField()
+    type_of = StringField(required=True)
     # To allow the User class to inherhit from this.
     meta = {'allow_inheritance':'On'}
 
@@ -100,7 +101,7 @@ class Producer(Document):
             self.source_ratings[self.__safe_string(rating)] = self.source_ratings.pop(rating)
         for rating in self.info_ratings.keys():
             self.info_ratings[self.__safe_string(rating)] = self.info_ratings.pop(rating)
-        
+
     def prepare_ratings_for_using(self):
         for rating in self.source_ratings.keys():
             self.source_ratings[self.__unsafe_string(rating)] = self.source_ratings.pop(rating)
@@ -130,7 +131,7 @@ class Producer(Document):
 
         super(Producer, self).delete()
 
-   
+
     def add_information(self, info_to_add):
         for info in self.infos:
             if info == info_to_add:
@@ -155,12 +156,10 @@ class Producer(Document):
                 if found:
                     return True
         return False
-        
-                
+
+
 
     def __safe_string(self, url):
         return url.replace(".", "|")
     def __unsafe_string(self, _str):
         return _str.replace("|", ".")
-
-
