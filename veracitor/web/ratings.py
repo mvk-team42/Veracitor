@@ -66,7 +66,6 @@ def render_ratings():
         renderDict = {}
         renderDict = utils.get_user_as_dict(session['user_name'])
         renderDict['prodtags'] = get_used_prod_tags()
-        log(renderDict['prodtags'])
         renderDict['infotags'] = get_used_info_tags()
         producers = renderDict['source_ratings']
         information = renderDict['info_ratings']
