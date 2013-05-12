@@ -96,6 +96,13 @@ var NetworkController = function (controller) {
         }
 
         /**
+         * Init autocomplete.
+         */
+        $( "#tag-autocomplete" ).autocomplete({
+            source: vera.const.tags
+        });
+
+        /**
            Fire event when a new tag is selected.
          */
         $('#global-tags').change(on_global_tag_change);
