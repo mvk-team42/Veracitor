@@ -110,7 +110,9 @@
     <div id='information-list-container'>
       <div id='information-list'>
 	{% for information in renderDict.info_ratings  %}
-	<div class="crime">
+	<div class="{% for tag in information.tags %}
+		   {{tag}} 
+		   {% endfor %}">
 	  <h3>{{ information.title }} <div class='rating'>{{ information.rating }}</div></h3>
 	  <div>
 	    <div class="description">

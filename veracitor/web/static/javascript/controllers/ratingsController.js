@@ -58,7 +58,7 @@ var RatingsController = function (controller) {
 	});
 
 	$(".right #info-tags").change(function() {
-	    var selectedValue = $(this).find(":selected").val();
+	    var selectedValue = $(this).find(":selected").val().replace(" ", "-");
 	    if( selectedValue != 'none' ) {
 	    $('.right #information-list >').not('div.' + selectedValue).hide()
 	    $('.right #information-list > div.' + selectedValue).show();

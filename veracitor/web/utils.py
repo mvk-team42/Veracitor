@@ -56,10 +56,12 @@ def get_user_as_dict(username):
         info_ratings = []
         for iurl in user_obj.info_ratings.keys():
             log(iurl)
+            information = extractor.get_information(__safe_string(iurl))
             info_ratings.append({
-                    'title': extractor.get_information(__safe_string(iurl)).title,
+                    'title': information.title,
                     'rating': user_obj.info_ratings[iurl],
                     'url': __safe_string(iurl),
+                    'tags': [tag.name.replace(" ", "-") for tag in information.tags]
                     })
          
         groups = [{'name' : g.name,
