@@ -17,6 +17,7 @@ var NetworkController = function (controller) {
 
     var global_tag = null;
     var selected_producer = null;
+    var selected_tag = null;
     var user;
 
     /**
@@ -39,9 +40,7 @@ var NetworkController = function (controller) {
         }, function(data){
             user = data;
 
-            /**
-             * Populate the group select dropdown.
-             */
+            // Generate the group select dropdown.
             for (var g in user.groups){
                 $("#group_name").append($('<option>')
                                         .attr('value', user.groups[g].name)
@@ -186,7 +185,8 @@ var NetworkController = function (controller) {
     this.visualize_producer_in_network = function (prod) {
         $.post('/jobs/network/path', {
             'source': vera.user_name,
-            'target': prod
+            'target': prod,
+            'tag': global_tag || ''
         }, function (data) {
             network_controller.display_producer_information(data.path.target);
 
@@ -198,7 +198,8 @@ var NetworkController = function (controller) {
                 visualizer.visualize_path_in_network(data.path.source.name,
                                                      data.path.target.name,
                                                      data.path.nodes,
-                                                     data.path.ghosts);
+                                                     data.path.ghosts,
+                                                     data.path.tag);
             } else {
                 display_network_information('No path found');
             }

@@ -361,7 +361,7 @@ select {
 }
 
 select.rating {
-    padding: 0 3px;
+    padding: 0 0 0 3px;
 
     font-weight: bold;
 }
