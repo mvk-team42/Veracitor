@@ -64,13 +64,17 @@ var NetworkController = function (controller) {
             var tag = $('#rate-producer-tag > option:selected').val();
             var rating = $('#network_rate_producer > .rating > option:selected').html();
 
-            rate_producer(vera.user_name, selected_producer.name, tag, rating);
+            if (selected_producer !== null) {
+                rate_producer(vera.user_name, selected_producer.name, tag, rating);
+            }
         });
 
         $('#compute-trust').click( function(evt){
             var tag = $('#compute-trust-tag > option:selected').val();
 
-            request_tidaltrust_value(vera.user_name, selected_producer.name, tag);
+            if (selected_producer !== null) {
+                request_tidaltrust_value(vera.user_name, selected_producer.name, tag);
+            }
         });
 
         /**
@@ -210,25 +214,29 @@ var NetworkController = function (controller) {
         $('#network-info-view .url').html($('<a>').attr('href', prod.url).html(prod.url));
         $('#network-info-view .type').html(prod.type_of);
 
-        var ul = $('<ul>');
-        for (var i = 0; i < prod.infos.length; i++) {
-            if (prod.infos[i] !== null) { // initially an issue in the database
-                ul.append($('<li>')
-                          .append($('<p>').html(prod.infos[i].title))
-                          .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
-                          .append(get_rating_dropdown_html())
-                          .append($('<input>').attr({
-                              'type': 'button',
-                              'value': 'Rate information'
-                          }).click((function ( url ) {
-                              return function ( evt ) {
-                                  var rating = $(this).parent().find(':selected').html();
-                                  rate_information(url, rating);
-                              };
-                          })(prod.infos[i].url))));
+        if (prod.infos.length > 0) {
+            var ul = $('<ul>');
+            for (var i = 0; i < prod.infos.length; i++) {
+                if (prod.infos[i] !== null) { // initially an issue in the database
+                    ul.append($('<li>')
+                              .append($('<p>').html(prod.infos[i].title))
+                              .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
+                              .append(get_rating_dropdown_html())
+                              .append($('<input>').attr({
+                                  'type': 'button',
+                                  'value': 'Rate information'
+                              }).click((function ( url ) {
+                                  return function ( evt ) {
+                                      var rating = $(this).parent().find(':selected').html();
+                                      rate_information(url, rating);
+                                  };
+                              })(prod.infos[i].url))));
+                }
             }
+            $('#network-info-view .informations').html(ul);
+        } else {
+            $('#network-info-view .informations').html($('<p>').html(vera.const.network.no_information));
         }
-        $('#network-info-view .informations').html(ul);
 
         $(".feedback").hide();
         $(".tip-text").hide();

@@ -141,13 +141,18 @@
 
         // Fetch all existing tags
         $.get('/utils/get_all_tags', function (data) {
-            // global constants
+            // Global constants
             vera.const = {
+                // Constant strings for each view
                 'search': {
                     'searching': 'Searching...',
                     'no_producers': 'No producers found.',
                     'no_information': 'No information found.'
                 },
+                'network': {
+                    'no_information': 'No information objects.'
+                },
+
                 // Save the array of existing tags
                 'tags': data.tag_names
             };
