@@ -4,7 +4,7 @@
   <div class="left">
     <div display="none">
       {% for group in renderDict.groups %}
-      <div class="group-members" id="{{ group.name }}">
+      <div class="group-members" id="{{ group.name.replace(" ", "-") }}">
 	{% for prodname in group.producers %}
 	<input type="hidden" value="{{ prodname }}">
 	{% endfor %}
@@ -19,7 +19,7 @@
 	<option value="{{ prodtag }}">{{ prodtag }}</option>
 	{% endfor %}
       </select>
-      <div display="block">	
+      <div display="block">
 	<div id="group-info-div">
 	  <div id="group-form-border-div">
 	    <label for="groups">Group:</label>
@@ -72,7 +72,7 @@
     <div id='producer-list-container'>
       <div id='producer-list'>
 	{% for producer in renderDict.source_ratings %}
-	<div class='{{ producer.tag }}' id='{{ producer.name }}'>
+	<div class='{{ producer.tag }} group_active' id='{{ producer.name.replace(" ","-") }}'>
 	  <h3>{{ producer.name }} <div class='rating'>{{ producer.rating }}</div></h3>
 	  <div>
 	    <div class='description'>
