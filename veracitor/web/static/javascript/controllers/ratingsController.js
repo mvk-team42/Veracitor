@@ -9,6 +9,9 @@
     the “rated list” when a rating is set.
     @constructor
  */
+
+var active_tag = ''
+
 var RatingsController = function (controller) {
 
     /**
@@ -26,7 +29,6 @@ var RatingsController = function (controller) {
 	    $('#ratings_view_content').html(data.html);
 	    //Must be called before populating tag dropdowns
 	    add_event_handlers(data.producers, data.information);
-	    $('.left #groups').change();
 	    $('#prod-tags').change();
 	    $('#info-tags').change();
 	});
@@ -52,13 +54,14 @@ var RatingsController = function (controller) {
 	});
 
 	$(".left #prod-tags").change(function() {
-	    var selectedValue = $(this).find(":selected").val();
-	    $('#producer-list >').not('div.' + selectedValue).hide()
-	    $('#producer-list > div.' + selectedValue).show();
+	    var selectedValue = $(this).find(":selected").val().replace(/\s/g, "-");
+	    active_tag = selectedValue;
+	    $('#producer-list .group_active').not('.' + selectedValue).hide()
+	    $('#producer-list > div.group_active.' + selectedValue).show();
 	});
 
 	$(".right #info-tags").change(function() {
-	    var selectedValue = $(this).find(":selected").val().replace(" ", "-");
+	    var selectedValue = $(this).find(":selected").val().replace(/\s/g, "-");
 	    if( selectedValue != 'none' ) {
 	    $('.right #information-list >').not('div.' + selectedValue).hide()
 	    $('.right #information-list > div.' + selectedValue).show();
@@ -79,27 +82,25 @@ var RatingsController = function (controller) {
 	    var selectedValue = $(this).find(":selected").val();
 	    if( selectedValue != 'all' ) {
 		$("#rate-group").removeAttr("disabled");
-		//Hide all producers
-		group_selector = '.left .group-members#' + selectedValue + ' input';
-		$('div#producer-list').children().addClass("hide");
-		$('div#producer-list').children().removeClass("show");
+		group_selector = '.left .group-members#' + selectedValue.replace(/\s/g, '-') + ' input';
+		// Reset classes
+		$('div#producer-list').children().addClass("group_inactive");
+		$('div#producer-list').children().removeClass("group_active");
 		$(group_selector).each(function() {
-		    $('div#producer-list div#' + $(this).val()).addClass('show');
-		
+		    $('div#producer-list div#' + $(this).val().replace(/\s/g,"-")).addClass('group_active').removeClass('group_inactive');		 
 		});
-		$('div#producer-list div.hide').hide();
-		$('div#producer-list div.show').show();
+		$('div#producer-list div.group_inactive.' + active_tag).hide();
+		$('div#producer-list div.group_active.' + active_tag).show();
 		producer_selector = 'div#producer-list div#' + $(this).val();
 		
 		    
 	    }
 	    else {
 		$("#rate-group").attr("disabled", "disabled");
-		$('div#producer-list').children().addClass("show");
-		$('div#producer-list').children().removeClass("hide");
+		$('div#producer-list').children().addClass("group_active");
+		$('div#producer-list').children().removeClass("group_inactive");
 		
-		$('div#producer-list div.show').show();
-
+		$('div#producer-list div.group_active.'+ active_tag).show();
 	    }
 	});
 

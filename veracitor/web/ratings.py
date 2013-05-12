@@ -67,6 +67,7 @@ def render_ratings():
         renderDict = utils.get_user_as_dict(session['user_name'])
         renderDict['prodtags'] = get_used_prod_tags()
         renderDict['infotags'] = get_used_info_tags()
+        renderDict['tags'] = get_all_tags()
         producers = renderDict['source_ratings']
         information = renderDict['info_ratings']
         html = render_template('tabs/ratings_tab_content.html', renderDict=renderDict)

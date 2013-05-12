@@ -47,7 +47,7 @@ def get_user_as_dict(username):
                 source_ratings.append(
                     {
                         'name' : source,
-                        'tag' : tag,
+                        'tag' : tag.replace(" ", "-"),
                         'rating': rating,
                         'description': extractor.get_producer(__safe_string(source)).description
                         }
