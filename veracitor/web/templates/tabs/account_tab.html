@@ -5,7 +5,32 @@
 
 {% if session  %}
 
-<p>Welcome <b>{{ session.user_name }}</b>!</p>
+<p class="greeting">Welcome <b>{{ session.user_name }}</b>!</p>
+<input type="button" value="View yourself in the network" id="view_self_in_network"/>
+<hr>
+<div class="container">
+  <div display="block">
+    {% if session.user.groups != [] %}
+    <p class="header">Your groups:</p>
+    <table>
+      <tr>
+	<th>Group</th>
+	<th>Tag</th>
+      </tr>
+      {% for group in session.user.groups %}
+      <tr>
+	<td>{{ group.name }}</td>
+	<td>{{ group.tag.name }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+  </div>
+  <div>
 
+  </div>
+</div>
+
+<input type="hidden" value="{{ session.user_name }}" id="user_name"/>
 {% endif %}
 {% endblock %}

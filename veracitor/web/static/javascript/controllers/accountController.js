@@ -16,6 +16,13 @@ var AccountController = function (controller) {
     this.on_tab_active = function () {
         // Set focus to the user name text field
         $('#account_view > .content > .register-content > .register-form > input[name=username]').focus();
+
+	$('#account_view #view_self_in_network').click(function(evt) {
+	    producer = $('#account_view #user_name').val() 
+	    controller.network.visualize_producer_in_network(producer, -1);
+	    controller.switch_to_tab('network');
+	
+	});
     };
 
     (function () {

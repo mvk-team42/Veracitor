@@ -3,3 +3,16 @@
 #account_view .register-content .error {
     color: #f00;
 }
+
+#account_view p.greeting {
+    font-size: 22px;
+}
+
+#account_view p {
+
+}
+
+#account_view div.container div {
+    float: left;
+    margin-right: 40px;
+}
