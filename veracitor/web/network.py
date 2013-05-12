@@ -47,7 +47,7 @@ def get_shortest_path():
         try:
             tag = request.form['tag']
         except:
-            tag = None
+            tag = ''
     except Exception as e:
         log("Exception: "+str(e)+"\nMsg: "+e.message+"\n");
         abort(400)
@@ -67,7 +67,8 @@ def get_shortest_path():
         'source': extractor.entity_to_dict(extractor.get_producer(source)),
         'target': extractor.entity_to_dict(extractor.get_producer(target)),
         'nodes': [],
-        'ghosts': []
+        'ghosts': [],
+        'tag': tag
     }
 
     for node in nodes:

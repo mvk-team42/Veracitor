@@ -66,14 +66,19 @@ var Visualizer = function (controller) {
                     "shape": "data(shape)",
                     "border-width": 3,
                     "background-color": color.node.unselect.background,
-                    "border-color": color.node.unselect.border
+                    "border-color": color.node.unselect.border,
+                    "text-outline-color": "#fff",
+                    "text-outline-width": 1
                 })
                 .selector("edge")
                 .css({
                     "width": "mapData(weight, 0, 100, 1, 4)",
                     "target-arrow-shape": "triangle",
                     "source-arrow-shape": "circle",
-                    "line-color": "#444"
+                    "line-color": "#444",
+                    "text-outline-color": "#fff",
+                    "text-outline-width": 1,
+                    "font-size": 20
                 })
                 .selector(":selected")
                 .css({
@@ -179,13 +184,12 @@ var Visualizer = function (controller) {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
-    this.visualize_path_in_network = function (source, target, path, ghosts) {
-        var i, j;
+    this.visualize_path_in_network = function (source, target, path, ghosts, tag) {
         var existing_nodes = [];
         var nodes = [];
         var edges = [];
 
-        for(i in path) {
+        for (var i in path) {
             nodes.push({
                 'group': 'nodes',
                 'data': {
@@ -196,19 +200,21 @@ var Visualizer = function (controller) {
             });
             existing_nodes.push(path[i].name);
 
-            for(j in path[i].source_ratings) {
+            for (var key in path[i].source_ratings) {
                 edges.push({
                     'group': 'edges',
                     'data': {
-                        'id': path[i].name + '-' + j,
+                        'id': path[i].name + '-' + key,
                         'source': path[i].name,
-                        'target': j
-                    }
+                        'target': key,
+                        'rating': path[i].source_ratings[key][tag] || ''
+                    },
+                    'classes': path[i].name === source ? 'prod-rating' : ''
                 });
             }
         }
 
-        for (i in ghosts) {
+        for (var i in ghosts) {
             nodes.push({
                 'group': 'nodes',
                 'data': {
@@ -222,7 +228,7 @@ var Visualizer = function (controller) {
         cy.add(nodes);
         cy.add(edges);
 
-        for (i = 0; i < existing_nodes.length; i += 1) {
+        for (var i = 0; i < existing_nodes.length; i += 1) {
             node = cy.nodes('#' + existing_nodes[i]);
             node.css({
                 'background-color': color.node.select.background,
@@ -236,6 +242,11 @@ var Visualizer = function (controller) {
                 });
             }
         }
+
+        // Display the ratings made by the source producer
+        cy.edges('.prod-rating').css({
+            'content': 'data(rating)'
+        });
 
         cy.nodes('.User').css({
             'background-color': color.node.user.background,
