@@ -10,7 +10,7 @@
 from mongoengine import *
 import networkModel
 import datetime
-import user
+
 import extractor
 connect('mydb')
 
@@ -26,7 +26,7 @@ class Group(Document):
     """
     name = StringField(required=True) 
     description = StringField()
-    owner = ReferenceField(user.User, required=True)
+    owner = ReferenceField('User', required=True)
     tag = ReferenceField('Tag', required=True)
     producers = DictField()
     time_created = DateTimeField(required=True)

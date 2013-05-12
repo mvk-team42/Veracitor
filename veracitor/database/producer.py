@@ -10,7 +10,6 @@
 from mongoengine import *
 import networkModel
 import tag
-import information
 
 from dbExceptions import NetworkModelException
 connect('mydb')
@@ -54,7 +53,7 @@ class Producer(Document):
             raise TypeError("Problem with type of input variables.")
 
     def rate_information(self, information_to_rate, rating):
-        if(type(information_to_rate) is information.Information and\
+        if(\
            type(rating) is int):
             self.info_ratings[(information_to_rate.url)] = rating
         else:
@@ -102,7 +101,7 @@ class Producer(Document):
             self.source_ratings[self.__safe_string(rating)] = self.source_ratings.pop(rating)
         for rating in self.info_ratings.keys():
             self.info_ratings[self.__safe_string(rating)] = self.info_ratings.pop(rating)
-        
+
     def prepare_ratings_for_using(self):
         for rating in self.source_ratings.keys():
             self.source_ratings[self.__unsafe_string(rating)] = self.source_ratings.pop(rating)
@@ -132,8 +131,35 @@ class Producer(Document):
 
         super(Producer, self).delete()
 
+
+    def add_information(self, info_to_add):
+        for info in self.infos:
+            if info == info_to_add:
+                return False
+        self.infos.append(info_to_add)
+        for publisher in info_to_add.publishers:
+            if publisher == self:
+                return True
+        info_to_add.publishers.append(self)
+        return True
+
+    def delete_information(self, info_to_del):
+        found = False
+        for x in range(len(self.infos)):
+            if self.infos[x] == info_to_del:
+                del self.infos[x]
+                found = True
+                break
+        for x in range(len(info_to_del.publishers)):
+            if info_to_del.publishers[x] == self:
+                del info_to_del.publishers[x]
+                if found:
+                    return True
+        return False
+
+
+
     def __safe_string(self, url):
         return url.replace(".", "|")
     def __unsafe_string(self, _str):
         return _str.replace("|", ".")
-

@@ -17,7 +17,7 @@ import group
 import re
 import datetime
 from dbExceptions import *
-from ..utils import httpify
+from veracitor.utils import httpify
 
 connect('mydb')
 
@@ -41,14 +41,14 @@ def get_producer(requested_name):
 
     prod.prepare_ratings_for_using()
     return prod
- 
- 
+
+
 def get_producer_with_url(url):
     extr_producer = producer.Producer.objects(url=url)
     __checkIfEmpty(extr_producer)
 
     prod = extr_producer[0]
-    
+
     prod.prepare_ratings_for_using()
     return prod
 
@@ -384,3 +384,4 @@ def unpipeify( o ):
         return data
     if isinstance(o, list):
         return [ unpipeify(i) for i in o ]
+    return o

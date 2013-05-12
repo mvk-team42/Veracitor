@@ -19,7 +19,6 @@ tag.name the rating was set.
 from networkx import to_dict_of_dicts, DiGraph
 from tag import *
 from producer import *
-from information import *
 from group import *
 from user import *
 from mongoengine import *
@@ -64,7 +63,7 @@ def build_network_from_db():
 
     global graph
     # Users not included in graph.
-    producers = producer.Producer.objects()
+    producers = Producer.objects()
     graph = DiGraph()
    
     # Add all producers in the database as nodes.

@@ -11,9 +11,9 @@ def generate_test_data():
     trust = extractor.get_tag_create_if_needed("Trust")
 
     try:
-        john = extractor.get_producer('John')
+        john = extractor.get_producer('john')
     except dbExceptions.NotInDatabase:
-        john = user.User(name='John',password='123')
+        john = user.User(name='john',password='123')
         john.save()
     prod1 = extractor.producer_create_if_needed("Prod1", "TestProducer")
     prod2 = extractor.producer_create_if_needed("Prod2", "TestProducer")

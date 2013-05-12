@@ -66,7 +66,6 @@ def render_ratings():
         renderDict = {}
         renderDict = utils.get_user_as_dict(session['user_name'])
         renderDict['prodtags'] = get_used_prod_tags()
-        log(renderDict['prodtags'])
         renderDict['infotags'] = get_used_info_tags()
         producers = renderDict['source_ratings']
         information = renderDict['info_ratings']
@@ -244,7 +243,7 @@ def get_used_info_tags():
         user = extractor.get_user(session['user_name'])
         tags_used = []
         for info_rating in user.info_ratings.keys():
-            tags_used.extend(extractor.get_information(__safe_string(info_rating)).tags)
+            tags_used.extend([tag.name for tag in extractor.get_information(__safe_string(info_rating)).tags])
 
         return list(set(tags_used))
     except Exception, e:

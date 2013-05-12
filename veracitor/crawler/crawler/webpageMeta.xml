@@ -37,12 +37,12 @@
 
         <article-paths>
             <qualification>
-                <xpath>//*[@id="article"]</xpath>
+                <xpath>//*[not(self::a) and @id="article"]</xpath>
                 <xpath>//meta[@content="article"]</xpath>
-                <xpath>//*[contains(@class,'article')]</xpath>
-                <xpath>//*[@id="article-content"]</xpath>
-                <xpath>//*[contains(@class,'articlePage')]</xpath>
-                <xpath>//*[contains(@role,'article')]</xpath>
+                <xpath>//*[not(self::a) and contains(@class,'article')]</xpath>
+                <xpath>//*[not(self::a) and @id="article-content"]</xpath>
+                <xpath>//*[not(self::a) and contains(@class,'articlePage')]</xpath>
+                <xpath>//*[not(self::a) and contains(@role,'article')]</xpath>
             </qualification>
         
             <title>
@@ -72,6 +72,7 @@
                 <xpath>//*[contains(@itemprop,"author")]//*[contains(@itemprop, "name")]//text()</xpath>
                 <xpath>//*[contains(@rel, "author")]//text()</xpath>
                 <xpath>//*[contains(@itemprop, "publisher")]//text()</xpath>
+                <xpath>//*[contains(@itemprop,"author")]//text()</xpath>              
             </publishers>
 
             <time_published>
@@ -82,6 +83,7 @@
                 <xpath>//*[contains(@class, "pubtime")]//text()</xpath>
                 <xpath>//meta[contains(@itemprop, "datePublished")]/@content</xpath>
                 <xpath>//*[contains(@class, "date")]//text()</xpath>
+                <xpath>//time//text()</xpath>
             </time_published>
         </article-paths>
     </default>
