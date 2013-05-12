@@ -55,7 +55,6 @@ def get_user_as_dict(username):
             
         info_ratings = []
         for iurl in user_obj.info_ratings.keys():
-            log(iurl)
             information = extractor.get_information(__safe_string(iurl))
             info_ratings.append({
                     'title': information.title,
