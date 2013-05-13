@@ -13,6 +13,7 @@ from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader
 from ....database import *
 from .metaNewspaperSpider import MetaNewspaperSpider
+from .newspaperSpider import NewspaperSpider
 
 
 
@@ -32,7 +33,7 @@ class ArticleSpider(BaseSpider):
         self.start_urls = [kwargs.get('start_url')]
 
     def parse(self, response):
-        if ArticleSpider.is_article(response):
+        if NewspaperSpider.is_article(response):
             return ArticleSpider.scrape_article(response)
         
     @staticmethod
