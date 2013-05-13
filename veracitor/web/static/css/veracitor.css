@@ -437,3 +437,23 @@ ul.list .rating, div.rating, span.rating{
     -moz-border-radius: 15px;
     border-radius: 15px;
 }
+
+
+/* LOADING SCREEN */
+
+body .loading-screen {
+    z-index: 99999;
+    position: absolute;
+    background-color: #eee;
+    width: 100%;
+    height: 100%;
+}
+
+body .loading-screen .loading-text {
+    font-weight: bold;
+    margin: auto auto;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    top: 200px;
+}
