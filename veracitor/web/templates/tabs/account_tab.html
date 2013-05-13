@@ -33,4 +33,17 @@
 
 <input type="hidden" value="{{ session.user_name }}" id="user_name"/>
 {% endif %}
+
+{% else %}
+<div class="register-content">
+  <p>Become a user of Veracitor!</p>
+  <p class="error"> </p>
+  <form class="register-form">
+    <label for="username">Username:</label>
+    <input name="username" type="text" class="field"/>
+    <label for="password">Password:</label>
+    <input name="password" type="password" class="field" />
+    <input id="register-button" type="button" value="Register" />
+  </form>
+</div>
 {% endblock %}
