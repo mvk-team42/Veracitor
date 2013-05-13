@@ -281,6 +281,10 @@
     font-size: 10pt;
 }
 
+#crawl-result-content {
+    display:none;
+}
+
 #crawl-result-content .body {
     padding: 20px;
 }
