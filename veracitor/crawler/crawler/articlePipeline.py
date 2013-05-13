@@ -201,5 +201,5 @@ def parse_datetime(article):
     return extracted_time
         
 def shorten_summary(article):
-    if "summary" in article:
-        article["summary"] = article["summary"][:200]
+    if "summary" in article and len(article["summary"]) > 200:
+        article["summary"] = article["summary"][:197] + "..."
