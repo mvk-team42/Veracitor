@@ -133,7 +133,7 @@ def fix_string_field(article, field):
     
 def fix_publishers(article):
     if "publishers" in article:
-        remove_colon_words_from_publishers(article)
+        remove_words_from_publishers(article)
         for index in range(len(article["publishers"])):
             article["publishers"][index] = article["publishers"][index].strip()
     else:
@@ -152,10 +152,11 @@ def fix_references(article):
     else:
         article["references"] = []
 
-def remove_colon_words_from_publishers(article):
-    pattern = re.compile("\S+:")
+def remove_words_from_publishers(article):
+    pattern = re.compile("\S+:|av|by", re.IGNORECASE)
     for index, publisher_string in enumerate(article["publishers"]):
         article["publishers"][index] = pattern.sub("", publisher_string)
+        
             
 def fix_time_published(article):
     if "time_published" in article:
