@@ -113,11 +113,16 @@ def fix_fields(article):
     fix_time_published(article)
     fix_publishers(article)
     fix_tags(article)
+    fix_references(article)
+    shorten_title(article)
     shorten_summary(article)
     for field in ArticleItem.fields.iterkeys():
         if field in article:
             if isinstance(article[field], str) or isinstance(article[field], unicode):
                 fix_string_field(article, field)
+        else:
+            # We know it's a string, since all list fields have been fixed
+            article[field] = "unknown"
         
 def fix_string_field(article, field):
     if article[field].strip() != "":
@@ -140,6 +145,12 @@ def fix_tags(article):
         article["tags"] = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in article["tags"]]
     else:
         article["tags"] = []
+
+def fix_references(article):
+    if "references" in article:
+        pass
+    else:
+        article["references"] = []
 
 def remove_colon_words_from_publishers(article):
     pattern = re.compile("\S+:")
