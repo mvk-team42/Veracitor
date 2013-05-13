@@ -13,7 +13,7 @@ NEWSPIDER_MODULE = 'veracitor.crawler.crawler.spiders'
 
 ITEM_PIPELINES = ['veracitor.crawler.crawler.pipelines.CrawlerPipeline']
 
-DEPTH_LIMIT = 1
+#DEPTH_LIMIT = 1
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'crawler (+http://www.yourdomain.com)'
