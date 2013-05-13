@@ -40,7 +40,6 @@ var SearchController = function (controller) {
     this.on_tab_active = function () {
         // set focus to the database search field
         $("#database-search-field").focus();
-        $("#crawl-result-content").hide();
         update_crawler_results();
     };
 
