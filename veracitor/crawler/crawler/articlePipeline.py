@@ -67,7 +67,7 @@ def get_publisher_objects(article):
     log.msg("pubStrings: " + str(publisher_strings))
     publishers = []
     for publisher_string in publisher_strings:
-        split_publishers = re.sub("[-&;]", ",", publisher_string).split(",")
+        split_publishers = re.sub("[-&;/]", ",", publisher_string).split(",")
         for split_publisher in split_publishers:
             if split_publisher == 'unknown':   #Nödvändig?
                 continue
