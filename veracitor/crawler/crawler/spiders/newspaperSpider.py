@@ -44,10 +44,11 @@ class NewspaperSpider(CrawlSpider):
 
     def scrape_article(self, response):
         log.msg("inside scrape_article")
-        if self._is_article(response):
+        if NewspaperSpider.is_article(response):
             return ArticleSpider.scrape_article(response)
 
-    def _is_article(self, response):
+    @staticmethod
+    def is_article(self, response):
         domain = urlparse(response.url)[1]
         hxs = HtmlXPathSelector(response)
         for xpath in self.meta.get_article_xpaths("qualification",domain):
