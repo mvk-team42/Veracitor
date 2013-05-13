@@ -37,27 +37,15 @@ def add_to_database(article):
     log.msg("extractor returns " + str(extractor.contains_information(article["url"])))
     log.msg(article["url"] + " is new, adding to database")
         
-    #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
-    tag_strings = article["tags"].replace(";", ",").split(',')
-    tags = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in tag_strings]
-    if len(tags) == 0:
-        tags.append(extractor.get_tag_create_if_needed("unknown"))
 
-    publishers = get_publisher_objects(article["publishers"]) #[extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in publisher_strings]
-    domain = "http://" + urlparse(article["url"])[1]
-    try:
-        publishers.append(extractor.get_producer_with_url(domain))
-        log.msg("got producer")
-    except:
-        log.msg("failed to get producer....")
-        pass
+    publishers = get_publisher_objects(article)
 
     info = information.Information(
                         title = article["title"],
                         summary = article["summary"],
                         url = article["url"],
                         time_published = parse_datetime(article),
-                        tags = tags,
+                        tags = article["tags"],
                         publishers = publishers,
                         references = [],
                    )
@@ -69,12 +57,13 @@ def add_to_database(article):
         for publisher2 in publishers:
             if not publisher==publisher2:
                 log.msg("publisher2 name: " + publisher2.name)
-                for tag in tags:
+                for tag in article["tags"]:
                     publisher.rate_source(publisher2, tag, 5)
         publisher.save()
 
-def get_publisher_objects(publisher_strings):
+def get_publisher_objects(article):
     #publisher_strings = [string.replace(".",",").replace("$",",") for string in publisher_strings]
+    publisher_strings = article["publishers"]
     log.msg("pubStrings: " + str(publisher_strings))
     publishers = []
     for publisher_string in publisher_strings:
@@ -96,6 +85,15 @@ def get_publisher_objects(publisher_strings):
                 if len(not_found) != 0:
                     producer = extractor.producer_create_if_needed(" ".join(not_found), "Journalist")
                     publishers.append(producer)
+
+    domain = "http://" + urlparse(article["url"])[1]
+    try:
+        publishers.append(extractor.get_producer_with_url(domain))
+        log.msg("got producer")
+    except:
+        log.msg("failed to get producer....")
+        pass
+
     return publishers
 
     
@@ -113,7 +111,8 @@ def fix_fields(article):
         db-friendly format.
     """
     fix_time_published(article)
-    fix_publisher(article)
+    fix_publishers(article)
+    fix_tags(article)
     shorten_summary(article)
     for field in ArticleItem.fields.iterkeys():
         if field in article:
@@ -127,11 +126,20 @@ def fix_string_field(article, field):
         return
     article[field] = "unknown"
     
-def fix_publisher(article):
+def fix_publishers(article):
     if "publishers" in article:
         remove_colon_words_from_publishers(article)
         for index in range(len(article["publishers"])):
             article["publishers"][index] = article["publishers"][index].strip()
+    else:
+        article["publishers"] = []
+
+def fix_tags(article):
+    #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
+    if "tags" in article:
+        article["tags"] = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in article["tags"]]
+    else:
+        article["tags"] = []
 
 def remove_colon_words_from_publishers(article):
     pattern = re.compile("\S+:")
