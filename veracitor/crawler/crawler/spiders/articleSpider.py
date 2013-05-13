@@ -13,7 +13,6 @@ from ..webpageMeta import WebpageMeta
 from ..items import ArticleItem, ArticleLoader
 from ....database import *
 from .metaNewspaperSpider import MetaNewspaperSpider
-from .articleSpider import ArticleSpider
 
 
 
