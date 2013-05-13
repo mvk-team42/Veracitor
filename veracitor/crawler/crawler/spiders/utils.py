@@ -57,10 +57,7 @@ def scrape_meta(response):
     producer_item["rss_urls"] = extract_rss_urls(response.url, hxs)
     producer_item["description"] = extract_description(response.url, hxs)
     producer_item["url"] = response.url
-    producer_item["infos"] = []
-    producer_item["source_ratings"] = []
-    producer_item["info_ratings"] = []
-    producer_item["type_of"] = "newspaper"
+    producer_item["type_of"] = "Newspaper"
 
     return producer_item
      

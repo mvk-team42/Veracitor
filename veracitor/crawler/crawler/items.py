@@ -85,12 +85,8 @@ class ProducerItem(Item):
     Crawler-item representing a producer(newspaper).
     Corresponds to "Producer" in database.
     """
-    name = Field()
-    description = Field()
-    url = Field()
-    infos = Field()
-    source_ratings = Field()
-    info_ratings = Field()
-    type_of = Field()
-    rss_urls = Field()
-
+    name = Field()            # String
+    description = Field()     # String
+    url = Field()             # String
+    rss_urls = Field()        # [String]
+    type_of = Field()         # String

@@ -77,7 +77,7 @@ def add_to_database(producer_item):
         infos = [],
         source_ratings = {},
         info_ratings = {},
-        type_of = "Newspaper")
+        type_of = producer_item["type_of"])
     new_producer.save()
 
 def fix_fields(producer_item):
@@ -91,6 +91,8 @@ def fix_field(producer_item, field):
             if producer_item[field].strip() != "":
                 producer_item[field] = re.sub("\s+", " ", producer_item[field].strip())
                 return
+        elif isinstance(producer_item[field], list):
+            return
     #rss_urls is expected to be in list format, when it is sent to pipeline.        
     if field == "rss_urls":
         producer_item[field] = []
