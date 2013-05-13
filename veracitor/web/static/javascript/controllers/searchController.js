@@ -170,18 +170,19 @@ var SearchController = function (controller) {
         // Start crawl click event
         $("#crawler-search-button").click(function (evt) {
             var url = $("#crawler-search-field").val();
-            var scrape_type = $("input[name='scrape_type']:checked").val();
-
-            switch(scrape_type) {
-            case "source":
-                request_source_crawl(url);
-                break;
-            case "article":
+            var article_scrape = $('#add-entity-content form input[type=checkbox]').is(':checked');
+            if (article_scrape) {
                 request_article_crawl(url);
-                break;
+            } else {
+                request_source_crawl(url);
             }
         });
 
+        // crawler tip-text
+      $('.information .question-mark').click(function(){
+        $('.information .tip-text').toggle();
+      });
+      
     }
 
     /**

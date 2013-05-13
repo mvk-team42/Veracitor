@@ -52,20 +52,20 @@
             <input type="button" id="database-search-button" value="Search" />
         </div>
         <div id="add-entity-content" class="content">
-          <p>Starts a web crawl of given article/source URL.<br/>Adds any relevant information found to the database.</p>
+          <p>Starts a web crawl of given article/source URL.<br/>Adds
+          any relevant information found to the database.</p>
           <form>
               <label for="search-text">URL:
                   <input type="text" id="crawler-search-field" name="search-text" />
               </label>
               <br/>
 
-              <input type="radio" value="article" name="scrape_type" checked />
-              <label for="article">Article</label>
-              <br/>
-
-              <input type="radio" value="source" name="scrape_type" />
-              <label for="source">Source</label>
-              <br/>
+              <input type="checkbox" value="article" name="scrape_type"/>
+              <label>Try to extract extra information<span class="information"><span class="icon question-mark"></span>
+                <p class="tip-text">Tries to extract more information
+              from given URL than when simply adding it as a Producer.
+              This implies a longer wait for the scrape to
+              finish.</p></span></label> <br/>
 
               <input type="button" id="crawler-search-button" name="search-button" value="Start crawl" />
           </form>
