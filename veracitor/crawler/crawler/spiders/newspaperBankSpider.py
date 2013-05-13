@@ -7,11 +7,7 @@ from scrapy.contrib.loader.processor import TakeFirst
 from scrapy import log
 from urlparse import urlparse
 
-from ..webpageMeta import WebpageMeta
-from ..items import ArticleItem, ArticleLoader, ProducerItem
-from .articleSpider import ArticleSpider
-from .metaNewspaperSpider import MetaNewspaperSpider
-
+from .utils import *
 
 
 class NewspaperBankSpider(CrawlSpider):
@@ -49,4 +45,4 @@ class NewspaperBankSpider(CrawlSpider):
         
     def parse_webpage_link(self, response):
         log.msg("found link")
-        return MetaNewspaperSpider.scrape_meta(response)
+        return scrape_meta(response)
