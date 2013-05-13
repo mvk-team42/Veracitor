@@ -25,7 +25,6 @@
 	    <label for="groups">Group:</label>
 	    <select name="groups" id="groups">
 	      <option value="all">-</option>
-	      <!-- TODO: Fix group rating! -->
 	      {% for group in renderDict.groups  %}
 	      {% if group.name in renderDict.group_ratings %}
 	      <option value="{{ group.name }}">{{ group.name }} - {{ renderDict.group_ratings[group.name] }}</option>
@@ -34,7 +33,7 @@
 	      {% endif  %}
 	      {% endfor %}
 	    </select>
-	    <!-- Working inline rating circle. Not implemented
+	    <!-- Working (including css) inline rating circle. Not implemented
 		 <span class="rating">5
 		 </span>
 		 -->
@@ -90,7 +89,8 @@
   <div class="right">
     <h2>Rated information</h2>
     <div display='block'>
-      <!-- Disabled producer filtering. TODO: Maybe implement
+      <!-- Disabled producer filtering. 
+       TODO: Maybe implement.
 	   <label for "producers">Producer:</label>
 	   <select name="producers" id="producers">
 	     {% for producer in source_ratings  %}

@@ -1,6 +1,7 @@
 from scrapy.item import Item, Field
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
-from scrapy.contrib.loader.processor import TakeFirst, Compose, Join
+from scrapy.contrib.loader.processor import TakeFirst, Compose, MapCompose, Join
+from scrapy import log
 
 """
 
@@ -49,11 +50,28 @@ class ArticleLoader(XPathItemLoader):
     """
     Used for easier construction of ArticleItem
     """
+    def is_string(string):
+        if isinstance(string, str) or isinstance(string, unicode):
+            if string.strip() != "":
+                log.msg("returning string: "+ unicode(string.strip()))
+                return string.strip()
+        log.msg("returning None for string: "+ unicode(string))
+        return None
+
     default_output_processor = TakeFirst()
-    time_published_out = TakeFirst()
-    summary_out = Join()
-    title_out = Join()
+
+    publishers_in = MapCompose(is_string)
+    publishers_out = Join(",")
+
+    title_in = MapCompose(is_string, unicode.title)
+    title_out = TakeFirst()
     
+    time_published_in = MapCompose(is_string)
+    time_published_out = TakeFirst()
+
+    summary_in = MapCompose(is_string)
+    summary_out = TakeFirst()
+
     
 class ProducerItem(Item):
     """

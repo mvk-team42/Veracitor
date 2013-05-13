@@ -52,6 +52,7 @@ class ArticleSpider(BaseSpider):
         for field in ArticleItem.fields.iterkeys():
             #log.msg("field: " + field)
             for xpath in meta.get_article_xpaths(field, domain):
+                log.msg("Xpath for field: "+unicode(field)+" "+unicode(xpath))
                 loader.add_xpath(field, xpath)
         loader.add_value("url", response.url)
                 
