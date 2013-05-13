@@ -9,10 +9,7 @@ from veracitor.web.utils import store_job_result
 import veracitor.tasks.search as search
 log = app.logger.debug
 
-@app.route('/debug')
-def debug():
-    raise TypeError('Y U NO liek teh-bug?')
-
+    
 @app.route('/jobs/search/producers', methods=['GET','POST'])
 def search_producers():
     """Performs a search in the database for producers that match the
@@ -52,6 +49,7 @@ def search_producers():
     res = search.get_producers.delay(name, type_of)
     store_job_result(res)
     return jsonify(job_id=res.id)
+
 
 @app.route('/jobs/search/information', methods=['GET', 'POST'])
 def search_information():
