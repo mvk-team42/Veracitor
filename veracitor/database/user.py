@@ -97,9 +97,9 @@ class User(producer.Producer):
                                 owner=self,
                                 time_created=datetime.datetime.now(),
                                 tag=tag)
-        # The save call will append this group to self's group list.
         new_group.save()
-        
+        self.groups.append(new_group)
+        self.save()
         return True
         
     
