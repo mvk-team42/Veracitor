@@ -41,6 +41,7 @@ def get_producer(requested_name):
     
     # Convert "|" in ratings to "."
     prod.prepare_ratings_for_using()
+    prod.check_rating_consistencies()
     return prod
 
 
@@ -52,6 +53,7 @@ def get_producer_with_url(url):
 
     # Convert "|" in ratings to "."
     prod.prepare_ratings_for_using()
+    prod.check_rating_consistencies()
     return prod
 
 
@@ -85,6 +87,7 @@ def get_user(requested_name):
     usr = extr_user[0]
     # Convert "|" in ratings to "."
     usr.prepare_ratings_for_using()
+    usr.check_rating_consistencies()
     return usr
 
 def get_information(info_url):
