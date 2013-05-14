@@ -161,10 +161,7 @@ var NetworkController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                // TODO: display success/
-                //console.log(data);
-
-
+                // TODO: display success
 
                 if(data.result.trust !== null){
                     $('#network-compute-trust .feedback.win #trust-result')
@@ -172,6 +169,8 @@ var NetworkController = function (controller) {
                     $('#network-compute-trust .feedback.win #trust-result-threshold')
                         .html(data.result.threshold);
                     $('#network-compute-trust .feedback.win').show();
+
+                    // visualize trust computation
                 }
                 else {
                     $('#network-compute-trust .feedback.fail #fail-message')
