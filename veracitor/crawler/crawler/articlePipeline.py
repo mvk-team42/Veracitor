@@ -143,11 +143,16 @@ def _fix_tags(article):
 
 	#Maps predefined tags to words that potentially have the same meaning
     tag_map = {}
-    tag_map["Crime"] = ["crime", "assault"]
-    tag_map["Culture"] = ["music", "art", "painting", "culture"]
-    tag_map["Politics"] = ["court", "health", "supreme", "reform", "ruling", "politic", "committee"]
-    tag_map["Sports"] = ["ball", "match", "tournament", "champion", "sport"]
-    tag_map["Finances"] = ["recession", "financ"]
+    tag_map["Crime"] = ["crime", "assault", "murder", "robber", "safety"]
+    tag_map["Crime"] += ["brott", "överfall", "mord", "rån", "säkerhet"]
+    tag_map["Culture"] = ["music", "art", "painting", "culture", "concert", "movie", "tv", "radio"]
+    tag_map["Culture"] = ["musik", "konst", "målning", "kultur", "koncert", "film"]
+    tag_map["Politics"] = ["court", "health", "supreme", "reform", "ruling", "politic", "committee", "diplom", "party", "vote", "election"]
+    tag_map["Politics"] = ["domstol", "häls", "parti", "komitte", "parti", "röst", "val"]
+    tag_map["Sports"] = ["ball", "match", "tournament", "champion", "sport", "win"]
+    tag_map["Sports"] = ["boll", "turnering", "mästar", "vinna"]
+    tag_map["Finances"] = ["recession", "financ", "money", "bank", "compan"]
+    tag_map["Finances"] = ["finans", "penga", "kompan"]
     
     final_tags = []
     
@@ -157,7 +162,7 @@ def _fix_tags(article):
     			if predefined_tag in final_tags:
     				continue
     			# If tag_str matches any of the strings mapped to the predefined tag
-    			if any( match in tag_str for match in tag_map[predefined_tag]): 
+    			if any( match in tag_str.lower() for match in tag_map[predefined_tag]): 
     				final_tags.append(predefined_tag)
         article["tags"] = [extractor.get_tag_create_if_needed(tag_str) for tag_str in final_tags]
     else:
