@@ -9,21 +9,23 @@ except:
     
 from ..crawler import crawlInterface as ci
 
+from veracitor.database import *
 
 @taskmgr.task
 def scrape_article(url):
     ci.scrape_article(url)
-    res = "scraped article: " + url
-    return res
+    return { "producer": extractor.entity_to_dict(extractor.get_producer_with_url(url)) }
+
 
 
 @taskmgr.task
 def add_newspaper(url):
     ci.add_newspaper(url)
-    return "added newspaper: " + url
+    return { "producer": extractor.entity_to_dict(extractor.get_producer_with_url(url)) }
+    
 
     
 @taskmgr.task
 def request_scrape(url):
     ci.request_scrape(url)
-    return "requested scrape for: " + url
+    return { "producer": extractor.entity_to_dict(extractor.get_producer_with_url(url)) }

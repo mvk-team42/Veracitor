@@ -4,7 +4,7 @@
     :synopsis: The group module contains the Group class needed to represent the group entity model.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
-.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
+.. moduleauthor:: Fredrik Oeman <frdo@kth.se> 
 """
 
 from mongoengine import *
@@ -32,15 +32,15 @@ class Group(Document):
     tag = ReferenceField('Tag', required=True)
     producers = DictField()
     time_created = DateTimeField(required=True)
-    
+    """
     def save(self):
-        """
+        
         Overrides save() inherhited from Document.
-        Only does something if this group isn't previously saved
+        Only does something if this group is not previously saved
         to the database. Appends self to owner's group list and
         calls save() on owner.
         
-        """
+
         first_time = False
         try:
             extractor.get_group(self.owner.name, self.name)
@@ -50,6 +50,7 @@ class Group(Document):
         if(first_time):
             self.owner.groups.append(self)
             self.owner.save()
+    """
 
     def delete(self):
         # Delete owner's group rating

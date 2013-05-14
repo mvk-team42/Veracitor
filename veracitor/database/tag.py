@@ -4,7 +4,7 @@
     :synopsis: The tag module contains the Tag class needed to represent the tag entity model.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
-.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
+.. moduleauthor:: Fredrik Oeman <frdo@kth.se> 
 """
 
 from mongoengine import *

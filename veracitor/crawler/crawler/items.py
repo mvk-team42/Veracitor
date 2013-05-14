@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+
+""" 
+.. module:: items
+    :synopsis: The definitions of items scraped by the crawler. These items do not necessarily contain the exact same fields as those in the database, but only contain fields that could be scraped from the internet.
+
+    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 from scrapy.item import Item, Field
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst, Compose, MapCompose, Join, Identity
@@ -15,6 +25,8 @@ class ArticleItem(Item):
     Crawler-item representing a newspaper article.
     Corresponds to "Information" in database.
     """
+
+    						# Comments below tell what the Field contains when item is sent to pipeline
     title = Field()           # String
     summary = Field()         # String
     publishers = Field()      # [String]
@@ -77,7 +89,7 @@ class ArticleLoader(XPathItemLoader):
     summary_out = TakeFirst()
 
     tags_in = MapCompose(is_string, separate_tags)
-    tags_out = TakeFirst()
+    tags_out = Identity()
 
     
 class ProducerItem(Item):
@@ -85,6 +97,8 @@ class ProducerItem(Item):
     Crawler-item representing a producer(newspaper).
     Corresponds to "Producer" in database.
     """
+    
+      						# Comments below tell what the Field contains when item is sent to pipeline
     name = Field()            # String
     description = Field()     # String
     url = Field()             # String

@@ -4,7 +4,7 @@
     :synopsis: The user module contains classes needed to represent the user entity model.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
-.. moduleauthor:: Fredrik Öman <frdo@kth.se>
+.. moduleauthor:: Fredrik Oeman <frdo@kth.se>
 """
 
 from mongoengine import *
@@ -19,13 +19,6 @@ import copy
 
 class User(producer.Producer):
     """
-    The Producer class inherits from the mongoengince Document class.
-    It defines needed to represent to producer entity model.
-    Call save() to update database with the producer
-    (inserting it if it is not previously saved).
-    or delete() to delete object from the database.
-    The name field uniquely identifies a producer in the database.
-    
     The User class inherhits from the Producer class 
     (which in turn inherhits from the mongoengine document class).
     Adds user-specific fields. Hard-codes the producer type_of field to
@@ -44,7 +37,22 @@ class User(producer.Producer):
     email = StringField()
     
     def rate_group(self, name_of_group, rating):
-       
+        """
+        Rate a group with specified rating. This will rate all the
+        members of the group with rating. The user must own the group
+        specified by (user_name, name_of_group).
+
+        Args:
+            name_of_group (str): The name of the group to be rated.
+            
+            rating (int): The rating to set on the group.
+
+        Returns: True if a rating was succesfully set. False if the user
+        did not own the group.
+        
+        Raises: TypeError if the arguments are of the wrong type.
+
+        """
         if(type(name_of_group) is str and\
            type(rating) is int):
        
@@ -60,7 +68,24 @@ class User(producer.Producer):
     
 
     def create_group(self, group_name, tag_name):
+        """
+        Creates a group with name specified by group_name
+        and tag specified by tag_name. The group will be added
+        to the user's group list and the new group's owner will 
+        be set to this user. 
+
+        Args:
+            group_name (str): The name to give to the new group.
         
+            tag_name (str): The tag to set on the new group.
+
+        Returns:
+            False if the user already owns a group with name
+            equal to group_name. True if everything was succesfull.
+
+        Raises:
+            NotInDatabase if no tag with tag_name exists in the database.
+        """        
         if(self.__user_owns_group(group_name)):
             return False
         try:
@@ -72,11 +97,9 @@ class User(producer.Producer):
                                 owner=self,
                                 time_created=datetime.datetime.now(),
                                 tag=tag)
-        
         new_group.save()
-        
-        
-
+        self.groups.append(new_group)
+        self.save()
         return True
         
     
@@ -96,6 +119,17 @@ class User(producer.Producer):
             return None
     
     def get_group_rating(self, req_group_name):
+        """
+        Get the rating this producer has set on the group
+        with req_group_name.
+
+        Args:
+            req_group_name (str): The name of the group which the 
+    
+        Returns: The actual rating (an int). If the producer doesn't
+        have a rating set on req_source, -1 will be returned.
+    
+        """
         return self.group_ratings[req_group_name]
 
     def add_to_group(self, req_group_name, producer_to_be_added):

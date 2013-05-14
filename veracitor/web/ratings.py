@@ -28,7 +28,7 @@ Functions
 ---------
    
 
-.. moduleauthor:: Martin Runelöv <mrunelov@kth.se
+.. moduleauthor:: Martin Runelov <mrunelov@kth.se
 .. moduleauthor:: Daniel Molin <dmol@kth.se>
 
 """

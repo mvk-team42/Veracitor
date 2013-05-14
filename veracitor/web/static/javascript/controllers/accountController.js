@@ -29,7 +29,6 @@ var AccountController = function (controller) {
         $("#register-button").click(function(){
             var username = $(".register-form input[name='username']").val(),
             password = $(".register-form input[name='password']").val();
-            console.log("username: " + username +" pass: " + password);
             $.post("/register", {
                 "username": username,
                 "password": password

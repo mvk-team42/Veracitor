@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+""" 
+.. module:: rssSpider
+    :synopsis: This spider is used to scrape an rss-feed that belongs to some specific newspaper, and send all found article items to the pipeline for further processing.
+
+    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
+
 from scrapy.spider import BaseSpider
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.selector import XmlXPathSelector, HtmlXPathSelector
@@ -44,11 +54,11 @@ class RssSpider(CrawlSpider):
             if len(item_tag.select("description")) > 0:
                 items[-1]["summary"] = item_tag.select("description/text()")[0].extract()   
             
-            request = Request(items[-1]["url"], callback=self.extract_author_from_link)
+            request = Request(items[-1]["url"], callback=self._extract_author_from_link)
             request.meta["item"] = items[-1]
             yield request
    
-    def extract_author_from_link(self, response):
+    def _extract_author_from_link(self, response):
         current_dir = dirname(realpath(__file__))
         meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
         domain = urlparse(response.url)[1]

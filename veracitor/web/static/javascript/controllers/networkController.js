@@ -83,9 +83,9 @@ var NetworkController = function (controller) {
            <p>
              text <infobutton>
            </p>
-           <div tip-text></div>
+           <p tip-text></p>
          */
-        $('.network-info-piece span.question-mark').click(function(evt){
+        $('span.question-mark').click(function(evt){
             $(this).parent().next().toggle();
         });
 
@@ -118,9 +118,15 @@ var NetworkController = function (controller) {
          */
         $('#global-tags').change(on_global_tag_change);
 
+<<<<<<< HEAD
         $('#network-toolbox-layout').click(function (evt) {
             visualizer.recalculate_layout();
         });
+=======
+        $('#selected-tag').html("None");
+
+
+>>>>>>> cbdbfcaee8a88fe80b325f0f2d8de0db97caba42
     };
 
     /**
@@ -128,12 +134,14 @@ var NetworkController = function (controller) {
      */
     var on_global_tag_change = function (evt) {
         var tag = $(this).find(':selected').val();
+        $('#selected-tag').html(tag);
 
         if (tag !== global_tag) {
             global_tag = tag;
 
             if (global_tag === '') {
                 global_tag = null;
+                $('#selected-tag').html("None");
             }
 
             if (global_tag !== null) {
