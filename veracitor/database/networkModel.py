@@ -14,7 +14,7 @@
    the actual rating and under which tag.name the rating was set.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
-.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
+.. moduleauthor:: Fredrik Oeman <frdo@kth.se> 
 """
 
 from networkx import to_dict_of_dicts, DiGraph
