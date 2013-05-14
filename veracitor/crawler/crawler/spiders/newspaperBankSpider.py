@@ -3,8 +3,8 @@
 .. module:: newspaperBankSpider
     :synopsis: This spider is used to crawl a predefined website that contains links to famous newspapers, and then scrapes their respective websites similar to MetaNewspaperSpider.
 
-    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
-    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
 """
 
 from scrapy.spider import BaseSpider

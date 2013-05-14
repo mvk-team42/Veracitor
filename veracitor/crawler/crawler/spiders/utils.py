@@ -3,8 +3,8 @@
 .. module:: utils
     :synopsis: Utility methods used by spiders.
 
-    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
-    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
 '''
 
 from os.path import realpath, dirname
