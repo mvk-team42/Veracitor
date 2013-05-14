@@ -10,8 +10,8 @@
 from mongoengine import *
 import networkModel
 import tag
-
-from dbExceptions import NetworkModelException
+import extractor
+from dbExceptions import *
 connect('mydb')
 
 class Producer(Document):
@@ -72,14 +72,11 @@ class Producer(Document):
 
     def rate_information(self, information_to_rate, rating):
         """
-        Use this method to make the producer rate a source considering
-        a tag. Performs type checking.
+        Use this method to make the producer rate an information.
 
         Args:
-            source_to_rate (producer.Producer): The source which
-            the producer should rate.
-            
-            considered_tag (tag.Tag): The tag which the rating is set under. 
+            information_to_rate (information.Information): The information
+            to be rated.
         
             rating (int): The actual rating.
 
@@ -128,6 +125,8 @@ class Producer(Document):
         else:
             networkModel.notify_producer_was_updated(self)
 
+        
+
         self.prepare_ratings_for_saving()
         super(Producer, self).save()
         self.prepare_ratings_for_using()
@@ -143,6 +142,17 @@ class Producer(Document):
             self.source_ratings[self.__unsafe_string(rating)] = self.source_ratings.pop(rating)
         for rating in self.info_ratings.keys():
             self.info_ratings[self.__unsafe_string(rating)] = self.info_ratings.pop(rating)
+
+    def check_info_rating_consistency(self):
+        info_ratings_to_be_deleted = []
+        for k,v in self.info_ratings.items():
+            try: 
+                extractor.get_information(k)
+            except NotInDatabase:
+                info_ratings_to_be_deleted.append(k)
+        for rating in info_ratings_to_be_deleted:
+            del self.info_ratings[rating]
+        
 
     def delete(self):
         """
