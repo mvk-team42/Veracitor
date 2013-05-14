@@ -37,12 +37,30 @@ class Producer(Document):
     meta = {'allow_inheritance':'On'}
 
     def rate_source(self, source_to_rate, considered_tag, rating):
+        """
+        Use this method to make the producer rate a source considering
+        a tag. Performs type checking.
+
+        Args:
+            source_to_rate (producer.Producer): The source which
+            the producer should rate.
+            
+            considered_tag (tag.Tag): The tag which the rating is set under. 
+        
+            rating (int): The actual rating.
+
+        Raises:
+            TypeError: If any of the arguments are of the wrong type.
+        
+        """
         if(isinstance(source_to_rate, Producer) and\
            type(considered_tag) is tag.Tag and\
            type(rating) is int):
+            # Has the producer rated the source previously?
             try:
                 self.source_ratings[(source_to_rate.name)]\
                                    [considered_tag.name] = rating
+            # If not, the key needs to be created.
             except KeyError:
                 self.source_ratings[(source_to_rate.name)]\
                                     = {}

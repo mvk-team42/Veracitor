@@ -38,7 +38,8 @@ def get_producer(requested_name):
     #print extr_producer[0].source_ratings
 
     prod = extr_producer[0]
-
+    
+    # Convert "|" in ratings to "."
     prod.prepare_ratings_for_using()
     return prod
 
@@ -49,6 +50,7 @@ def get_producer_with_url(url):
 
     prod = extr_producer[0]
 
+    # Convert "|" in ratings to "."
     prod.prepare_ratings_for_using()
     return prod
 
@@ -81,6 +83,7 @@ def get_user(requested_name):
     extr_user = user.User.objects(name=requested_name)
     __checkIfEmpty(extr_user)
     usr = extr_user[0]
+    # Convert "|" in ratings to "."
     usr.prepare_ratings_for_using()
     return usr
 
@@ -98,7 +101,7 @@ def get_information(info_url):
             NotInDataBase: The information object couldn't be found
                            in the database.
     """
-    info_url = httpify(info_url)
+    #info_url = httpify(info_url)
     extr_information = information.Information.objects(url=info_url)
     __checkIfEmpty(extr_information)
     return extr_information[0]
