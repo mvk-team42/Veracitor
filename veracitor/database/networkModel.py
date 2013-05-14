@@ -57,7 +57,7 @@ def build_network_from_db():
     function depends on the number of producers in the database
     and the number of ratings they have set on each other.
 
-    Returns: the global network (a NetworkX DiGraph)
+    Returns: the global network (type NetworkX DiGraph)
 
     """
 
@@ -103,7 +103,7 @@ def get_dictionary_graph():
 
 def notify_producer_was_added(producer):
     """
-    Adds a new producer into the graph,
+    Adds a new producer to the graph,
     connects it with existing producers.
     This should not be called by anything other than
     the producer.Producer object on a .save() call.
@@ -113,9 +113,9 @@ def notify_producer_was_added(producer):
         producer (producer.Producer): The producer object
         to be inserted into the networkModel.
     """
-    graph.add_node(producer.name)
-    for k,v in producer.source_ratings.iteritems():
-            graph.add_edge(producer.name, k, v)
+    graph.add_node(producer.name) #Add the producer (just the name) to the graph
+    for k,v in producer.source_ratings.iteritems(): #For all source ratings
+            graph.add_edge(producer.name, k, v) #Edge to the rated producer
 
 def notify_producer_was_removed(producer):
     """
@@ -131,7 +131,7 @@ def notify_producer_was_removed(producer):
     
     """
     try:
-        # edges are removed automatically :)
+        # Edges are removed automatically :)
         graph.remove_node(producer.name)
     except Exception:
         # Removing nonexistant node is allowed.
@@ -151,26 +151,24 @@ def notify_producer_was_updated(producer):
         to be updated in the networkModel.
 
     """
-    # Possibly cheap/slow implementation.
-    
+    #Get all outgoing edges from this producer in the network graph.
     out_edges = graph.out_edges(nbunch=[producer.name], data=True)
     tmp_edges = []
-    for k,v in producer.source_ratings.iteritems():
+    for k,v in producer.source_ratings.iteritems(): #For each source rating
         try:
-            graph.remove_edge(producer.name, k)
-        except Exception:
-            pass
-        graph.add_edge(producer.name, k, v)
+            graph.remove_edge(producer.name, k) #Remove possibly the old edge
+        except Exception: 
+            pass #Ignore any raised exception
+        graph.add_edge(producer.name, k, v) #Add the possibly updated edge
         tmp_edges.append((producer.name,k,v))
 
-    for edge in out_edges:
+    #For each edge before the update
+    for edge in out_edges: 
+        #If the old edge didn't exist in the updated producer node
         if edge not in tmp_edges:
+            #Remove the edge from the graph
             graph.remove_edge(edge[0], edge[1])
 
-    
-    
-    #notify_producer_was_removed(producer)
-    #notify_producer_was_added(producer)
 
 def get_overall_difference(producer_name1, producer_name2, tag_names):
     """
@@ -192,6 +190,7 @@ def get_overall_difference(producer_name1, producer_name2, tag_names):
         If they have no info ratings in common -1.0 will be returned.
 
     """
+    #Get all common information ratings under a common tag.
     common_info_ratings = get_common_info_ratings(producer_name1, 
                                                   producer_name2, tag_names)
     # No info ratings in common?
@@ -203,6 +202,7 @@ def get_overall_difference(producer_name1, producer_name2, tag_names):
         # Increment sum with the difference in opinion 
         # of the currently selected info-rating-tuple
         sum_diff_ratings += math.fabs(info_rating_t[0] - info_rating_t[1])
+    
     avg = sum_diff_ratings/len(common_info_ratings)
 
     return avg
@@ -233,25 +233,24 @@ def get_common_info_ratings(producer_name1, producer_name2, tag_names):
 
     p1_info_ratings = extractor.get_producer(producer_name1).info_ratings
     p2_info_ratings = extractor.get_producer(producer_name2).info_ratings
-    #print p1_info_ratings
-    #print p2_info_ratings['dn_ledare1']
-    #print "****"
+   
     common_info_ratings = []
     tmp_string = ""
     val = 0;
+    #For each information rated by producer 1
     for k, v in p1_info_ratings.iteritems():
         try:
-            val = p2_info_ratings[k]    
-        except Exception: 
-            print "Excheitpion"
-        
-        tmp_string = k.replace("|",".")
-      
-        if __contains_common_tags(extractor.get_information(tmp_string).tags,
+            val = p2_info_ratings[k] #Get the rating for the same information
+                                     #rated by producer 2.
+             #If the information has been given one or more tags specified in
+             #tag_names.
+             if __contains_common_tags(extractor.get_information(tmp_string).tags,
                                   tag_names):
-            common_info_ratings.append( (v, val) )
-           
-   
+                #Create and append a tuple with the ratings given by producer 1
+                #and producer 2.
+                common_info_ratings.append( (v, val) )
+        except Exception: #If producer 2 had no such information rating            
+            pass          #ignore the raised exception.
     
     return common_info_ratings
     
@@ -291,29 +290,36 @@ def get_extreme_info_ratings(producer_name, tag_names):
     # Will contain info ratings set on informations
     relevant_info_ratings = {}
     relevant_info_ratings_ints = []
-    total_sum = 0.0
+    total_sum = 0.0 #Value will be used to calculate the mean of info_ratings
+    #For each information rated by the producer
     for k,v in producer.info_ratings.iteritems():
+        #For each tag given to the current information object
         for tag in extractor.get_information(k.replace("|", ".")).tags:
+            #If the name of the tag is specified in tag_names
             if tag.name in tag_names:
-                relevant_info_ratings[k] = v
-                relevant_info_ratings_ints.append(v)
+                relevant_info_ratings[k] = v #Store the information title and
+                                             #and rating.
+                relevant_info_ratings_ints.append(v) 
                 total_sum += v
-                break
+                break #Common tag found, proceed to the next information rating.
     
-
-    if relevant_info_ratings_ints:
+    
+    if relevant_info_ratings_ints: #Found one or more information objects.
+        #Calculate the mean of the information ratings found.
         mean = (total_sum)/len(relevant_info_ratings_ints)
-    else:
-        return []
+    else: 
+        return [] 
 
-    extremes = {}
-    np_array = array(relevant_info_ratings_ints)
-
-    std = np_array.std()
+ 
     
+    np_array = array(relevant_info_ratings_ints)
+    std = np_array.std() #Calculate the standard deviation
+    extremes = {}
+    #For each information rating found
     for k,v in relevant_info_ratings.iteritems():
-        diff = math.fabs(v - mean)
-        if diff > std:
+        diff = math.fabs(v - mean) #Absolute difference
+        if diff > std: #If the difference exceeds one standard deviation
+                       #then v will be considered as an extreme rating.
             extremes[k.replace("|", ".")] = v
 
     return extremes
@@ -449,15 +455,20 @@ def get_max_rating_difference(producer_name1, producer_name2, tag_names):
     producer1 = extractor.get_producer(producer_name1)
     producer2 = extractor.get_producer(producer_name2)
 
-    common_info_ratings = get_common_info_ratings(producer_name1, producer_name2,tag_names)
+    common_info_ratings = get_common_info_ratings(producer_name1, 
+                                                  producer_name2,tag_names)
+    #No common information ratings were found
     if len(common_info_ratings) == 0:
         return -1 
 
     max_diff = 0
+    #For each (info_rating,info_rating)-tuple
     for common_tuple in common_info_ratings:
-       diff = math.fabs(common_tuple[0] - common_tuple[1])
-       if diff > max_diff:
-           max_diff = diff
+        #Calculate the absolute difference between the two ratings
+        diff = math.fabs(common_tuple[0] - common_tuple[1])
+        if diff > max_diff: #If the difference is greater than the largest
+                            #difference found so far.
+            max_diff = diff #Update the maximum difference
 
     return max_diff
 
