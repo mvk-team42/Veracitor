@@ -118,6 +118,10 @@ class Producer(Document):
             into).
 
         """
+        
+        # Ensure that no ratings exist on deleted entities.
+        self.check_rating_consistencies()
+        
         if networkModel.graph is None:
             raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
@@ -150,9 +154,23 @@ class Producer(Document):
                 extractor.get_information(k)
             except NotInDatabase:
                 info_ratings_to_be_deleted.append(k)
-        for rating in info_ratings_to_be_deleted:
-            del self.info_ratings[rating]
-        
+        for info in info_ratings_to_be_deleted:
+            del self.info_ratings[info]
+
+    def check_source_rating_consistency(self):
+        source_ratings_to_be_deleted = []
+        for source in self.source_ratings.keys():
+            try:
+                extractor.get_producer(source)
+            except NotInDatabase:
+                source_ratings_to_be_deleted.append(source)
+        for source in source_ratings_to_be_deleted:
+            del self.source_ratings[source]
+
+    def check_rating_consistencies(self):
+        self.check_info_rating_consistency()
+        self.check_source_rating_consistency()
+                
 
     def delete(self):
         """
