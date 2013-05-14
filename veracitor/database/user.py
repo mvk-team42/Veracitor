@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: user
-    :synopsis: The user module contains classes needed to represent the user entity model.
+    :synopsis: The user module contains the class needed 
+    to represent the user entity model. Class methods
+    enable functionality related to the user entity.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
 .. moduleauthor:: Fredrik Oeman <frdo@kth.se>

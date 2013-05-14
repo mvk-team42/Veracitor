@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: networkModel
-   :synopsis: The purpose of the global network is to ease the accessing of 
-   the database through building a NetworkX DiGraph. 
-
-   The purpose of the global network is to ease the accessing of the database
+   :synopsis: 
+   The purpose of the network model is to ease the accessing of the database
    through building a NetworkX DiGraph. Defines a set of convenience
-   functions performing tasks related to traversing the data in the database.
+   functions performing tasks related to traversing data in the database.
 
    The nodes of the graph correspond to a producer and consist of their
    unique (string) name. The edges correspond to the  source_ratings they
@@ -69,6 +67,7 @@ def build_network_from_db():
    
     # Add all producers in the database as nodes.
     for p1 in producers:
+        p1.prepare_ratings_for_using()
         graph.add_node(p1.name)
     
     # Add all producers' source ratings to the database as edges,

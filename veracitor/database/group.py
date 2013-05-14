@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: group
-    :synopsis: The group module contains the Group class needed to represent the group entity model.
+    :synopsis: The group module contains the Group class needed 
+    to represent the group entity model.
+    
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
 .. moduleauthor:: Fredrik Oeman <frdo@kth.se> 

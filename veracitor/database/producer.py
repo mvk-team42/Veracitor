@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: producer
-    :synopsis: The producer module contains classes needed to represent the producer entity model.
+    :synopsis: The producer module contains the class needed 
+    to represent the producer entity model.
+    Class methods enable functionality related to the producer entity.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
 .. moduleauthor:: Fredrik Oeman <frdo@kth.se>
