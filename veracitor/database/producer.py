@@ -257,6 +257,11 @@ class Producer(Document):
         Adds an information to the infos-list.
         The info_to_add's publisher field is set
         to this producer.
+        
+        Args:
+            info_to_add (information.Information):
+            The information to be added.
+            
     
         Returns: True if the information was added
         to the infos-list and the information's publisher
@@ -277,9 +282,16 @@ class Producer(Document):
         Reverts all actions of add_information.
         Deletes an information from the producer's infos_list
         and removes this producer from the information's publisher list.
+        Note that this does not delete anything from the database.
         
+        Args:
+            info_to_del (information.Information):
+            The information to be removed.
+
         Returns: True if the information is removed from the producer's
-        infos-list and 
+        infos-list and the producer is no longer in the information's
+        producer list. Returns False otherwise.
+        
         """
         found = False
         for x in range(len(self.infos)):

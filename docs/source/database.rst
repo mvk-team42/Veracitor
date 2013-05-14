@@ -13,10 +13,10 @@
 .. automodule:: veracitor.database.user
    :members:
 
-:mod:`globalNetwork` -- Wrapper and help functions for the producer network.
+:mod:`networkModel` -- Wrapper and help functions for the producer network.
 -------------------------------------------------------------------------------------
 
-.. automodule:: veracitor.database.globalNetwork
+.. automodule:: veracitor.database.networkModel
    :members:
 
 :mod:`group` -- Group
