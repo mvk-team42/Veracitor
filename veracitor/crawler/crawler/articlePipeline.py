@@ -163,7 +163,7 @@ def _fix_tags(article):
                 if predefined_tag in final_tags:
                     continue
                 # If tag_str matches any of the strings mapped to the predefined tag
-                if any(match in tag_str for match in tag_map[predefined_tag]): 
+                if any(str(match) in str(tag_str) for match in tag_map[predefined_tag]): 
                     final_tags.append(predefined_tag)
         log.msg("final tags: "+unicode(final_tags))
         article["tags"] = [extractor.get_tag_create_if_needed(tag_str) for tag_str in final_tags]
