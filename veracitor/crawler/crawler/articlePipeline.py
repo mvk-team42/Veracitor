@@ -4,8 +4,8 @@
 .. module:: articlePipeline
     :synopsis: The pipeline for articleItems scraped by the crawler. The items are cleaned, filtered and added to the database. Some additional work is done, such as setting trust ratings between the producers of the same article.
 
-    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
-    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
 """
 
 import re
