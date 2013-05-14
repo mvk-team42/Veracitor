@@ -51,6 +51,15 @@ class Group(Document):
             self.owner.groups.append(self)
             self.owner.save()
 
+    def delete(self):
+        # Delete owner's group rating
+        try:
+            del self.owner.group_ratings[self.name]
+        except KeyError:
+            pass
+            
+        super(Group, self).delete()
+
 def testing():
     networkModel.build_network_from_db()
     u1 = User(name="donkey", password="123")
