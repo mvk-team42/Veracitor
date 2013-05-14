@@ -104,6 +104,7 @@ def extract_name(domain, hxs):
 
        Args:
            *domain*: The domain url.
+
            *hxs*: An initialized HtmlXPathSelector.
 
        Returns:
@@ -121,6 +122,7 @@ def extract_rss_urls(domain, hxs):
 
        Args:
            *domain*: The domain url.
+
            *hxs*: An initialized HtmlXPathSelector.
 
        Returns:
@@ -138,6 +140,7 @@ def extract_description(domain, hxs):
 
        Args:
            *domain*: The domain url.
+
            *hxs*: An initialized HtmlXPathSelector.
 
        Returns:

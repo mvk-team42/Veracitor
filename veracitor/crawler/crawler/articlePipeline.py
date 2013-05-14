@@ -30,6 +30,18 @@ from ...database import *
 from ...logger import *
         
 def process_article(article, spider):
+    """
+        Processes the article item and adds it to the database.
+        Makes the relevant connections between article and producers.
+
+        Args:
+            *article*: An ArticleItem.
+
+            *spider*: The spider which screaped the item.
+
+        Returns:
+            An ArticleItem.
+    """
     log.msg("tags type: "+unicode(type(article["tags"]))+" tags: "+unicode(article["tags"]))
     _fix_fields(article)
     _add_to_database(article)

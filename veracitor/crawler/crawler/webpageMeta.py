@@ -32,6 +32,7 @@ class WebpageMeta:
 
             Args:
                 *field_name*: Name of the field to be accessed.
+
                 *domain*: The domain url. Should be a base url of the webpage (with http://) such as http://www.guardian.co.uk or http://www.dn.se ... if domain is not found in file, default value will be used.
 
             Returns:
@@ -82,6 +83,7 @@ class WebpageMeta:
             
             Args:
                 *field_name*: The name of the vield to be accessed.
+
                 *domain*: The domain url. Should be a base url of the webpage (with http://) such as http://www.guardian.co.uk or http://www.dn.se ... if domain is not found in file, default value will be used.
 
             Returns:

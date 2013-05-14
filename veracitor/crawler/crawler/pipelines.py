@@ -39,7 +39,7 @@ class CrawlerPipeline(object):
 
     def process_item(self, item, spider): 
         """
-            is called after an item is returned from some spider.
+            Is called after an item is returned from some spider.
             Different things happen depending on the spider.
         """
         if isinstance(item, ArticleItem):

@@ -35,7 +35,9 @@ def process_producer(producer_item, spider):
 
     Args:
         *producer_item*: An item with scraped information regarding a producer.
+
         *spider*: A the spider which scraped the item.
+
     Returns:
         None
     """
