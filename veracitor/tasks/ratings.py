@@ -38,7 +38,7 @@ def get_information_objects(tag):
     pass
 
 def get_information_object(possible_info, tag):
-    # Samma här. sök efter info-objekt. behövs
+    # Samma här. sok efter info-objekt. behovs
     # tag-objekt?
     #res = extractor.get_informations()
     pass

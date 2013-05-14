@@ -6,7 +6,7 @@
 Computes minimum and maximum probability of success by using a stochastic simulation. Success is in this case defined as being used in the trust evaluation done by SUNNY.
 
 .. moduleauthor:: Daniel Molin <dmol@kth.se>
-.. moduleauthor:: Martin Runelöv <mrunelov@kth.se>
+.. moduleauthor:: Martin Runelov <mrunelov@kth.se>
 """
 
 import veracitor.database as db
