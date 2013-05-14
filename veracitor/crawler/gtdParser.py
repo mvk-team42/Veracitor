@@ -2,7 +2,7 @@
 
 """ 
 .. module:: gtdParser
-    :synopsis: A module for parsing an excel file representation of the GTD-databse.
+    :synopsis: A module for parsing an excel file representation of the GTD-databse. Is probably used only once to gather a big amount of data for the database. Later on in the product lifetime new data will instead be added from the webcrawler.
 
     .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
     .. moduleauthor:: Jonathan Murray <jmu@kth.se>

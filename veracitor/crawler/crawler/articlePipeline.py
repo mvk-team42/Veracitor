@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+""" 
+.. module:: articlePipeline
+    :synopsis: The pipeline for articleItems scraped by the crawler. The items are cleaned, filtered and added to the database. Some additional work is done, such as setting trust ratings between the producers of the same article.
+
+    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
@@ -22,11 +30,12 @@ from ...database import *
 from ...logger import *
         
 def process_article(article, spider):
-    fix_fields(article)
-    add_to_database(article)
+    log.msg("tags type: "+unicode(type(article["tags"]))+" tags: "+unicode(article["tags"]))
+    _fix_fields(article)
+    _add_to_database(article)
     return article
         
-def add_to_database(article):
+def _add_to_database(article):
     """
         Add database object corresponding to the article
     """
@@ -38,13 +47,13 @@ def add_to_database(article):
     log.msg(article["url"] + " is new, adding to database")
         
 
-    publishers = get_publisher_objects(article)
+    publishers = _get_publisher_objects(article)
 
     info = information.Information(
                         title = article["title"],
                         summary = article["summary"],
                         url = article["url"],
-                        time_published = parse_datetime(article),
+                        time_published = _parse_datetime(article),
                         tags = article["tags"],
                         publishers = publishers,
                         references = [],
@@ -53,6 +62,8 @@ def add_to_database(article):
     for publisher in publishers:
         log.msg("publisher name: " + publisher.name)
         publisher.infos.append(info)
+        publisher.rate_information(info, 5)
+        
         # Add trust between publishers
         for publisher2 in publishers:
             if not publisher==publisher2:
@@ -61,7 +72,7 @@ def add_to_database(article):
                     publisher.rate_source(publisher2, tag, 5)
         publisher.save()
 
-def get_publisher_objects(article):
+def _get_publisher_objects(article):
     #publisher_strings = [string.replace(".",",").replace("$",",") for string in publisher_strings]
     publisher_strings = article["publishers"]
     log.msg("pubStrings: " + str(publisher_strings))
@@ -103,74 +114,98 @@ def print_if_unknown(article):
             print article.long_string() + "\n"
             break
     
-def fix_fields(article):
+def _fix_fields(article):
     """
         Before: the attributes in article are very "raw". Scraped directly from website.
         
         After: the attributes are trimmed, summary is shortened, time_published is converted to
         db-friendly format.
     """
-    fix_time_published(article)
-    fix_publishers(article)
-    fix_tags(article)
-    fix_references(article)
-    shorten_title(article)
-    shorten_summary(article)
+    _fix_time_published(article)
+    _fix_publishers(article)
+    _fix_tags(article)
+    _fix_references(article)
+    _shorten_title(article)
+    _shorten_summary(article)
     for field in ArticleItem.fields.iterkeys():
         if field in article:
             if isinstance(article[field], str) or isinstance(article[field], unicode):
-                fix_string_field(article, field)
+                _fix_string_field(article, field)
         else:
             # We know it's a string, since all list fields have been fixed
             article[field] = "unknown"
         
-def fix_string_field(article, field):
+def _fix_string_field(article, field):
     if article[field].strip() != "":
         article[field] = re.sub("\s+", " ", article[field].strip())
         log.msg("article["+field+"]: "+article[field])
         return
     article[field] = "unknown"
     
-def fix_publishers(article):
+def _fix_publishers(article):
     if "publishers" in article:
-        remove_words_from_publishers(article)
+        _remove_words_from_publishers(article)
         for index in range(len(article["publishers"])):
             article["publishers"][index] = article["publishers"][index].strip()
     else:
         article["publishers"] = []
 
-def fix_tags(article):
-    #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
+def _fix_tags(article):
+
+	#Maps predefined tags to words that potentially have the same meaning
+    tag_map = {}
+    tag_map["Crime"] = ["crime", "assault", "murder", "robber", "safety"]
+    tag_map["Crime"] += ["brott", "överfall", "mord", "rån", "säkerhet"]
+    tag_map["Culture"] = ["music", "art", "painting", "culture", "concert", "movie", "tv", "radio", "food", "wine", "drink", "beer"]
+    tag_map["Culture"] = ["musik", "konst", "målning", "kultur", "koncert", "film", "mat", "vin", "dryck", "öl"]
+    tag_map["Politics"] = ["court", "health", "supreme", "reform", "ruling", "politic", "committee", "diplom", "party", "vote", "election"]
+    tag_map["Politics"] = ["domstol", "häls", "parti", "komitte", "parti", "röst", "val"]
+    tag_map["Sports"] = ["ball", "match", "tournament", "champion", "sport", "win"]
+    tag_map["Sports"] = ["boll", "turnering", "mästar", "vinna"]
+    tag_map["Finances"] = ["recession", "financ", "money", "bank", "compan", "price"]
+    tag_map["Finances"] = ["finans", "penga", "kompan"]
+    
+    final_tags = []
+    
     if "tags" in article:
-        article["tags"] = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in article["tags"]]
+    	for tag_str in article["tags"]:
+            for predefined_tag in tag_map:
+                if predefined_tag in final_tags:
+                    continue
+                # If tag_str matches any of the strings mapped to the predefined tag
+                if any(str(match) in str(tag_str) for match in tag_map[predefined_tag]): 
+                    final_tags.append(predefined_tag)
+        log.msg("final tags: "+unicode(final_tags))
+        article["tags"] = [extractor.get_tag_create_if_needed(tag_str) for tag_str in final_tags]
     else:
         article["tags"] = []
+	
 
-def fix_references(article):
+def _fix_references(article):
     if "references" in article:
         pass
     else:
         article["references"] = []
 
-def remove_words_from_publishers(article):
+def _remove_words_from_publishers(article):
     pattern = re.compile("\S+:|av|by", re.IGNORECASE)
     for index, publisher_string in enumerate(article["publishers"]):
         article["publishers"][index] = pattern.sub("", publisher_string)
         
             
-def fix_time_published(article):
+def _fix_time_published(article):
     if "time_published" in article:
-        remove_words_from_time_published(article)
-        replace_words_in_time_published(article)
+        _remove_words_from_time_published(article)
+        _replace_words_in_time_published(article)
                 
-def remove_words_from_time_published(article):
+def _remove_words_from_time_published(article):
     pattern = re.compile('published:|publicerad:|published|publicerad|am|pm|\son\s|\sden\s', re.IGNORECASE)
     day_pattern = re.compile('monday|tuesday|wednesday|thursday|friday|saturday|sunday|måndag|tisdag|onsdag|torsdag|fredag|lördag|söndag', re.IGNORECASE)
     for index, time_string in enumerate(article["time_published"]):
         article["time_published"][index] = pattern.sub("", time_string)   
         article["time_published"][index] = day_pattern.sub("", time_string)
     
-def replace_words_in_time_published(article):
+def _replace_words_in_time_published(article):
     special_words = ["idag", "i dag", "today"]
     pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today")
             + "|" + re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
@@ -205,7 +240,7 @@ def replace_words_in_time_published(article):
 
 
 # Parse the date from article['time_published'] either using one of the default common formats or a format specified in webpageXpaths.xml
-def parse_datetime(article):
+def _parse_datetime(article):
     current_dir = dirname(realpath(__file__))
     meta = WebpageMeta(current_dir + '/webpageMeta.xml')
     domain = urlparse(article['url'])[1]
@@ -226,10 +261,10 @@ def parse_datetime(article):
     return None
 
         
-def shorten_summary(article):
+def _shorten_summary(article):
     if "summary" in article and len(article["summary"]) > 200:
         article["summary"] = article["summary"][:197] + "..."
 
-def shorten_title(article):
+def _shorten_title(article):
     if "title" in article and len(article["title"]) > 100:
         article["title"] = article["title"][:97] + "..."

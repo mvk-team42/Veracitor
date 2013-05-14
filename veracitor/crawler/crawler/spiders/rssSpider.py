@@ -44,11 +44,11 @@ class RssSpider(CrawlSpider):
             if len(item_tag.select("description")) > 0:
                 items[-1]["summary"] = item_tag.select("description/text()")[0].extract()   
             
-            request = Request(items[-1]["url"], callback=self.extract_author_from_link)
+            request = Request(items[-1]["url"], callback=self._extract_author_from_link)
             request.meta["item"] = items[-1]
             yield request
    
-    def extract_author_from_link(self, response):
+    def _extract_author_from_link(self, response):
         current_dir = dirname(realpath(__file__))
         meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
         domain = urlparse(response.url)[1]

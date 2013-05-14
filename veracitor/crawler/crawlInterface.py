@@ -2,7 +2,7 @@
 
 """ 
 .. module:: crawlInterface
-    :synopsis: The interface for the webcrawler package
+    :synopsis: The interface for the webcrawler package. Only methods here will be called from other packages. Most of the methods delegate their task to a single dedicated spider.
 
 .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
 .. moduleauthor:: Jonathan Murray <jmu@kth.se>
