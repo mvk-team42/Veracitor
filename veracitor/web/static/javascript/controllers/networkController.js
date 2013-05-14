@@ -118,15 +118,12 @@ var NetworkController = function (controller) {
          */
         $('#global-tags').change(on_global_tag_change);
 
-<<<<<<< HEAD
         $('#network-toolbox-layout').click(function (evt) {
             visualizer.recalculate_layout();
         });
-=======
+
         $('#selected-tag').html("None");
 
-
->>>>>>> cbdbfcaee8a88fe80b325f0f2d8de0db97caba42
     };
 
     /**
