@@ -3,7 +3,7 @@
 {% block content %}
 <h1>{{ tab.name }}</h1>
 
-{% if session.user %}
+{% if session.user_name %}
 
 <p class="greeting">Welcome <b>{{ session.user_name }}</b>!</p>
 <input type="button" value="View yourself in the network" id="view_self_in_network"/>
