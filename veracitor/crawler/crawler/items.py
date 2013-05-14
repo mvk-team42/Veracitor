@@ -25,6 +25,8 @@ class ArticleItem(Item):
     Crawler-item representing a newspaper article.
     Corresponds to "Information" in database.
     """
+
+    						# Comments below tell what the Field contains when item is sent to pipeline
     title = Field()           # String
     summary = Field()         # String
     publishers = Field()      # [String]
@@ -95,6 +97,8 @@ class ProducerItem(Item):
     Crawler-item representing a producer(newspaper).
     Corresponds to "Producer" in database.
     """
+    
+      						# Comments below tell what the Field contains when item is sent to pipeline
     name = Field()            # String
     description = Field()     # String
     url = Field()             # String
