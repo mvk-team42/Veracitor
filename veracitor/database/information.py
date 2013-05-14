@@ -30,6 +30,3 @@ class Information(Document):
     publishers = ListField(ReferenceField('Producer'))
     references = ListField(ReferenceField('self'))
     
-
-Information.register_delete_rule(producer.Producer, 'infos', PULL)
-Information.register_delete_rule(Information, 'references', PULL)

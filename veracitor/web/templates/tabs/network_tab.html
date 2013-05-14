@@ -5,17 +5,17 @@
   <div class="left">
     <div id="network-info-view">
       <div class="body">
-        <h1 class="title">Title</h1>
-        <p><b>Description: </b><span class="description"></span></p>
-        <p><b>URL: </b><span class="url"></span></p>
-        <p><b>Source type: </b><span class="type"></span></p>
-        <p><b>Informations: </b></p>
-        <div class="informations">
-
+        <div class="producer-information">
+          <h1 class="title">Title</h1>
+          <p><b>Description: </b><span class="description"></span></p>
+          <p><b>URL: </b><span class="url"></span></p>
+          <p><b>Source type: </b><span class="type"></span></p>
+          <p><b>Informations: </b></p>
+          <div class="informations list"></div>
+	      <p><b>Your ratings:</b></p>
+	      <div class="user-ratings list"></div>
         </div>
-	    <p><b>Your ratings:</p></b>
-	    <div class="ratings"></div>
-	    <p><b>Actions:</p></b>
+	    <p><b>Actions:</b></p>
         <div id="network_rate_producer" class="network-info-piece">
 	      <p>Rate producer <span class="icon question-mark"></span></p>
 	      <p class="tip-text">
@@ -92,9 +92,11 @@
     <div id="network-toolbox">
       <div class="body">
         <label>Tag<select id="global-tags" class="tag-dropdown"></select></label>
+        <!--
         <div class="ui-widget">
           <label>Tag free <input id="tag-autocomplete" /></label>
         </div>
+        -->
       </div>
     </div>
   </div>

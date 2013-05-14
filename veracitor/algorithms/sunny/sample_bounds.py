@@ -80,6 +80,8 @@ def sample_bounds(bayesianNetwork, source, sink, bounds, p_conf, tag, k=10):
     else:
         bounds[source] = [xmin_counters[source]/k, xmax_counters[source]/k]
 
+    print bounds
+
     return bounds
 
 

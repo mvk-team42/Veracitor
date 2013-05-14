@@ -301,7 +301,10 @@ def get_extreme_info_ratings(producer_name, tag_names):
                 break
     
 
-    mean = (total_sum)/len(relevant_info_ratings_ints)
+    if relevant_info_ratings_ints:
+        mean = (total_sum)/len(relevant_info_ratings_ints)
+    else:
+        return []
 
     extremes = {}
     np_array = array(relevant_info_ratings_ints)
@@ -315,6 +318,21 @@ def get_extreme_info_ratings(producer_name, tag_names):
 
     return extremes
     
+    
+def get_difference_on_extremes(producer_name1, producer_name2, tag_names):
+    extreme1 = get_extreme_info_ratings(producer_name1, tag_names)
+    extreme2 = get_extreme_info_ratings(producer_name2, tag_names)
+    common_info_ratings = get_common_info_ratings(producer_name1, producer_name2, tag_names)
+    
+    diffs = []
+    for rating in common_info_ratings:
+        if rating in extreme1 and rating in extreme2:
+            diffs.append(abs(extreme1[rating]-extreme2[rating]))
+    
+    if diffs:
+        return sum(diffs)/len(diffs)
+    else:
+        return 0
     
 
 def get_max_rating_difference(producer_name1, producer_name2, tag_names):

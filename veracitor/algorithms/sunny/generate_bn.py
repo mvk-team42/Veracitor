@@ -166,12 +166,7 @@ def _p_confidence(graph, tag, weights=(0.7, 0.2, 0.1, 0.8)):
         difference_on_extremes = networkModel.get_difference_on_extremes(p1, p2, [tag])
         max_difference = networkModel.get_max_rating_difference(p1, p2, [tag])
         belief_coefficient = networkModel.get_belief_coefficient(p1, p2, [tag])
-        
-        #print "overall_difference: " + str(overall_difference)
-        #print "diff on extremes: " + str(difference_on_extremes)
-        #print "max_difference " + str(max_difference)
-        #print "belief_coefficient: " + str(belief_coefficient)
-        
+            
         if difference_on_extremes is None:
             return_dict[(p1, p2, tag)] =  belief_coefficient * \
                 math.fabs(1 - 2 * (weights[3]*overall_difference + \

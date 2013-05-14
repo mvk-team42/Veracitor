@@ -150,7 +150,8 @@
                     'no_information': 'No information found.'
                 },
                 'network': {
-                    'no_information': 'No information objects.'
+                    'no_information': 'No information objects.',
+                    'no_ratings': 'No ratings.'
                 },
 
                 // Save the array of existing tags

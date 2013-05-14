@@ -32,9 +32,9 @@
 </div>
 
 <input type="hidden" value="{{ session.user_name }}" id="user_name"/>
-{% endif %}
 
 {% else %}
+
 <div class="register-content">
   <p>Become a user of Veracitor!</p>
   <p class="error"> </p>
@@ -46,4 +46,5 @@
     <input id="register-button" type="button" value="Register" />
   </form>
 </div>
+{% endif %}
 {% endblock %}

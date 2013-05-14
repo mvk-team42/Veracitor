@@ -10,8 +10,8 @@
 from mongoengine import *
 import networkModel
 import tag
-
-from dbExceptions import NetworkModelException
+import extractor
+from dbExceptions import *
 connect('mydb')
 
 class Producer(Document):
@@ -37,12 +37,30 @@ class Producer(Document):
     meta = {'allow_inheritance':'On'}
 
     def rate_source(self, source_to_rate, considered_tag, rating):
+        """
+        Use this method to make the producer rate a source considering
+        a tag. Performs type checking.
+
+        Args:
+            source_to_rate (producer.Producer): The source which
+            the producer should rate.
+            
+            considered_tag (tag.Tag): The tag which the rating is set under. 
+        
+            rating (int): The actual rating.
+
+        Raises:
+            TypeError: If any of the arguments are of the wrong type.
+        
+        """
         if(isinstance(source_to_rate, Producer) and\
            type(considered_tag) is tag.Tag and\
            type(rating) is int):
+            # Has the producer rated the source previously?
             try:
                 self.source_ratings[(source_to_rate.name)]\
                                    [considered_tag.name] = rating
+            # If not, the key needs to be created.
             except KeyError:
                 self.source_ratings[(source_to_rate.name)]\
                                     = {}
@@ -53,6 +71,21 @@ class Producer(Document):
             raise TypeError("Problem with type of input variables.")
 
     def rate_information(self, information_to_rate, rating):
+        """
+        Use this method to make the producer rate an information.
+
+        Args:
+            information_to_rate (information.Information): The information
+            to be rated.
+        
+            rating (int): The actual rating.
+
+        Raises:
+            TypeError: If any of the arguments are of the wrong type.
+        
+        """
+
+        # Should check type of information_to_rate but circular dependencies 
         if(\
            type(rating) is int):
             self.info_ratings[(information_to_rate.url)] = rating
@@ -85,12 +118,18 @@ class Producer(Document):
             into).
 
         """
+        
+        # Ensure that no ratings exist on deleted entities.
+        self.check_rating_consistencies()
+        
         if networkModel.graph is None:
             raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
             networkModel.notify_producer_was_added(self)
         else:
             networkModel.notify_producer_was_updated(self)
+
+        
 
         self.prepare_ratings_for_saving()
         super(Producer, self).save()
@@ -107,6 +146,31 @@ class Producer(Document):
             self.source_ratings[self.__unsafe_string(rating)] = self.source_ratings.pop(rating)
         for rating in self.info_ratings.keys():
             self.info_ratings[self.__unsafe_string(rating)] = self.info_ratings.pop(rating)
+
+    def check_info_rating_consistency(self):
+        info_ratings_to_be_deleted = []
+        for k,v in self.info_ratings.items():
+            try: 
+                extractor.get_information(k)
+            except NotInDatabase:
+                info_ratings_to_be_deleted.append(k)
+        for info in info_ratings_to_be_deleted:
+            del self.info_ratings[info]
+
+    def check_source_rating_consistency(self):
+        source_ratings_to_be_deleted = []
+        for source in self.source_ratings.keys():
+            try:
+                extractor.get_producer(source)
+            except NotInDatabase:
+                source_ratings_to_be_deleted.append(source)
+        for source in source_ratings_to_be_deleted:
+            del self.source_ratings[source]
+
+    def check_rating_consistencies(self):
+        self.check_info_rating_consistency()
+        self.check_source_rating_consistency()
+                
 
     def delete(self):
         """

@@ -9,6 +9,8 @@
 """
 
 from veracitor.algorithms import tidaltrust as tt
+from generate_bn import golbeck_generate_bn as generate_bn
+from sample_bounds import sample_bounds
 
 def sunny(graph, source, sink, tag="weight"):
     """

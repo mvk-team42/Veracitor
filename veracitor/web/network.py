@@ -60,7 +60,7 @@ def get_shortest_path():
 
     try:
         nodes = nx.shortest_path(gn, source, target)
-    except nx.exception.NetworkXNoPath:
+    except:
         nodes = []
 
     data = {
