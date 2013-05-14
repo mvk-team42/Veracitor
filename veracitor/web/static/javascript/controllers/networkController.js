@@ -17,7 +17,6 @@ var NetworkController = function (controller) {
 
     var global_tag = null;
     var selected_producer = null;
-    var selected_tag = null;
     var user;
 
     /**
@@ -33,6 +32,7 @@ var NetworkController = function (controller) {
     var initialize = function () {
         network_info = $('#network-graph > .info');
 
+        hide_producer_information();
         display_network_information('Use the search to find producers and information.');
 
         $.post('/utils/get_user', {
@@ -92,7 +92,11 @@ var NetworkController = function (controller) {
         /**
            Fill the tag select dropdown with tags.
          */
-        global_tag = vera.const.tags[0];
+        global_tag = '';
+        $("#network-toolbox .tag-dropdown")
+            .append($('<option>')
+                    .attr('value', global_tag)
+                    .html('-'));
         for (var t in vera.const.tags) {
             $(".tag-dropdown")
                 .append($('<option>')
@@ -103,9 +107,11 @@ var NetworkController = function (controller) {
         /**
          * Init autocomplete.
          */
+        /*
         $( "#tag-autocomplete" ).autocomplete({
             source: vera.const.tags
         });
+        */
 
         /**
            Fire event when a new tag is selected.
@@ -124,8 +130,19 @@ var NetworkController = function (controller) {
         if (tag !== global_tag) {
             global_tag = tag;
 
-            $('#rate-producer-tag').val(global_tag);
-            $('#compute-trust-tag').val(global_tag);
+            if (global_tag === '') {
+                global_tag = null;
+            }
+
+            if (global_tag !== null) {
+                $('#rate-producer-tag').val(global_tag);
+                $('#compute-trust-tag').val(global_tag);
+            }
+
+            if (selected_producer !== null) {
+                // Update the network with the selected tag
+                network_controller.visualize_producer_in_network(selected_producer.name);
+            }
         }
     };
 
@@ -222,32 +239,65 @@ var NetworkController = function (controller) {
         $('#network-info-view .url').html($('<a>').attr('href', prod.url).html(prod.url));
         $('#network-info-view .type').html(prod.type_of);
 
+        if (typeof user.source_ratings[prod.name] !== 'undefined') {
+            var ul = $('<ul>');
+
+            if (global_tag !== '') {
+                if (typeof user.source_ratings[prod.name][global_tag] !== 'undefined') {
+                    ul.append($('<li>')
+                              .append($('<p>')
+                                      .append($('<b>').html('Tag:'))
+                                      .append(global_tag)
+                                      .append($('<b>').html('Rating:'))
+                                      .append(user.source_ratings[prod.name][global_tag])));
+                    $('#network-info-view .user-ratings').html(ul);
+                } else {
+                    $('#network-info-view .user-ratings').html($('<p>').html(vera.const.network.no_ratings));
+                }
+            } else {
+                for (var tag in user.source_ratings[prod.name]) {
+                    ul.append($('<li>')
+                              .append($('<p>')
+                                      .append($('<b>').html('Tag:'))
+                                      .append(tag)
+                                      .append($('<b>').html('Rating:'))
+                                      .append(user.source_ratings[prod.name][tag])));
+                }
+                $('#network-info-view .user-ratings').html(ul);
+            }
+        } else {
+            $('#network-info-view .user-ratings').html($('<p>').html(vera.const.network.no_ratings));
+        }
+
         if (prod.infos.length > 0) {
             var ul = $('<ul>');
             for (var i = 0; i < prod.infos.length; i++) {
-                if (prod.infos[i] !== null) { // initially an issue in the database
-                    ul.append($('<li>')
-                              .append($('<p>').html(prod.infos[i].title))
-                              .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
-                              .append(get_rating_dropdown_html())
-                              .append($('<input>').attr({
-                                  'type': 'button',
-                                  'value': 'Rate information'
-                              }).click((function ( url ) {
-                                  return function ( evt ) {
-                                      var rating = $(this).parent().find(':selected').html();
-                                      rate_information(url, rating);
-                                  };
-                              })(prod.infos[i].url))));
-                }
+                ul.append($('<li>')
+                          .append($('<p>').html(prod.infos[i].title))
+                          .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
+                          .append(get_rating_dropdown_html())
+                          .append($('<input>').attr({
+                              'type': 'button',
+                              'value': 'Rate information'
+                          }).click((function ( url ) {
+                              return function ( evt ) {
+                                  var rating = $(this).parent().find(':selected').html();
+                                  rate_information(url, rating);
+                              };
+                          })(prod.infos[i].url))));
             }
             $('#network-info-view .informations').html(ul);
         } else {
             $('#network-info-view .informations').html($('<p>').html(vera.const.network.no_information));
         }
 
+        $('#network-info-view > .body > .producer-information').show();
         $(".feedback").hide();
         $(".tip-text").hide();
+    };
+
+    var hide_producer_information = function () {
+        $('#network-info-view > .body > .producer-information').hide();
     };
 
     var rate_producer = function ( source, target, tag, rating ) {

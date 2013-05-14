@@ -4,7 +4,7 @@
     :synopsis: The information module contains the Information class needed to represent the information entity model.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
-.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
+.. moduleauthor:: Fredrik Oeman <frdo@kth.se> 
 """
 
 from mongoengine import *
@@ -30,6 +30,3 @@ class Information(Document):
     publishers = ListField(ReferenceField('Producer'))
     references = ListField(ReferenceField('self'))
     
-
-Information.register_delete_rule(producer.Producer, 'infos', PULL)
-Information.register_delete_rule(Information, 'references', PULL)

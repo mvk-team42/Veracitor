@@ -37,22 +37,12 @@ def init_interface():
     """
     Setup module. Should only be called once.
 
-    Connects signals and starts the scrapy logger.
+    Starts the scrapy logger.
 
     Returns:
         None
     """
-    #global callback
-    #callback = callback_method
-    dispatcher.connect(_item_scraped , signals.item_scraped)
     log.start()
-
-
-def _item_scraped(item, response, spider):
-    """
-    Callback function used internally.
-    """
-
 
 def create_newspaper_bank():
     """
@@ -79,7 +69,6 @@ def add_newspaper(url):
         None
     """
     spider = MetaNewspaperSpider(url=httpify(url))
-    #spider.job_id = job_id
     _run_spider(spider)
 
 def scrape_article(url):
@@ -93,9 +82,7 @@ def scrape_article(url):
     Returns:
         None
     """
-    #logger.log("blablabla",logger.Level.debug, logger.Area.crawler)
     spider = ArticleSpider(start_url=httpify(url))
-    #spider.job_id = job_id
     _run_spider(spider)
 
 def request_scrape(newspaper_url):
@@ -111,10 +98,9 @@ def request_scrape(newspaper_url):
         None
     """
     spider = NewspaperSpider(domain=httpify(newspaper_url))
-    #spider.job_id = job_id
     _run_spider(spider)
 
-def start_continuous_scrape():
+def scrape_all_in_bank():
     """
     Start a celery task whose job is to loop through the newspaperbank and scrape the
     newspapers for new articles and, if they're not already stored, store Information-
@@ -133,7 +119,7 @@ def start_continuous_scrape():
     for url in newspaper_urls:
         log.msg(url)
 
-        spider_has_run = False  # om rss failar ska man koera request_scrape
+        spider_has_run = False  # if rss fails, run request_scrape
         for rss_url in meta.get_rss_urls(url):
             spider = RssSpider(url=httpify(rss_url))
             _run_spider(spider)
@@ -143,17 +129,14 @@ def start_continuous_scrape():
         if not spider_has_run:
             request_scrape(url)
 
-def test_rss(url):
+def _test_rss(url):
     spider = RssSpider(url=httpify(url))
     _run_spider(spider)
-
 
 def _run_spider(spider):
     """ private method to reduce boilerplate """
     settings = get_project_settings()
-    #print settings.getlist("SPIDER_MODULES")
     crawler = CrawlerProcess(settings)
-    #crawler.install()
     crawler.configure()
     p = Process(target=_crawl,args=[crawler,spider])
     p.start()
@@ -163,15 +146,6 @@ def _crawl(crawler, spider):
     crawler.crawl(spider)
     crawler.start()
     crawler.stop()
-
-
-
-#def _httpify(url):
-#    if url.startswith("http://"):
-#        return url
-#    return "http://" + url
-
-
 
 if __name__ == "__main__":
     startContinuousScrape()

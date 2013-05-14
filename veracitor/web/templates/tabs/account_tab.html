@@ -3,7 +3,7 @@
 {% block content %}
 <h1>{{ tab.name }}</h1>
 
-{% if session.user %}
+{% if session.user_name %}
 
 <p class="greeting">Welcome <b>{{ session.user_name }}</b>!</p>
 <input type="button" value="View yourself in the network" id="view_self_in_network"/>
@@ -32,5 +32,19 @@
 </div>
 
 <input type="hidden" value="{{ session.user_name }}" id="user_name"/>
+
+{% else %}
+
+<div class="register-content">
+  <p>Become a user of Veracitor!</p>
+  <p class="error"> </p>
+  <form class="register-form">
+    <label for="username">Username:</label>
+    <input name="username" type="text" class="field"/>
+    <label for="password">Password:</label>
+    <input name="password" type="password" class="field" />
+    <input id="register-button" type="button" value="Register" />
+  </form>
+</div>
 {% endif %}
 {% endblock %}

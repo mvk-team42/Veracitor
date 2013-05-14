@@ -1,6 +1,6 @@
 from scrapy.item import Item, Field
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
-from scrapy.contrib.loader.processor import TakeFirst, Compose, MapCompose, Join
+from scrapy.contrib.loader.processor import TakeFirst, Compose, MapCompose, Join, Identity
 from scrapy import log
 
 """
@@ -15,13 +15,13 @@ class ArticleItem(Item):
     Crawler-item representing a newspaper article.
     Corresponds to "Information" in database.
     """
-    title = Field()
-    summary = Field()
-    publishers = Field()
-    time_published = Field()
-    url = Field()
-    tags = Field()
-    references = Field()
+    title = Field()           # String
+    summary = Field()         # String
+    publishers = Field()      # [String]
+    time_published = Field()  # [String]
+    url = Field()             # String
+    tags = Field()            # [String]
+    references = Field()      # [String]
     
     def __str__(self):
         return unicode(self).encode('utf-8')
@@ -58,19 +58,26 @@ class ArticleLoader(XPathItemLoader):
         log.msg("returning None for string: "+ unicode(string))
         return None
 
+    def separate_tags(tags_string):
+        return tags_string.replace(";",",").split(",")
+
+    default_input_processor = MapCompose(is_string)
     default_output_processor = TakeFirst()
 
     publishers_in = MapCompose(is_string)
-    publishers_out = Join(",")
+    publishers_out = Identity()
 
     title_in = MapCompose(is_string, unicode.title)
     title_out = TakeFirst()
     
     time_published_in = MapCompose(is_string)
-    time_published_out = TakeFirst()
+    time_published_out = Identity()
 
     summary_in = MapCompose(is_string)
     summary_out = TakeFirst()
+
+    tags_in = MapCompose(is_string, separate_tags)
+    tags_out = TakeFirst()
 
     
 class ProducerItem(Item):
@@ -78,12 +85,8 @@ class ProducerItem(Item):
     Crawler-item representing a producer(newspaper).
     Corresponds to "Producer" in database.
     """
-    name = Field()
-    description = Field()
-    url = Field()
-    infos = Field()
-    source_ratings = Field()
-    info_ratings = Field()
-    type_of = Field()
-    rss_urls = Field()
-
+    name = Field()            # String
+    description = Field()     # String
+    url = Field()             # String
+    rss_urls = Field()        # [String]
+    type_of = Field()         # String

@@ -29,7 +29,7 @@ def process_producer(producer_item, spider):
     webpages = tree.getroot()
     # Might wanna httpify all uses of producer.url ??
 
-    fix_fields(producer_item)
+    _fix_fields(producer_item)
 
     if producer_item["name"]=="unknown":
         producer_item["name"] = producer_item["url"]
@@ -38,15 +38,15 @@ def process_producer(producer_item, spider):
         existing_producer = extractor.get_producer(producer_item["name"])
         if (existing_producer.url != producer_item["url"] and not extractor.contains_producer_with_name(producer_item["url"])):
             producer_item["name"] = producer_item["url"]
-            add_to_database(producer_item)
+            _add_to_database(producer_item)
     else:
-        add_to_database(producer_item)
+        _add_to_database(producer_item)
 
-    add_to_xml(producer_item, tree, xml_file)
+    _add_to_xml(producer_item, tree, xml_file)
     return producer_item
     
     
-def add_to_xml(producer_item, tree, xml_file):
+def _add_to_xml(producer_item, tree, xml_file):
     webpages = tree.getroot()
     already_in_xml = len(webpages.findall("./webpage[@domain='" + producer_item["url"] + "']")) > 0
     webpage = None
@@ -69,7 +69,7 @@ def add_to_xml(producer_item, tree, xml_file):
     tree.write(xml_file)
     
     
-def add_to_database(producer_item):
+def _add_to_database(producer_item):
     new_producer = producer.Producer(
         name = producer_item["name"], #.replace(".",",").replace("$",","),
         description = producer_item["description"],
@@ -77,20 +77,22 @@ def add_to_database(producer_item):
         infos = [],
         source_ratings = {},
         info_ratings = {},
-        type_of = "Newspaper")
+        type_of = producer_item["type_of"])
     new_producer.save()
 
-def fix_fields(producer_item):
+def _fix_fields(producer_item):
     for field in ProducerItem.fields.iterkeys():
-        fix_field(producer_item, field)
+        _fix_field(producer_item, field)
 
-def fix_field(producer_item, field):
+def _fix_field(producer_item, field):
     if field in producer_item:
         log.msg("producer_item["+field+"]: "+unicode(producer_item[field]))
         if isinstance(producer_item[field], unicode) or isinstance(producer_item[field], str):
             if producer_item[field].strip() != "":
                 producer_item[field] = re.sub("\s+", " ", producer_item[field].strip())
                 return
+        elif isinstance(producer_item[field], list):
+            return
     #rss_urls is expected to be in list format, when it is sent to pipeline.        
     if field == "rss_urls":
         producer_item[field] = []

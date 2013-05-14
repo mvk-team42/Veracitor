@@ -37,27 +37,15 @@ def add_to_database(article):
     log.msg("extractor returns " + str(extractor.contains_information(article["url"])))
     log.msg(article["url"] + " is new, adding to database")
         
-    #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
-    tag_strings = article["tags"].replace(";", ",").split(',')
-    tags = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in tag_strings]
-    if len(tags) == 0:
-        tags.append(extractor.get_tag_create_if_needed("unknown"))
 
-    publishers = get_publisher_objects(article["publishers"]) #[extractor.producer_create_if_needed(pub_str, "newspaper") for pub_str in publisher_strings]
-    domain = "http://" + urlparse(article["url"])[1]
-    try:
-        publishers.append(extractor.get_producer_with_url(domain))
-        log.msg("got producer")
-    except:
-        log.msg("failed to get producer....")
-        pass
+    publishers = get_publisher_objects(article)
 
     info = information.Information(
                         title = article["title"],
                         summary = article["summary"],
                         url = article["url"],
                         time_published = parse_datetime(article),
-                        tags = tags,
+                        tags = article["tags"],
                         publishers = publishers,
                         references = [],
                    )
@@ -69,32 +57,43 @@ def add_to_database(article):
         for publisher2 in publishers:
             if not publisher==publisher2:
                 log.msg("publisher2 name: " + publisher2.name)
-                for tag in tags:
+                for tag in article["tags"]:
                     publisher.rate_source(publisher2, tag, 5)
         publisher.save()
 
-def get_publisher_objects(publishers_string):
-    publisher_strings = re.sub("[-&]", ",", publishers_string).split(",")
+def get_publisher_objects(article):
     #publisher_strings = [string.replace(".",",").replace("$",",") for string in publisher_strings]
+    publisher_strings = article["publishers"]
     log.msg("pubStrings: " + str(publisher_strings))
     publishers = []
     for publisher_string in publisher_strings:
-        if publisher_string == 'unknown':
-            continue
-        if extractor.contains_producer_with_name(publisher_string):
-            publishers.append(extractor.get_producer(publisher_string))
-        else:
-            # If not found, split on whitespace and try again
-            split_publishers = publisher_string.split()
-            not_found = []
-            for split_publisher in split_publishers:
-                if extractor.contains_producer_with_name(split_publisher):
-                    publishers.append(extractor.get_producer(split_publisher))
-                else:
-                    not_found.append(split_publisher)
-            if len(not_found) != 0:
-                producer = extractor.producer_create_if_needed(" ".join(not_found), "Journalist")
-                publishers.append(producer)
+        split_publishers = re.sub("[-&;/]", ",", publisher_string).split(",")
+        for split_publisher in split_publishers:
+            if split_publisher == 'unknown':   #Nödvändig?
+                continue
+            if extractor.contains_producer_with_name(split_publisher):
+                publishers.append(extractor.get_producer(split_publisher))
+            else:
+                # If not found, split on whitespace and try again
+                spaced_publishers = split_publisher.split()
+                not_found = []
+                for spaced_publisher in spaced_publishers:
+                    if extractor.contains_producer_with_name(spaced_publisher):
+                        publishers.append(extractor.get_producer(spaced_publisher))
+                    else:
+                        not_found.append(spaced_publisher)
+                if len(not_found) != 0:
+                    producer = extractor.producer_create_if_needed(" ".join(not_found), "Journalist")
+                    publishers.append(producer)
+
+    domain = "http://" + urlparse(article["url"])[1]
+    try:
+        publishers.append(extractor.get_producer_with_url(domain))
+        log.msg("got producer")
+    except:
+        log.msg("failed to get producer....")
+        pass
+
     return publishers
 
     
@@ -112,27 +111,52 @@ def fix_fields(article):
         db-friendly format.
     """
     fix_time_published(article)
-    fix_publisher(article)
+    fix_publishers(article)
+    fix_tags(article)
+    fix_references(article)
+    shorten_title(article)
     shorten_summary(article)
     for field in ArticleItem.fields.iterkeys():
-        fix_field(article, field)
+        if field in article:
+            if isinstance(article[field], str) or isinstance(article[field], unicode):
+                fix_string_field(article, field)
+        else:
+            # We know it's a string, since all list fields have been fixed
+            article[field] = "unknown"
         
-def fix_field(article, field):
-    if field in article:
-        if article[field].strip() != "":
-            article[field] = re.sub("\s+", " ", article[field].strip())
-            log.msg("article["+field+"]: "+article[field])
-            return
+def fix_string_field(article, field):
+    if article[field].strip() != "":
+        article[field] = re.sub("\s+", " ", article[field].strip())
+        log.msg("article["+field+"]: "+article[field])
+        return
     article[field] = "unknown"
     
-def fix_publisher(article):
+def fix_publishers(article):
     if "publishers" in article:
-        remove_colon_words_from_publishers(article)
-        article["publishers"] = article["publishers"].strip()
+        remove_words_from_publishers(article)
+        for index in range(len(article["publishers"])):
+            article["publishers"][index] = article["publishers"][index].strip()
+    else:
+        article["publishers"] = []
 
-def remove_colon_words_from_publishers(article):
-    pattern = re.compile("\S+:")
-    article["publishers"] = pattern.sub("", article["publishers"])
+def fix_tags(article):
+    #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
+    if "tags" in article:
+        article["tags"] = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in article["tags"]]
+    else:
+        article["tags"] = []
+
+def fix_references(article):
+    if "references" in article:
+        pass
+    else:
+        article["references"] = []
+
+def remove_words_from_publishers(article):
+    pattern = re.compile("\S+:|av|by", re.IGNORECASE)
+    for index, publisher_string in enumerate(article["publishers"]):
+        article["publishers"][index] = pattern.sub("", publisher_string)
+        
             
 def fix_time_published(article):
     if "time_published" in article:
@@ -141,17 +165,15 @@ def fix_time_published(article):
                 
 def remove_words_from_time_published(article):
     pattern = re.compile('published:|publicerad:|published|publicerad|am|pm|\son\s|\sden\s', re.IGNORECASE)
-    article["time_published"] = pattern.sub("", article["time_published"])   
     day_pattern = re.compile('monday|tuesday|wednesday|thursday|friday|saturday|sunday|måndag|tisdag|onsdag|torsdag|fredag|lördag|söndag', re.IGNORECASE)
-    article["time_published"] = pattern.sub("", article["time_published"])
+    for index, time_string in enumerate(article["time_published"]):
+        article["time_published"][index] = pattern.sub("", time_string)   
+        article["time_published"][index] = day_pattern.sub("", time_string)
     
 def replace_words_in_time_published(article):
     special_words = ["idag", "i dag", "today"]
-    pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today") + "|" + re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
-    article["time_published"] = pattern.sub(date.today().isoformat(), article["time_published"])        
-    
-    #for word in special_words:
-    #    article["time_published"] = article["time_published"].replace(word, date.today().isoformat())
+    pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today")
+            + "|" + re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
 
     #replace swedish months with english
     months_in_swedish = {"januari":"january",
@@ -166,13 +188,21 @@ def replace_words_in_time_published(article):
         "oktober":"october",
         "november":"november",
         "december":"december"}
-    for swedish, english in months_in_swedish.items():
-        article['time_published'] = article['time_published'].replace(swedish, english)
-
     updated_keywords = ["uppdaterad: "]
-    for word in updated_keywords:
-        if word in article["time_published"]:
-            article["time_published"] = article["time_published"].split(word)[1]
+
+    for index, time_string in enumerate(article["time_published"]):
+        time_string = pattern.sub(date.today().isoformat(), time_string)        
+        for swedish, english in months_in_swedish.items():
+            time_string = time_string.replace(swedish, english)
+        for word in updated_keywords:
+            if word in time_string:
+                time_string = time_string.split(word)[1]
+        article["time_published"][index] = time_string
+    
+    #for word in special_words:
+    #    article["time_published"] = article["time_published"].replace(word, date.today().isoformat())
+
+
 
 # Parse the date from article['time_published'] either using one of the default common formats or a format specified in webpageXpaths.xml
 def parse_datetime(article):
@@ -180,26 +210,26 @@ def parse_datetime(article):
     meta = WebpageMeta(current_dir + '/webpageMeta.xml')
     domain = urlparse(article['url'])[1]
     datetime_formats = meta.get_datetime_formats(domain)
-    time = None
     
 #        log.msg("first time format: " + str(datetime_formats[0]))
-    log.msg("time string: "+unicode(article['time_published']))
-    for time_format in datetime_formats:
-        try:
-            time = strptime(article['time_published'],time_format)
-            break
-        except ValueError:
-            log.msg("could not parse date using " + time_format)
+    for datetime_string in article["time_published"]:
+        log.msg("time string: "+unicode(datetime_string))
+        for time_format in datetime_formats:
+            try:
+                time = strptime(datetime_string,time_format)
+                log.msg("time extracted: Year=" + str(time.tm_year) + " Month=" + str(time.tm_mon) + " Day=" + str(time.tm_mday) + " Hour=" + str(time.tm_hour) + " Min=" + str(time.tm_min))
+                return datetime.fromtimestamp(mktime(time))
+            except ValueError:
+                log.msg("could not parse date using " + time_format)
 
-    if time==None:
-        log.msg("time could not be extracted")
-        extracted_time = None
-    else:
-        log.msg("time extracted: Year=" + str(time.tm_year) + " Month=" + str(time.tm_mon) + " Day=" + str(time.tm_mday) + " Hour=" + str(time.tm_hour) + " Min=" + str(time.tm_min))
-        extracted_time = datetime.fromtimestamp(mktime(time))
+    log.msg("time could not be extracted")
+    return None
 
-    return extracted_time
         
 def shorten_summary(article):
     if "summary" in article and len(article["summary"]) > 200:
         article["summary"] = article["summary"][:197] + "..."
+
+def shorten_title(article):
+    if "title" in article and len(article["title"]) > 100:
+        article["title"] = article["title"][:97] + "..."

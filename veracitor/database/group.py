@@ -4,7 +4,7 @@
     :synopsis: The group module contains the Group class needed to represent the group entity model.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
-.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
+.. moduleauthor:: Fredrik Oeman <frdo@kth.se> 
 """
 
 from mongoengine import *
@@ -12,6 +12,8 @@ import networkModel
 import datetime
 
 import extractor
+
+from dbExceptions import NotInDatabase
 connect('mydb')
 
 class Group(Document):
@@ -40,17 +42,28 @@ class Group(Document):
         
         """
         first_time = False
-        if(not extractor.contains_group(self.name)):
+        try:
+            extractor.get_group(self.owner.name, self.name)
+        except NotInDatabase:
             first_time = True
         super(Group, self).save()
         if(first_time):
             self.owner.groups.append(self)
             self.owner.save()
 
-if __name__ == "__main__":
+    def delete(self):
+        # Delete owner's group rating
+        try:
+            del self.owner.group_ratings[self.name]
+        except KeyError:
+            pass
+            
+        super(Group, self).delete()
+
+def testing():
     networkModel.build_network_from_db()
-    u1 = user.User(name="hurseeee", password="123")
+    u1 = User(name="donkey", password="123")
     u1.save()
-    g1 = Group(name="kdjdkj", owner=u1, time_created=datetime.datetime.now())
-    g1.save()
-    print u1.groups[0].name
+    u1.create_group("TestGroup4", "Trust")
+    
+
