@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+""" 
+.. module:: articleSpider
+    :synopsis: This spider is used to scrape a single article. Information about the article is extracted and used to create an article item that is sent to the pipeline for further processing.
+
+    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
+
 from scrapy.spider import BaseSpider
 from scrapy import log
 

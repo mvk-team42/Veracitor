@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+""" 
+.. module:: rssSpider
+    :synopsis: This spider is used to scrape an rss-feed that belongs to some specific newspaper, and send all found article items to the pipeline for further processing.
+
+    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
+
 from scrapy.spider import BaseSpider
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.selector import XmlXPathSelector, HtmlXPathSelector
