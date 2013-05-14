@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+
+""" 
+.. module:: items
+    :synopsis: The definitions of items scraped by the crawler.
+
+    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 from scrapy.item import Item, Field
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst, Compose, MapCompose, Join, Identity

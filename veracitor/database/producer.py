@@ -161,8 +161,8 @@ class Producer(Document):
         source_ratings_to_be_deleted = []
         for source in self.source_ratings.keys():
             try:
-                extractor.get_producer(source)
-            except NotInDatabase:
+                Producer.objects(name=source)[0]
+            except IndexError:
                 source_ratings_to_be_deleted.append(source)
         for source in source_ratings_to_be_deleted:
             del self.source_ratings[source]

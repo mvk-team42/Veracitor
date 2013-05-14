@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+""" 
+.. module:: gtdParser
+    :synopsis: A module for parsing an excel file representation of the GTD-databse.
+
+    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
 import openpyxl.reader.excel
 import openpyxl.workbook as workbook
 from pprint import pprint
@@ -26,6 +35,12 @@ _column_names = {
 }
 
 def add_GTD_to_database():
+    """
+    Adds the GTD-producer to the database.
+
+    Returns:
+        None
+    """
     if not extractor.contains_producer_with_name(_GTD_PRODUCER_NAME):
         new_producer = producer.Producer(
                 name = _GTD_PRODUCER_NAME,
@@ -35,6 +50,18 @@ def add_GTD_to_database():
         new_producer.save()
 
 def parseGTD(filepath, **kwargs):
+    """
+    The method containing the main loop for parsing the acts contained in the excel-file.
+
+    Args:
+        *filepath*: The filepath for the excel file.
+
+    Kwargs:
+        *limit_number_rows*: A number limiting the number of rows to be parsed. 0 means parse all.
+
+    Returns:
+        None
+    """
     workbook = openpyxl.reader.excel.load_workbook(filepath, use_iterators=True)
     sheet = workbook.get_active_sheet()
     acts = _parse_sheet(sheet, **kwargs)
@@ -57,6 +84,16 @@ def parseGTD(filepath, **kwargs):
         sys.exit()
 
 def _save_act_in_gtd_object(act,gtd_producer):
+    """
+    Saves the act in the first argument to the producer object in the second argument.
+
+    Args:
+        *act*: The act to be saved.
+        *gtd_producer*: The producer (GTD) to save the act in.
+
+    Returns:
+        None
+    """
     act_url = _GTD_INCIDENT_URL + act["id"]
     act_tag = _safe_get_tag(act["attacktype"])
     source_strings = [ _strip_source(src) for src in [act["source1"], act["source2"], act["source3"]] if src != None]
@@ -98,6 +135,16 @@ def _save_act_in_gtd_object(act,gtd_producer):
     print "saved act: " + unicode(act["summary"]).encode(encoding="utf-8", errors="replace")
 
 def _safe_get_tag(name):
+    """
+    Gets the tag object for the tag with the name given as argument.
+    Create it if it does not exist.
+
+    Args:
+        *name*: The requested tag name.
+
+    Returns:
+        A tag object with the name given as argument.
+    """
     try:
         return extractor.get_tag(name)
     except:
@@ -108,19 +155,43 @@ def _safe_get_tag(name):
         return new_tag
 
 def _fix_summary(act):
+    """
+    Constructs a summary of the act if the summary field is missing.
+
+    Args:
+        *act*: A dict representing an act.
+    Returns:
+        None
+    """
     if act["summary"] == None:
         act["summary"] = _safe_get_string(act["attacktype"]) + " - ATTACKER: " + _safe_get_string(act["attacker"]) + " - TARGET: " + _safe_get_string(act["target"])
 
 def _safe_get_string(string):
+    """
+    Ensures that a string has a value, sets it to 'unknown' if type is None.
+
+    Args:
+        *string*: A variable that supposedly is a string, but might be None.
+    Returns:
+        A string.
+    """
     if string == None:
         return "unknown"
     return string
 
 def _get_datetime(act):
+    """
+    Parse the date and time of the act.
+
+    Args:
+        *act*: A dict representing an act.
+    Returns:
+        A datetime object.
+    """
     year = int(float(act["year"]))
     month = min(max(int(float(act["month"])),1),12)
     day = min(max(int(float(act["day"])), 1), 31)
-    datetime.fromtimestamp(mktime(strptime(unicode(year)+"-"+unicode(month)+"-"+unicode(day),"%Y-%m-%d")))
+    return datetime.fromtimestamp(mktime(strptime(unicode(year)+"-"+unicode(month)+"-"+unicode(day),"%Y-%m-%d")))
 
 
 """ 
@@ -128,6 +199,14 @@ def _get_datetime(act):
     terrorist-acts where every act is represented as a dict of attributes
 """
 def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
+    """
+    Parses the excel file and yields a generator for all the acts found within.
+
+    Args:
+        *sheet*: 
+    Returns:
+        *act*: A generator for the acts contained in the file.
+    """
     row_number = 1
     for row in sheet.iter_rows():
         if row_number == 1:
@@ -148,15 +227,26 @@ def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
         row_number += 1
     
 def _strip_source(source):
+    """
+    Parses the source string and returns the relevant part of it.
+
+    Args:
+        *source*: The raw source string from the excel file.
+
+    Returns:
+        *source*: A string with the relevant information from the input.
+    """
     source = source.split('"')[-1]
     source = source.split(',')[0]
     return source
-    
-    
-if __name__ == "__main__":
-    parse()
 
 def parse():
+    """
+    Starts parsing of the excel file.
+
+    Returns:
+        None
+    """
     global terrorism_tag
     terrorism_tag = _safe_get_tag("Terrorism")
     add_GTD_to_database()
@@ -164,3 +254,6 @@ def parse():
     current_dir = dirname(realpath(__file__))
     acts = parseGTD(current_dir + '/globalterrorismdb_1012dist.xlsx', limit_number_rows = 0)
     pprint(acts)
+    
+if __name__ == "__main__":
+    parse()
