@@ -49,7 +49,7 @@ def scrape_article():
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
-        Object with the created producers data.
+        Object with the created producers name.
 
     Errors:
        * **400** -- Bad syntax in request
@@ -100,7 +100,7 @@ def add_newspaper():
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
-        Object with the created producers data.
+        Object with the created producers name.
 
     Errors::
        400 - Bad syntax in request
@@ -146,6 +146,9 @@ def request_scrape():
     Returns:
         Upon success, returns an object with the job_id, ex::
         {"job_id": "ff92-23ad-232a-2334s-23"}
+
+    Result when finished:
+        Object with the created producers name.
 
     Errors::
        400 - Bad syntax in request
