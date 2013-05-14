@@ -98,10 +98,6 @@
             <xpath>%Y-%m-%d %H:%M</xpath>
         </datetime_format>
 
-        <rss-urls>
-            <rss>http://www.dn.se/toppnyheter-rss</rss>
-        </rss-urls>
-
         <article-paths>
             <qualification>
                 <xpath>//div[@id="article"]</xpath>
@@ -127,7 +123,7 @@
                 <xpath>//*[@id="article-content"]/p/text()</xpath>
             </time_published>
         </article-paths>
-    </webpage>
+    <rss-urls /></webpage>
     
     
     
@@ -197,4 +193,4 @@
             </qualification>
         </article-paths>
     </webpage>
-<webpage domain="http://www.guardian.co.uk" name="Latest news, sport and comment from the Guardian | The Guardian"><rss-urls><rss>http://www.guardian.co.uk/fashion/2013/may/06/bikini-one-piece-swimsuits-beach</rss><rss>http://www.guardian.co.uk/books/2013/may/05/serpents-promise-steve-jones-digested</rss><rss>http://www.guardian.co.uk/lifeandstyle/2013/may/04/lucy-mangan-books-capitalism-dilemma</rss><rss>http://www.guardian.co.uk/theguardian/humour/roundup</rss></rss-urls></webpage><webpage domain="http://www.unt.se" name="Startsidan - UNT.se"><rss-urls /></webpage><webpage domain="http://blog.svd.se" name="SvD:s bloggar inom flera olika omr&#229;den | SvD"><rss-urls /></webpage></webpages>
+<webpage domain="http://www.guardian.co.uk" name="Latest news, sport and comment from the Guardian | The Guardian"><rss-urls><rss>http://www.guardian.co.uk/fashion/2013/may/06/bikini-one-piece-swimsuits-beach</rss><rss>http://www.guardian.co.uk/books/2013/may/05/serpents-promise-steve-jones-digested</rss><rss>http://www.guardian.co.uk/lifeandstyle/2013/may/04/lucy-mangan-books-capitalism-dilemma</rss><rss>http://www.guardian.co.uk/theguardian/humour/roundup</rss></rss-urls></webpage><webpage domain="http://www.unt.se" name="Startsidan - UNT.se"><rss-urls /></webpage><webpage domain="http://blog.svd.se" name="SvD:s bloggar inom flera olika omr&#229;den | SvD"><rss-urls /></webpage><webpage domain="http://www.aftonbladet.se" name="Aftonbladet"><rss-urls /></webpage><webpage domain="http://bloggar.aftonbladet.se" name="Aftonbladets bloggar"><rss-urls /></webpage><webpage domain="http://www.expressen.se" name="Expressen.se"><rss-urls /></webpage></webpages>

@@ -5,7 +5,7 @@
     :synopsis: The TidalTrust algorithm as specified by Jennifer Golbeck (2007), with some extended functionality.
 
 .. moduleauthor:: Daniel Molin <dmol@kth.se>
-.. moduleauthor:: Martin Runelöv <mrunelov@kth.se>
+.. moduleauthor:: Martin Runelov <mrunelov@kth.se>
 """
 
 import sys

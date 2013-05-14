@@ -1,8 +1,8 @@
 
 
-""" 
+"""
 .. module:: crawler
-    :synopsis: 
+    :synopsis:
 
 .. moduleauthor:: Anton Erholt <aerholt@kth.se>
 .. moduleauthor:: John Brynte Turesson <johntu@kth.se>
@@ -49,7 +49,7 @@ def scrape_article():
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
-        *result (str)* : "scraped article: " + url
+        Object with the created producers data.
 
     Errors:
        * **400** -- Bad syntax in request
@@ -63,7 +63,7 @@ def scrape_article():
     except KeyError, AttributeError:
         abort(400)
 
-    
+
     crawls =  session.get('crawls')
     if crawls == None:
         crawls = {}
@@ -100,7 +100,7 @@ def add_newspaper():
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
-        result (str) : "requested scrape for: " + url
+        Object with the created producers data.
 
     Errors::
        400 - Bad syntax in request
@@ -127,7 +127,7 @@ def add_newspaper():
 
     store_job_result(res)
     session['crawls'] = crawls
-    
+
     return jsonify(job_id=res.id)
 
 
@@ -165,11 +165,11 @@ def request_scrape():
         crawls = {}
 
     crawl = {}
-    crawl['type'] = "Newspaper scrape"
+    crawl['type'] = "Newspaper scrape (slower)"
     crawl['url'] = url
     crawl['start_time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     crawls[res.id] = crawl
-    
+
     store_job_result(res)
     session['crawls'] = crawls
     return jsonify(job_id=res.id)
@@ -188,8 +188,7 @@ def get_crawls():
        None
 
     Returns:
-        Upon success, returns an object with the job_id, ex::
-        {"job_id": "ff92-23ad-232a-2334s-23"}
+       An object with information of the crawls.
 
     Errors::
        204 - No Content, no crawls started
@@ -203,5 +202,4 @@ def get_crawls():
     if crawls == None:
         return make_response('', 204)
     else:
-        return jsonify(session.get('crawls'))
-
+        return jsonify(crawls)

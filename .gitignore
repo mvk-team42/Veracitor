@@ -58,3 +58,6 @@ settings.py
 
 # excel files
 *.xlsx
+
+# crawler
+webpageMeta.xml
