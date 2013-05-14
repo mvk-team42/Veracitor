@@ -80,7 +80,9 @@ def get_user(requested_name):
     """
     extr_user = user.User.objects(name=requested_name)
     __checkIfEmpty(extr_user)
-    return extr_user[0]
+    usr = extr_user[0]
+    usr.prepare_ratings_for_using()
+    return usr
 
 def get_information(info_url):
     """
