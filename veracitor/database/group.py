@@ -4,7 +4,7 @@
     :synopsis: The group module contains the Group class needed to represent the group entity model.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
-.. moduleauthor:: Fredrik Öman <frdo@kth.se> 
+.. moduleauthor:: Fredrik Oeman <frdo@kth.se> 
 """
 
 from mongoengine import *
