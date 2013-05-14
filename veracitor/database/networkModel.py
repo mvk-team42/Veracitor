@@ -245,7 +245,7 @@ def get_common_info_ratings(producer_name1, producer_name2, tag_names):
                                      #rated by producer 2.
              #If the information has been given one or more tags specified in
              #tag_names.
-             if __contains_common_tags(extractor.get_information(tmp_string).tags,
+            if __contains_common_tags(extractor.get_information(tmp_string).tags,
                                   tag_names):
                 #Create and append a tuple with the ratings given by producer 1
                 #and producer 2.
