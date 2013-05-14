@@ -85,10 +85,12 @@ class Producer(Document):
         
         """
 
+        #print information_to_rate, rating
         # Should check type of information_to_rate but circular dependencies 
         if(\
            type(rating) is int):
             self.info_ratings[(information_to_rate.url)] = rating
+            self.save()
         else:
             raise TypeError("Problem with type of input variables.")
 
