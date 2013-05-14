@@ -22,11 +22,11 @@ from ...database import *
 from ...logger import *
         
 def process_article(article, spider):
-    fix_fields(article)
-    add_to_database(article)
+    _fix_fields(article)
+    _add_to_database(article)
     return article
         
-def add_to_database(article):
+def _add_to_database(article):
     """
         Add database object corresponding to the article
     """
@@ -38,13 +38,13 @@ def add_to_database(article):
     log.msg(article["url"] + " is new, adding to database")
         
 
-    publishers = get_publisher_objects(article)
+    publishers = _get_publisher_objects(article)
 
     info = information.Information(
                         title = article["title"],
                         summary = article["summary"],
                         url = article["url"],
-                        time_published = parse_datetime(article),
+                        time_published = _parse_datetime(article),
                         tags = article["tags"],
                         publishers = publishers,
                         references = [],
@@ -61,7 +61,7 @@ def add_to_database(article):
                     publisher.rate_source(publisher2, tag, 5)
         publisher.save()
 
-def get_publisher_objects(article):
+def _get_publisher_objects(article):
     #publisher_strings = [string.replace(".",",").replace("$",",") for string in publisher_strings]
     publisher_strings = article["publishers"]
     log.msg("pubStrings: " + str(publisher_strings))
@@ -103,74 +103,74 @@ def print_if_unknown(article):
             print article.long_string() + "\n"
             break
     
-def fix_fields(article):
+def _fix_fields(article):
     """
         Before: the attributes in article are very "raw". Scraped directly from website.
         
         After: the attributes are trimmed, summary is shortened, time_published is converted to
         db-friendly format.
     """
-    fix_time_published(article)
-    fix_publishers(article)
-    fix_tags(article)
-    fix_references(article)
-    shorten_title(article)
-    shorten_summary(article)
+    _fix_time_published(article)
+    _fix_publishers(article)
+    _fix_tags(article)
+    _fix_references(article)
+    _shorten_title(article)
+    _shorten_summary(article)
     for field in ArticleItem.fields.iterkeys():
         if field in article:
             if isinstance(article[field], str) or isinstance(article[field], unicode):
-                fix_string_field(article, field)
+                _fix_string_field(article, field)
         else:
             # We know it's a string, since all list fields have been fixed
             article[field] = "unknown"
         
-def fix_string_field(article, field):
+def _fix_string_field(article, field):
     if article[field].strip() != "":
         article[field] = re.sub("\s+", " ", article[field].strip())
         log.msg("article["+field+"]: "+article[field])
         return
     article[field] = "unknown"
     
-def fix_publishers(article):
+def _fix_publishers(article):
     if "publishers" in article:
-        remove_words_from_publishers(article)
+        _remove_words_from_publishers(article)
         for index in range(len(article["publishers"])):
             article["publishers"][index] = article["publishers"][index].strip()
     else:
         article["publishers"] = []
 
-def fix_tags(article):
+def _fix_tags(article):
     #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
     if "tags" in article:
         article["tags"] = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in article["tags"]]
     else:
         article["tags"] = []
 
-def fix_references(article):
+def _fix_references(article):
     if "references" in article:
         pass
     else:
         article["references"] = []
 
-def remove_words_from_publishers(article):
+def _remove_words_from_publishers(article):
     pattern = re.compile("\S+:|av|by", re.IGNORECASE)
     for index, publisher_string in enumerate(article["publishers"]):
         article["publishers"][index] = pattern.sub("", publisher_string)
         
             
-def fix_time_published(article):
+def _fix_time_published(article):
     if "time_published" in article:
-        remove_words_from_time_published(article)
-        replace_words_in_time_published(article)
+        _remove_words_from_time_published(article)
+        _replace_words_in_time_published(article)
                 
-def remove_words_from_time_published(article):
+def _remove_words_from_time_published(article):
     pattern = re.compile('published:|publicerad:|published|publicerad|am|pm|\son\s|\sden\s', re.IGNORECASE)
     day_pattern = re.compile('monday|tuesday|wednesday|thursday|friday|saturday|sunday|måndag|tisdag|onsdag|torsdag|fredag|lördag|söndag', re.IGNORECASE)
     for index, time_string in enumerate(article["time_published"]):
         article["time_published"][index] = pattern.sub("", time_string)   
         article["time_published"][index] = day_pattern.sub("", time_string)
     
-def replace_words_in_time_published(article):
+def _replace_words_in_time_published(article):
     special_words = ["idag", "i dag", "today"]
     pattern = re.compile(re.escape("idag") + "|" + re.escape("i dag") + "|" + re.escape("today")
             + "|" + re.escape("idag:") + "|" + re.escape("i dag:") + "|" + re.escape("today:"), re.IGNORECASE)
@@ -205,7 +205,7 @@ def replace_words_in_time_published(article):
 
 
 # Parse the date from article['time_published'] either using one of the default common formats or a format specified in webpageXpaths.xml
-def parse_datetime(article):
+def _parse_datetime(article):
     current_dir = dirname(realpath(__file__))
     meta = WebpageMeta(current_dir + '/webpageMeta.xml')
     domain = urlparse(article['url'])[1]
@@ -226,10 +226,10 @@ def parse_datetime(article):
     return None
 
         
-def shorten_summary(article):
+def _shorten_summary(article):
     if "summary" in article and len(article["summary"]) > 200:
         article["summary"] = article["summary"][:197] + "..."
 
-def shorten_title(article):
+def _shorten_title(article):
     if "title" in article and len(article["title"]) > 100:
         article["title"] = article["title"][:97] + "..."
