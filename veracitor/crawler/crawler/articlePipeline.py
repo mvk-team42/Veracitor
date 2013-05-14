@@ -22,6 +22,7 @@ from ...database import *
 from ...logger import *
         
 def process_article(article, spider):
+    log.msg("tags type: "+unicode(type(article["tags"]))+" tags: "+unicode(article["tags"]))
     _fix_fields(article)
     _add_to_database(article)
     return article
@@ -153,12 +154,13 @@ def _fix_tags(article):
     
     if "tags" in article:
     	for tag_str in article["tags"]:
-    		for predefined_tag in tag_map:
-    			if predefined_tag in final_tags:
-    				continue
-    			# If tag_str matches any of the strings mapped to the predefined tag
-    			if any( match in tag_str for match in tag_map[predefined_tag]): 
-    				final_tags.append(predefined_tag)
+            for predefined_tag in tag_map:
+                if predefined_tag in final_tags:
+                    continue
+                # If tag_str matches any of the strings mapped to the predefined tag
+                if any(match in tag_str for match in tag_map[predefined_tag]): 
+                    final_tags.append(predefined_tag)
+        log.msg("final tags: "+unicode(final_tags))
         article["tags"] = [extractor.get_tag_create_if_needed(tag_str) for tag_str in final_tags]
     else:
         article["tags"] = []

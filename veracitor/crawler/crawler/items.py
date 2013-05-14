@@ -87,7 +87,7 @@ class ArticleLoader(XPathItemLoader):
     summary_out = TakeFirst()
 
     tags_in = MapCompose(is_string, separate_tags)
-    tags_out = TakeFirst()
+    tags_out = Identity()
 
     
 class ProducerItem(Item):
