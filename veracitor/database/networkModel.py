@@ -241,15 +241,16 @@ def get_common_info_ratings(producer_name1, producer_name2, tag_names):
     #For each information rated by producer 1
     for k, v in p1_info_ratings.iteritems():
         try:
-            val = p2_info_ratings[k] #Get the rating for the same information
+            val = p2_info_ratings[k] #Get the rating for the same information 
                                      #rated by producer 2.
-             #If the information has been given one or more tags specified in
-             #tag_names.
+            #If the information has been given one or more tags specified in
+            #tag_names.
             if __contains_common_tags(extractor.get_information(tmp_string).tags,
-                                  tag_names):
+                                      tag_names):
                 #Create and append a tuple with the ratings given by producer 1
                 #and producer 2.
                 common_info_ratings.append( (v, val) )
+
         except Exception: #If producer 2 had no such information rating            
             pass          #ignore the raised exception.
     
@@ -313,8 +314,8 @@ def get_extreme_info_ratings(producer_name, tag_names):
 
  
     
-    np_array = array(relevant_info_ratings_ints)
-    std = np_array.std() #Calculate the standard deviation
+    
+    std = _stddev(relevant_info_ratings_ints) #Calculate the standard deviation
     extremes = {}
     #For each information rating found
     for k,v in relevant_info_ratings.iteritems():
