@@ -110,6 +110,13 @@ var Visualizer = function (controller) {
     })();
 
     /**
+       Recalculates the layout of the nodes in the graph.
+     */
+    this.recalculate_layout = function () {
+        cy.layout();
+    };
+
+    /**
         Creates an interactive visualization network of the trust ratings
         directly or indirectly associated with the given Producer (source
         node) within the GlobalNetwork. Only nodes that have a trust
@@ -247,6 +254,82 @@ var Visualizer = function (controller) {
         cy.edges('.prod-rating').css({
             'content': 'data(rating)'
         });
+
+        cy.nodes('.User').css({
+            'background-color': color.node.user.background,
+            'border-color': color.node.user.border,
+            'shape': 'rectangle'
+        });
+
+        cy.layout({
+            'name': 'arbor'
+        });
+    };
+
+    this.visualize_paths_in_network = function (paths, tag) {
+        var existing_nodes = [];
+        var nodes = [];
+        var edges = [];
+
+        for (var p in paths) {
+            var path = paths[p].nodes;
+            var ghosts = paths[p].ghosts;
+
+            for (var i in path) {
+                nodes.push({
+                    'group': 'nodes',
+                    'data': {
+                        'id': path[i].name,
+                        'data': path[i]
+                    },
+                    'classes': path[i].type_of
+                });
+                existing_nodes.push(path[i].name);
+
+                for (var key in path[i].source_ratings) {
+                    edges.push({
+                        'group': 'edges',
+                        'data': {
+                            'id': path[i].name + '-' + key,
+                            'source': path[i].name,
+                            'target': key,
+                            'rating': path[i].source_ratings[key][tag] || ''
+                        },
+                        'classes': 'trust-path'
+                    });
+                }
+            }
+
+            for (var i in ghosts) {
+                nodes.push({
+                    'group': 'nodes',
+                    'data': {
+                        'id': ghosts[i]
+                    },
+                    'classes': 'ghost'
+                });
+            }
+        }
+
+        cy.elements().remove();
+        cy.add(nodes);
+        cy.add(edges);
+
+        for (var i = 0; i < existing_nodes.length; i += 1) {
+            node = cy.nodes('#' + existing_nodes[i]);
+            node.css({
+                'background-color': color.node.select.background,
+                'border-color': color.node.select.border,
+                'shape': 'ellipse'
+            });
+
+            if (i < existing_nodes.length - 1) {
+                cy.edges('[source="' + existing_nodes[i] + '"][target="' + existing_nodes[i + 1] + '"]').css({
+                    'line-color': color.edge.select.line,
+                    'width': 2
+                });
+            }
+        }
 
         cy.nodes('.User').css({
             'background-color': color.node.user.background,

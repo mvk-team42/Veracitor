@@ -118,9 +118,15 @@ var NetworkController = function (controller) {
          */
         $('#global-tags').change(on_global_tag_change);
 
+<<<<<<< HEAD
+        $('#network-toolbox-layout').click(function (evt) {
+            visualizer.recalculate_layout();
+        });
+=======
         $('#selected-tag').html("None");
 
 
+>>>>>>> cbdbfcaee8a88fe80b325f0f2d8de0db97caba42
     };
 
     /**
@@ -165,16 +171,17 @@ var NetworkController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                // TODO: display success/
-                //console.log(data);
-
-
-
                 if(data.result.trust !== null){
                     $('#network-compute-trust .feedback.win #trust-result')
                         .html(data.result.trust);
                     $('#network-compute-trust .feedback.win #trust-result-threshold')
                         .html(data.result.threshold);
+                    $('#network-compute-trust .feedback.win')
+                        .click((function (paths) {
+                            return function (evt) {
+                                visualize_paths_in_network(paths);
+                            }
+                        })(data.result.paths_used));
                     $('#network-compute-trust .feedback.win').show();
                 }
                 else {
@@ -192,6 +199,20 @@ var NetworkController = function (controller) {
             $('#search-result').html('<h2>Server error.</h2>');
         });
     }
+
+    /**
+       Visualizes paths in the graph.
+       @param paths The paths stored as lists in a dict object.
+     */
+    var visualize_paths_in_network = function (paths) {
+        $.post('/jobs/network/paths_from_producer_lists', {
+            'paths': JSON.stringify(paths)
+        }, function (data) {
+            visualizer.visualize_paths_in_network(data.paths, global_tag);
+        }).fail(function (data) {
+            // TODO: Handle server error
+        });
+    };
 
     /**
         Creates an interactive visualization network of the trust ratings
@@ -286,6 +307,7 @@ var NetworkController = function (controller) {
                           }).click((function ( url ) {
                               return function ( evt ) {
                                   var rating = $(this).parent().find(':selected').html();
+
                                   rate_information(url, rating);
                               };
                           })(prod.infos[i].url))));
@@ -311,6 +333,9 @@ var NetworkController = function (controller) {
             'tag': tag,
             'rating': rating,
         }, function ( data ) {
+            user = data.source;
+             network_controller.display_producer_information(data.target);
+
             network_controller.visualize_producer_in_network(data.target.name);
         }).fail(function ( data ) {
             // TODO
@@ -323,8 +348,12 @@ var NetworkController = function (controller) {
             'url': url,
             'rating': rating
         }, function (data) {
+            network_controller.display_producer_information(data.prod);
+
+            console.log(data);
             // TODO: display success/fail
         }).fail(function (data) {
+            console.log(data);
             // TODO: display fail
         });
     };

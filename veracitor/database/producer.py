@@ -44,14 +44,14 @@ class Producer(Document):
         Args:
             source_to_rate (producer.Producer): The source which
             the producer should rate.
-            
-            considered_tag (tag.Tag): The tag which the rating is set under. 
-        
+
+            considered_tag (tag.Tag): The tag which the rating is set under.
+
             rating (int): The actual rating.
 
         Raises:
             TypeError: If any of the arguments are of the wrong type.
-        
+
         """
         if(isinstance(source_to_rate, Producer) and\
            type(considered_tag) is tag.Tag and\
@@ -77,18 +77,16 @@ class Producer(Document):
         Args:
             information_to_rate (information.Information): The information
             to be rated.
-        
+
             rating (int): The actual rating.
 
         Raises:
             TypeError: If any of the arguments are of the wrong type.
-        
+
         """
 
-        #print information_to_rate, rating
-        # Should check type of information_to_rate but circular dependencies 
-        if(\
-           type(rating) is int):
+        # Should check type of information_to_rate but circular dependencies
+        if(type(rating) is int):
             self.info_ratings[(information_to_rate.url)] = rating
             self.save()
         else:
@@ -109,10 +107,10 @@ class Producer(Document):
             req_source (producer.Producer): The source which the
             rating is set on.
             tag (tag.Tag): The tag the rating is set under.
-    
+
         Returns: The actual rating (an int). If the producer doesn't
         have a rating set on req_source, -1 will be returned.
-    
+
         """
         try:
             return self.source_ratings[req_source.name][tag.name]
@@ -126,10 +124,10 @@ class Producer(Document):
         Args:
             req_info (information.Information): The information which
             the rating is set on.
-                
+
         Returns: The actual rating (an int). If the producer doesn't
         have a rating set on req_info, -1 will be returned.
-    
+
         """
         try:
             return self.info_ratings[req_info.url]
@@ -143,7 +141,7 @@ class Producer(Document):
         or to insert the saved producer into the networkModel.
         Calls check_rating_consistencies to remove dangling ratings.
         Follows this with the regular save() call in Document.
-        
+
 
         Raises:
             NetworkModelException: If there is no global network created
@@ -151,10 +149,10 @@ class Producer(Document):
             into).
 
         """
-        
+
         # Ensure that no ratings exist on deleted entities.
         self.check_rating_consistencies()
-        
+
         if networkModel.graph is None:
             raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
@@ -198,7 +196,7 @@ class Producer(Document):
         """
         info_ratings_to_be_deleted = []
         for k,v in self.info_ratings.items():
-            try: 
+            try:
                 extractor.get_information(k)
             except NotInDatabase:
                 info_ratings_to_be_deleted.append(k)
@@ -228,7 +226,7 @@ class Producer(Document):
         """
         self.check_info_rating_consistency()
         self.check_source_rating_consistency()
-                
+
 
     def delete(self):
         """
@@ -259,12 +257,12 @@ class Producer(Document):
         Adds an information to the infos-list.
         The info_to_add's publisher field is set
         to this producer.
-        
+
         Args:
             info_to_add (information.Information):
             The information to be added.
-            
-    
+
+
         Returns: True if the information was added
         to the infos-list and the information's publisher
         is set to this producer, False otherwise.
@@ -285,7 +283,7 @@ class Producer(Document):
         Deletes an information from the producer's infos_list
         and removes this producer from the information's publisher list.
         Note that this does not delete anything from the database.
-        
+
         Args:
             info_to_del (information.Information):
             The information to be removed.
@@ -293,7 +291,7 @@ class Producer(Document):
         Returns: True if the information is removed from the producer's
         infos-list and the producer is no longer in the information's
         producer list. Returns False otherwise.
-        
+
         """
         found = False
         for x in range(len(self.infos)):
