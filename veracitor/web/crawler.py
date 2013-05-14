@@ -49,7 +49,7 @@ def scrape_article():
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
-        *result (str)* : "scraped article: " + url
+        Object with the created producers data.
 
     Errors:
        * **400** -- Bad syntax in request
@@ -100,8 +100,8 @@ def add_newspaper():
         {"job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
-        result (str) : "requested scrape for: " + url
-
+        Object with the created producers data.
+    
     Errors::
        400 - Bad syntax in request
        405 - Method not allowed
@@ -188,8 +188,7 @@ def get_crawls():
        None
 
     Returns:
-        Upon success, returns an object with the job_id, ex::
-        {"job_id": "ff92-23ad-232a-2334s-23"}
+       An object with information of the crawls.
 
     Errors::
        204 - No Content, no crawls started
@@ -203,5 +202,5 @@ def get_crawls():
     if crawls == None:
         return make_response('', 204)
     else:
-        return jsonify(session.get('crawls'))
+        return jsonify(crawls)
 

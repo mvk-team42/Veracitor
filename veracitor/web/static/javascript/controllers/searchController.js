@@ -21,7 +21,7 @@ var SearchController = function (controller) {
     // Array of source results
     var search_results = [];
 
-    var crawl_results = [];
+    var crawls = [];
 
     /**
       Initialize the search tab:
@@ -313,7 +313,7 @@ var SearchController = function (controller) {
      */
     function request_article_crawl(url) {
       $.post("/jobs/crawler/scrape_article", {"url":url}, function(data) {
-        $("#crawler-result table").html("<thead>Fetching crawls...</thead>")
+        $("#crawler-result table").html("<thead>Fetching crawls...</thead>");
         update_crawler_results();
       });
     }
@@ -325,7 +325,7 @@ var SearchController = function (controller) {
      */
     function request_source_crawl(url) {
       $.post("/jobs/crawler/request_scrape", {"url":url}, function(data) {
-        $("#crawler-result table").html("<thead>Fetching crawls...</thead>")
+        $("#crawler-result table").html("<thead>Fetching crawls...</thead>");
         update_crawler_results();
       });
 
@@ -336,23 +336,39 @@ var SearchController = function (controller) {
        the ui accordingly.
      */
     function update_crawler_results() {
-      $.post("/jobs/crawler/crawls", function(data) {
-        var crawls = [], i, html="<thead><td>Type</td><td>URL</td></thead>";
-        for (id in data)  {
-          data[id]["id"] = id;
-          crawls.push(data[id]);
-        }
-        crawls.sort(function(a,b){
-          return parseDate(a['start_time']) < parseDate(b['start_time']);
+        $.post("/jobs/crawler/crawls", function(data) {        
+            var i, thead= $("thead").append($("tr").append($("td").html("Type")).append($("td").html("URL")).append($("td").html("Ready to visualize?")));
+
+            for (id in data) {
+                data[id]["id"] = id;
+                console.log(crawls);
+                crawls.push(data[id]);
+                update_scrape_status(id, null);
+            }
+            crawls.sort(function(a,b){
+                return parseDate(a['start_time']) < parseDate(b['start_time']);
+            });
+          
+            for (i=0; i<crawls.length;i++) {
+                thead.append($("tr").attr("id", crawls[i]["id"]).append($("td").html(crawls[i][""])).append($("td").html(crawls[i]["url"])).append($("td").html("No")));
+                console.log(thead);
+            }
+            $("#crawler-result table").append(thead);
+        }).fail(function(){
+            // TODO!
         });
-        for (i=0; i<crawls.length;i++) {
-          var c = crawls[i];
-          html += "<tr><td id=\"" + c['id']+ "\">" + c['type'] + "</td><td>" + c['url'] + "</td></tr>";
-        }
-        $("#crawler-result table").html(html);
-      });
+    }
+    
+    function update_scrape_status(id, td_node) {
+        $.post('/jobs/job_result',{"job_id":id}, function(d){
+            console.log(d);
+          
+        }).fail(function(data){
+            // TODO
+        });
     }
 
+  
     var display_server_error = function ( error ) {
         $("#search-result").html($('<h2>').html(error));
     };
