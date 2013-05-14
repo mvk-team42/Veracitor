@@ -2,7 +2,7 @@
 
 """ 
 .. module:: items
-    :synopsis: The definitions of items scraped by the crawler.
+    :synopsis: The definitions of items scraped by the crawler. These items do not necessarily contain the exact same fields as those in the database, but only contain fields that could be scraped from the internet.
 
     .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
     .. moduleauthor:: Jonathan Murray <jmu@kth.se>

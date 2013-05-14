@@ -2,7 +2,7 @@
 
 """ 
 .. module:: webpageMeta
-    :synopsis: The interface for the webpageMeta.xml file.
+    :synopsis: The interface for the webpageMeta.xml file. The xml-file should never be accessed directly from other modules but instead queried through the methods defined here.
 
     .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
     .. moduleauthor:: Jonathan Murray <jmu@kth.se>
