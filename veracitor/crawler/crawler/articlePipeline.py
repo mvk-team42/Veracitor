@@ -140,11 +140,29 @@ def _fix_publishers(article):
         article["publishers"] = []
 
 def _fix_tags(article):
-    #utgar fran att article["tags"] är en strang med space-separerade tags, t.ex. "bombs kidnapping cooking"
+
+	#Maps predefined tags to words that potentially have the same meaning
+    tag_map = {}
+    tag_map["Crime"] = ["crime", "assault"]
+    tag_map["Culture"] = ["music", "art", "painting", "culture"]
+    tag_map["Politics"] = ["court", "health", "supreme", "reform", "ruling", "politic", "committee"]
+    tag_map["Sports"] = ["ball", "match", "tournament", "champion", "sport"]
+    tag_map["Finances"] = ["recession", "financ"]
+    
+    final_tags = []
+    
     if "tags" in article:
-        article["tags"] = [extractor.get_tag_create_if_needed(tag_str.strip()) for tag_str in article["tags"]]
+    	for tag_str in article["tags"]:
+    		for predefined_tag in tag_map:
+    			if predefined_tag in final_tags:
+    				continue
+    			# If tag_str matches any of the strings mapped to the predefined tag
+    			if any( match in tag_str for match in tag_map[predefined_tag]): 
+    				final_tags.append(predefined_tag)
+        article["tags"] = [extractor.get_tag_create_if_needed(tag_str) for tag_str in final_tags]
     else:
         article["tags"] = []
+	
 
 def _fix_references(article):
     if "references" in article:
