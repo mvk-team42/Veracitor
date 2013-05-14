@@ -1,8 +1,8 @@
 
 
-""" 
+"""
 .. module:: crawler
-    :synopsis: 
+    :synopsis:
 
 .. moduleauthor:: Anton Erholt <aerholt@kth.se>
 .. moduleauthor:: John Brynte Turesson <johntu@kth.se>
@@ -63,7 +63,7 @@ def scrape_article():
     except KeyError, AttributeError:
         abort(400)
 
-    
+
     crawls =  session.get('crawls')
     if crawls == None:
         crawls = {}
@@ -101,7 +101,7 @@ def add_newspaper():
 
     Result when finished:
         Object with the created producers data.
-    
+
     Errors::
        400 - Bad syntax in request
        405 - Method not allowed
@@ -127,7 +127,7 @@ def add_newspaper():
 
     store_job_result(res)
     session['crawls'] = crawls
-    
+
     return jsonify(job_id=res.id)
 
 
@@ -165,11 +165,11 @@ def request_scrape():
         crawls = {}
 
     crawl = {}
-    crawl['type'] = "Newspaper scrape"
+    crawl['type'] = "Newspaper scrape (slower)"
     crawl['url'] = url
     crawl['start_time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     crawls[res.id] = crawl
-    
+
     store_job_result(res)
     session['crawls'] = crawls
     return jsonify(job_id=res.id)
@@ -203,4 +203,3 @@ def get_crawls():
         return make_response('', 204)
     else:
         return jsonify(crawls)
-

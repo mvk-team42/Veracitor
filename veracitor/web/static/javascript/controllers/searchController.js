@@ -1,12 +1,12 @@
 /**
-    Creates an interface in which a user can specify and perform a search for
-    producers on the web or within the system database.
+   Creates an interface in which a user can specify and perform a search for
+   producers on the web or within the system database.
 
-    The user will be presented a number of input fields into which she/he
-    can specify hers/his search. The user can then perform a search and will
-    thereafter recieve a response with the search results.
-    @constructor
- */
+   The user will be presented a number of input fields into which she/he
+   can specify hers/his search. The user can then perform a search and will
+   thereafter recieve a response with the search results.
+   @constructor
+*/
 var SearchController = function (controller) {
 
     /** Initializing */
@@ -21,13 +21,14 @@ var SearchController = function (controller) {
     // Array of source results
     var search_results = [];
 
-    var crawls = [];
+    var crawls = {};
+    var crawls_displayed = [];
 
     /**
-      Initialize the search tab:
-      - Setup event handlers
-      - Setup time period slider
-     */
+       Initialize the search tab:
+       - Setup event handlers
+       - Setup time period slider
+    */
     (function () {
         initialize_time_period_slider();
 
@@ -36,16 +37,22 @@ var SearchController = function (controller) {
 
     /**
        This function is called by the super controller when the tab is opened.
-     */
+    */
     this.on_tab_active = function () {
         // set focus to the database search field
         $("#database-search-field").focus();
-        update_crawler_results();
+
+        return auto_update_crawler_results();
     };
+
+    function auto_update_crawler_results(){
+        update_crawler_results();
+        setTimeout(auto_update_crawler_results, 5000);
+    }
 
     /**
        Initialize the time period slider.
-     */
+    */
     function initialize_time_period_slider() {
         var range = {
             'min': 1970,
@@ -65,7 +72,7 @@ var SearchController = function (controller) {
             }
         });
         $("#time-period").html($("#slider").slider("values", 0 ) +
-                           " - " + $("#slider").slider("values", 1 ));
+                               " - " + $("#slider").slider("values", 1 ));
 
         var width = parseInt($("#slider-container").css("width"));
         var labels = $("#slider-labels");
@@ -105,7 +112,7 @@ var SearchController = function (controller) {
 
     /**
        Add event handlers to the search view.
-     */
+    */
     function add_event_handlers() {
         // define enter key press in local search field
         $("#database-search-field").keydown(function (evt) {
@@ -169,24 +176,24 @@ var SearchController = function (controller) {
         // Start crawl click event
         $("#crawler-search-button").click(function (evt) {
             var url = $("#crawler-search-field").val();
-            var article_scrape = $('#add-entity-content form input[type=checkbox]').is(':checked');
-            if (article_scrape) {
-                request_article_crawl(url);
-            } else {
+            var extra_info = $('#add-entity-content form input[type=checkbox]').is(':checked');
+            if (extra_info) {
                 request_source_crawl(url);
+            } else {
+                request_add_newspaper_crawl(url);
             }
         });
 
         // crawler tip-text
-      $('.information .question-mark').click(function(){
-        $('.information .tip-text').toggle();
-      });
-      
+        $('.information .question-mark').click(function(){
+            $('.information .tip-text').toggle();
+        });
+
     }
 
     /**
        Sets the nth tab and content to be active/visible.
-     */
+    */
     function set_active_tab(n) {
         $("#search-tabs > .head > .tab").removeClass("active");
         $("#search-tabs > .head > .tab:eq(" + n + ")").addClass("active");
@@ -197,7 +204,7 @@ var SearchController = function (controller) {
 
     /**
        Sets the nth search type to be active.
-     */
+    */
     function set_active_search_type(n) {
         var active_tab = $("#search-tabs > .body > .content:eq(0)");
         active_search_type = n;
@@ -207,13 +214,13 @@ var SearchController = function (controller) {
     }
 
     /**
-        Makes a database search request to the server with the specified
-        search term. In the case where the user has not specified any
-        certain tags or time period (start and end date) the request is made
-        with 'empty' fields (except from the required search term).
-     */
+       Makes a database search request to the server with the specified
+       search term. In the case where the user has not specified any
+       certain tags or time period (start and end date) the request is made
+       with 'empty' fields (except from the required search term).
+    */
     var request_database_producer_search = function (search_term, type, start_date,
-                                                     end_date) {
+                                             end_date) {
         $("#search-result").html("Searching...");
         $.post("/jobs/search/producers", {
             'name' : search_term,
@@ -277,98 +284,108 @@ var SearchController = function (controller) {
     };
 
 
-
-    /**
-        Makes a database add request to the server with the specified
-        search term. If the search term is a URL the a crawler is
-        started on the server side. The crawler will notify the client
-        that a crawler has been started with a callback.
-     */
-    var request_crawl_procedure = function (url) {
-        $.post("/request_crawl_procedure", {
-            'url' : url
-        }, function (data) {
-            var response = JSON.parse(data);
-
-            if(response.error.type == "none") {
-                $("#search-result").html("<h2>" + response.procedure.message + "</h2>");
-
-                controller.watch_callback(function (response) {
-                    $('#search-result').html("<h2>" + response.procedure.message + "</h2>");
-                }, response.procedure.callback_url, response.procedure.id);
-
-            } else {
-                display_search_error(response.error.message);
-            }
-        })
-        .fail(function () {
-            display_search_error(vera.const.search.server_error);
-        });
-    };
-
     /**
        Requests an article crawl as specified by the web server.
        Also dispatches an update for the dom with the users current
        crawling jobs.
-     */
+    */
     function request_article_crawl(url) {
-      $.post("/jobs/crawler/scrape_article", {"url":url}, function(data) {
-        $("#crawler-result table").html("<thead>Fetching crawls...</thead>");
-        update_crawler_results();
-      });
+        $.post("/jobs/crawler/scrape_article", {"url":url}, function(data) {
+            $("#crawler-result table").append($("<thead>").html("Fetching crawls..."));
+            update_crawler_results();
+        }).fail(function(){
+            display_crawler_error("Unable to start crawler.");
+        });
     }
+
+    /**
+       Requests a crawl for simply adding the newspaper to the database.
+    */
+    function request_add_newspaper_crawl(url) {
+        $.post("/jobs/crawler/add_newspaper", {"url":url}, function(data) {
+            $("#crawler-result table").append($("<thead>").html("Fetching crawls..."));
+            update_crawler_results();
+        }).fail(function(){
+            display_crawler_error("Unable to start crawler.");
+        });
+    }
+
 
     /**
        Requests a source crawl as specified by the web server.
        Also dispatches an update for the dom with the users current
        crawling jobs.
-     */
+    */
     function request_source_crawl(url) {
-      $.post("/jobs/crawler/request_scrape", {"url":url}, function(data) {
-        $("#crawler-result table").html("<thead>Fetching crawls...</thead>");
-        update_crawler_results();
-      });
-
+        $.post("/jobs/crawler/request_scrape", {"url":url}, function(data) {
+            $("#crawler-result table").append($("<thead>").html("Fetching crawls..."));
+            update_crawler_results();
+        }).fail(function(){
+            display_crawler_error("Unable to start crawler.");
+        });
     }
 
     /**
        Sends a request for getting the users crawler jobs and updates
        the ui accordingly.
-     */
+    */
     function update_crawler_results() {
-        $.post("/jobs/crawler/crawls", function(data) {        
-            var i, thead= $("thead").append($("tr").append($("td").html("Type")).append($("td").html("URL")).append($("td").html("Ready to visualize?")));
-
+        $.post("/jobs/crawler/crawls", function(data) {
+            crawls_displayed = [];
             for (id in data) {
-                data[id]["id"] = id;
-                console.log(crawls);
-                crawls.push(data[id]);
-                update_scrape_status(id, null);
+                data[id].id = id;
+                crawls_displayed.push(data[id]);
             }
-            crawls.sort(function(a,b){
-                return parseDate(a['start_time']) < parseDate(b['start_time']);
-            });
-          
-            for (i=0; i<crawls.length;i++) {
-                thead.append($("tr").attr("id", crawls[i]["id"]).append($("td").html(crawls[i][""])).append($("td").html(crawls[i]["url"])).append($("td").html("No")));
-                console.log(thead);
-            }
-            $("#crawler-result table").append(thead);
+            update_crawls_producers();
         }).fail(function(){
-            // TODO!
-        });
-    }
-    
-    function update_scrape_status(id, td_node) {
-        $.post('/jobs/job_result',{"job_id":id}, function(d){
-            console.log(d);
-          
-        }).fail(function(data){
-            // TODO
+            display_crawler_error("Unable to update crawls.");
         });
     }
 
-  
+    function update_crawls_producers() {
+        var i = 0;
+        for (;i<crawls_displayed.length;i++) {
+            var crawl = crawls_displayed[i];
+            $.post('/jobs/job_result',{"job_id":crawl.id}, function(d){
+                if (typeof(d['result']) !== "undefined") {
+                    crawl["producer"] = d["result"]["producer"];
+                    display_crawler_results();
+                }
+            }).fail(function(data){
+                // Do nothing since job wasn't done.
+            });
+        }
+    }
+
+    function display_crawler_results() {
+        var i, thead= $("<thead>").append($("<tr>").append($("<td>").html("Type")).append($("<td>").html("URL")).append($("<td>").html("Ready to visualize?")));
+
+        crawls_displayed.sort(function(a,b){
+            return parseDate(a['start_time']) < parseDate(b['start_time']);
+        });
+        window.cr = crawls_displayed;
+        for (i=0; i<crawls_displayed.length; i++) {
+
+            // Add button to visualize producer in network
+            var prod_td = $("<td>").html("No");
+            var producer = crawls_displayed[i]["producer"];
+            if (typeof(producer) !== "undefined") {
+                prod_td = $("<td>").append($("<button>").html("Show in network").click(function(){
+                    controller.network.visualize_producer_in_network(producer.name);
+                    controller.switch_to_tab("network");
+                }));
+            }
+
+            thead.append($("<tr>").attr("id", crawls_displayed[i]["id"]).append($("<td>").html(crawls_displayed[i]["type"])).append($("<td>").html(crawls_displayed[i]["url"])).append(prod_td));
+        }
+        $("#crawler-result table").html(thead);
+    }
+
+    function display_crawler_error( error ) {
+        $("#crawler-result").html($('<h2>').html(error));
+    };
+
+
     var display_server_error = function ( error ) {
         $("#search-result").html($('<h2>').html(error));
     };
@@ -383,26 +400,26 @@ var SearchController = function (controller) {
     }
 
     /**
-        Makes a web search request to the Controller with the spec-
-        ified search term. The response data is handled by dis-
-        play response data.
+       Makes a web search request to the Controller with the spec-
+       ified search term. The response data is handled by dis-
+       play response data.
 
-     */
+    */
     this.request_web_search = function (search_term) {
         // TODO
     };
 
     /**
-        Displays response data from an earlier given request, and therefore
-        works as a callback function.
+       Displays response data from an earlier given request, and therefore
+       works as a callback function.
     */
     this.display_response_data = function (data) {
         // TODO
     };
 
     /**
-        Displays the given producer in the NetworkView.
-     */
+       Displays the given producer in the NetworkView.
+    */
     this.show_producer_in_network = function (producer) {
         // TODO
     };
