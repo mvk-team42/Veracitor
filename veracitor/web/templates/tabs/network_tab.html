@@ -57,6 +57,9 @@
             <p class="tip-text">
               The lowest trust rating of the edges used in the trust calculation.
             </p>
+            <p>
+              <input id="trust-result-button" type="button" value="Show trust computation in network">
+            </p>
           </div>
           <div class="feedback fail">
             <p>Trust calculation failed. <span class="icon question-mark"></span></p>
@@ -92,6 +95,7 @@
     <div id="network-toolbox">
       <div class="body">
         <label>Tag<select id="global-tags" class="tag-dropdown"></select></label>
+        <input id="network-toolbox-layout" type="button" value="Recalculate layout" />
         <!--
         <div class="ui-widget">
           <label>Tag free <input id="tag-autocomplete" /></label>

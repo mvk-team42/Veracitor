@@ -44,14 +44,14 @@ class Producer(Document):
         Args:
             source_to_rate (producer.Producer): The source which
             the producer should rate.
-            
-            considered_tag (tag.Tag): The tag which the rating is set under. 
-        
+
+            considered_tag (tag.Tag): The tag which the rating is set under.
+
             rating (int): The actual rating.
 
         Raises:
             TypeError: If any of the arguments are of the wrong type.
-        
+
         """
         if(isinstance(source_to_rate, Producer) and\
            type(considered_tag) is tag.Tag and\
@@ -77,17 +77,16 @@ class Producer(Document):
         Args:
             information_to_rate (information.Information): The information
             to be rated.
-        
+
             rating (int): The actual rating.
 
         Raises:
             TypeError: If any of the arguments are of the wrong type.
-        
+
         """
 
-        # Should check type of information_to_rate but circular dependencies 
-        if(\
-           type(rating) is int):
+        # Should check type of information_to_rate but circular dependencies
+        if(type(rating) is int):
             self.info_ratings[(information_to_rate.url)] = rating
         else:
             raise TypeError("Problem with type of input variables.")
@@ -118,10 +117,10 @@ class Producer(Document):
             into).
 
         """
-        
+
         # Ensure that no ratings exist on deleted entities.
         self.check_rating_consistencies()
-        
+
         if networkModel.graph is None:
             raise NetworkModelException("There is no Global Network created!")
         if(len(Producer.objects(name=self.name)) == 0):
@@ -129,7 +128,7 @@ class Producer(Document):
         else:
             networkModel.notify_producer_was_updated(self)
 
-        
+
 
         self.prepare_ratings_for_saving()
         super(Producer, self).save()
@@ -150,7 +149,7 @@ class Producer(Document):
     def check_info_rating_consistency(self):
         info_ratings_to_be_deleted = []
         for k,v in self.info_ratings.items():
-            try: 
+            try:
                 extractor.get_information(k)
             except NotInDatabase:
                 info_ratings_to_be_deleted.append(k)
@@ -170,7 +169,7 @@ class Producer(Document):
     def check_rating_consistencies(self):
         self.check_info_rating_consistency()
         self.check_source_rating_consistency()
-                
+
 
     def delete(self):
         """

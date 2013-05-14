@@ -3,6 +3,7 @@ import itertools
 
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, abort
 
+import json
 import networkx as nx
 
 from veracitor.web import app
@@ -303,3 +304,59 @@ def add_to_group():
         abort(400)
 
     return ''
+
+@app.route('/jobs/network/paths_from_producer_lists', methods=['GET','POST'])
+def paths_from_producer_lists():
+    """Returns a path of json objects from dicts of producer names,
+       stored in a dict.
+
+    URL Structure:
+        /jobs/network/path_from_producer_list
+
+    Method:
+        POST
+
+    Parameters:
+        path (dict): A dict of lists of producer names.
+
+    Returns:
+        A path stored as a dict of producer dicts.
+
+    Errors:
+        400 - Bad syntax/No name/type in request
+        404 - Not found
+        405 - Method not allowed
+
+    """
+    if not request.method == 'POST':
+        abort(405)
+
+    try:
+        log(request.form)
+        paths = json.loads(request.form['paths'])
+    except:
+        abort(400)
+
+    data = []
+
+    try:
+        for nodes in paths:
+            data.append({
+                'nodes': [],
+                'ghosts': []
+            })
+
+            log(nodes)
+
+            for node in nodes:
+                prod = extractor.get_producer(node)
+
+                for p in prod.source_ratings.keys():
+                    if p not in nodes and p not in data[-1]['ghosts']:
+                        data[-1]['ghosts'].append(p)
+
+                data[-1]['nodes'].append(extractor.entity_to_dict(prod))
+    except:
+        abort(404)
+
+    return jsonify(paths=data)

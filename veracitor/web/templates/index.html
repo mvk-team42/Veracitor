@@ -5,6 +5,8 @@
 
     <title>{{ vera.title }}</title>
 
+    <meta charset="utf-8">
+
     <link href="{{ url_for('static', filename='css/veracitor.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ url_for('static', filename='css/search.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ url_for('static', filename='css/network.css') }}" rel="stylesheet" type="text/css" />
@@ -26,7 +28,7 @@
         setTimeout(function(){$('.loading-screen').fadeOut(200);}, 200);
       });
     </script>
-    
+
     <script src="{{ url_for('static', filename='jqueryui/js/jquery-ui-1.10.2.custom.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/arbor.js') }}" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='javascript/cytoscape.min.js') }}" type="text/javascript"></script>
