@@ -3,8 +3,8 @@
 .. module:: newspaperSpider
     :synopsis: This spider is used to crawl an entire newspaper and sends any articles it finds to the pipeline for further processing.
 
-    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
-    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
 """
 
 from scrapy.spider import BaseSpider

@@ -4,8 +4,8 @@
 .. module:: producerPipeline
     :synopsis: The pipeline for producerItems scraped by the crawler. The items are cleaned, filtered and added to the filesystem (database and XML-files).
 
-    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
-    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
 """
 
 import re
