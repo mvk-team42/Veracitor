@@ -127,16 +127,16 @@ def get_job_result():
     except Exception, err:
         abort(404)
 
-            
+
     if not res.ready():
         return make_response('', 204)
-        
+
     try:
         template_url = res.result.get('template_url')
-        res.result['html'] = render_template(res.result['template_url'], 
+        res.result['html'] = render_template(res.result['template_url'],
                                              data=res.result['data'])
     except:
         pass
-        
+
+    log(res.result)
     return jsonify(result=res.result)
-    

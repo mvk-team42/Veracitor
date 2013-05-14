@@ -87,7 +87,7 @@ def producer_create_if_needed(requested_name, type_if_new):
     
     """
     try:
-		return get_producer(requested_name)
+        return get_producer(requested_name)
     except NotInDatabase:   
 		new_producer = producer.Producer(
 		            name = requested_name,
