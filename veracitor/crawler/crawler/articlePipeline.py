@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+""" 
+.. module:: articlePipeline
+    :synopsis: The pipeline for articleItems scraped by the crawler. The items are cleaned, filtered and added to the database. Some additional work is done, such as setting trust ratings between the producers of the same article.
+
+    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
@@ -54,6 +62,8 @@ def _add_to_database(article):
     for publisher in publishers:
         log.msg("publisher name: " + publisher.name)
         publisher.infos.append(info)
+        publisher.rate_information(info, 5)
+        
         # Add trust between publishers
         for publisher2 in publishers:
             if not publisher==publisher2:
@@ -146,13 +156,13 @@ def _fix_tags(article):
     tag_map = {}
     tag_map["Crime"] = ["crime", "assault", "murder", "robber", "safety"]
     tag_map["Crime"] += ["brott", "överfall", "mord", "rån", "säkerhet"]
-    tag_map["Culture"] = ["music", "art", "painting", "culture", "concert", "movie", "tv", "radio"]
-    tag_map["Culture"] = ["musik", "konst", "målning", "kultur", "koncert", "film"]
+    tag_map["Culture"] = ["music", "art", "painting", "culture", "concert", "movie", "tv", "radio", "food", "wine", "drink", "beer"]
+    tag_map["Culture"] = ["musik", "konst", "målning", "kultur", "koncert", "film", "mat", "vin", "dryck", "öl"]
     tag_map["Politics"] = ["court", "health", "supreme", "reform", "ruling", "politic", "committee", "diplom", "party", "vote", "election"]
     tag_map["Politics"] = ["domstol", "häls", "parti", "komitte", "parti", "röst", "val"]
     tag_map["Sports"] = ["ball", "match", "tournament", "champion", "sport", "win"]
     tag_map["Sports"] = ["boll", "turnering", "mästar", "vinna"]
-    tag_map["Finances"] = ["recession", "financ", "money", "bank", "compan"]
+    tag_map["Finances"] = ["recession", "financ", "money", "bank", "compan", "price"]
     tag_map["Finances"] = ["finans", "penga", "kompan"]
     
     final_tags = []
