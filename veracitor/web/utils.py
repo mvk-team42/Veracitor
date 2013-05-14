@@ -42,24 +42,23 @@ def get_user_as_dict(username):
     try:
         source_ratings = []
         for source, ratings in user_obj.source_ratings.iteritems():
-            source = __safe_string(source)
             for tag,rating in ratings.iteritems():
                 source_ratings.append(
                     {
                         'name' : source,
                         'tag' : tag.replace(" ", "-"),
                         'rating': rating,
-                        'description': extractor.get_producer(__safe_string(source)).description
+                        'description': extractor.get_producer(source).description
                         }
                     )  
             
         info_ratings = []
         for iurl in user_obj.info_ratings.keys():
-            information = extractor.get_information(__safe_string(iurl))
+            information = extractor.get_information(iurl)
             info_ratings.append({
                     'title': information.title,
                     'rating': user_obj.info_ratings[iurl],
-                    'url': __safe_string(iurl),
+                    'url': iurl,
                     'tags': [tag.name.replace(" ", "-") for tag in information.tags]
                     })
          
