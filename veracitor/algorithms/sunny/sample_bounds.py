@@ -34,19 +34,21 @@ def sample_bounds(bayesianNetwork, source, sink, bounds, p_conf, tag, k=10):
 
     xmin_counters = {}
     xmax_counters = {}
+    top_sort_nodes = nx.topological_sort(bayesianNetwork,[sink])
+    top_sort_nodes.pop(0)
+
     for n in bayesianNetwork.nodes():
         xmin_counters[n] = 0
         xmax_counters[n] = 0
     for _ in range(k):
         nodes = bayesianNetwork.node
         # Top sort the nodes to traverse parents before children
-        top_sort_nodes = nx.topological_sort(bayesianNetwork.reverse(),[sink])
         for n in top_sort_nodes:
             if n in bayesianNetwork.successors(sink):
-                if not 'decision' in nodes[n]: 
+                if nodes[n]['decision'] == 0: 
                     nodes[n]['xmin'] = 0
                     nodes[n]['xmax'] = 1
-                elif n['decision']:
+                elif nodes[n]['decision'] == 1:
                     nodes[n]['xmin'] = 1
                     nodes[n]['xmax'] = 1
                 else: 
@@ -60,7 +62,7 @@ def sample_bounds(bayesianNetwork, source, sink, bounds, p_conf, tag, k=10):
                     probability_set = get_probability_set(bayesianNetwork, n, tag, p_conf)
                 # Else, use the previously sampled probabilities
                 else:
-                    probability_set = set([bounds[n]])
+                    probability_set = set(bounds[n])
                 rand = random.random()
                 if rand <= min(probability_set):
                     nodes[n]['xmin'] = 1
@@ -79,8 +81,6 @@ def sample_bounds(bayesianNetwork, source, sink, bounds, p_conf, tag, k=10):
             bounds[node] = [xmin_counters[node]/k, xmax_counters[node]/k]
     else:
         bounds[source] = [xmin_counters[source]/k, xmax_counters[source]/k]
-
-    print bounds
 
     return bounds
 
