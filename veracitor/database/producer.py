@@ -71,6 +71,24 @@ class Producer(Document):
             raise TypeError("Problem with type of input variables.")
 
     def rate_information(self, information_to_rate, rating):
+        """
+        Use this method to make the producer rate a source considering
+        a tag. Performs type checking.
+
+        Args:
+            source_to_rate (producer.Producer): The source which
+            the producer should rate.
+            
+            considered_tag (tag.Tag): The tag which the rating is set under. 
+        
+            rating (int): The actual rating.
+
+        Raises:
+            TypeError: If any of the arguments are of the wrong type.
+        
+        """
+
+        # Should check type of information_to_rate but circular dependencies 
         if(\
            type(rating) is int):
             self.info_ratings[(information_to_rate.url)] = rating
