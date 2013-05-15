@@ -182,7 +182,7 @@ var NetworkController = function (controller) {
                         .html(data.result.trust);
                     $('#network-compute-trust .feedback.win #trust-result-threshold')
                         .html(data.result.threshold);
-                    $('#network-compute-trust .feedback.win')
+                    $('#network-compute-trust .feedback.win #trust-result-button')
                         .click((function (paths) {
                             return function (evt) {
                                 visualize_paths_in_network(paths);
@@ -211,10 +211,16 @@ var NetworkController = function (controller) {
        @param paths The paths stored as lists in a dict object.
      */
     var visualize_paths_in_network = function (paths) {
+        var loader = controller.new_loader($('#network-graph'), {
+            'margin': '5px'
+        });
+
         $.post('/jobs/network/paths_from_producer_lists', {
             'paths': JSON.stringify(paths)
         }, function (data) {
-            visualizer.visualize_paths_in_network(data.paths, global_tag);
+            visualizer.visualize_paths_in_network(data.paths, global_tag, function () {
+                loader.delete();
+            });
         }).fail(function (data) {
             // TODO: Handle server error
         });
@@ -231,6 +237,10 @@ var NetworkController = function (controller) {
         entire network will be visualized).
      */
     this.visualize_producer_in_network = function (prod) {
+        var loader = controller.new_loader($('#network-graph'), {
+            'margin': '5px'
+        });
+
         $.post('/jobs/network/path', {
             'source': vera.user_name,
             'target': prod,
@@ -247,7 +257,10 @@ var NetworkController = function (controller) {
                                                      data.path.target.name,
                                                      data.path.nodes,
                                                      data.path.ghosts,
-                                                     data.path.tag);
+                                                     data.path.tag,
+                                                     function () {
+                                                         loader.delete();
+                                                     });
             } else {
                 display_network_information('No path found');
             }
