@@ -266,12 +266,12 @@ var SearchController = function (controller) {
                 search_result = data.result.data[type];
 
                 $('#search-result').html(data.result.html);
-                $('#search-result .result').click(function (evt) {
+                $('#search-result .link').click(function (evt) {
                     var prod;
                     if(type === "information"){
-                        prod = search_result[$(this).index()].publishers[0];
+                        prod = search_result[$(this).parent().index()].publishers[0];
                     } else if (type === "producers"){
-                        prod = search_result[$(this).index()].name;
+                        prod = search_result[$(this).parent().index()].name;
                     }
 
                     controller.network.visualize_producer_in_network(prod);
