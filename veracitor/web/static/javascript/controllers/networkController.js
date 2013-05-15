@@ -12,7 +12,7 @@
 var NetworkController = function (controller) {
 
     var network_controller = this;
-    var visualizer = new Visualizer(network_controller);
+    var visualizer = new Visualizer(controller, network_controller);
     var network_info;
 
     var global_tag = null;

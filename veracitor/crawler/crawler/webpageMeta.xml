@@ -32,6 +32,9 @@
             <rss-link>
                 <xpath>//a[contains(@class, "rss")]/@href</xpath>    
                 <xpath>//*[contains(@class, "rss")]//a/@href</xpath>   
+                <xpath>//a[contains(@href, "rss")]/@href</xpath>
+                <xpath>//a[text()="rss"]</xpath>
+                <xpath>//a[text()="RSS"]</xpath>
             </rss-link>
         </webpage-paths>
 
@@ -59,6 +62,7 @@
                 <xpath>//*[contains(@class, "Ingress")]//child::text()</xpath>
                 <xpath>//article//text()</xpath>
                 <xpath>//meta[@name="description"]//@content</xpath>
+                <xpath>//h2//text()</xpath>
             </summary>
             
             <tags>
