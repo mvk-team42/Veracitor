@@ -9,7 +9,7 @@
     specific producer.
     @constructor
  */
-var Visualizer = function (controller) {
+var Visualizer = function (super_controller, network_controller) {
 
     // A reference to this object
     var visualizer = this;
@@ -505,7 +505,7 @@ var Visualizer = function (controller) {
             style_elements();
 
             // Display producer information
-            controller.display_producer_information(source_node.data().data);
+            network_controller.display_producer_information(source_node.data().data);
 
             if (typeof callback !== 'undefined') {
                 callback();
@@ -597,11 +597,16 @@ var Visualizer = function (controller) {
         var node = this;
 
         if (typeof node.hasClass('ghost') !== 'undefined') {
-            visualizer.fetch_neighbors(node.data().name, controller.get_global_tag(), 1, function () {
+            var loader = super_controller.new_loader($('#network-graph'));
+
+            visualizer.fetch_neighbors(node.data().name, network_controller.get_global_tag(), 1, function () {
+                cy.one('layoutstop', function () {
+                    loader.delete();
+                });
                 cy.layout();
             });
         } else {
-            controller.display_producer_information(node.data().data);
+            network_controller.display_producer_information(node.data().data);
         }
     };
 };

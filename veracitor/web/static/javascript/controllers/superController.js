@@ -221,4 +221,52 @@ function SuperController(vera) {
 
     }
 
+    this.new_loader = function ( parent ) {
+        return new Loader(parent);
+    };
+
+    /**
+       A loader object used for displaying a loading gif tag.
+     */
+    var Loader = function ( parent ) {
+
+        // A reference to this object
+        var _self = this;
+
+        var tag = $('<img>').attr({
+            'src': 'static/images/loading2.gif',
+            'alt': 'Loading'
+        });
+
+        var init = function () {
+            if (typeof parent !== 'undefined') {
+                _self.append_to(parent);
+            }
+        };
+
+        /**
+           Appends this objects tag to the given parent.
+         */
+        this.append_to = function ( parent ) {
+            if (parent instanceof jQuery) {
+                parent.append(tag);
+            } else if (parent instanceof HTMLElement) {
+                parent.appendChild(tag[0]);
+            } else {
+                throw 'Parent not a DOM element.';
+            }
+        };
+
+        /**
+           Deletes this objects tag from the dom tree.
+         */
+        this.delete = function () {
+            tag.remove();
+        };
+
+        // Initialize the object
+        init();
+
+    };
+
 }
