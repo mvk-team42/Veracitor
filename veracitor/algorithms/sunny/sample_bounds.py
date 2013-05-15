@@ -91,12 +91,16 @@ def get_probability_set(network, node, tag, p_conf):
     Calculates the set of possible probabilites of 'node' being true (included). 
 
     """
+    
     probabilities = set()
-    # Generates all possible permutations of xmin and xmax values
+    # Generates all possible permutations of xmin/xmax values
     # for the current node and its parents
+    # True means that xmax is used, and False means that
+    # xmin is used 
     variants = [[[n, True],[n, False]] for n in network.successors(node)]
     permutations = list(itertools.product(*variants))
     nodes = network.node
+    
     for p in permutations:
         product = 1
         for (n,xmax) in p:
@@ -109,5 +113,5 @@ def get_probability_set(network, node, tag, p_conf):
                 m2 = nodes[n]['xmax']
             product = product*(1-(m1*p_value + m2*(1-p_value)))
         probabilities.add(1-product)
-
+    
     return probabilities
