@@ -25,7 +25,8 @@ def _fail_dict(source, sink, tag):
             "tag": tag,}
 
 @taskmgr.task
-def sunny(source, sink, tag):
+def sunnycalc(source, sink, tag):
+    logger.info(source +"/"+sink+"/"+tag)
     source, sink, tag = _to_unicode((source, sink, tag))
     
     network = nm.get_global_network()

@@ -6,6 +6,8 @@ from veracitor.web.utils import store_job_result
 
 import veracitor.tasks.algorithms as algorithms
 
+log = app.logger.debug
+
 ### Algorithm jobs ###
 
 @app.route("/jobs/algorithms/tidal_trust", methods=['GET', 'POST'])
@@ -120,9 +122,13 @@ def sunny():
         source = request.form['source']
         sink = request.form['sink']
         tag = request.form['tag']
+        if len(tag) == 0:
+            raise AttributeError
     except KeyError, AttributeError:
         abort(400)
 
-    res = algorithms.sunny.delay(source, sink, tag)
+    log(source+"/"+sink+"/"+tag)
+
+    res = algorithms.sunnycalc.delay(source, sink, tag)
     store_job_result(res)
     return jsonify(job_id=res.id)
