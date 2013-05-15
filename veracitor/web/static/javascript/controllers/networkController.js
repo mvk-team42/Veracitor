@@ -120,7 +120,13 @@ var NetworkController = function (controller) {
         $('#global-tags').change(on_global_tag_change);
 
         $('#network-toolbox-layout').click(function (evt) {
-            visualizer.recalculate_layout();
+            var loader = controller.new_loader($('#network-graph'), {
+                'margin': '5px'
+            });
+
+            visualizer.recalculate_layout(function () {
+                loader.delete();
+            });
         });
 
         $('#network-toolbox-ratings').click(function (evt) {

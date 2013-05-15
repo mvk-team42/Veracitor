@@ -59,9 +59,11 @@ var Visualizer = function (super_controller, network_controller) {
                 cy = this;
 
                 cy.on('click', 'node', node_click_event);
+                /*
                 cy.on('layoutstop', function () {
                     cy.nodes().unlock();
                 });
+                */
 
                 // Fixes vanishing graph issue when resizing the window
                 $(window).resize(function () {
@@ -124,8 +126,15 @@ var Visualizer = function (super_controller, network_controller) {
     /**
        Recalculates the layout of the nodes in the graph.
      */
-    this.recalculate_layout = function () {
-        cy.layout();
+    this.recalculate_layout = function ( callback ) {
+        if (callback) {
+            cy.one('layoutstop', callback);
+        }
+
+        cy.layout({
+            'name': 'arbor',
+            'fit': false
+        });
     };
 
     /**
@@ -187,10 +196,7 @@ var Visualizer = function (super_controller, network_controller) {
             'border-color': color.node.user.border
         });
 
-        cy.fit(cy.nodes());
-        cy.layout({
-            'name': 'arbor'
-        });
+        visualizer.recalculate_layout();
     };
 
     /**
@@ -212,22 +218,12 @@ var Visualizer = function (super_controller, network_controller) {
                                                        path,
                                                        ghosts,
                                                        tag);
-
         cy.add(cyelems.nodes);
         cy.add(cyelems.edges)
 
         style_elements();
 
-        if (typeof callback !== 'undefined') {
-            cy.one('layoutstop', function () {
-                callback();
-            });
-        }
-
-        // Recalculate the layout
-        cy.layout({
-            'name': 'arbor'
-        });
+        visualizer.recalculate_layout(callback);
     };
 
     this.visualize_paths_in_network = function (paths, tag, callback) {
@@ -246,16 +242,7 @@ var Visualizer = function (super_controller, network_controller) {
 
         style_elements();
 
-        if (typeof callback !== 'undefined') {
-            cy.one('layoutstop', function () {
-                callback();
-            });
-        }
-
-        // Recalculate the layout
-        cy.layout({
-            'name': 'arbor'
-        });
+        visualizer.recalculate_layout(callback);
     };
 
     var get_cytoscape_elements_from_path = function (source, target, path, ghosts, tag) {
@@ -329,7 +316,6 @@ var Visualizer = function (super_controller, network_controller) {
 
     this.fetch_neighbors = function ( name, tag, depth, callback ) {
         var id = safe(name);
-        console.log(id);
         var source_node = cy.nodes('#' + id);
 
         $.post('/jobs/network/neighbors', {
@@ -467,12 +453,14 @@ var Visualizer = function (super_controller, network_controller) {
             // Display producer information
             network_controller.display_producer_information(source_node.data().data);
 
-            if (typeof callback !== 'undefined') {
-                callback();
-            }
+            visualizer.recalculate_layout(callback);
         }).fail(function (data) {
             // TODO: Handle request fail
             console.log(data);
+
+            if (callback) {
+                callback();
+            }
         });
     };
 
@@ -568,12 +556,12 @@ var Visualizer = function (super_controller, network_controller) {
                 'margin': '5px'
             });
 
-            visualizer.fetch_neighbors(node.data().name, network_controller.get_global_tag(), 1, function () {
-                cy.one('layoutstop', function () {
-                    loader.delete();
-                });
-                cy.layout();
-            });
+            visualizer.fetch_neighbors(node.data().name,
+                                       network_controller.get_global_tag(),
+                                       1,
+                                       function () {
+                                           loader.delete();
+                                       });
         } else {
             network_controller.display_producer_information(node.data().data);
         }
