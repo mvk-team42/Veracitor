@@ -597,7 +597,9 @@ var Visualizer = function (super_controller, network_controller) {
         var node = this;
 
         if (typeof node.hasClass('ghost') !== 'undefined') {
-            var loader = super_controller.new_loader($('#network-graph'));
+            var loader = super_controller.new_loader($('#network-graph'), {
+                'margin': '5px'
+            });
 
             visualizer.fetch_neighbors(node.data().name, network_controller.get_global_tag(), 1, function () {
                 cy.one('layoutstop', function () {
