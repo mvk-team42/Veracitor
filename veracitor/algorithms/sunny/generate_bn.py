@@ -63,6 +63,7 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
        tag *tag*.
    
     """
+    graph.remove_edges_from([(sink,y) for y in graph.successors(sink)])
     K = set(graph.predecessors(sink))
     KK = set()
     Kgraph = graph.subgraph(list(K)+[sink]) # makes it work if source and sink are neighbours
@@ -77,8 +78,9 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
             else:
                 K = K | pre_img
 
-        # Remove cycles, redundant nodes etc and store only the nodes
-        # relevant (those that lie in a path from source to sink)
+        # Remove cycles, redundant nodes etc and store only the 
+        # relevant nodes 
+        # (those that lie in a path from source to sink)
         K.add(sink)        
         Kgraph = _prune_states(K, graph, source, sink)
         K = set(Kgraph.nodes())
@@ -111,19 +113,19 @@ def _prune_states(K, graph, source, sink):
     
     """
     
-     # Create a subgraph with the nodes now in K
-    subgraph = graph.subgraph(list(K))
-    
-    # Find and remove cycles by deleting the edge between the second to last
-    # node and the last node of the cycle, thus keeping nodes that may be
-    # important to the trust calculation.
+    # Create a subgraph with the nodes now in K
+    # Find and remove cycles by deleting the edge between 
+    # the second to last node and the last node of the cycle,
+    # thus keeping nodes that may be important 
+    # to the trust calculation.
+    subgraph = graph.subgraph(K)
     cycles = nx.simple_cycles(subgraph)
     if cycles:
         for cycle in cycles:
             subgraph.remove_edges_from([(cycle[-2], cycle[-1])])
             
     # Get all paths from source to sink without cycles and redundant nodes
-    simple_paths = list(nx.all_simple_paths(G=subgraph, source=source, target=sink))
+    simple_paths = list(nx.all_simple_paths(G=graph, source=source, target=sink))
     relevant_nodes = set(chain.from_iterable(simple_paths))
             
     # Remove nodes no longer used (not in simple_paths)

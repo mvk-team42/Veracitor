@@ -1,7 +1,8 @@
 import networkx as nx
 import sample_bounds as sb
+from veracitor.database import *
 import sunny
 
-G = nx.DiGraph()
-G.add_edges_from([(u'mrunelov',u'dmol',dict(Trust=12)), (u'dmol', u'john',dict(Trust=4))])
-sunny.sunny(G,'mrunelov','john', tag='Trust')
+networkModel.build_network_from_db()
+G = networkModel.get_global_network()
+print sunny.sunny(G,u'mrunelov',u'dmol', tag='Trust')
