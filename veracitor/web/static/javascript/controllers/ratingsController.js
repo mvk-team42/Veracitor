@@ -29,8 +29,12 @@ var RatingsController = function (controller) {
 	    $('#ratings_view_content').html(data.html);
 	    //Must be called before populating tag dropdowns
 	    add_event_handlers(data.producers, data.information);
-	    $('#prod-tags').change();
-	    $('#info-tags').change();
+	    if ($('.left #prod-tags option').length > 0 ) {
+	        $('#prod-tags').change();
+	    }
+	    if ($('.right #info-tags option').length > 0 ) {
+		$('#info-tags').change();
+	    }
 	});
     };
 

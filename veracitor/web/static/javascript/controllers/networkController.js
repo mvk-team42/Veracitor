@@ -59,7 +59,7 @@ var NetworkController = function (controller) {
             });
         });
 
-        $('#network_rate_producer > .button').click(function (evt) {
+        $('#network_rate_producer .button').click(function (evt) {
             var tag = $('#rate-producer-tag > option:selected').val();
             var rating = $('#network_rate_producer > .rating > option:selected').html();
 
@@ -169,6 +169,10 @@ var NetworkController = function (controller) {
         // first hide old feedback
         $('#network-compute-trust .feedback').hide();
 
+        // Show loader!
+        var loader = controller.new_loader($('#network-compute-trust'),
+                                           {'width':'16px', 'height':'16px'});
+
         $.post('/jobs/algorithms/'+algorithm, {
             'source': source,
             'sink': sink,
@@ -177,6 +181,9 @@ var NetworkController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
+                // Go away loader!
+                loader.delete();
+
                 if(data.result.trust !== null){
                     $('#network-compute-trust .feedback.win #trust-result')
                         .html(data.result.trust);
@@ -352,6 +359,7 @@ var NetworkController = function (controller) {
     };
 
     var rate_producer = function ( source, target, tag, rating ) {
+        var loader = controller.new_loader($('#network_rate_producer'), {'width':'16px', 'height':'16px'});
         $.post('/jobs/network/rate/producer', {
             'source': source,
             'target': target,
@@ -360,6 +368,8 @@ var NetworkController = function (controller) {
         }, function ( data ) {
             // Update the user object
             user = data.source;
+
+            loader.delete();
 
             network_controller.display_producer_information(data.target);
 
