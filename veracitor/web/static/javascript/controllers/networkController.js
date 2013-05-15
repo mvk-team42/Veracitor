@@ -70,9 +70,10 @@ var NetworkController = function (controller) {
 
         $('#compute-trust').click( function(evt){
             var tag = $('#compute-trust-tag > option:selected').val();
+            var algorithm = $('#compute-trust-algorithm > option:selected').val();
 
             if (selected_producer !== null) {
-                request_tidaltrust_value(vera.user_name, selected_producer.name, tag);
+                request_trustcalc_value(vera.user_name, selected_producer.name, tag, algorithm);
             }
         });
 
@@ -162,13 +163,13 @@ var NetworkController = function (controller) {
     };
 
     /**
-       Request a TidalTrust value.
+       Calculate a trust assessment value.
     */
-    function request_tidaltrust_value(source, sink, tag) {
+    function request_trustcalc_value(source, sink, tag, algorithm) {
         // first hide old feedback
         $('#network-compute-trust .feedback').hide();
 
-        $.post('/jobs/algorithms/tidal_trust', {
+        $.post('/jobs/algorithms/'+algorithm, {
             'source': source,
             'sink': sink,
             'tag': tag

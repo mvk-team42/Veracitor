@@ -114,4 +114,15 @@ def sunny():
        405 - Method not allowed
 
     """
-    pass
+    if not request.method == 'POST':
+        abort(405)
+    try:
+        source = request.form['source']
+        sink = request.form['sink']
+        tag = request.form['tag']
+    except KeyError, AttributeError:
+        abort(400)
+
+    res = algorithms.sunny.delay(source, sink, tag)
+    store_job_result(res)
+    return jsonify(job_id=res.id)

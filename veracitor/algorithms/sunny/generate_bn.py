@@ -46,14 +46,17 @@ def golbeck_generate_bn(graph, source, sink, tag="weight"):
        *tag* (str): The tag specifying which ratings should be considered.
 
     Returns:
-       A tuple (*BN* (networkX.DiGraph), *p_conf* (dict)). *BN* is more or less a
-       bayesian network generated from the input graph, with all edges
-       reversed. *p_conf* is a dictionary of all probabilistic confidence 
-       values (see *Equation (1)*) looking like this::
+       A tuple::
+
+          (BN (networkX.DiGraph), p_conf (dict))
+
+       *BN* is more or less a bayesian network generated from the input graph,
+       with all edges reversed. *p_conf* is a dictionary of all probabilistic
+       confidence values (see *Equation (1)*) looking like this::
        
-       {
-          (*A* (str), *B* (str), *tag* (str)): *P* (float),
-       }
+          {
+             (A (str), B (str), tag (str)): P (float),
+          }
 
        where *A* and *B* are nodes for which *P* is the confidence value 
        calculated from their decisions on information objects under the

@@ -2,7 +2,7 @@
 
 """
 .. module:: sunny
-:synopsis: The SUNNY algorithm as specified by Golbeck and Kuter (2010).
+   :synopsis: The SUNNY algorithm as specified by Golbeck and Kuter (2010).
 
 .. moduleauthor:: Daniel Molin <dmol@kth.se>
 .. moduleauthor:: Martin Runelov <mrunelov@kth.se>

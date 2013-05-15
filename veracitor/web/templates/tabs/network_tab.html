@@ -39,12 +39,21 @@
         </div>
 	    <div id="network-compute-trust" class="network-info-piece">
 	      <p>Compute trust <span class="icon question-mark"></span></p>
-	      <p class="tip-text">
-	        Get an assessment on how much you should trust the selected producer
-	        based on how much other nodes trust it.
-	      </p>
+	      <div class="tip-text">
+                <p>
+	          Get an assessment on how much you should trust the selected producer
+	          based on how much other nodes trust it.
+                </p><p>
+                  The trust is calculated using the specified tag and trust assessment
+                  algorithm, picked from the dropdown boxes below.
+                </p>
+	      </div>
 	      <select id="compute-trust-tag" class="tag-dropdown"></select>
-          <input type="button" value="Compute trust" id="compute-trust"/>
+              <select id="compute-trust-algorithm">
+                <option value="tidal_trust">TidalTrust</option>
+                <option value="sunny">SUNNY</option>
+              </select>
+              <input type="button" value="Compute trust" id="compute-trust"/>
 	      <div class="feedback win">
             <p>
               Trust: <span id="trust-result" class="rating"></span>
