@@ -169,6 +169,9 @@ var NetworkController = function (controller) {
         // first hide old feedback
         $('#network-compute-trust .feedback').hide();
 
+        // Show loader!
+        var loader = controller.new_loader($('#network-compute-trust'));
+
         $.post('/jobs/algorithms/'+algorithm, {
             'source': source,
             'sink': sink,
@@ -177,6 +180,9 @@ var NetworkController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
+                // Go away loader!
+                loader.delete();
+
                 if(data.result.trust !== null){
                     $('#network-compute-trust .feedback.win #trust-result')
                         .html(data.result.trust);
