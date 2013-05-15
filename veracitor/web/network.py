@@ -60,6 +60,7 @@ def get_shortest_path():
         gn = _filter_network_by_tag(gn, tag)
 
     try:
+        log(gn.edges())
         nodes = nx.shortest_path(gn, source, target)
     except:
         nodes = []

@@ -9,7 +9,7 @@
     specific producer.
     @constructor
  */
-var Visualizer = function (controller) {
+var Visualizer = function (super_controller, network_controller) {
 
     // A reference to this object
     var visualizer = this;
@@ -204,27 +204,33 @@ var Visualizer = function (controller) {
         entire network will be visualized).
      */
     this.visualize_path_in_network = function (source, target, path, ghosts, tag) {
+        var safe_src, safe_trg;
         var nodes = [];
         var edges = [];
 
         for (var node in path) {
+            safe_src = safe(node);
+
             nodes.push({
                 'group': 'nodes',
                 'data': {
-                    'id': node,
+                    'id': safe_src,
+                    'name': node,
                     'data': path[node]
                 },
                 'classes': path[node].type_of + ' ' + 'path-node'
             });
 
             for (var key in path[node].source_ratings) {
+                safe_trg = safe(key);
+
                 if (typeof path[key] !== 'undefined') {
                     edges.push({
                         'group': 'edges',
                         'data': {
-                            'id': node + '-' + key,
-                            'source': node,
-                            'target': key,
+                            'id': safe_src + '-' + safe_trg,
+                            'source': safe_src,
+                            'target': safe_trg,
                             'rating': path[node].source_ratings[key][tag] || ''
                         },
                         'classes': 'path-edge'
@@ -234,19 +240,24 @@ var Visualizer = function (controller) {
         }
 
         for (var g in ghosts) {
+            safe_src = safe(g);
+            safe_trg = safe(ghosts[g]);
+
             nodes.push({
                 'group': 'nodes',
                 'data': {
-                    'id': g
+                    'id': safe_src,
+                    'name': g
                 },
                 'classes': 'ghost'
             });
+
             edges.push({
                 'group': 'edges',
                 'data': {
-                    'id': ghosts[g] + '-' + g,
-                    'source': ghosts[g],
-                    'target': g,
+                    'id': safe_src + '-' + safe_trg,
+                    'source': safe_src,
+                    'target': safe_trg,
                     'rating': ''
                 },
                 'classes': 'ghost'
@@ -267,6 +278,7 @@ var Visualizer = function (controller) {
     };
 
     this.visualize_paths_in_network = function (paths, tag) {
+        // TODO: fix safe ids!!!
         var existing_nodes = [];
         var nodes = [];
         var edges = [];
@@ -352,13 +364,16 @@ var Visualizer = function (controller) {
         });
     };
 
-    this.fetch_neighbors = function ( id, tag, depth, callback ) {
+    this.fetch_neighbors = function ( name, tag, depth, callback ) {
+        var id = safe(name);
+        console.log(id);
         var source_node = cy.nodes('#' + id);
 
         $.post('/jobs/network/neighbors', {
-            'name': id,
+            'name': name,
             'depth': depth
         }, function (data) {
+            var safe_src, safe_trg;
             var edge_id;
             var elem;
             var ghost_edges = {};
@@ -368,12 +383,15 @@ var Visualizer = function (controller) {
             source_node.removeClass('ghost');
 
             for (var node in data.neighbors) {
-                elem = cy.nodes('#' + node);
+                safe_src = safe(node);
+                elem = cy.nodes('#' + safe_src);
+
                 if (elem.empty()) {
                     nodes.push({
                         'group': 'nodes',
                         'data': {
-                            'id': node,
+                            'id': safe_src,
+                            'name': node,
                             'data': data.neighbors[node]
                         },
                         'classes': 'ghost'
@@ -382,56 +400,57 @@ var Visualizer = function (controller) {
 
                 for (var key in data.neighbors[node].source_ratings) {
                     if (typeof data.neighbors[key] !== 'undefined') {
-                        edge_id = node + '-' + key;
+                        safe_trg = safe(key);
+                        edge_id = safe_src + '-' + safe_trg;
                         elem = cy.edges('#' + edge_id);
 
                         // Check if the edge does not exist
                         if (elem.empty()) {
                             // Check if the edge is a ghost edge
-                            if (cy.nodes('#' + node).empty() ||
-                                cy.nodes('#' + key).empty() ||
-                                cy.nodes('#' + node).hasClass('ghost') ||
-                                cy.nodes('#' + key).hasClass('ghost')) {
+                            if (cy.nodes('#' + safe_src).empty() ||
+                                cy.nodes('#' + safe_trg).empty() ||
+                                cy.nodes('#' + safe_src).hasClass('ghost') ||
+                                cy.nodes('#' + safe_trg).hasClass('ghost')) {
 
                                 // Check if the edge has already been added
-                                if (cy.edges('#' + key + '-' + node).empty() &&
-                                    (typeof ghost_edges[node] === 'undefined' ||
-                                     typeof ghost_edges[node][key] === 'undefined')) {
+                                if (cy.edges('#' + safe_trg + '-' + safe_src).empty() &&
+                                    (typeof ghost_edges[safe_src] === 'undefined' ||
+                                     typeof ghost_edges[safe_src][safe_trg] === 'undefined')) {
 
                                     edges.push({
                                         'group': 'edges',
                                         'data': {
                                             'id': edge_id,
-                                            'source': node,
-                                            'target': key,
+                                            'source': safe_src,
+                                            'target': safe_trg,
                                             'rating': ''
                                         },
                                         'classes': 'ghost'
                                     });
 
                                     // Add the edge
-                                    if (typeof ghost_edges[node] === 'undefined') {
-                                        ghost_edges[node] = {};
+                                    if (typeof ghost_edges[safe_src] === 'undefined') {
+                                        ghost_edges[safe_src] = {};
                                     }
-                                    ghost_edges[node][key] = true;
-                                    if (typeof ghost_edges[key] === 'undefined') {
-                                        ghost_edges[key] = {};
+                                    ghost_edges[safe_src][safe_trg] = true;
+                                    if (typeof ghost_edges[safe_trg] === 'undefined') {
+                                        ghost_edges[safe_trg] = {};
                                     }
-                                    ghost_edges[key][node] = true;
+                                    ghost_edges[safe_trg][safe_src] = true;
                                 }
                             } else {
                                 edges.push({
                                     'group': 'edges',
                                     'data': {
                                         'id': edge_id,
-                                        'source': node,
-                                        'target': key,
+                                        'source': safe_src,
+                                        'target': safe_trg,
                                         'rating': data.neighbors[node].source_ratings[key][tag] || ''
                                     }
                                 });
 
                                 // Remove any related ghost edge
-                                elem = cy.edges('#' + key + '-' + node);
+                                elem = cy.edges('#' + safe_trg + '-' + safe_src);
                                 if (!elem.empty() && elem.hasClass('ghost')) {
                                     elem.remove();
                                 }
@@ -440,8 +459,8 @@ var Visualizer = function (controller) {
                         // If the edge exist
                         } else {
                             // Remove any related ghost edges
-                            if (!cy.nodes('#' + node).hasClass('ghost') &&
-                                !cy.nodes('#' + key).hasClass('ghost') &&
+                            if (!cy.nodes('#' + safe_src).hasClass('ghost') &&
+                                !cy.nodes('#' + safe_trg).hasClass('ghost') &&
                                 !elem.parallelEdges('.ghost').empty()) {
 
                                 // Update the rating
@@ -471,9 +490,12 @@ var Visualizer = function (controller) {
                 cy.add(edges);
             }
 
-            // Update clicked node
-            source_node.data('data', data.neighbors[source_node.id()]);
-            source_node.addClass(data.neighbors[source_node.id()].type_of);
+            console.log(data.neighbors);
+            console.log(source_node);
+
+            // Update source node
+            source_node.data('data', data.neighbors[source_node.data().name]);
+            source_node.addClass(data.neighbors[source_node.data().name].type_of);
             source_node.css({
                 'background-color': color.node.unselect.background,
                 'border-color': color.node.unselect.border,
@@ -483,7 +505,7 @@ var Visualizer = function (controller) {
             style_elements();
 
             // Display producer information
-            controller.display_producer_information(source_node.data().data);
+            network_controller.display_producer_information(source_node.data().data);
 
             if (typeof callback !== 'undefined') {
                 callback();
@@ -498,6 +520,10 @@ var Visualizer = function (controller) {
        Styles all nodes and edges in the graph.
      */
     var style_elements = function () {
+        cy.nodes().css({
+            'content': 'data(name)'
+        });
+
         if (show_ratings) {
             cy.edges().css({
                 'content': 'data(rating)'
@@ -559,15 +585,28 @@ var Visualizer = function (controller) {
         }
     };
 
+    /**
+       Returns a safe string for selectors with white spaces
+       replaced by underscores.
+     */
+    var safe = function ( s ) {
+        return s.replace(/(\s|#|\.|\|)/g, '_');
+    };
+
     var node_click_event = function (evt) {
         var node = this;
 
         if (typeof node.hasClass('ghost') !== 'undefined') {
-            visualizer.fetch_neighbors(node.id(), controller.get_global_tag(), 1, function () {
+            var loader = super_controller.new_loader($('#network-graph'));
+
+            visualizer.fetch_neighbors(node.data().name, network_controller.get_global_tag(), 1, function () {
+                cy.one('layoutstop', function () {
+                    loader.delete();
+                });
                 cy.layout();
             });
         } else {
-            controller.display_producer_information(node.data().data);
+            network_controller.display_producer_information(node.data().data);
         }
     };
 };

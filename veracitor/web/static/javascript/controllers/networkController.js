@@ -12,7 +12,7 @@
 var NetworkController = function (controller) {
 
     var network_controller = this;
-    var visualizer = new Visualizer(network_controller);
+    var visualizer = new Visualizer(controller, network_controller);
     var network_info;
 
     var global_tag = null;
@@ -236,8 +236,6 @@ var NetworkController = function (controller) {
             'target': prod,
             'tag': global_tag || ''
         }, function (data) {
-            console.log(data);
-
             network_controller.display_producer_information(data.path.target);
 
             if (typeof data.path.nodes[data.path.source.name] !== 'undefined') {

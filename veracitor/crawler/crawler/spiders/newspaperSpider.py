@@ -33,7 +33,7 @@ class NewspaperSpider(CrawlSpider):
 
     def __init__(self, *args, **kwargs):
         domain = kwargs.get('domain')
-        log.msg("crawling domain " + domain)
+        #log.msg("crawling domain " + domain)
         self.start_urls = [domain]
         domain = domain.replace('http://','')
         self.rules = (
@@ -46,6 +46,6 @@ class NewspaperSpider(CrawlSpider):
 
 
     def scrape_article(self, response):
-        log.msg("inside scrape_article")
+        #log.msg("inside scrape_article")
         if is_article(response):
             return scrape_article(response)

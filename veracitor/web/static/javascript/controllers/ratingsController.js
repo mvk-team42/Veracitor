@@ -54,14 +54,14 @@ var RatingsController = function (controller) {
 	});
 
 	$(".left #prod-tags").change(function() {
-	    var selectedValue = $(this).find(":selected").val().replace(/\s/g, "_");
+	    var selectedValue = $(this).find(":selected").val().replace(/(\s|\.|#|\|)/g, "_");
 	    active_tag = selectedValue;
 	    $('#producer-list .group_active').not('.' + selectedValue).hide()
 	    $('#producer-list > div.group_active.' + selectedValue).show();
 	});
 
 	$(".right #info-tags").change(function() {
-	    var selectedValue = $(this).find(":selected").val().replace(/\s/g, "_");
+	    var selectedValue = $(this).find(":selected").val().replace(/(\s|\.|#|\|)/g, "_");
 	    if( selectedValue != 'none' ) {
 	    $('.right #information-list >').not('div.' + selectedValue).hide()
 	    $('.right #information-list > div.' + selectedValue).show();
@@ -82,12 +82,12 @@ var RatingsController = function (controller) {
 	    var selectedValue = $(this).find(":selected").val();
 	    if( selectedValue != 'all' ) {
 		$("#rate-group").removeAttr("disabled");
-		group_selector = '.left .group-members#' + selectedValue.replace(/\s/g, '_') + ' input';
+		group_selector = '.left .group-members#' + selectedValue.replace(/(\s|\.|#|\|)/g, "_") + ' input';
 		// Reset classes
 		$('div#producer-list').children().addClass("group_inactive");
 		$('div#producer-list').children().removeClass("group_active");
 		$(group_selector).each(function() {
-		    $('div#producer-list div#' + $(this).val().replace(/\s/g,"_")).addClass('group_active').removeClass('group_inactive');		 
+		    $('div#producer-list div#' + $(this).val().replace(/(\s|\.|#|\|)/g, "_")).addClass('group_active').removeClass('group_inactive');		 
 		});
 		$('div#producer-list div.group_inactive.' + active_tag).hide();
 		$('div#producer-list div.group_active.' + active_tag).show();
