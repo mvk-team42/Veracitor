@@ -64,7 +64,6 @@ def sunny(graph, source, sink, tag="weight"):
             bayesianNetwork.node[leaf]['decision'] = -1
         else:
             bayesianNetwork.node[leaf]['decision'] = 1
-
     return tt.compute_trust(bayesianNetwork.reverse(), source, sink, decision, tag)
     
 
