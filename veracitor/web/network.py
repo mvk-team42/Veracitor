@@ -18,15 +18,15 @@ def get_shortest_path():
     """Returns a path from the given source node to the given target node.
 
     URL Structure:
-        /jobs/network/neighbors
+        /jobs/network/path
 
     Method:
         POST
 
     Parameters:
         source (str): The name of the source producer.
-
         target (str): The name of the target producer.
+        tag (str): The tag name; '' if not specified.
 
     Optional parameters:
         tag (str): If specified, only edges with this tag will be considered.
@@ -67,19 +67,20 @@ def get_shortest_path():
     data = {
         'source': extractor.entity_to_dict(extractor.get_producer(source)),
         'target': extractor.entity_to_dict(extractor.get_producer(target)),
-        'nodes': [],
-        'ghosts': [],
+        'nodes': {},
+        'ghosts': {},
         'tag': tag
     }
 
     for node in nodes:
         prod = extractor.get_producer(node)
 
-        for k, v in prod.source_ratings.items():
-            if k not in nodes:
-                data['ghosts'].append(k)
+        neighbors = gn.successors(node) + gn.predecessors(node)
+        for n in neighbors:
+            if n not in nodes:
+                data['ghosts'][n] = node
 
-        data['nodes'].append(extractor.entity_to_dict(prod))
+        data['nodes'][node] = extractor.entity_to_dict(prod)
 
     return jsonify(path=data)
 
@@ -160,9 +161,9 @@ def get_neighbors():
 
     neighbors = []
 
-    #for i in range(0, int(depth)):
     depth = int(depth)
 
+    # Fetch neighbors
     if depth < 0:
         layer = [name]
         while layer:
@@ -170,7 +171,7 @@ def get_neighbors():
             for node in layer:
                 if node not in neighbors:
                     neighbors.append(node)
-                    neighbor_queue += gn.successors(node)
+                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
             layer = neighbor_queue
     else:
         layer = [name]
@@ -179,7 +180,7 @@ def get_neighbors():
             for node in layer:
                 if node not in neighbors:
                     neighbors.append(node)
-                    neighbor_queue += gn.successors(node)
+                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
                     # exponential growth :(
             layer = neighbor_queue
 
@@ -205,8 +206,9 @@ def network_rate_information():
         POST
 
     Parameters:
-        prod (str): The producer.
-        url (str): The URL.
+        source_prod (str): The producer.
+        info_prod (str): The information producer/publisher.
+        url (str): The information URL.
         rating (int): The rating.
 
     Returns:
@@ -220,8 +222,11 @@ def network_rate_information():
     """
     if not request.method == 'POST':
         abort(405)
+
     try:
-        prod = request.form['prod']
+        log(request.form)
+        prod = request.form['source_prod']
+        info_prod = request.form['info_prod']
         url = request.form['url']
         rating = int(request.form['rating'])
     except:
@@ -229,15 +234,17 @@ def network_rate_information():
 
     try:
         p = extractor.get_producer(prod)
+        ip = extractor.get_producer(info_prod)
         i = extractor.get_information(url)
     except:
         abort(404)
 
     p.rate_information(i, rating)
 
-    return jsonify(data={'prod': extractor.entity_to_dict(p),
-                         'info': extractor.entity_to_dict(i),
-                         'rating': rating})
+    return jsonify({'source_prod': extractor.entity_to_dict(p),
+                    'info_prod': extractor.entity_to_dict(ip),
+                    'info': extractor.entity_to_dict(i),
+                    'rating': rating})
 
 @app.route('/jobs/network/rate/producer', methods=['GET','POST'])
 def network_rate_producer():

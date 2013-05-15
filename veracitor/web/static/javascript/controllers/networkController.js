@@ -122,6 +122,14 @@ var NetworkController = function (controller) {
             visualizer.recalculate_layout();
         });
 
+        $('#network-toolbox-ratings').click(function (evt) {
+            var bool = false;
+            if ($(this).filter(':checked').length > 0) {
+                bool = true;
+            }
+            visualizer.show_ratings(bool);
+        });
+
         $('#selected-tag').html("None");
 
     };
@@ -227,9 +235,11 @@ var NetworkController = function (controller) {
             'target': prod,
             'tag': global_tag || ''
         }, function (data) {
+            console.log(data);
+
             network_controller.display_producer_information(data.path.target);
 
-            if (data.path.nodes.length > 0) {
+            if (typeof data.path.nodes[data.path.source.name] !== 'undefined') {
                 hide_network_information();
 
                 selected_producer = data.path.target;
@@ -261,6 +271,7 @@ var NetworkController = function (controller) {
         $('#network-info-view .url').html($('<a>').attr('href', prod.url).html(prod.url));
         $('#network-info-view .type').html(prod.type_of);
 
+        // Display producer ratings
         if (typeof user.source_ratings[prod.name] !== 'undefined') {
             var ul = $('<ul>');
 
@@ -291,23 +302,28 @@ var NetworkController = function (controller) {
             $('#network-info-view .user-ratings').html($('<p>').html(vera.const.network.no_ratings));
         }
 
+        // Display information objects
         if (prod.infos.length > 0) {
             var ul = $('<ul>');
             for (var i = 0; i < prod.infos.length; i++) {
                 ul.append($('<li>')
                           .append($('<p>').html(prod.infos[i].title))
                           .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
-                          .append(get_rating_dropdown_html())
-                          .append($('<input>').attr({
-                              'type': 'button',
-                              'value': 'Rate information'
-                          }).click((function ( url ) {
-                              return function ( evt ) {
-                                  var rating = $(this).parent().find(':selected').html();
+                          .append($('<p>')
+                                  .append($('<b>').html(
+                                      typeof user.info_ratings[prod.infos[i].url] !== 'undefined' ?
+                                          'Your rating: ' + user.info_ratings[prod.infos[i].url] : 'No rating set'))
+                                  .append(get_rating_dropdown_html())
+                                  .append($('<input>').attr({
+                                      'type': 'button',
+                                      'value': 'Rate information'
+                                  }).click((function ( info_prod, url ) {
+                                      return function ( evt ) {
+                                          var rating = $(this).parent().find(':selected').html();
 
-                                  rate_information(url, rating);
-                              };
-                          })(prod.infos[i].url))));
+                                          rate_information(info_prod, url, rating);
+                                      };
+                                  })(prod.name, prod.infos[i].url)))));
             }
             $('#network-info-view .informations').html(ul);
         } else {
@@ -330,8 +346,10 @@ var NetworkController = function (controller) {
             'tag': tag,
             'rating': rating,
         }, function ( data ) {
+            // Update the user object
             user = data.source;
-             network_controller.display_producer_information(data.target);
+
+            network_controller.display_producer_information(data.target);
 
             network_controller.visualize_producer_in_network(data.target.name);
         }).fail(function ( data ) {
@@ -339,16 +357,17 @@ var NetworkController = function (controller) {
         });
     };
 
-    var rate_information = function ( url, rating ) {
+    var rate_information = function ( info_prod, url, rating ) {
         $.post('/jobs/network/rate/information', {
-            'prod': vera.user_name,
+            'source_prod': vera.user_name,
+            'info_prod': info_prod,
             'url': url,
             'rating': rating
         }, function (data) {
-            network_controller.display_producer_information(data.prod);
+            // Update the user object
+            user = data.source_prod;
 
-            console.log(data);
-            // TODO: display success/fail
+            network_controller.display_producer_information(data.info_prod);
         }).fail(function (data) {
             console.log(data);
             // TODO: display fail
@@ -385,6 +404,14 @@ var NetworkController = function (controller) {
 
     var hide_network_information = function () {
         network_info.css('display', 'none');
+    };
+
+    /**
+       Returns the global network tag.
+       @return The global network tag.
+     */
+    this.get_global_tag = function () {
+        return global_tag;
     };
 
     // Initialize this controller
