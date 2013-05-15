@@ -59,7 +59,7 @@ var NetworkController = function (controller) {
             });
         });
 
-        $('#network_rate_producer > .button').click(function (evt) {
+        $('#network_rate_producer .button').click(function (evt) {
             var tag = $('#rate-producer-tag > option:selected').val();
             var rating = $('#network_rate_producer > .rating > option:selected').html();
 
@@ -346,6 +346,7 @@ var NetworkController = function (controller) {
     };
 
     var rate_producer = function ( source, target, tag, rating ) {
+        var loader = controller.new_loader($('#network_rate_producer'), {'width':'16px', 'height':'16px'});
         $.post('/jobs/network/rate/producer', {
             'source': source,
             'target': target,
@@ -354,6 +355,8 @@ var NetworkController = function (controller) {
         }, function ( data ) {
             // Update the user object
             user = data.source;
+
+            loader.delete();
 
             network_controller.display_producer_information(data.target);
 
