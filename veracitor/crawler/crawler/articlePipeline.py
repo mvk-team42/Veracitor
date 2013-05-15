@@ -42,8 +42,9 @@ def process_article(article, spider):
         Returns:
             An ArticleItem.
     """
-    log.msg("tags type: "+unicode(type(article["tags"]))+" tags: "+unicode(article["tags"]))
+    #log.msg("tags type: "+unicode(type(article["tags"]))+" tags: "+unicode(article["tags"]))
     _fix_fields(article)
+    article["time_published"] = _parse_datetime(article)
     _add_to_database(article)
     return article
         
@@ -53,10 +54,10 @@ def _add_to_database(article):
     """
     #log.msg("add_to_database")
     if extractor.contains_information(article["url"]):
-        log.msg(article["url"] + " already in database")
+        #log.msg(article["url"] + " already in database")
         return #already in database
-    log.msg("extractor returns " + str(extractor.contains_information(article["url"])))
-    log.msg(article["url"] + " is new, adding to database")
+    #log.msg("extractor returns " + str(extractor.contains_information(article["url"])))
+    #log.msg(article["url"] + " is new, adding to database")
         
 
     publishers = _get_publisher_objects(article)
@@ -65,21 +66,21 @@ def _add_to_database(article):
                         title = article["title"],
                         summary = article["summary"],
                         url = article["url"],
-                        time_published = _parse_datetime(article),
+                        time_published = article["time_published"],
                         tags = article["tags"],
                         publishers = publishers,
                         references = [],
                    )
     info.save()       
     for publisher in publishers:
-        log.msg("publisher name: " + publisher.name)
+        #log.msg("publisher name: " + publisher.name)
         publisher.infos.append(info)
         publisher.rate_information(info, 5)
         
         # Add trust between publishers
         for publisher2 in publishers:
             if not publisher==publisher2:
-                log.msg("publisher2 name: " + publisher2.name)
+                #log.msg("publisher2 name: " + publisher2.name)
                 for tag in article["tags"]:
                     publisher.rate_source(publisher2, tag, 5)
         publisher.save()
@@ -87,7 +88,7 @@ def _add_to_database(article):
 def _get_publisher_objects(article):
     #publisher_strings = [string.replace(".",",").replace("$",",") for string in publisher_strings]
     publisher_strings = article["publishers"]
-    log.msg("pubStrings: " + str(publisher_strings))
+    #log.msg("pubStrings: " + str(publisher_strings))
     publishers = []
     for publisher_string in publisher_strings:
         split_publishers = re.sub("[-&;/]", ",", publisher_string).split(",")
@@ -112,9 +113,9 @@ def _get_publisher_objects(article):
     domain = "http://" + urlparse(article["url"])[1]
     try:
         publishers.append(extractor.get_producer_with_url(domain))
-        log.msg("got producer")
+        #log.msg("got producer")
     except:
-        log.msg("failed to get producer....")
+        #log.msg("failed to get producer....")
         pass
 
     return publishers
@@ -150,7 +151,7 @@ def _fix_fields(article):
 def _fix_string_field(article, field):
     if article[field].strip() != "":
         article[field] = re.sub("\s+", " ", article[field].strip())
-        log.msg("article["+field+"]: "+article[field])
+        #log.msg("article["+field+"]: "+article[field])
         return
     article[field] = "unknown"
     
@@ -187,7 +188,7 @@ def _fix_tags(article):
                 # If tag_str matches any of the strings mapped to the predefined tag
                 if any(str(match) in str(tag_str) for match in tag_map[predefined_tag]): 
                     final_tags.append(predefined_tag)
-        log.msg("final tags: "+unicode(final_tags))
+        #log.msg("final tags: "+unicode(final_tags))
         article["tags"] = [extractor.get_tag_create_if_needed(tag_str) for tag_str in final_tags]
     else:
         article["tags"] = []
@@ -258,18 +259,19 @@ def _parse_datetime(article):
     domain = urlparse(article['url'])[1]
     datetime_formats = meta.get_datetime_formats(domain)
     
-#        log.msg("first time format: " + str(datetime_formats[0]))
+    #log.msg("first time format: " + str(datetime_formats[0]))
     for datetime_string in article["time_published"]:
-        log.msg("time string: "+unicode(datetime_string))
+        #log.msg("time string: "+unicode(datetime_string))
         for time_format in datetime_formats:
             try:
                 time = strptime(datetime_string,time_format)
-                log.msg("time extracted: Year=" + str(time.tm_year) + " Month=" + str(time.tm_mon) + " Day=" + str(time.tm_mday) + " Hour=" + str(time.tm_hour) + " Min=" + str(time.tm_min))
+                #log.msg("time extracted: Year=" + str(time.tm_year) + " Month=" + str(time.tm_mon) + " Day=" + str(time.tm_mday) + " Hour=" + str(time.tm_hour) + " Min=" + str(time.tm_min))
                 return datetime.fromtimestamp(mktime(time))
             except ValueError:
-                log.msg("could not parse date using " + time_format)
+                #log.msg("could not parse date using " + time_format)
+                pass
 
-    log.msg("time could not be extracted")
+    #log.msg("time could not be extracted")
     return None
 
         
