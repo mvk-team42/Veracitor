@@ -221,14 +221,14 @@ function SuperController(vera) {
 
     }
 
-    this.new_loader = function ( parent ) {
-        return new Loader(parent);
+    this.new_loader = function ( parent, css ) {
+        return new Loader(parent, css);
     };
 
     /**
        A loader object used for displaying a loading gif tag.
      */
-    var Loader = function ( parent ) {
+    var Loader = function ( parent, css ) {
 
         // A reference to this object
         var _self = this;
@@ -242,6 +242,9 @@ function SuperController(vera) {
             if (typeof parent !== 'undefined') {
                 _self.append_to(parent);
             }
+            if (typeof css !== 'undefined') {
+                _self.css(css);
+            }
         };
 
         /**
@@ -254,6 +257,17 @@ function SuperController(vera) {
                 parent.appendChild(tag[0]);
             } else {
                 throw 'Parent not a DOM element.';
+            }
+        };
+
+        /**
+           Sets the CSS of the objects tag jQuery style.
+         */
+        this.css = function ( css ) {
+            if (css instanceof Object) {
+                tag.css(css);
+            } else {
+                throw 'CSS styling not an Object.';
             }
         };
 
