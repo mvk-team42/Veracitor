@@ -47,7 +47,7 @@ var SearchController = function (controller) {
 
     function auto_update_crawler_results(){
         update_crawler_results();
-        setTimeout(auto_update_crawler_results, 5000);
+        //setTimeout(auto_update_crawler_results, 5000);
     }
 
     /**
@@ -267,13 +267,13 @@ var SearchController = function (controller) {
                 search_result = data.result.data[type];
 
                 $('#search-result').html(data.result.html);
-                
+
                 if(type == "information"){
-                    
+
                     // Shorten urls if necessary and make them into links.
                     $.each($('#search-result tr td.url'), function(i, val){
                         url = $(this).html();
-                        urltext = url.length > urlLength ? 
+                        urltext = url.length > urlLength ?
                             url.substring(0,urlLength-3)+'...' :
                             url;
 
