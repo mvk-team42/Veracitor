@@ -2,7 +2,7 @@
 
 """ 
 .. module:: crawlInterface
-    :synopsis: The interface for the webcrawler package
+    :synopsis: The interface for the webcrawler package. Only methods here will be called from other packages. Most of the methods delegate their task to a single dedicated spider.
 
 .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
 .. moduleauthor:: Jonathan Murray <jmu@kth.se>
@@ -42,7 +42,11 @@ def init_interface():
     Returns:
         None
     """
+    dispatcher.connect(_item_scraped,signals.item_scraped)
     log.start()
+
+def _item_scraped(item,response,spider):
+    log.msg("Item scraped: \n" + unicode(item))
 
 def create_newspaper_bank():
     """

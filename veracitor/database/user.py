@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: user
-    :synopsis: The user module contains classes needed to represent the user entity model.
+    :synopsis: The user module contains the class needed to represent the user entity model. Class methods enable functionality related to the user entity.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
 .. moduleauthor:: Fredrik Oeman <frdo@kth.se>
@@ -72,7 +72,8 @@ class User(producer.Producer):
         Creates a group with name specified by group_name
         and tag specified by tag_name. The group will be added
         to the user's group list and the new group's owner will 
-        be set to this user. 
+        be set to this user. Note that this will save
+        both the new group and the user to the database.
 
         Args:
             group_name (str): The name to give to the new group.
@@ -97,9 +98,9 @@ class User(producer.Producer):
                                 owner=self,
                                 time_created=datetime.datetime.now(),
                                 tag=tag)
-        # The save call will append this group to self's group list.
         new_group.save()
-        
+        self.groups.append(new_group)
+        self.save()
         return True
         
     
@@ -133,17 +134,49 @@ class User(producer.Producer):
         return self.group_ratings[req_group_name]
 
     def add_to_group(self, req_group_name, producer_to_be_added):
-        
+        """
+        Add a producer to specified group. This will also rate the producer
+        with the tag set on group and the rating specified by the
+        corresponding group rating.
+
+        Args:
+            req_group_name (str): The name of the group which 
+            to add the producer to.
+
+            producer_to_be_added (producer.Producer): The producer
+            to add to the group.
+
+        Returns: True if the producer was added and rated. 
+        Otherwise False.
+
+        """
         for group in self.groups:
             if group.name == req_group_name:
                 group.producers[self.__safe_string(producer_to_be_added.name)]\
                                 = producer_to_be_added
                 group.save()
+                self.rate_source(producer_to_be_added, 
+                                 group.tag, 
+                                 self.group_ratings[group.name])
                 return True
                 
         return False
 
     def remove_from_group(self, req_group_name, producer_to_be_deleted):
+        """
+        Removes a producer from the specified group.
+
+        Args:
+            req_group_name (str): The name of the group which 
+            to remove the producer from.
+
+            producer_to_be_deleted (producer.Producer): The producer
+            to remove from the group.
+
+        Returns: True if the producer was removed. 
+        Otherwise False.
+
+        """
         for group in self.groups:
             if group.name == req_group_name:
                 try:

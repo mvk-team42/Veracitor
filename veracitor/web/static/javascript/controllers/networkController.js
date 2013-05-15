@@ -12,7 +12,7 @@
 var NetworkController = function (controller) {
 
     var network_controller = this;
-    var visualizer = new Visualizer(network_controller);
+    var visualizer = new Visualizer(controller, network_controller);
     var network_info;
 
     var global_tag = null;
@@ -70,9 +70,10 @@ var NetworkController = function (controller) {
 
         $('#compute-trust').click( function(evt){
             var tag = $('#compute-trust-tag > option:selected').val();
+            var algorithm = $('#compute-trust-algorithm > option:selected').val();
 
             if (selected_producer !== null) {
-                request_tidaltrust_value(vera.user_name, selected_producer.name, tag);
+                request_trustcalc_value(vera.user_name, selected_producer.name, tag, algorithm);
             }
         });
 
@@ -83,9 +84,9 @@ var NetworkController = function (controller) {
            <p>
              text <infobutton>
            </p>
-           <div tip-text></div>
+           <p tip-text></p>
          */
-        $('.network-info-piece span.question-mark').click(function(evt){
+        $('span.question-mark').click(function(evt){
             $(this).parent().next().toggle();
         });
 
@@ -118,6 +119,19 @@ var NetworkController = function (controller) {
          */
         $('#global-tags').change(on_global_tag_change);
 
+        $('#network-toolbox-layout').click(function (evt) {
+            visualizer.recalculate_layout();
+        });
+
+        $('#network-toolbox-ratings').click(function (evt) {
+            var bool = false;
+            if ($(this).filter(':checked').length > 0) {
+                bool = true;
+            }
+            visualizer.show_ratings(bool);
+        });
+
+        $('#selected-tag').html("None");
 
     };
 
@@ -126,12 +140,14 @@ var NetworkController = function (controller) {
      */
     var on_global_tag_change = function (evt) {
         var tag = $(this).find(':selected').val();
+        $('#selected-tag').html(tag);
 
         if (tag !== global_tag) {
             global_tag = tag;
 
             if (global_tag === '') {
                 global_tag = null;
+                $('#selected-tag').html("None");
             }
 
             if (global_tag !== null) {
@@ -147,13 +163,13 @@ var NetworkController = function (controller) {
     };
 
     /**
-       Request a TidalTrust value.
+       Calculate a trust assessment value.
     */
-    function request_tidaltrust_value(source, sink, tag) {
+    function request_trustcalc_value(source, sink, tag, algorithm) {
         // first hide old feedback
         $('#network-compute-trust .feedback').hide();
 
-        $.post('/jobs/algorithms/tidal_trust', {
+        $.post('/jobs/algorithms/'+algorithm, {
             'source': source,
             'sink': sink,
             'tag': tag
@@ -161,16 +177,17 @@ var NetworkController = function (controller) {
             var job_id = data['job_id'];
 
             controller.set_job_callback(job_id, function (data) {
-                // TODO: display success/
-                //console.log(data);
-
-
-
                 if(data.result.trust !== null){
                     $('#network-compute-trust .feedback.win #trust-result')
                         .html(data.result.trust);
                     $('#network-compute-trust .feedback.win #trust-result-threshold')
                         .html(data.result.threshold);
+                    $('#network-compute-trust .feedback.win')
+                        .click((function (paths) {
+                            return function (evt) {
+                                visualize_paths_in_network(paths);
+                            }
+                        })(data.result.paths_used));
                     $('#network-compute-trust .feedback.win').show();
                 }
                 else {
@@ -190,6 +207,20 @@ var NetworkController = function (controller) {
     }
 
     /**
+       Visualizes paths in the graph.
+       @param paths The paths stored as lists in a dict object.
+     */
+    var visualize_paths_in_network = function (paths) {
+        $.post('/jobs/network/paths_from_producer_lists', {
+            'paths': JSON.stringify(paths)
+        }, function (data) {
+            visualizer.visualize_paths_in_network(data.paths, global_tag);
+        }).fail(function (data) {
+            // TODO: Handle server error
+        });
+    };
+
+    /**
         Creates an interactive visualization network of the trust ratings
         directly or indirectly associated with the given Producer (source
         node) within the GlobalNetwork. Only nodes that have a trust
@@ -207,7 +238,7 @@ var NetworkController = function (controller) {
         }, function (data) {
             network_controller.display_producer_information(data.path.target);
 
-            if (data.path.nodes.length > 0) {
+            if (typeof data.path.nodes[data.path.source.name] !== 'undefined') {
                 hide_network_information();
 
                 selected_producer = data.path.target;
@@ -239,6 +270,7 @@ var NetworkController = function (controller) {
         $('#network-info-view .url').html($('<a>').attr('href', prod.url).html(prod.url));
         $('#network-info-view .type').html(prod.type_of);
 
+        // Display producer ratings
         if (typeof user.source_ratings[prod.name] !== 'undefined') {
             var ul = $('<ul>');
 
@@ -269,22 +301,28 @@ var NetworkController = function (controller) {
             $('#network-info-view .user-ratings').html($('<p>').html(vera.const.network.no_ratings));
         }
 
+        // Display information objects
         if (prod.infos.length > 0) {
             var ul = $('<ul>');
             for (var i = 0; i < prod.infos.length; i++) {
                 ul.append($('<li>')
                           .append($('<p>').html(prod.infos[i].title))
                           .append($('<a>').attr('href', prod.infos[i].url).html(prod.infos[i].url))
-                          .append(get_rating_dropdown_html())
-                          .append($('<input>').attr({
-                              'type': 'button',
-                              'value': 'Rate information'
-                          }).click((function ( url ) {
-                              return function ( evt ) {
-                                  var rating = $(this).parent().find(':selected').html();
-                                  rate_information(url, rating);
-                              };
-                          })(prod.infos[i].url))));
+                          .append($('<p>')
+                                  .append($('<b>').html(
+                                      typeof user.info_ratings[prod.infos[i].url] !== 'undefined' ?
+                                          'Your rating: ' + user.info_ratings[prod.infos[i].url] : 'No rating set'))
+                                  .append(get_rating_dropdown_html())
+                                  .append($('<input>').attr({
+                                      'type': 'button',
+                                      'value': 'Rate information'
+                                  }).click((function ( info_prod, url ) {
+                                      return function ( evt ) {
+                                          var rating = $(this).parent().find(':selected').html();
+
+                                          rate_information(info_prod, url, rating);
+                                      };
+                                  })(prod.name, prod.infos[i].url)))));
             }
             $('#network-info-view .informations').html(ul);
         } else {
@@ -307,20 +345,30 @@ var NetworkController = function (controller) {
             'tag': tag,
             'rating': rating,
         }, function ( data ) {
+            // Update the user object
+            user = data.source;
+
+            network_controller.display_producer_information(data.target);
+
             network_controller.visualize_producer_in_network(data.target.name);
         }).fail(function ( data ) {
             // TODO
         });
     };
 
-    var rate_information = function ( url, rating ) {
+    var rate_information = function ( info_prod, url, rating ) {
         $.post('/jobs/network/rate/information', {
-            'prod': vera.user_name,
+            'source_prod': vera.user_name,
+            'info_prod': info_prod,
             'url': url,
             'rating': rating
         }, function (data) {
-            // TODO: display success/fail
+            // Update the user object
+            user = data.source_prod;
+
+            network_controller.display_producer_information(data.info_prod);
         }).fail(function (data) {
+            console.log(data);
             // TODO: display fail
         });
     };
@@ -355,6 +403,14 @@ var NetworkController = function (controller) {
 
     var hide_network_information = function () {
         network_info.css('display', 'none');
+    };
+
+    /**
+       Returns the global network tag.
+       @return The global network tag.
+     */
+    this.get_global_tag = function () {
+        return global_tag;
     };
 
     // Initialize this controller

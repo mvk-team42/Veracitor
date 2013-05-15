@@ -1,4 +1,13 @@
-#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+
+""" 
+.. module:: webpageMeta
+    :synopsis: The interface for the webpageMeta.xml file. The xml-file should never be accessed directly from other modules but instead queried through the methods defined here.
+
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 
 import xml.etree.ElementTree as ET
 
@@ -20,9 +29,14 @@ class WebpageMeta:
             Get an array of xpath-strings that describe the webpage location of given field (for instance author, title ...)
            
             Not to be confused with get_webpage_xpaths. That one is about the start page. This is about article pages.
-            
-            domain should be a base url of the webpage (without http://) such as www.guardian.co.uk or www.dn.se ... if 
-            domain is not found in file, default value will be used.
+
+            Args:
+                *field_name*: Name of the field to be accessed.
+
+                *domain*: The domain url. Should be a base url of the webpage (with http://) such as http://www.guardian.co.uk or http://www.dn.se ... if domain is not found in file, default value will be used.
+
+            Returns:
+                A list containing extracted xpath strings.
         """
         xpaths = self.root.findall("webpage[@domain='"+domain+"']/article-paths/"+field_name+"/xpath")
         if len(xpaths) == 0:
@@ -32,9 +46,12 @@ class WebpageMeta:
     def get_article_deny_urls(self, domain):
         """
             Get an array of url-strings that if contained in a url, stops spiders, that are looking for articles, from visiting it.
-            
-            domain should be a base url of the webpage (without http://) such as www.guardian.co.uk or www.dn.se ... if 
-            domain is not found in file, default value will be used.
+
+            Args:
+                *domain*: The domain url. Should be a base url of the webpage (with http://) such as http://www.guardian.co.uk or http://www.dn.se ... if domain is not found in file, default value will be used.
+
+            Returns:
+                A list containing deny-strings for this domain.
         """
         patterns = self.root.findall("webpage[@domain='"+domain+"']/article-deny-url/pattern")
         if len(patterns) == 0:
@@ -46,8 +63,11 @@ class WebpageMeta:
         """
             Get an array of format-strings that describe how timestamps on given domain should be parsed.
             
-            domain should be a base url of the webpage (without http://) such as www.guardian.co.uk or www.dn.se ... if 
-            domain is not found in file, default value will be used.
+            Args:
+                *domain*: The domain url. Should be a base url of the webpage (with http://) such as http://www.guardian.co.uk or http://www.dn.se ... if domain is not found in file, default value will be used.
+
+            Returns:
+                None
         """
         formats = self.root.findall("webpage[@domain='"+domain+"']/datetime-formats/format")
         if len(formats) == 0:
@@ -61,8 +81,13 @@ class WebpageMeta:
             
             Not to be confused with get_article_xpaths. That one is about articles. This is about the start page.
             
-            domain should be a base url of the webpage (without http://) such as www.guardian.co.uk or www.dn.se ... if 
-            domain is not found in file, default value will be used.
+            Args:
+                *field_name*: The name of the vield to be accessed.
+
+                *domain*: The domain url. Should be a base url of the webpage (with http://) such as http://www.guardian.co.uk or http://www.dn.se ... if domain is not found in file, default value will be used.
+
+            Returns:
+                A list containing extracted xpath-strings.
         """
         xpaths = self.root.findall("webpage[@domain='"+domain+"']/webpage-paths/"+field_name+"/xpath")
         if len(xpaths) == 0:
@@ -71,6 +96,13 @@ class WebpageMeta:
 
     def get_rss_urls(self, domain):
         """
+            Get an array of the rss-urls associated with the given domain.
+
+            Args:
+                *domain*: The domain url. Should be a base url of the webpage (with http://) such as http://www.guardian.co.uk or http://www.dn.se ... if domain is not found in file, default value will be used.
+
+            Returns:
+                A list of rss-urls.
         """
         urls = self.root.findall("webpage[@domain='"+domain+"']/rss-urls/url")
         return [url.text for url in urls if url.text != None]

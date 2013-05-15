@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+""" 
+.. module:: newspaperSpider
+    :synopsis: This spider is used to crawl an entire newspaper and sends any articles it finds to the pipeline for further processing.
+
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 from scrapy.spider import BaseSpider
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
@@ -24,7 +33,7 @@ class NewspaperSpider(CrawlSpider):
 
     def __init__(self, *args, **kwargs):
         domain = kwargs.get('domain')
-        log.msg("crawling domain " + domain)
+        #log.msg("crawling domain " + domain)
         self.start_urls = [domain]
         domain = domain.replace('http://','')
         self.rules = (
@@ -37,6 +46,6 @@ class NewspaperSpider(CrawlSpider):
 
 
     def scrape_article(self, response):
-        log.msg("inside scrape_article")
+        #log.msg("inside scrape_article")
         if is_article(response):
             return scrape_article(response)

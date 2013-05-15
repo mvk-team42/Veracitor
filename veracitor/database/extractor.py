@@ -2,6 +2,7 @@
 """
 .. module:: extractor
      :synopsis: Specifies functionality to communicate with a database which uses MongoDB.
+                Enables extraction of entities.
 
 .. moduleauthor:: Alfred Krappman <krappman@kth.se>
 .. moduleauthor:: Fredrik Oeman <frdo@kth.se>

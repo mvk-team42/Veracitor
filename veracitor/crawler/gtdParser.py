@@ -2,10 +2,10 @@
 
 """ 
 .. module:: gtdParser
-    :synopsis: A module for parsing an excel file representation of the GTD-databse.
+    :synopsis: A module for parsing an excel file representation of the GTD-databse. Is probably used only once to gather a big amount of data for the database. Later on in the product lifetime new data will instead be added from the webcrawler.
 
-    .. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
-    .. moduleauthor:: Jonathan Murray <jmu@kth.se>
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
 """
 import openpyxl.reader.excel
 import openpyxl.workbook as workbook
@@ -89,6 +89,7 @@ def _save_act_in_gtd_object(act,gtd_producer):
 
     Args:
         *act*: The act to be saved.
+
         *gtd_producer*: The producer (GTD) to save the act in.
 
     Returns:
@@ -160,6 +161,7 @@ def _fix_summary(act):
 
     Args:
         *act*: A dict representing an act.
+
     Returns:
         None
     """
@@ -172,6 +174,7 @@ def _safe_get_string(string):
 
     Args:
         *string*: A variable that supposedly is a string, but might be None.
+
     Returns:
         A string.
     """
@@ -185,6 +188,7 @@ def _get_datetime(act):
 
     Args:
         *act*: A dict representing an act.
+
     Returns:
         A datetime object.
     """
@@ -203,7 +207,8 @@ def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
     Parses the excel file and yields a generator for all the acts found within.
 
     Args:
-        *sheet*: 
+        *sheet*: An initialized opnepyxl workbook sheet.
+
     Returns:
         *act*: A generator for the acts contained in the file.
     """

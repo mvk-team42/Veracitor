@@ -2,7 +2,7 @@
 
 """
 .. module:: sunny
-:synopsis: The SUNNY algorithm as specified by Golbeck and Kuter (2010).
+   :synopsis: The SUNNY algorithm as specified by Golbeck and Kuter (2010).
 
 .. moduleauthor:: Daniel Molin <dmol@kth.se>
 .. moduleauthor:: Martin Runelov <mrunelov@kth.se>
@@ -64,7 +64,6 @@ def sunny(graph, source, sink, tag="weight"):
             bayesianNetwork.node[leaf]['decision'] = -1
         else:
             bayesianNetwork.node[leaf]['decision'] = 1
-
     return tt.compute_trust(bayesianNetwork.reverse(), source, sink, decision, tag)
     
 

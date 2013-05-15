@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+""" 
+.. module:: pipelines
+    :synopsis: The wrapper pipeline for the items returned by the crawler. Separates them to their specific pipelines.
+
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
@@ -31,7 +39,7 @@ class CrawlerPipeline(object):
 
     def process_item(self, item, spider): 
         """
-            is called after an item is returned from some spider.
+            Is called after an item is returned from some spider.
             Different things happen depending on the spider.
         """
         if isinstance(item, ArticleItem):

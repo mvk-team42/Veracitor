@@ -64,7 +64,11 @@ def index():
                         'url' : 'tabs/account_tab.html'
                         }]
                 }
-        except:
+
+            if session['user'].name == 'admin':
+                veracitor['users'] = [usr.name for usr in user.User.objects if usr.name != 'admin']
+            
+        except Exception, e:
             session['error'] = 'User %s not found' % uname
             session.pop('user_name', None)
             uname = None

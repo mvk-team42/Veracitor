@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+""" 
+.. module:: metaNewspaperSpider
+    :synopsis: This spider is used to scrape a newspaper website for data about the newspaper and then send it to the pipeline for further processing. Is typically used on newspapers that haven't yet been added.
+
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 from scrapy.spider import BaseSpider
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.selector import HtmlXPathSelector

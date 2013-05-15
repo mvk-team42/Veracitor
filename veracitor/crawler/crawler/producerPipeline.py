@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+""" 
+.. module:: producerPipeline
+    :synopsis: The pipeline for producerItems scraped by the crawler. The items are cleaned, filtered and added to the filesystem (database and XML-files).
+
+.. moduleauthor:: Gustaf Lindstedt <glindste@kth.se>
+.. moduleauthor:: Jonathan Murray <jmu@kth.se>
+"""
+
 import re
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
@@ -22,6 +30,17 @@ from ...database import *
 from ...logger import *
         
 def process_producer(producer_item, spider):
+    """
+    Main processing method. Parses the fields contained in the item using internal methods and subsequently adds the producer_item to the database and webpageMeta.xml file.
+
+    Args:
+        *producer_item*: An item with scraped information regarding a producer.
+
+        *spider*: A the spider which scraped the item.
+
+    Returns:
+        None
+    """
 
     current_dir = dirname(realpath(__file__))
     xml_file = current_dir + '/webpageMeta.xml'
@@ -86,7 +105,7 @@ def _fix_fields(producer_item):
 
 def _fix_field(producer_item, field):
     if field in producer_item:
-        log.msg("producer_item["+field+"]: "+unicode(producer_item[field]))
+        #log.msg("producer_item["+field+"]: "+unicode(producer_item[field]))
         if isinstance(producer_item[field], unicode) or isinstance(producer_item[field], str):
             if producer_item[field].strip() != "":
                 producer_item[field] = re.sub("\s+", " ", producer_item[field].strip())

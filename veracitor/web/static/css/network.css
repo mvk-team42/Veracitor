@@ -1,11 +1,28 @@
 /* NETWORK VIEW */
 
+/* STYLING */
+
+div#fixed-title{
+   /* position:fixed;*/
+    z-index:9999;
+    background:#eee;
+    width:365px;
+}
+
+span#selected-tag{
+
+}
+
+div#producer-title{
+    height:75px;
+}
+
 /* NETWORK HOLDER */
 
 #network-holder {
-	position: absolute;
-	left: 0; right: 0;
-	top: 0; bottom: 0;
+    position: absolute;
+    left: 0; right: 0;
+    top: 0; bottom: 0;
 
     overflow: hidden;
 }
@@ -46,7 +63,7 @@
 }
 
 #network-info-view > .body {
-    padding: 5px 10px;
+    padding: 0px 10px 5px 10px;
 }
 
 #network-info-view > .body h1 {
@@ -157,6 +174,8 @@
     bottom: 10px;
     height: 150px;
 
+    overflow: auto;
+
     background: #fff;
 
     -webkit-box-shadow: 0px 5px 10px rgba(150, 150, 150, 0.15);
@@ -171,4 +190,8 @@
 #network-toolbox .tag-dropdown {
     width: 200px;
     margin-left: 10px;
+}
+
+#network-toolbox .tip-text {
+    width: 550px;
 }

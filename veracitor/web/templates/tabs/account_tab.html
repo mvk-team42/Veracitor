@@ -4,9 +4,28 @@
 <h1>{{ tab.name }}</h1>
 
 {% if session.user_name %}
-
 <p class="greeting">Welcome <b>{{ session.user_name }}</b>!</p>
+
+<!-- 
+     Admin interface
+-->
+{% if session.user_name == 'admin' %}
+
+<div display="block">
+  <form id="delete_user">
+    <select id="users">
+      {% for user in vera.users  %}
+      <option value="{{ user }}">{{ user }}</option>
+      {% endfor %}
+    </select>
+    <input type="button" value="Delete user"/>
+  </form>
+</div>
+<br/>
+{% endif %}
+
 <input type="button" value="View yourself in the network" id="view_self_in_network"/>
+
 <hr>
 <div class="container">
   <div display="block">

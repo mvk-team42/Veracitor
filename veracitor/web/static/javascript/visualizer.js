@@ -9,10 +9,12 @@
     specific producer.
     @constructor
  */
-var Visualizer = function (controller) {
+var Visualizer = function (super_controller, network_controller) {
 
     // A reference to this object
     var visualizer = this;
+    // Show or hide ratings in network graph
+    var show_ratings = true;
 
     var color = {
         node: {
@@ -27,11 +29,21 @@ var Visualizer = function (controller) {
             user: {
                 background: '#fb3',
                 border: '#f90'
+            },
+            ghost: {
+                background: '#fff',
+                border: '#aaa'
             }
         },
         edge: {
             select: {
                 line: '#a00'
+            },
+            unselect: {
+                line: '#444'
+            },
+            ghost: {
+                line: '#aaa'
             }
         }
     };
@@ -110,6 +122,13 @@ var Visualizer = function (controller) {
     })();
 
     /**
+       Recalculates the layout of the nodes in the graph.
+     */
+    this.recalculate_layout = function () {
+        cy.layout();
+    };
+
+    /**
         Creates an interactive visualization network of the trust ratings
         directly or indirectly associated with the given Producer (source
         node) within the GlobalNetwork. Only nodes that have a trust
@@ -185,56 +204,138 @@ var Visualizer = function (controller) {
         entire network will be visualized).
      */
     this.visualize_path_in_network = function (source, target, path, ghosts, tag) {
-        var existing_nodes = [];
+        var safe_src, safe_trg;
         var nodes = [];
         var edges = [];
 
-        for (var i in path) {
+        for (var node in path) {
+            safe_src = safe(node);
+
             nodes.push({
                 'group': 'nodes',
                 'data': {
-                    'id': path[i].name,
-                    'data': path[i]
+                    'id': safe_src,
+                    'name': node,
+                    'data': path[node]
                 },
-                'classes': path[i].type_of
+                'classes': path[node].type_of + ' ' + 'path-node'
             });
-            existing_nodes.push(path[i].name);
 
-            for (var key in path[i].source_ratings) {
-                edges.push({
-                    'group': 'edges',
-                    'data': {
-                        'id': path[i].name + '-' + key,
-                        'source': path[i].name,
-                        'target': key,
-                        'rating': path[i].source_ratings[key][tag] || ''
-                    },
-                    'classes': path[i].name === source ? 'prod-rating' : ''
-                });
+            for (var key in path[node].source_ratings) {
+                safe_trg = safe(key);
+
+                if (typeof path[key] !== 'undefined') {
+                    edges.push({
+                        'group': 'edges',
+                        'data': {
+                            'id': safe_src + '-' + safe_trg,
+                            'source': safe_src,
+                            'target': safe_trg,
+                            'rating': path[node].source_ratings[key][tag] || ''
+                        },
+                        'classes': 'path-edge'
+                    });
+                }
             }
         }
 
-        for (var i in ghosts) {
+        for (var g in ghosts) {
+            safe_src = safe(g);
+            safe_trg = safe(ghosts[g]);
+
             nodes.push({
                 'group': 'nodes',
                 'data': {
-                    'id': ghosts[i]
+                    'id': safe_src,
+                    'name': g
+                },
+                'classes': 'ghost'
+            });
+
+            edges.push({
+                'group': 'edges',
+                'data': {
+                    'id': safe_src + '-' + safe_trg,
+                    'source': safe_src,
+                    'target': safe_trg,
+                    'rating': ''
                 },
                 'classes': 'ghost'
             });
         }
 
+        // Empty the graph and add the new nodes and edges
         cy.elements().remove();
         cy.add(nodes);
         cy.add(edges);
 
+        style_elements();
+
+        // Recalculate the layout
+        cy.layout({
+            'name': 'arbor'
+        });
+    };
+
+    this.visualize_paths_in_network = function (paths, tag) {
+        // TODO: fix safe ids!!!
+        var existing_nodes = [];
+        var nodes = [];
+        var edges = [];
+
+        for (var p in paths) {
+            var path = paths[p].nodes;
+            var ghosts = paths[p].ghosts;
+
+            for (var i in path) {
+                nodes.push({
+                    'group': 'nodes',
+                    'data': {
+                        'id': path[i].name,
+                        'data': path[i]
+                    },
+                    'classes': path[i].type_of + ' ' + 'path-node'
+                });
+                existing_nodes.push(path[i].name);
+
+                for (var key in path[i].source_ratings) {
+                    edges.push({
+                        'group': 'edges',
+                        'data': {
+                            'id': path[i].name + '-' + key,
+                            'source': path[i].name,
+                            'target': key,
+                            'rating': path[i].source_ratings[key][tag] || ''
+                        },
+                        'classes': 'trust-path'
+                    });
+                }
+            }
+
+            for (var i in ghosts) {
+                nodes.push({
+                    'group': 'nodes',
+                    'data': {
+                        'id': ghosts[i]
+                    },
+                    'classes': 'ghost'
+                });
+            }
+        }
+
+        // Empty the graph and add the new nodes and edges
+        cy.elements().remove();
+        cy.add(nodes);
+        cy.add(edges);
+
+        // Highlight the path nodes
+        cy.nodes('.path-node').css({
+            'background-color': color.node.select.background,
+            'border-color': color.node.select.border,
+            'shape': 'ellipse'
+        });
+        cy.edges().each
         for (var i = 0; i < existing_nodes.length; i += 1) {
-            node = cy.nodes('#' + existing_nodes[i]);
-            node.css({
-                'background-color': color.node.select.background,
-                'border-color': color.node.select.border,
-                'shape': 'ellipse'
-            });
             if (i < existing_nodes.length - 1) {
                 cy.edges('[source="' + existing_nodes[i] + '"][target="' + existing_nodes[i + 1] + '"]').css({
                     'line-color': color.edge.select.line,
@@ -243,89 +344,138 @@ var Visualizer = function (controller) {
             }
         }
 
+        style_ghost_elements();
+
         // Display the ratings made by the source producer
         cy.edges('.prod-rating').css({
             'content': 'data(rating)'
         });
 
+        // Style the user nodes
         cy.nodes('.User').css({
             'background-color': color.node.user.background,
             'border-color': color.node.user.border,
             'shape': 'rectangle'
         });
 
+        // Recalculate the layout
         cy.layout({
             'name': 'arbor'
         });
     };
 
-    /**
-        Visualizes the given trust network.
-     */
-    this.visualize_trust_network = function (network) {
-        // TODO
-    };
+    this.fetch_neighbors = function ( name, tag, depth, callback ) {
+        var id = safe(name);
+        console.log(id);
+        var source_node = cy.nodes('#' + id);
 
-    var node_click_event = function (evt) {
-        var node = this;
-
-        if (typeof node.hasClass('ghost') !== 'undefined') {
-            visualizer.fetch_neighbors(node.id(), 1, function () {
-                cy.layout();
-            });
-        } else {
-            controller.display_producer_information(node.data().data);
-        }
-    };
-
-    this.fetch_neighbors = function ( id, depth, callback ) {
         $.post('/jobs/network/neighbors', {
-            'name': id,
+            'name': name,
             'depth': depth
         }, function (data) {
+            var safe_src, safe_trg;
             var edge_id;
-            var node = cy.nodes('#' + id);
+            var elem;
+            var ghost_edges = {};
             var nodes = [];
             var edges = [];
-            var ghosts = [];
 
-            for (var i in data.neighbors) {
-                if (cy.nodes('#' + data.neighbors[i].name).empty()) {
+            source_node.removeClass('ghost');
+
+            for (var node in data.neighbors) {
+                safe_src = safe(node);
+                elem = cy.nodes('#' + safe_src);
+
+                if (elem.empty()) {
                     nodes.push({
                         'group': 'nodes',
                         'data': {
-                            'id': data.neighbors[i].name,
-                            'data': data.neighbors[i]
+                            'id': safe_src,
+                            'name': node,
+                            'data': data.neighbors[node]
                         },
-                        'classes': data.neighbors[i].type_of
+                        'classes': 'ghost'
                     });
-                } else if (!node.empty() && data.neighbors[i].name === id) {
-                    node.data('data', data.neighbors[i]);
-                    node.addClass(data.neighbors[i].type_of);
                 }
 
-                for (var key in data.neighbors[i].source_ratings) {
-                    edge_id = data.neighbors[i].name + '-' + key;
-                    if (cy.edges('#' + edge_id).empty()) {
-                        edges.push({
-                            'group': 'edges',
-                            'data': {
-                                'id': edge_id,
-                                'source': data.neighbors[i].name,
-                                'target': key
-                            }
-                        });
-                    }
+                for (var key in data.neighbors[node].source_ratings) {
+                    if (typeof data.neighbors[key] !== 'undefined') {
+                        safe_trg = safe(key);
+                        edge_id = safe_src + '-' + safe_trg;
+                        elem = cy.edges('#' + edge_id);
 
-                    if (cy.nodes('#' + key).empty()) {
-                        nodes.push({
-                            'group': 'nodes',
-                            'data': {
-                                'id': key
-                            },
-                            'classes': 'ghost'
-                        });
-                        ghosts.push(key);
+                        // Check if the edge does not exist
+                        if (elem.empty()) {
+                            // Check if the edge is a ghost edge
+                            if (cy.nodes('#' + safe_src).empty() ||
+                                cy.nodes('#' + safe_trg).empty() ||
+                                cy.nodes('#' + safe_src).hasClass('ghost') ||
+                                cy.nodes('#' + safe_trg).hasClass('ghost')) {
+
+                                // Check if the edge has already been added
+                                if (cy.edges('#' + safe_trg + '-' + safe_src).empty() &&
+                                    (typeof ghost_edges[safe_src] === 'undefined' ||
+                                     typeof ghost_edges[safe_src][safe_trg] === 'undefined')) {
+
+                                    edges.push({
+                                        'group': 'edges',
+                                        'data': {
+                                            'id': edge_id,
+                                            'source': safe_src,
+                                            'target': safe_trg,
+                                            'rating': ''
+                                        },
+                                        'classes': 'ghost'
+                                    });
+
+                                    // Add the edge
+                                    if (typeof ghost_edges[safe_src] === 'undefined') {
+                                        ghost_edges[safe_src] = {};
+                                    }
+                                    ghost_edges[safe_src][safe_trg] = true;
+                                    if (typeof ghost_edges[safe_trg] === 'undefined') {
+                                        ghost_edges[safe_trg] = {};
+                                    }
+                                    ghost_edges[safe_trg][safe_src] = true;
+                                }
+                            } else {
+                                edges.push({
+                                    'group': 'edges',
+                                    'data': {
+                                        'id': edge_id,
+                                        'source': safe_src,
+                                        'target': safe_trg,
+                                        'rating': data.neighbors[node].source_ratings[key][tag] || ''
+                                    }
+                                });
+
+                                // Remove any related ghost edge
+                                elem = cy.edges('#' + safe_trg + '-' + safe_src);
+                                if (!elem.empty() && elem.hasClass('ghost')) {
+                                    elem.remove();
+                                }
+                            }
+
+                        // If the edge exist
+                        } else {
+                            // Remove any related ghost edges
+                            if (!cy.nodes('#' + safe_src).hasClass('ghost') &&
+                                !cy.nodes('#' + safe_trg).hasClass('ghost') &&
+                                !elem.parallelEdges('.ghost').empty()) {
+
+                                // Update the rating
+                                elem.data('rating', data.neighbors[node].source_ratings[key][tag] || '');
+
+                                elem.parallelEdges().css({
+                                    'line-color': color.edge.unselect.line,
+                                    'line-style': 'solid',
+                                    'source-arrow-shape': 'circle',
+                                    'target-arrow-shape': 'triangle',
+                                    'width': 1
+                                });
+                                elem.parallelEdges().removeClass('ghost');
+                            }
+                        }
                     }
                 }
             }
@@ -340,24 +490,80 @@ var Visualizer = function (controller) {
                 cy.add(edges);
             }
 
-            cy.nodes('.User').css({
-                'background-color': color.node.user.background,
-                'border-color': color.node.user.border,
-                'shape': 'rectangle'
+            console.log(data.neighbors);
+            console.log(source_node);
+
+            // Update source node
+            source_node.data('data', data.neighbors[source_node.data().name]);
+            source_node.addClass(data.neighbors[source_node.data().name].type_of);
+            source_node.css({
+                'background-color': color.node.unselect.background,
+                'border-color': color.node.unselect.border,
+                'border-width': 3
             });
 
-            node = cy.nodes('#' + id);
-            node.removeClass('ghost');
+            style_elements();
 
-            controller.display_producer_information(node.data().data);
+            // Display producer information
+            network_controller.display_producer_information(source_node.data().data);
 
             if (typeof callback !== 'undefined') {
-                (function () {
-                    callback();
-                })();
+                callback();
             }
         }).fail(function (data) {
+            // TODO: Handle request fail
             console.log(data);
+        });
+    };
+
+    /**
+       Styles all nodes and edges in the graph.
+     */
+    var style_elements = function () {
+        cy.nodes().css({
+            'content': 'data(name)'
+        });
+
+        if (show_ratings) {
+            cy.edges().css({
+                'content': 'data(rating)'
+            });
+        } else {
+            cy.edges().css({
+                'content': ''
+            });
+        }
+
+        // Highlight the path nodes and edges
+        cy.nodes('.path').css({
+            'background-color': color.node.select.background,
+            'border-color': color.node.select.border,
+            'shape': 'ellipse'
+        });
+        cy.edges('.path').css({
+            'line-color': color.edge.select.line,
+            'width': 2
+        });
+
+        // Style the ghost nodes and edges
+        cy.nodes('.ghost').css({
+            'background-color': color.node.ghost.background,
+            'border-color': color.node.ghost.border,
+            'border-width': 1
+        });
+        cy.edges('.ghost').css({
+            'line-color': color.edge.ghost.line,
+            'line-style': 'dashed',
+            'source-arrow-shape': 'none',
+            'target-arrow-shape': 'none',
+            'width': 1
+        });
+
+        // Style the user nodes
+        cy.nodes('.User').css({
+            'background-color': color.node.user.background,
+            'border-color': color.node.user.border,
+            'shape': 'rectangle'
         });
     };
 
@@ -365,131 +571,42 @@ var Visualizer = function (controller) {
         cy.elements().remove();
     };
 
-/*
-    var Animation = function ( url, w, h, frames, time ) {
-        var images;
-        var animation_cycle;
-        var animation_frame;
-        var animating;
-        var frame_time;
-        var node;
+    this.show_ratings = function ( bool ) {
+        show_ratings = bool;
 
-        var timer = {
-            'delta': 0,
-            'time': 0,
-            'millis': +new Date,
-            'reset': function () {
-                this.time = 0;
-                this.millis = +new Date;
-            },
-            'requestAnimationFrame': function ( callback ) {
-                var time = - this.millis + (this.millis = +new Date);
-                this.time += time;
-                this.delta = (time / 1000) % 1;
-                window.requestAnimationFrame(callback);
-            }
-        };
-
-        var ready = false;
-        var ready_queue = [];
-        var image = new Image();
-        image.onload = function () {
-            divide_image(this);
-            parse_animation_cycle(frames);
-
-            ready = true;
-            for (var i in ready_queue) {
-                ready_queue[i]();
-            }
-        };
-        image.src = url;
-
-        var divide_image = function ( img ) {
-            var dx = img.width / w;
-            var dy = img.height / h;
-
-            if (dx % 1 > 0 || dy % 1 > 0) {
-                throw 'Image could not be divided.';
-            }
-
-            var canvas = document.createElement('canvas');
-            canvas.width = dx;
-            canvas.height = dy;
-            var ctx = canvas.getContext('2d');
-            images = new Array(w * h);
-            // Divide the image and save each piece
-            for (var j = 0; j < h; j += 1) {
-                for (var i = 0; i < w; i += 1) {
-                    ctx.clearRect(0, 0, dx, dy);
-                    ctx.drawImage(img, i * dx, j * dy, dx, dy, 0, 0, dx, dy);
-                    images[j * w + i] = canvas.toDataURL();
-                }
-            }
-        };
-
-        var parse_animation_cycle = function ( frames ) {
-            animation_cycle = [];
-            var s = frames.split(' ');
-            var range, from, to, step;
-            for (var i in s) {
-                if (!s[i].match(/(\d+)(:\d+)?/g)) {
-                    throw 'Could not parse animation frame cycle.';
-                }
-                range = s[i].split(':');
-                from = parseInt(range[0]);
-                if (range.length > 1) {
-                    to = parseInt(range[1]);
-                } else {
-                    to = from;
-                }
-                if (to > from) {
-                    step = 1;
-                } else {
-                    step = -1;
-                }
-
-                for (var j = from; j != to + step; j += step) {
-                    animation_cycle.push(j);
-                }
-            }
-            // Set the time for each image
-            frame_time = time / animation_cycle.length;
-        };
-
-        var animation_loop = function () {
-            if (timer.time > frame_time) {
-                timer.reset();
-                animation_frame += 1;
-                if (animation_frame === animation_cycle.length) {
-                    animation_frame = 0;
-                }
-                node.css('background-image', images[animation_cycle[animation_frame]]);
-            }
-
-            if (animating) {
-                timer.requestAnimationFrame(animation_loop);
-            }
-        };
-
-        this.animate = function ( n ) {
-            if (ready) {
-                node = n;
-                node.css('background-image', images[animation_cycle[0]]);
-                animation_frame = 0;
-                animating = true;
-                timer.reset();
-                animation_loop();
-            } else {
-                var animation = this;
-                ready_queue.push(function () {
-                    animation.animate(n);
-                });
-            }
-        };
-
-        this.stop = function () {
-            animating = false;
-        };
+        if (show_ratings) {
+            cy.edges().css({
+                'content': 'data(rating)'
+            });
+        } else {
+            cy.edges().css({
+                'content': ''
+            });
+        }
     };
-*/
+
+    /**
+       Returns a safe string for selectors with white spaces
+       replaced by underscores.
+     */
+    var safe = function ( s ) {
+        return s.replace(/(\s|#|\.|\|)/g, '_');
+    };
+
+    var node_click_event = function (evt) {
+        var node = this;
+
+        if (typeof node.hasClass('ghost') !== 'undefined') {
+            var loader = super_controller.new_loader($('#network-graph'));
+
+            visualizer.fetch_neighbors(node.data().name, network_controller.get_global_tag(), 1, function () {
+                cy.one('layoutstop', function () {
+                    loader.delete();
+                });
+                cy.layout();
+            });
+        } else {
+            network_controller.display_producer_information(node.data().data);
+        }
+    };
 };
