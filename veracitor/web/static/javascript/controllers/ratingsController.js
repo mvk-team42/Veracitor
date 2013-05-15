@@ -45,7 +45,7 @@ var RatingsController = function (controller) {
 	$('div.description')
 	    .click(function(evt) {
 		var producer = $(this).children('input[type="hidden"]').val()
-		controller.network.visualize_producer_in_network(producer, -1);
+		controller.network.visualize_producer_in_network(producer);
 		controller.switch_to_tab('network');
 	    });
     
