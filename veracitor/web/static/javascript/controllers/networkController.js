@@ -236,9 +236,6 @@ var NetworkController = function (controller) {
             'target': prod,
             'tag': global_tag || ''
         }, function (data) {
-            console.log('Producer visualize:');
-            console.log(data);
-
             network_controller.display_producer_information(data.path.target);
 
             if (typeof data.path.nodes[data.path.source.name] !== 'undefined') {
@@ -348,9 +345,6 @@ var NetworkController = function (controller) {
             'tag': tag,
             'rating': rating,
         }, function ( data ) {
-            console.log('Producer rate:');
-            console.log(data);
-
             // Update the user object
             user = data.source;
 
