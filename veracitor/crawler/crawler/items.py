@@ -35,6 +35,7 @@ class ArticleItem(Item):
     tags = Field()            # [String]
     references = Field()      # [String]
     
+    """
     def __str__(self):
         return unicode(self).encode('utf-8')
     
@@ -56,6 +57,7 @@ class ArticleItem(Item):
             return unicode(self[field])
         else:
             return "safe_string_unknown"
+    """
 
 
 class ArticleLoader(XPathItemLoader):
@@ -65,9 +67,9 @@ class ArticleLoader(XPathItemLoader):
     def is_string(string):
         if isinstance(string, str) or isinstance(string, unicode):
             if string.strip() != "":
-                log.msg("returning string: "+ unicode(string.strip()))
+                #log.msg("returning string: "+ unicode(string.strip()))
                 return string.strip()
-        log.msg("returning None for string: "+ unicode(string))
+        #log.msg("returning None for string: "+ unicode(string))
         return None
 
     def separate_tags(tags_string):
