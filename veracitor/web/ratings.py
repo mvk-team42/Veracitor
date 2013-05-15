@@ -186,7 +186,7 @@ def rate_group():
         else:
             abort(400)
 
-        return "Success"
+        return request.form['rating']
     except:
         return "Fail"
         abort(400)
