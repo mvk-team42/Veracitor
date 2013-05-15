@@ -74,6 +74,7 @@ def build_network_from_db():
     # where the actual rating and corresponding tag is set as an
     # edge attribute.
     for p2 in producers:
+        p2.prepare_ratings_for_using()
         for k,v in p2.source_ratings.iteritems():
             graph.add_edge(p2.name, k, v)
     

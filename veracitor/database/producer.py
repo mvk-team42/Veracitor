@@ -185,9 +185,11 @@ class Producer(Document):
         Should only be called internally.
         """
         for rating in self.source_ratings.keys():
-            self.source_ratings[self.__unsafe_string(rating)] = self.source_ratings.pop(rating)
+            self.source_ratings[self.__unsafe_string(rating)]\
+                                = self.source_ratings.pop(rating)
         for rating in self.info_ratings.keys():
-            self.info_ratings[self.__unsafe_string(rating)] = self.info_ratings.pop(rating)
+            self.info_ratings[self.__unsafe_string(rating)]\
+                                = self.info_ratings.pop(rating)
 
     def check_info_rating_consistency(self):
         """
