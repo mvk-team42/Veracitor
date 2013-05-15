@@ -10,6 +10,9 @@ This has to be run manually and is not a part of Veracitor as a whole.
 
 The webpageMeta module provides an interface to an xml-file in which vital information regarding webpages and how they should be crawled are stored.
 
+Misc
+~~~~~~
+
 :mod:`crawlInterface` -- Interface for the crawler
 --------------------------------------------------
 
@@ -29,7 +32,7 @@ The webpageMeta module provides an interface to an xml-file in which vital infor
    :members:
 
 Spiders
-+++++++
+~~~~~~~
 
 Spiders mostly use the scrape methods defined in the utils module to parse the responses they recieve.
 
@@ -64,9 +67,10 @@ Spiders mostly use the scrape methods defined in the utils module to parse the r
    :members:
 
 Items
-+++++
+~~~~~
 
 There are two items used by the Crawler module. ArticleItem is for scraping infomation objects and ProducerItem for scraping producers.
+
 The items are sent to their respective pipelines when scraped, which process them accordingly.
 
 :mod:`items` -- Items

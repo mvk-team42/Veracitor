@@ -56,11 +56,13 @@ Class methods enable functionality related to the producer entity.
 :mod:`tag`
 --------------------------
 The tag module contains the Tag class needed to represent the tag entity model.
+
 .. automodule:: veracitor.database.tag
    :members:
 
 :mod:`dbExceptions`
 -----------------------------------------------------------------------
 Exceptions for the database interaction
+
 .. automodule:: veracitor.database.dbExceptions
    :members:
