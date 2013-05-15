@@ -138,7 +138,11 @@ var RatingsController = function (controller) {
     }
 
 
-    function done_rating_group() {
+    function done_rating_group(data) {
+	$('div#producer-list > :visible div.rating').html(data)
+	var grouptext = $('#groups').find(':selected').text();
+	grouptext = grouptext.slice(0,-1) + data
+	$('#groups').find(':selected').text(grouptext)
 	hide_rate_group_form();
     }
 
