@@ -32,6 +32,9 @@
             <rss-link>
                 <xpath>//a[contains(@class, "rss")]/@href</xpath>    
                 <xpath>//*[contains(@class, "rss")]//a/@href</xpath>   
+                <xpath>//a[contains(@href, "rss")]/@href</xpath>
+                <xpath>//a[text()="rss"]</xpath>
+                <xpath>//a[text()="RSS"]</xpath>
             </rss-link>
         </webpage-paths>
 

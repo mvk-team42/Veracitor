@@ -42,7 +42,11 @@ def init_interface():
     Returns:
         None
     """
+    dispatcher.connect(_item_scraped,signals.item_scraped)
     log.start()
+
+def _item_scraped(item,response,spider):
+    log.msg("Item scraped: \n" + unicode(item))
 
 def create_newspaper_bank():
     """
