@@ -170,7 +170,8 @@ var NetworkController = function (controller) {
         $('#network-compute-trust .feedback').hide();
 
         // Show loader!
-        var loader = controller.new_loader($('#network-compute-trust'));
+        var loader = controller.new_loader($('#network-compute-trust'),
+                                           {'width':'16px', 'height':'16px'});
 
         $.post('/jobs/algorithms/'+algorithm, {
             'source': source,
