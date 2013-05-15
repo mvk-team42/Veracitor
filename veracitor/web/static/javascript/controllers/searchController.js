@@ -21,7 +21,6 @@ var SearchController = function (controller) {
     // Array of source results
     var search_results = [];
 
-    var crawls = {};
     var crawls_displayed = [];
 
     /**
@@ -47,7 +46,9 @@ var SearchController = function (controller) {
 
     function auto_update_crawler_results(){
         update_crawler_results();
-        //setTimeout(auto_update_crawler_results, 5000);
+
+        display_crawler_results();
+//        setTimeout(auto_update_crawler_results, 5000);
     }
 
     /**
@@ -346,9 +347,12 @@ var SearchController = function (controller) {
        the ui accordingly.
     */
     function update_crawler_results() {
+        var i = 0;
         $.post("/jobs/crawler/crawls", function(data) {
-            crawls_displayed = [];
             for (id in data) {
+                if(is_in_crawls(id)) {
+                    continue;
+                }
                 data[id].id = id;
                 crawls_displayed.push(data[id]);
             }
@@ -358,14 +362,23 @@ var SearchController = function (controller) {
         });
     }
 
+    function is_in_crawls(id) {
+        var i = 0;
+        for (; i< crawls_displayed.length; i++) {
+            if (crawls_displayed[i].id == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function update_crawls_producers() {
         var i = 0;
         for (;i<crawls_displayed.length;i++) {
             var crawl = crawls_displayed[i];
             $.post('/jobs/job_result',{"job_id":crawl.id}, function(d){
                 if (typeof(d['result']) !== "undefined") {
-                    crawl["producer"] = d["result"]["producer"];
-                    display_crawler_results();
+                    crawl["producer_name"] = d["result"]["producer_name"];
                 }
             }).fail(function(data){
                 // Do nothing since job wasn't done.
@@ -374,25 +387,36 @@ var SearchController = function (controller) {
     }
 
     function display_crawler_results() {
-        var i, thead= $("<thead>").append($("<tr>").append($("<td>").html("Type")).append($("<td>").html("URL")).append($("<td>").html("Ready to visualize?")));
+        var i, thead= $("<thead>").append($("<tr>")
+                                          .append($("<td>").html("Type"))
+                                          .append($("<td>").html("URL"))
+                                          .append($("<td>").html("Ready to visualize?")));
 
         crawls_displayed.sort(function(a,b){
             return parseDate(a['start_time']) < parseDate(b['start_time']);
         });
-        window.cr = crawls_displayed;
+
         for (i=0; i<crawls_displayed.length; i++) {
 
             // Add button to visualize producer in network
             var prod_td = $("<td>").html("No");
-            var producer = crawls_displayed[i]["producer"];
-            if (typeof(producer) !== "undefined") {
-                prod_td = $("<td>").append($("<button>").html("Show in network").click(function(){
-                    controller.network.visualize_producer_in_network(producer.name);
-                    controller.switch_to_tab("network");
-                }));
+            var producer_name = crawls_displayed[i]["producer_name"];
+            console.log(producer_name);
+            if (typeof(producer_name) !== "undefined") {
+                prod_td = $("<td>")
+                    .append($("<button>")
+                            .html("Show in network")
+                            .click(function(){
+                                controller.network.visualize_producer_in_network(producer_name);
+                                controller.switch_to_tab("network");
+                            }));
             }
 
-            thead.append($("<tr>").attr("id", crawls_displayed[i]["id"]).append($("<td>").html(crawls_displayed[i]["type"])).append($("<td>").html(crawls_displayed[i]["url"])).append(prod_td));
+            thead.append($("<tr>")
+                         .attr("id", crawls_displayed[i]["id"])
+                         .append($("<td>").html(crawls_displayed[i]["type"]))
+                         .append($("<td>").html(crawls_displayed[i]["url"]))
+                         .append(prod_td));
         }
         $("#crawler-result table").html(thead);
     }
