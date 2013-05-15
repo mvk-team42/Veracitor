@@ -28,7 +28,8 @@ def generate_test_data():
     john.description = 'John Turesson is a web developer in the Veracitor project managed by Team 42, created in the mvk project at KTH.'
     john.url = 'http://www.nada.kth.se/~johntu/'
     john.email = 'johntu@kth.se'
-    john.rate_source(prod1, trust, 5)
+    john.source_ratings = {}
+    john.info_ratings = {}
     john.save()
 
     prod1.rate_source(prod2, trust, 5)

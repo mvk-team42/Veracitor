@@ -205,6 +205,18 @@ span.icon.information{
     background-image:url(../images/icon-information.png);
 }
 
+span.icon.network{
+    background-image:url(../images/icon-network.png);
+}
+
+span.icon.arrow-right{
+    background-image:url(../images/icon-arrow-right.png);
+}
+
+span.icon.arrow-left{
+    background-image:url(../images/icon-arrow-left.png);
+}
+
 div.feedback {
     display:none;
 }

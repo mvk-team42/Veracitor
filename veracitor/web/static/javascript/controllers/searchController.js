@@ -260,18 +260,34 @@ var SearchController = function (controller) {
      */
     var insert_database_search_results = function(job_data, type){
         var job_id = job_data['job_id'];
+        var urlLength = 35;
 
         controller.set_job_callback(job_id, function (data) {
             if(data.result.data){
                 search_result = data.result.data[type];
 
                 $('#search-result').html(data.result.html);
-                $('#search-result .result').click(function (evt) {
+                
+                if(type == "information"){
+                    
+                    // Shorten urls if necessary and make them into links.
+                    $.each($('#search-result tr td.url'), function(i, val){
+                        url = $(this).html();
+                        urltext = url.length > urlLength ? 
+                            url.substring(0,urlLength-3)+'...' :
+                            url;
+
+                        $(this).html('<a href="'+url+'" target="_blank">'+urltext+'</a>');
+                    });
+
+                }
+
+                $('#search-result .link').click(function (evt) {
                     var prod;
                     if(type === "information"){
-                        prod = search_result[$(this).index()].publishers[0];
+                        prod = search_result[$(this).parent().index()].publishers[0];
                     } else if (type === "producers"){
-                        prod = search_result[$(this).index()].name;
+                        prod = search_result[$(this).parent().index()].name;
                     }
 
                     controller.network.visualize_producer_in_network(prod);
