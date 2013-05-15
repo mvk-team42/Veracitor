@@ -171,8 +171,9 @@
     background-color: #fff;
 }
 
-#search-result > table tbody tr.clickable {
+#search-result > table tbody tr td.clickable {
     cursor: pointer;
+    width:20px;
 
     background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(225,225,225,1) 51%, rgba(246,246,246,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(50%,rgba(241,241,241,1)), color-stop(51%,rgba(225,225,225,1)), color-stop(100%,rgba(246,246,246,1))); /* Chrome,Safari4+ */
@@ -183,7 +184,7 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0 ); /* IE6-9 */
 }
 
-#search-result > table tbody tr.clickable:active {
+#search-result > table tbody tr td.clickable:active {
 	background: rgb(231,231,231); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(231,231,231,1) 0%, rgba(193,193,193,1) 49%, rgba(206,206,206,1) 50%, rgba(240,240,240,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(231,231,231,1)), color-stop(49%,rgba(193,193,193,1)), color-stop(50%,rgba(206,206,206,1)), color-stop(100%,rgba(240,240,240,1))); /* Chrome,Safari4+ */
@@ -194,7 +195,7 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e7e7e7', endColorstr='#f0f0f0',GradientType=0 ); /* IE6-9 */
 }
 
-#search-result > table tbody tr.clickable td {
+#search-result > table tbody tr td {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

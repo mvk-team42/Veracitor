@@ -5,14 +5,19 @@
       <th>Title</th>
       <th>URL</th>
       <th>Publisher/author</th>
+      <th>Show producer in network</th>
     </tr>
 </head>
 <tbody>
   {% for d in data.information %}
-  <tr class='result clickable'>
+  <tr class='result'>
     <td class='title'>{{ d.title }}</td>
     <td class='url'>{{ d.url }}</td>
     <td class='producer'>{{ d.publishers[0] }}</td>
+    <td class="link clickable">
+      <span class ="icon network"></span>
+      <span class ="icon arrow-right"></span>
+    </td>
   </tr>
   {% endfor %}
 </tbody>
@@ -24,13 +29,18 @@
   <tr>
     <th>Name</th>
     <th>Type</th>
+    <th>Show in network</th>
   </tr>
 </head>
 <tbody>
   {% for d in data.producers %}
-  <tr class='result clickable'>
+  <tr class='result'>
     <td class='name producer'>{{ d.name }}</td>
     <td class='type'>{{ d.type_of }}</td>
+    <td class="link clickable">
+      <span class ="icon network"></span>
+      <span class ="icon arrow-right"></span>
+    </td>
   </tr>
   {% endfor %}
 </tbody>
