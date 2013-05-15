@@ -60,7 +60,7 @@ def _add_to_database(article):
     #log.msg(article["url"] + " is new, adding to database")
         
 
-    publishers = _get_publisher_objects(article)
+    article["publishers"] = _get_publisher_objects(article)
 
     info = information.Information(
                         title = article["title"],
@@ -68,17 +68,17 @@ def _add_to_database(article):
                         url = article["url"],
                         time_published = article["time_published"],
                         tags = article["tags"],
-                        publishers = publishers,
+                        publishers = article["publishers"],
                         references = [],
                    )
     info.save()       
-    for publisher in publishers:
+    for publisher in article["publishers"]:
         #log.msg("publisher name: " + publisher.name)
         publisher.infos.append(info)
         publisher.rate_information(info, 5)
         
         # Add trust between publishers
-        for publisher2 in publishers:
+        for publisher2 in article["publishers"]:
             if not publisher==publisher2:
                 #log.msg("publisher2 name: " + publisher2.name)
                 for tag in article["tags"]:

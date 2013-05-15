@@ -7,6 +7,6 @@ from veracitor.algorithms import tidaltrust as tt
 networkModel.build_network_from_db()
 G = networkModel.get_global_network()
 print "Tidal Trust run:"
-print tt.compute_trust(G,'mrunelov','john',tag='Trust')
+print tt.compute_trust(G,'john','mrunelov',tag='Trust')
 print "Sunny run:"
-print sunny.sunny(G,u'mrunelov',u'john', tag='Trust')
+print sunny.sunny(G,'john','mrunelov', tag='Trust')

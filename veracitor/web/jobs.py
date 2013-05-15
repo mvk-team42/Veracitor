@@ -138,5 +138,4 @@ def get_job_result():
     except:
         pass
 
-    log(res.result)
     return jsonify(result=res.result)

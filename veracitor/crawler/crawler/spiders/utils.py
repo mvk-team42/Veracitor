@@ -56,7 +56,7 @@ def scrape_article(response):
     loader = ArticleLoader(item=ArticleItem(), response=response)
     
     mainpage_domain = "http://" + urlparse(response.url)[1]
-    log.msg("page: "+str(mainpage_domain))
+    #log.msg("page: "+str(mainpage_domain))
     if not extractor.contains_producer_with_url(mainpage_domain):
         # Construct a response object and send to scrape_meta
         mainpage_body = urllib2.urlopen(mainpage_domain).read()
@@ -66,7 +66,7 @@ def scrape_article(response):
     for field in ArticleItem.fields.iterkeys():
         #log.msg("field: " + field)
         for xpath in meta.get_article_xpaths(field, domain):
-            log.msg("Xpath for field: "+unicode(field)+" "+unicode(xpath))
+            #log.msg("Xpath for field: "+unicode(field)+" "+unicode(xpath))
             loader.add_xpath(field, xpath)
     loader.add_value("url", response.url)
             
