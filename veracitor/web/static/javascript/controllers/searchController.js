@@ -47,7 +47,7 @@ var SearchController = function (controller) {
     function auto_update_crawler_results(){
         update_crawler_results();
         display_crawler_results();
-        setTimeout(auto_update_crawler_results, 5000);
+//        setTimeout(auto_update_crawler_results, 5000);
     }
 
     /**
