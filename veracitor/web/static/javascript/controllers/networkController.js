@@ -214,7 +214,7 @@ var NetworkController = function (controller) {
         $.post('/jobs/network/paths_from_producer_lists', {
             'paths': JSON.stringify(paths)
         }, function (data) {
-            visualizer.visualize_paths_in_network(data.paths, global_tag);
+            visualixozer.visualize_paths_in_network(data.paths, global_tag);
         }).fail(function (data) {
             // TODO: Handle server error
         });
