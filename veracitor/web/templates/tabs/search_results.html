@@ -10,14 +10,27 @@
 </head>
 <tbody>
   {% for d in data.information %}
-  <tr class='result'>
-    <td class='title'>{{ d.title }}</td>
-    <td class='url'>{{ d.url }}</td>
-    <td class='producer'>{{ d.publishers[0] }}</td>
+  <tr class="result">
+    <td class="title">{{ d.title }}</td>
+    <td><a class="url" href="{{ d.url }}" target="_blank">{{ d.url }}</a></td>
+    <td class="producer">
+      {% if d.publishers[0] %}
+      {{ d.publishers[0] }}
+      {% else %}
+      <p class="none">No producer</p>
+      {% endif %}
+    </td>
+    {% if d.publishers[0] %}
     <td class="link clickable">
       <span class ="icon network"></span>
       <span class ="icon arrow-right"></span>
     </td>
+    {% else %}
+    <td class="link none">
+      <span class ="icon network"></span>
+      <span class ="icon arrow-right"></span>
+    </td>
+    {% endif %}
   </tr>
   {% endfor %}
 </tbody>
@@ -34,9 +47,9 @@
 </head>
 <tbody>
   {% for d in data.producers %}
-  <tr class='result'>
-    <td class='name producer'>{{ d.name }}</td>
-    <td class='type'>{{ d.type_of }}</td>
+  <tr class="result">
+    <td class="name producer">{{ d.name }}</td>
+    <td class="type">{{ d.type_of }}</td>
     <td class="link clickable">
       <span class ="icon network"></span>
       <span class ="icon arrow-right"></span>
@@ -50,4 +63,3 @@
 <h2>Nothing found</h2>
 
 {% endif %}
-

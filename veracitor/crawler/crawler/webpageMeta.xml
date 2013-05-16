@@ -13,6 +13,7 @@
             <format>%Y-%m-%d %H:%M</format>
             <format>%Y-%m-%d</format>
             <format>%d %B %Y kl %H:%M</format>
+            <format>%d %B %Y</format>
             <format>%B %d, %Y</format>
             <format>%m/%d/%y %I:%M</format>
             <format>%m/%d/%y %H:%M</format>
@@ -88,7 +89,9 @@
                 <xpath>//*[contains(@class, "pubtime")]//text()</xpath>
                 <xpath>//meta[contains(@itemprop, "datePublished")]/@content</xpath>
                 <xpath>//*[contains(@class, "date")]//text()</xpath>
+                <xpath>//*[contains(@class, "published")]//text()</xpath>
                 <xpath>//time//text()</xpath>
+                
             </time_published>
         </article-paths>
     </default>

@@ -187,8 +187,6 @@ def get_neighbors():
 
     data = {}
 
-    log(neighbors)
-
     for node in neighbors:
         prod = extractor.get_producer(node)
 

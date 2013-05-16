@@ -273,10 +273,12 @@ class Producer(Document):
             if info == info_to_add:
                 return False
         self.infos.append(info_to_add)
+        self.save()
         for publisher in info_to_add.publishers:
             if publisher == self:
                 return True
         info_to_add.publishers.append(self)
+        info_to_add.save()
         return True
 
     def delete_information(self, info_to_del):
@@ -307,6 +309,9 @@ class Producer(Document):
                 if found:
                     return True
         return False
+
+    def __str__(self):
+        return str(extractor.entity_to_dict(self))
 
 
 

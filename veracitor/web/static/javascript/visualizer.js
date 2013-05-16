@@ -18,9 +18,13 @@ var Visualizer = function (super_controller, network_controller) {
 
     var color = {
         node: {
-            select: {
+            highlight: {
                 background: '#f66',
                 border: '#a00'
+            },
+            select: {
+                background: '#6f7',
+                border: '#1d3'
             },
             unselect: {
                 background: '#ddd',
@@ -30,13 +34,17 @@ var Visualizer = function (super_controller, network_controller) {
                 background: '#fb3',
                 border: '#f90'
             },
+            verauser: {
+                background: '#3bf',
+                border: '#09f'
+            },
             ghost: {
                 background: '#fff',
                 border: '#aaa'
             }
         },
         edge: {
-            select: {
+            highlight: {
                 line: '#a00'
             },
             unselect: {
@@ -59,9 +67,11 @@ var Visualizer = function (super_controller, network_controller) {
                 cy = this;
 
                 cy.on('click', 'node', node_click_event);
+                /*
                 cy.on('layoutstop', function () {
                     cy.nodes().unlock();
                 });
+                */
 
                 // Fixes vanishing graph issue when resizing the window
                 $(window).resize(function () {
@@ -124,8 +134,15 @@ var Visualizer = function (super_controller, network_controller) {
     /**
        Recalculates the layout of the nodes in the graph.
      */
-    this.recalculate_layout = function () {
-        cy.layout();
+    this.recalculate_layout = function ( callback ) {
+        if (callback) {
+            cy.one('layoutstop', callback);
+        }
+
+        cy.layout({
+            'name': 'arbor',
+            'fit': false
+        });
     };
 
     /**
@@ -138,6 +155,8 @@ var Visualizer = function (super_controller, network_controller) {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
+    // Not currently used
+    /*
     this.visualize_producer_in_network = function (prod, neighbors, depth) {
         var i, j;
         var nodes = [];
@@ -171,13 +190,13 @@ var Visualizer = function (super_controller, network_controller) {
         cy.add(edges);
 
         cy.nodes('#' + prod.name).css({
-            'background-color': color.node.select.background,
-            'border-color': color.node.select.border
+            'background-color': color.node.highlight.background,
+            'border-color': color.node.highlight.border
         });
 
         for(i = 0; i < neighbors.length - 1; i += 1) {
             cy.edges('[source="' + neighbors[i].name + '"][target="' + neighbors[i + 1].name + '"]').css({
-                'line-color': color.edge.select.line,
+                'line-color': color.edge.highlight.line,
                 'width': 2
             });
         }
@@ -187,11 +206,9 @@ var Visualizer = function (super_controller, network_controller) {
             'border-color': color.node.user.border
         });
 
-        cy.fit(cy.nodes());
-        cy.layout({
-            'name': 'arbor'
-        });
+        visualizer.recalculate_layout();
     };
+    */
 
     /**
         Creates an interactive visualization network of the trust ratings
@@ -212,22 +229,15 @@ var Visualizer = function (super_controller, network_controller) {
                                                        path,
                                                        ghosts,
                                                        tag);
-
         cy.add(cyelems.nodes);
-        cy.add(cyelems.edges)
+        cy.add(cyelems.edges);
+
+        // Set the target node as selected
+        cy.nodes('#' + safe(target)).addClass('selected');
 
         style_elements();
 
-        if (typeof callback !== 'undefined') {
-            cy.one('layoutstop', function () {
-                callback();
-            });
-        }
-
-        // Recalculate the layout
-        cy.layout({
-            'name': 'arbor'
-        });
+        visualizer.recalculate_layout(callback);
     };
 
     this.visualize_paths_in_network = function (paths, tag, callback) {
@@ -244,18 +254,12 @@ var Visualizer = function (super_controller, network_controller) {
             cy.add(cyelems.edges);
         }
 
+        // Set the target node as selected
+        cy.nodes('#' + safe(paths[paths.length - 1].target)).addClass('selected');
+
         style_elements();
 
-        if (typeof callback !== 'undefined') {
-            cy.one('layoutstop', function () {
-                callback();
-            });
-        }
-
-        // Recalculate the layout
-        cy.layout({
-            'name': 'arbor'
-        });
+        visualizer.recalculate_layout(callback);
     };
 
     var get_cytoscape_elements_from_path = function (source, target, path, ghosts, tag) {
@@ -329,7 +333,6 @@ var Visualizer = function (super_controller, network_controller) {
 
     this.fetch_neighbors = function ( name, tag, depth, callback ) {
         var id = safe(name);
-        console.log(id);
         var source_node = cy.nodes('#' + id);
 
         $.post('/jobs/network/neighbors', {
@@ -429,13 +432,6 @@ var Visualizer = function (super_controller, network_controller) {
                                 // Update the rating
                                 elem.data('rating', data.neighbors[node].source_ratings[key][tag] || '');
 
-                                elem.parallelEdges().css({
-                                    'line-color': color.edge.unselect.line,
-                                    'line-style': 'solid',
-                                    'source-arrow-shape': 'circle',
-                                    'target-arrow-shape': 'triangle',
-                                    'width': 1
-                                });
                                 elem.parallelEdges().removeClass('ghost');
                             }
                         }
@@ -456,23 +452,20 @@ var Visualizer = function (super_controller, network_controller) {
             // Update source node
             source_node.data('data', data.neighbors[source_node.data().name]);
             source_node.addClass(data.neighbors[source_node.data().name].type_of);
-            source_node.css({
-                'background-color': color.node.unselect.background,
-                'border-color': color.node.unselect.border,
-                'border-width': 3
-            });
 
             style_elements();
 
             // Display producer information
             network_controller.display_producer_information(source_node.data().data);
 
-            if (typeof callback !== 'undefined') {
-                callback();
-            }
+            visualizer.recalculate_layout(callback);
         }).fail(function (data) {
             // TODO: Handle request fail
             console.log(data);
+
+            if (callback) {
+                callback();
+            }
         });
     };
 
@@ -481,11 +474,19 @@ var Visualizer = function (super_controller, network_controller) {
      */
     var style_elements = function () {
         cy.nodes().css({
+            'background-color': color.node.unselect.background,
+            'border-color': color.node.unselect.border,
+            'border-width': 3,
             'content': 'data(name)'
         });
 
         if (show_ratings) {
             cy.edges().css({
+                'line-color': color.edge.unselect.line,
+                'line-style': 'solid',
+                'source-arrow-shape': 'circle',
+                'target-arrow-shape': 'triangle',
+                'width': 2,
                 'content': 'data(rating)'
             });
         } else {
@@ -496,12 +497,12 @@ var Visualizer = function (super_controller, network_controller) {
 
         // Highlight the path nodes and edges
         cy.nodes('.path').css({
-            'background-color': color.node.select.background,
-            'border-color': color.node.select.border,
+            'background-color': color.node.highlight.background,
+            'border-color': color.node.highlight.border,
             'shape': 'ellipse'
         });
         cy.edges('.path').css({
-            'line-color': color.edge.select.line,
+            'line-color': color.edge.highlight.line,
             'width': 2
         });
 
@@ -524,6 +525,18 @@ var Visualizer = function (super_controller, network_controller) {
             'background-color': color.node.user.background,
             'border-color': color.node.user.border,
             'shape': 'rectangle'
+        });
+
+        // Style the user
+        cy.nodes('[name="' + vera.user_name + '"]').css({
+            'background-color': color.node.verauser.background,
+            'border-color': color.node.verauser.border
+        });
+
+        // Style the selected node
+        cy.nodes('.selected').css({
+            'background-color': color.node.select.background,
+            'border-color': color.node.select.border
         });
     };
 
@@ -553,7 +566,8 @@ var Visualizer = function (super_controller, network_controller) {
     };
 
     /**
-       Returns a safe string for selectors with white spaces
+       Returns a safe string for selectors with key characters
+         \s # . |
        replaced by underscores.
      */
     var safe = function ( s ) {
@@ -563,18 +577,23 @@ var Visualizer = function (super_controller, network_controller) {
     var node_click_event = function (evt) {
         var node = this;
 
+        cy.nodes('.selected').removeClass('selected');
+        node.addClass('selected');
+
         if (typeof node.hasClass('ghost') !== 'undefined') {
             var loader = super_controller.new_loader($('#network-graph'), {
                 'margin': '5px'
             });
 
-            visualizer.fetch_neighbors(node.data().name, network_controller.get_global_tag(), 1, function () {
-                cy.one('layoutstop', function () {
-                    loader.delete();
-                });
-                cy.layout();
-            });
+            visualizer.fetch_neighbors(node.data().name,
+                                       network_controller.get_global_tag(),
+                                       1,
+                                       function () {
+                                           loader.delete();
+                                       });
         } else {
+            style_elements();
+
             network_controller.display_producer_information(node.data().data);
         }
     };
