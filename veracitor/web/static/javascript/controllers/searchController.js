@@ -35,8 +35,9 @@ var SearchController = function (controller) {
     })();
 
     /**
-       This function is called by the super controller when the tab is opened.
-    */
+       This function is called by the super controller
+       each time the tab is opened.
+     */
     this.on_tab_active = function () {
         // set focus to the database search field
         $("#database-search-field").focus();

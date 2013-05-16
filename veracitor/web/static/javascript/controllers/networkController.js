@@ -20,7 +20,8 @@ var NetworkController = function (controller) {
     var user;
 
     /**
-       This function is called by the super controller when the tab is opened.
+       This function is called by the super controller
+       each time the tab is opened.
      */
     this.on_tab_active = function () {
 
