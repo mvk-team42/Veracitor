@@ -32,8 +32,6 @@ var AccountController = function (controller) {
             $.post("/user/delete",
                    {"user_name": $("#delete_user #users").val()},
                    function(data) {
-                       console.log("got here!");
-                       console.log(data);
                        var uname = data.result || "not";
                        $("p#user-info").html("User " + uname +" deleted.").fadeOut(2000);
                        setTimeout(function(){
