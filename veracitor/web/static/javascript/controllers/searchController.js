@@ -250,10 +250,9 @@ var SearchController = function (controller) {
 
         $.post("/jobs/search/information", paramObject, function(data) {
             insert_database_search_results(data, "information");
-        })
-            .fail(function (data) {
-                display_search_error(vera.const.search.server_error);
-            });
+        }).fail(function (data) {
+            display_search_error(vera.const.search.server_error);
+        });
     };
 
     /**
@@ -262,38 +261,46 @@ var SearchController = function (controller) {
      */
     var insert_database_search_results = function(job_data, type){
         var job_id = job_data['job_id'];
-        var urlLength = 35;
 
         controller.set_job_callback(job_id, function (data) {
             if(data.result.data){
+                var url, url_text;
+                // Maximum url length
+                var url_length = 35;
+
+                // Update the search results
                 search_result = data.result.data[type];
 
                 $('#search-result').html(data.result.html);
 
-                if(type == "information"){
+                if (type == 'nformation') {
 
                     // Shorten urls if necessary and make them into links.
-                    $.each($('#search-result tr td.url'), function(i, val){
+                    $('#search-result tr td .url').each(function (i) {
+                        // Shorten urls if necessary and make them into links.
                         url = $(this).html();
-                        urltext = url.length > urlLength ?
-                            url.substring(0,urlLength-3)+'...' :
-                            url;
+                        url_text = url.length > url_length ?
+                            url.substring(0, url_length - 3) + '...' : url;
 
-                        $(this).html('<a href="'+url+'" target="_blank">'+urltext+'</a>');
+                        $(this).html(url_text);
                     });
 
                 }
 
-                $('#search-result .link').click(function (evt) {
+                $('#search-result .link.clickable').each(function (i) {
                     var prod;
-                    if(type === "information"){
+
+                    if(type === "information") {
+                        // TODO: Show all publishers
                         prod = search_result[$(this).parent().index()].publishers[0];
-                    } else if (type === "producers"){
+                    } else if (type === "producers") {
                         prod = search_result[$(this).parent().index()].name;
                     }
 
-                    controller.network.visualize_producer_in_network(prod);
-                    controller.switch_to_tab('network');
+                    $(this).click(function (evt) {
+                        controller.network.visualize_producer_in_network(prod);
+                        controller.switch_to_tab('network');
+                    });
                 });
             } else {
                 display_search_error(vera.const.search['no_'+type]);

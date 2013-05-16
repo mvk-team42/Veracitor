@@ -18,9 +18,13 @@ var Visualizer = function (super_controller, network_controller) {
 
     var color = {
         node: {
-            select: {
+            highlight: {
                 background: '#f66',
                 border: '#a00'
+            },
+            select: {
+                background: '#6f7',
+                border: '#1d3'
             },
             unselect: {
                 background: '#ddd',
@@ -40,7 +44,7 @@ var Visualizer = function (super_controller, network_controller) {
             }
         },
         edge: {
-            select: {
+            highlight: {
                 line: '#a00'
             },
             unselect: {
@@ -151,6 +155,8 @@ var Visualizer = function (super_controller, network_controller) {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
+    // Not currently used
+    /*
     this.visualize_producer_in_network = function (prod, neighbors, depth) {
         var i, j;
         var nodes = [];
@@ -184,13 +190,13 @@ var Visualizer = function (super_controller, network_controller) {
         cy.add(edges);
 
         cy.nodes('#' + prod.name).css({
-            'background-color': color.node.select.background,
-            'border-color': color.node.select.border
+            'background-color': color.node.highlight.background,
+            'border-color': color.node.highlight.border
         });
 
         for(i = 0; i < neighbors.length - 1; i += 1) {
             cy.edges('[source="' + neighbors[i].name + '"][target="' + neighbors[i + 1].name + '"]').css({
-                'line-color': color.edge.select.line,
+                'line-color': color.edge.highlight.line,
                 'width': 2
             });
         }
@@ -202,6 +208,7 @@ var Visualizer = function (super_controller, network_controller) {
 
         visualizer.recalculate_layout();
     };
+    */
 
     /**
         Creates an interactive visualization network of the trust ratings
@@ -225,6 +232,9 @@ var Visualizer = function (super_controller, network_controller) {
         cy.add(cyelems.nodes);
         cy.add(cyelems.edges);
 
+        // Set the target node as selected
+        cy.nodes('#' + safe(target)).addClass('selected');
+
         style_elements();
 
         visualizer.recalculate_layout(callback);
@@ -243,6 +253,9 @@ var Visualizer = function (super_controller, network_controller) {
             cy.add(cyelems.nodes);
             cy.add(cyelems.edges);
         }
+
+        // Set the target node as selected
+        cy.nodes('#' + safe(paths[paths.length - 1].target)).addClass('selected');
 
         style_elements();
 
@@ -419,13 +432,6 @@ var Visualizer = function (super_controller, network_controller) {
                                 // Update the rating
                                 elem.data('rating', data.neighbors[node].source_ratings[key][tag] || '');
 
-                                elem.parallelEdges().css({
-                                    'line-color': color.edge.unselect.line,
-                                    'line-style': 'solid',
-                                    'source-arrow-shape': 'circle',
-                                    'target-arrow-shape': 'triangle',
-                                    'width': 1
-                                });
                                 elem.parallelEdges().removeClass('ghost');
                             }
                         }
@@ -446,11 +452,6 @@ var Visualizer = function (super_controller, network_controller) {
             // Update source node
             source_node.data('data', data.neighbors[source_node.data().name]);
             source_node.addClass(data.neighbors[source_node.data().name].type_of);
-            source_node.css({
-                'background-color': color.node.unselect.background,
-                'border-color': color.node.unselect.border,
-                'border-width': 3
-            });
 
             style_elements();
 
@@ -473,11 +474,19 @@ var Visualizer = function (super_controller, network_controller) {
      */
     var style_elements = function () {
         cy.nodes().css({
+            'background-color': color.node.unselect.background,
+            'border-color': color.node.unselect.border,
+            'border-width': 3,
             'content': 'data(name)'
         });
 
         if (show_ratings) {
             cy.edges().css({
+                'line-color': color.edge.unselect.line,
+                'line-style': 'solid',
+                'source-arrow-shape': 'circle',
+                'target-arrow-shape': 'triangle',
+                'width': 2,
                 'content': 'data(rating)'
             });
         } else {
@@ -488,12 +497,12 @@ var Visualizer = function (super_controller, network_controller) {
 
         // Highlight the path nodes and edges
         cy.nodes('.path').css({
-            'background-color': color.node.select.background,
-            'border-color': color.node.select.border,
+            'background-color': color.node.highlight.background,
+            'border-color': color.node.highlight.border,
             'shape': 'ellipse'
         });
         cy.edges('.path').css({
-            'line-color': color.edge.select.line,
+            'line-color': color.edge.highlight.line,
             'width': 2
         });
 
@@ -523,6 +532,12 @@ var Visualizer = function (super_controller, network_controller) {
             'background-color': color.node.verauser.background,
             'border-color': color.node.verauser.border
         });
+
+        // Style the selected node
+        cy.nodes('.selected').css({
+            'background-color': color.node.select.background,
+            'border-color': color.node.select.border
+        });
     };
 
     var get_initial_position = function () {
@@ -551,7 +566,8 @@ var Visualizer = function (super_controller, network_controller) {
     };
 
     /**
-       Returns a safe string for selectors with white spaces
+       Returns a safe string for selectors with key characters
+         \s # . |
        replaced by underscores.
      */
     var safe = function ( s ) {
@@ -560,6 +576,9 @@ var Visualizer = function (super_controller, network_controller) {
 
     var node_click_event = function (evt) {
         var node = this;
+
+        cy.nodes('.selected').removeClass('selected');
+        node.addClass('selected');
 
         if (typeof node.hasClass('ghost') !== 'undefined') {
             var loader = super_controller.new_loader($('#network-graph'), {
@@ -573,6 +592,8 @@ var Visualizer = function (super_controller, network_controller) {
                                            loader.delete();
                                        });
         } else {
+            style_elements();
+
             network_controller.display_producer_information(node.data().data);
         }
     };

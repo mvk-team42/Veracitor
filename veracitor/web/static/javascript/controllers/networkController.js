@@ -49,15 +49,18 @@ var NetworkController = function (controller) {
             }
         });
 
+        $('#add-to-group').click(function (evt) {
+            var group_name = $('#group_name').val();
 
-        $('#add-to-group').click(function(evt) {
-            $.post('/jobs/network/add_to_group', {
-                'group_name': $('#group_name').val(),
-                'producer': $('h1.title').text()
-            }, function(data) {
-                // TODO: display success/fail
-                console.log(data);
-            });
+            if (typeof group_name !== 'undefined' && selected_producer !== null) {
+                $.post('/jobs/network/add_to_group', {
+                    'group_name': group_name,
+                    'producer': selected_producer
+                }, function(data) {
+                    // TODO: display success/fail
+                    console.log(data);
+                });
+            }
         });
 
         $('#network_rate_producer .button').click(function (evt) {
@@ -276,6 +279,8 @@ var NetworkController = function (controller) {
                                                          loader.delete();
                                                      });
             } else {
+                loader.delete();
+
                 display_network_information('No path found');
             }
         }).fail(function (data) {
@@ -292,7 +297,7 @@ var NetworkController = function (controller) {
 
         selected_producer = prod;
 
-        $('#network-info-view .title').html(prod.name);
+        $('#fixed-title .title').html(prod.name);
         $('#network-info-view .description').html(prod.description);
         $('#network-info-view .url').html($('<a>').attr('href', prod.url).html(prod.url));
         $('#network-info-view .type').html(prod.type_of);
