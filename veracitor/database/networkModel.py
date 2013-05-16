@@ -70,10 +70,18 @@ def build_network_from_db():
     # Add all producers' source ratings to the database as edges,
     # where the actual rating and corresponding tag is set as an
     # edge attribute.
+    consistency_checks = []
     for p2 in producers:
         p2.prepare_ratings_for_using()
         for k,v in p2.source_ratings.iteritems():
-            graph.add_edge(p2.name, k, v)
+            try:
+                extractor.get_producer(k) #Test if producer exists in the database
+                graph.add_edge(p2.name, k, v) 
+            except NotInDatabase:
+                consistency_checks.append(p2)
+    for prod in consistency_checks:
+        prod.check_rating_consistencies()
+            
     
     return graph
 
