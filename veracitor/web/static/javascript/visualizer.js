@@ -30,6 +30,10 @@ var Visualizer = function (super_controller, network_controller) {
                 background: '#fb3',
                 border: '#f90'
             },
+            verauser: {
+                background: '#3bf',
+                border: '#09f'
+            },
             ghost: {
                 background: '#fff',
                 border: '#aaa'
@@ -219,7 +223,7 @@ var Visualizer = function (super_controller, network_controller) {
                                                        ghosts,
                                                        tag);
         cy.add(cyelems.nodes);
-        cy.add(cyelems.edges)
+        cy.add(cyelems.edges);
 
         style_elements();
 
@@ -512,6 +516,12 @@ var Visualizer = function (super_controller, network_controller) {
             'background-color': color.node.user.background,
             'border-color': color.node.user.border,
             'shape': 'rectangle'
+        });
+
+        // Style the user
+        cy.nodes('[name="' + vera.user_name + '"]').css({
+            'background-color': color.node.verauser.background,
+            'border-color': color.node.verauser.border
         });
     };
 
