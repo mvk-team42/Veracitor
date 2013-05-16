@@ -38,17 +38,22 @@ def sunny(graph, source, sink, tag="weight"):
        paths_used, nodes_used, nodes_unused, source, sink, tag.
         
     """
+    # Decisions
+    UNDECIDED = 0
+    FALSE = -1
+    TRUE = 1
+    
+    # Delta value used to compare samplings
     epsilon = 0.2
     # List of nodes to exclude
     decision = []
-    # Generate the bayesian network with confidence values
-    # for each node
+    # Generate the bayesian network with confidence values for each node
     bayesianNetwork,p_conf = generate_bn(graph,source,sink,tag)
     
     leaves = bayesianNetwork.successors(sink)
     # Set decision to unknown for all leaves. 0 = Unknown
     for leaf in leaves:
-        bayesianNetwork.node[leaf]['decision'] = 0
+        bayesianNetwork.node[leaf]['decision'] = UNDECIDED
 
     # Run the first sampling
     bounds = sample_bounds(bayesianNetwork, source, sink, {}, p_conf, tag, 100)
@@ -57,13 +62,13 @@ def sunny(graph, source, sink, tag="weight"):
 
     for leaf in leaves:
         # Set decision to true for the current leaf
-        bayesianNetwork.node[leaf]['decision'] = 1
+        bayesianNetwork.node[leaf]['decision'] = TRUE
         bounds = sample_bounds(bayesianNetwork, source, sink, bounds, p_conf, tag, 100)
         if not abs(bounds[source][0] - source_lower) < epsilon and abs(bounds[source][1] - source_upper) < epsilon:
             decision.append(leaf)
-            bayesianNetwork.node[leaf]['decision'] = -1
+            bayesianNetwork.node[leaf]['decision'] = FALSE
         else:
-            bayesianNetwork.node[leaf]['decision'] = 1
+            bayesianNetwork.node[leaf]['decision'] = TRUE
     return tt.compute_trust(bayesianNetwork.reverse(), source, sink, decision, tag)
     
 
