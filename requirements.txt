@@ -13,7 +13,7 @@ lxml==3.1.0
 mongoengine==0.7.9
 networkx==1.7
 numpy==1.7.0
-openpyxl=1.6.2
+openpyxl==1.6.2
 pyOpenSSL==0.13
 pymongo==2.5
 python-dateutil==1.5
