@@ -187,8 +187,6 @@ def get_neighbors():
 
     data = {}
 
-    log(neighbors)
-
     for node in neighbors:
         prod = extractor.get_producer(node)
 
@@ -350,20 +348,20 @@ def paths_from_producer_lists():
     try:
         for nodes in paths:
             data.append({
-                'nodes': [],
-                'ghosts': []
+                'source': nodes[0],
+                'target': nodes[-1],
+                'nodes': {},
+                'ghosts': {}
             })
-
-            log(nodes)
 
             for node in nodes:
                 prod = extractor.get_producer(node)
 
-                for p in prod.source_ratings.keys():
-                    if p not in nodes and p not in data[-1]['ghosts']:
-                        data[-1]['ghosts'].append(p)
+                for n in prod.source_ratings.keys():
+                    if n not in nodes:
+                        data[-1]['ghosts'][n] = node
 
-                data[-1]['nodes'].append(extractor.entity_to_dict(prod))
+                data[-1]['nodes'][node] = extractor.entity_to_dict(prod)
     except:
         abort(404)
 

@@ -59,9 +59,11 @@ var Visualizer = function (super_controller, network_controller) {
                 cy = this;
 
                 cy.on('click', 'node', node_click_event);
+                /*
                 cy.on('layoutstop', function () {
                     cy.nodes().unlock();
                 });
+                */
 
                 // Fixes vanishing graph issue when resizing the window
                 $(window).resize(function () {
@@ -124,8 +126,15 @@ var Visualizer = function (super_controller, network_controller) {
     /**
        Recalculates the layout of the nodes in the graph.
      */
-    this.recalculate_layout = function () {
-        cy.layout();
+    this.recalculate_layout = function ( callback ) {
+        if (callback) {
+            cy.one('layoutstop', callback);
+        }
+
+        cy.layout({
+            'name': 'arbor',
+            'fit': false
+        });
     };
 
     /**
@@ -187,10 +196,7 @@ var Visualizer = function (super_controller, network_controller) {
             'border-color': color.node.user.border
         });
 
-        cy.fit(cy.nodes());
-        cy.layout({
-            'name': 'arbor'
-        });
+        visualizer.recalculate_layout();
     };
 
     /**
@@ -203,7 +209,43 @@ var Visualizer = function (super_controller, network_controller) {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
-    this.visualize_path_in_network = function (source, target, path, ghosts, tag) {
+    this.visualize_path_in_network = function (source, target, path, ghosts, tag, callback) {
+        // Remove all elements in the graph
+        cy.elements().remove();
+
+        var cyelems = get_cytoscape_elements_from_path(source,
+                                                       target,
+                                                       path,
+                                                       ghosts,
+                                                       tag);
+        cy.add(cyelems.nodes);
+        cy.add(cyelems.edges)
+
+        style_elements();
+
+        visualizer.recalculate_layout(callback);
+    };
+
+    this.visualize_paths_in_network = function (paths, tag, callback) {
+        // Remove all elements in the graph
+        cy.elements().remove();
+
+        for (var i in paths) {
+            var cyelems = get_cytoscape_elements_from_path(paths[i].source,
+                                                           paths[i].target,
+                                                           paths[i].nodes,
+                                                           paths[i].ghosts,
+                                                           tag);
+            cy.add(cyelems.nodes);
+            cy.add(cyelems.edges);
+        }
+
+        style_elements();
+
+        visualizer.recalculate_layout(callback);
+    };
+
+    var get_cytoscape_elements_from_path = function (source, target, path, ghosts, tag) {
         var safe_src, safe_trg;
         var nodes = [];
         var edges = [];
@@ -218,7 +260,8 @@ var Visualizer = function (super_controller, network_controller) {
                     'name': node,
                     'data': path[node]
                 },
-                'classes': path[node].type_of + ' ' + 'path-node'
+                'position': get_initial_position(),
+                'classes': path[node].type_of + ' ' + 'path'
             });
 
             for (var key in path[node].source_ratings) {
@@ -233,7 +276,7 @@ var Visualizer = function (super_controller, network_controller) {
                             'target': safe_trg,
                             'rating': path[node].source_ratings[key][tag] || ''
                         },
-                        'classes': 'path-edge'
+                        'classes': 'path'
                     });
                 }
             }
@@ -249,6 +292,7 @@ var Visualizer = function (super_controller, network_controller) {
                     'id': safe_src,
                     'name': g
                 },
+                'position': get_initial_position(),
                 'classes': 'ghost'
             });
 
@@ -264,109 +308,14 @@ var Visualizer = function (super_controller, network_controller) {
             });
         }
 
-        // Empty the graph and add the new nodes and edges
-        cy.elements().remove();
-        cy.add(nodes);
-        cy.add(edges);
-
-        style_elements();
-
-        // Recalculate the layout
-        cy.layout({
-            'name': 'arbor'
-        });
-    };
-
-    this.visualize_paths_in_network = function (paths, tag) {
-        // TODO: fix safe ids!!!
-        var existing_nodes = [];
-        var nodes = [];
-        var edges = [];
-
-        for (var p in paths) {
-            var path = paths[p].nodes;
-            var ghosts = paths[p].ghosts;
-
-            for (var i in path) {
-                nodes.push({
-                    'group': 'nodes',
-                    'data': {
-                        'id': path[i].name,
-                        'data': path[i]
-                    },
-                    'classes': path[i].type_of + ' ' + 'path-node'
-                });
-                existing_nodes.push(path[i].name);
-
-                for (var key in path[i].source_ratings) {
-                    edges.push({
-                        'group': 'edges',
-                        'data': {
-                            'id': path[i].name + '-' + key,
-                            'source': path[i].name,
-                            'target': key,
-                            'rating': path[i].source_ratings[key][tag] || ''
-                        },
-                        'classes': 'trust-path'
-                    });
-                }
-            }
-
-            for (var i in ghosts) {
-                nodes.push({
-                    'group': 'nodes',
-                    'data': {
-                        'id': ghosts[i]
-                    },
-                    'classes': 'ghost'
-                });
-            }
-        }
-
-        // Empty the graph and add the new nodes and edges
-        cy.elements().remove();
-        cy.add(nodes);
-        cy.add(edges);
-
-        // Highlight the path nodes
-        cy.nodes('.path-node').css({
-            'background-color': color.node.select.background,
-            'border-color': color.node.select.border,
-            'shape': 'ellipse'
-        });
-        cy.edges().each
-        for (var i = 0; i < existing_nodes.length; i += 1) {
-            if (i < existing_nodes.length - 1) {
-                cy.edges('[source="' + existing_nodes[i] + '"][target="' + existing_nodes[i + 1] + '"]').css({
-                    'line-color': color.edge.select.line,
-                    'width': 2
-                });
-            }
-        }
-
-        style_ghost_elements();
-
-        // Display the ratings made by the source producer
-        cy.edges('.prod-rating').css({
-            'content': 'data(rating)'
-        });
-
-        // Style the user nodes
-        cy.nodes('.User').css({
-            'background-color': color.node.user.background,
-            'border-color': color.node.user.border,
-            'shape': 'rectangle'
-        });
-
-        // Recalculate the layout
-        cy.layout({
-            'name': 'arbor'
-        });
+        return {
+            'nodes': nodes,
+            'edges': edges
+        };
     };
 
     this.fetch_neighbors = function ( name, tag, depth, callback ) {
         var id = safe(name);
-        console.log(id);
         var source_node = cy.nodes('#' + id);
 
         $.post('/jobs/network/neighbors', {
@@ -374,8 +323,7 @@ var Visualizer = function (super_controller, network_controller) {
             'depth': depth
         }, function (data) {
             var safe_src, safe_trg;
-            var edge_id;
-            var elem;
+            var edge_id, elem;
             var ghost_edges = {};
             var nodes = [];
             var edges = [];
@@ -394,6 +342,7 @@ var Visualizer = function (super_controller, network_controller) {
                             'name': node,
                             'data': data.neighbors[node]
                         },
+                        'position': get_initial_position(),
                         'classes': 'ghost'
                     });
                 }
@@ -490,9 +439,6 @@ var Visualizer = function (super_controller, network_controller) {
                 cy.add(edges);
             }
 
-            console.log(data.neighbors);
-            console.log(source_node);
-
             // Update source node
             source_node.data('data', data.neighbors[source_node.data().name]);
             source_node.addClass(data.neighbors[source_node.data().name].type_of);
@@ -507,12 +453,14 @@ var Visualizer = function (super_controller, network_controller) {
             // Display producer information
             network_controller.display_producer_information(source_node.data().data);
 
-            if (typeof callback !== 'undefined') {
-                callback();
-            }
+            visualizer.recalculate_layout(callback);
         }).fail(function (data) {
             // TODO: Handle request fail
             console.log(data);
+
+            if (callback) {
+                callback();
+            }
         });
     };
 
@@ -567,6 +515,13 @@ var Visualizer = function (super_controller, network_controller) {
         });
     };
 
+    var get_initial_position = function () {
+        return {
+            'x': 0,
+            'y': 0
+        };
+    };
+
     this.clear_graph = function () {
         cy.elements().remove();
     };
@@ -601,14 +556,15 @@ var Visualizer = function (super_controller, network_controller) {
                 'margin': '5px'
             });
 
-            visualizer.fetch_neighbors(node.data().name, network_controller.get_global_tag(), 1, function () {
-                cy.one('layoutstop', function () {
-                    loader.delete();
-                });
-                cy.layout();
-            });
+            visualizer.fetch_neighbors(node.data().name,
+                                       network_controller.get_global_tag(),
+                                       1,
+                                       function () {
+                                           loader.delete();
+                                       });
         } else {
             network_controller.display_producer_information(node.data().data);
         }
     };
+
 };
