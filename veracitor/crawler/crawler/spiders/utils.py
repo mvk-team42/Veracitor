@@ -42,6 +42,47 @@ def is_article(response):
             return True
     return False
 
+def to_scrapy_response(url, body):
+    return TextResponse(url=url,body=unicode_to_str(body, 'utf-8'), encoding='utf-8')
+
+def scrape_article_and_links(response):
+    items = scrape_article(response)
+
+    for item in items:
+        if isinstance(item, ProducerItem):
+            yield item
+        elif isinstance(item, ArticleItem):
+            article_item = item
+            break
+        else:
+            raise Exception("Item type not recognized!")
+
+    article_item["references"] = []
+    log.msg("references: "+unicode(article_item["references"]))
+
+    hxs = HtmlXPathSelector(response)
+    domain = urlparse(response.url)[1]
+    links = hxs.select("//a/@href")
+    for link in [link.extract() for link in links]:
+        if domain in link:
+            continue
+        if not extractor.contains_information(link):
+            log.msg("link!!!!: " + unicode(link))
+            try:
+                page = urllib2.urlopen(link).read()
+            except (ValueError, TypeError, urllib2.URLError) as e:
+                continue
+            page_response = to_scrapy_response(link,page)
+            link_item = scrape_article(page_response)
+
+            if link_item == None:
+                continue
+            yield link_item
+
+        article_item["references"].append(link)
+
+    yield article_item
+
 def scrape_article(response):
     """
         Scrapes the response as an article.
@@ -52,6 +93,9 @@ def scrape_article(response):
         Returns:
             A generator that yields scraped items. Could be a ProdcerItem and an ArticleItem, or just an ArticleItem.
     """
+    if not is_article(response):
+        yield None
+
     domain = urlparse(response.url)[1]
     loader = ArticleLoader(item=ArticleItem(), response=response)
     
@@ -60,7 +104,7 @@ def scrape_article(response):
     if not extractor.contains_producer_with_url(mainpage_domain):
         # Construct a response object and send to scrape_meta
         mainpage_body = urllib2.urlopen(mainpage_domain).read()
-        mainpage_response = TextResponse(url=mainpage_domain,body=unicode_to_str(mainpage_body, 'utf-8'),encoding='utf-8')
+        mainpage_response = to_scrapy_response(mainpage_domain, mainpage_body)
         yield scrape_meta(mainpage_response)
     
     for field in ArticleItem.fields.iterkeys():
