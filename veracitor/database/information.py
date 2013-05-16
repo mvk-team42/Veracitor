@@ -10,6 +10,7 @@
 from mongoengine import *
 import producer
 import tag
+import extractor
 
 
 class Information(Document):
@@ -30,3 +31,5 @@ class Information(Document):
     publishers = ListField(ReferenceField('Producer'))
     references = ListField(ReferenceField('self'))
     
+    def __str__(self):
+        return str(extractor.entity_to_dict(self))

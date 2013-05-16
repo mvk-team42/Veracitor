@@ -15,7 +15,7 @@ from veracitor.database import *
 log = app.logger.debug
 
 
-@app.route("/user/delete", methods=["POST, GET"])
+@app.route("/user/delete", methods=["POST", "GET"])
 def delete_user():
     """Deletes the user from the database.
     Requires you to be authenticated as an admin.
@@ -37,16 +37,18 @@ def delete_user():
        * **404** -- No such username.
 
     """
-    if request.method is not "POST":
+
+    if not request.method == 'POST':
         abort(405)
-    if session.get('user_name') is not 'admin':
+    if not str(session.get('user_name')) == 'admin':
         abort(401)
 
     try:
         username = request.form.get('user_name')
+        nm=networkModel.build_network_from_db() # TODO , move this to task?
         user = extractor.get_user(username)
         user.delete()
     except:
         abort(404)
 
-    return jsonify(result=user_name)
+    return jsonify(result=username)

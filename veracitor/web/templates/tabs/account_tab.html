@@ -6,19 +6,20 @@
 {% if session.user_name %}
 <p class="greeting">Welcome <b>{{ session.user_name }}</b>!</p>
 
-<!-- 
+<!--
      Admin interface
 -->
 {% if session.user_name == 'admin' %}
 
-<div display="block">
+<div>
+  <p id="user-info"> </p>
   <form id="delete_user">
     <select id="users">
       {% for user in vera.users  %}
       <option value="{{ user }}">{{ user }}</option>
       {% endfor %}
     </select>
-    <input type="button" value="Delete user"/>
+    <input type="button" value="Delete user" id="delete-user-button"/>
   </form>
 </div>
 <br/>

@@ -18,14 +18,32 @@ var AccountController = function (controller) {
         $('#account_view > .content > .register-content > .register-form > input[name=username]').focus();
 
 	$('#account_view #view_self_in_network').click(function(evt) {
-	    producer = $('#account_view #user_name').val() 
+	    producer = $('#account_view #user_name').val()
 	    controller.network.visualize_producer_in_network(producer, -1);
 	    controller.switch_to_tab('network');
-	
+
 	});
     };
 
     (function () {
+
+        $("#delete-user-button").click(function(evt){
+            evt.preventDefault();
+            $.post("/user/delete",
+                   {"user_name": $("#delete_user #users").val()},
+                   function(data) {
+                       var uname = data.result || "not";
+                       $("p#user-info").html("User " + uname +" deleted.").fadeOut(2000);
+                       setTimeout(function(){
+                           $("p#user-info").html("").fadeIn(500);
+                       }, 2000);
+                       $("#delete_user select").children("option[value=" + uname + "]").remove();
+                   }
+                  ).fail(function(){
+                       $("#user-info").html("Unable to delete user.").fadeOut(2000);
+                  });
+        });
+
         $("#register-button").click(function(){
             var username = $(".register-form input[name='username']").val(),
             password = $(".register-form input[name='password']").val();

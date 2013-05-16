@@ -1,5 +1,10 @@
 /* ACCOUNT VIEW */
 
+
+p#user-info {
+    height: auto;
+}
+
 #account_view .register-content .error {
     color: #f00;
 }
