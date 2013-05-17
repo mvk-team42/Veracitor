@@ -29,7 +29,7 @@ class Group(Document):
     """
     name = StringField(required=True) 
     description = StringField()
-    owner = ReferenceField('User', required=True)
+    owner = ReferenceField('User')
     tag = ReferenceField('Tag', required=True)
     producers = DictField()
     time_created = DateTimeField(required=True)
@@ -61,7 +61,18 @@ class Group(Document):
             pass
             
         super(Group, self).delete()
-
+    """
+    def __str__:
+        _str = "##Group-Entity##\n";
+        _str += ("Name:          ") + self.name + "\n"
+        _str += ("Description: ")
+        if(self.description == None):
+            _str += "  No description set\n"
+        else:
+             _str += "  " + self.description + "\n"
+        _str += "Owner: " 
+        _str += "##############\n"
+    """
 def testing():
     networkModel.build_network_from_db()
     u1 = User(name="donkey", password="123")

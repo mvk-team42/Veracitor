@@ -7,12 +7,11 @@ from veracitor.logger import logger
 
 networkModel.build_network_from_db()
 
+tags = ["General","Crime","Culture","Politics","Sports","Finances"]
+for tag in tags:
+    extractor.get_tag_create_if_needed(tag)
+
 #print "string is " + str(information.Information.objects(url='http://www.dn.se/sport/ishockey/detroit-tillbaka-pa-slutspelsplats-1'))
-
-def a(item, id):
-    print "   id: " + str(id)
-    print item.values()
-
 
 #logger.log("testing",logger.Level.debug,logger.Area.crawler)
 
@@ -35,7 +34,7 @@ ci.init_interface()
 #ci.start_continuous_scrape()
 #ci.create_newspaper_bank()
 #ci.add_newspaper("www.penguin-news.com")
-ci.scrape_article("http://www.dn.se/nyheter/varlden/nordkoreaexpert-varre-an-pa-mycket-lange")
+#ci.scrape_article("http://www.dn.se/nyheter/varlden/nordkoreaexpert-varre-an-pa-mycket-lange")
 #ci.scrape_article("http://www.svd.se/nyheter/inrikes/mamman-dog-i-vantan-pa-dottern_8152288.svd")
 #ci.scrape_article("http://www.guardian.co.uk/uk/2013/may/07/jimmy-tarbuck-arrested-allegation-assault-teenage-boy")
 #ci.scrape_article("http://www.svd.se/nyheter/inrikes/utbrett-fiskfusk-avslojat_8046058.svd")

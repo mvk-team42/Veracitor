@@ -69,11 +69,12 @@ def get_shortest_path():
         'source': extractor.entity_to_dict(extractor.get_producer(source)),
         'target': extractor.entity_to_dict(extractor.get_producer(target)),
         'nodes': {},
+        'edges': {},
         'ghosts': {},
         'tag': tag
     }
 
-    for node in nodes:
+    for i, node in enumerate(nodes):
         prod = extractor.get_producer(node)
 
         neighbors = gn.successors(node) + gn.predecessors(node)
@@ -82,6 +83,9 @@ def get_shortest_path():
                 data['ghosts'][n] = node
 
         data['nodes'][node] = extractor.entity_to_dict(prod)
+
+        if i < len(nodes) - 1:
+            data['edges'][node] = nodes[i + 1]
 
     return jsonify(path=data)
 
@@ -351,10 +355,11 @@ def paths_from_producer_lists():
                 'source': nodes[0],
                 'target': nodes[-1],
                 'nodes': {},
+                'edges': {},
                 'ghosts': {}
             })
 
-            for node in nodes:
+            for i, node in enumerate(nodes):
                 prod = extractor.get_producer(node)
 
                 for n in prod.source_ratings.keys():
@@ -362,6 +367,9 @@ def paths_from_producer_lists():
                         data[-1]['ghosts'][n] = node
 
                 data[-1]['nodes'][node] = extractor.entity_to_dict(prod)
+
+                if i < len(nodes) - 1:
+                    data[-1]['edges'][node] = nodes[i + 1]
     except:
         abort(404)
 

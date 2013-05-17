@@ -189,6 +189,7 @@ def _fix_tags(article):
                 if any(str(match) in str(tag_str) for match in tag_map[predefined_tag]): 
                     final_tags.append(predefined_tag)
         #log.msg("final tags: "+unicode(final_tags))
+        final_tags.append("General") # Add the general tag, should always be rated
         article["tags"] = [extractor.get_tag_create_if_needed(tag_str) for tag_str in final_tags]
     else:
         article["tags"] = []

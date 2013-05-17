@@ -95,12 +95,16 @@ class User(producer.Producer):
             errMsg = "The tag specified does not exist"
             raise dbExceptions.NotInDatabase(errMsg)
         new_group = group.Group(name=group_name,
-                                owner=self,
                                 time_created=datetime.datetime.now(),
                                 tag=tag)
         new_group.save()
         self.groups.append(new_group)
         self.save()
+        new_group.owner = self
+        try:
+            new_group.save()
+        except TypeError:
+            print "!!!!!!"
         return True
         
     
