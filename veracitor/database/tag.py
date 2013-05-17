@@ -37,3 +37,23 @@ class Tag(Document):
             return self.name == other.name
         else:
             return False
+
+    def __str__(self):
+        _str = "##Tag-Entity##\n";
+        _str += ("Name:          ") + self.name + "\n"
+        _str += ("Description: ")
+        if(self.description == None):
+            _str += "  No description set\n"
+        else:
+             _str += "  " + self.description + "\n"
+        _str += "No of parents: " + str(len(self.parent)) + "\n"
+        _str += "Valid strings: "
+        if(len(self.valid_strings) == 0):
+            _str += "None\n"
+        else:
+            _str += "\n"
+            for string in self.valid_strings:
+                _str += "               * " + string + "\n"
+        _str += "##############"
+        
+        return _str
