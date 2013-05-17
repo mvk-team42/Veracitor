@@ -42,6 +42,70 @@ def is_article(response):
             return True
     return False
 
+def to_scrapy_response(url, body):
+    return TextResponse(url=url,body=unicode_to_str(body, 'utf-8'), encoding='utf-8')
+
+def process_link(link):
+    try:
+        page = urllib2.urlopen(link).read()
+    except Exception as e:
+        log.msg("Exception "+unicode(e)+" encountered in process_link, aborting.")
+        return (None, [])
+    page_response = to_scrapy_response(link,page)
+    items = scrape_article(page_response)
+
+    article, producer = (None, None)
+
+    for item in items:
+        log.msg("Item: "+unicode(item))
+        if item == None:
+            continue
+        if isinstance(item, ProducerItem):
+            producer = item
+        if isinstance(item, ArticleItem):
+            article = item
+
+    return (article, producer)
+
+
+def scrape_article_and_links(response):
+    items = scrape_article(response)
+    
+    for item in items:
+        if isinstance(item, ProducerItem):
+            yield item
+        elif isinstance(item, ArticleItem):
+            article_item = item
+            break
+        else:
+            raise Exception("Item type not recognized!")
+
+    article_item["references"] = []
+    log.msg("references: "+unicode(article_item["references"]))
+
+    hxs = HtmlXPathSelector(response)
+    domain = urlparse(response.url)[1]
+    links = hxs.select("//a/@href")
+    for link in [link.extract() for link in links]:
+        if domain in link:
+            continue
+
+        if not extractor.contains_information(link):
+
+            link_item, producer_item = process_link(link)
+
+            if link_item != None:
+                yield producer_item
+                yield link_item
+                log.msg("setting link!")
+                link = link_item["url"]
+            else:
+                continue
+
+        article_item["references"].append(link)
+
+    yield article_item
+
 def scrape_article(response):
     """
         Scrapes the response as an article.
@@ -52,6 +116,10 @@ def scrape_article(response):
         Returns:
             A generator that yields scraped items. Could be a ProdcerItem and an ArticleItem, or just an ArticleItem.
     """
+    if not is_article(response):
+        yield None
+        return
+
     domain = urlparse(response.url)[1]
     loader = ArticleLoader(item=ArticleItem(), response=response)
     
@@ -59,10 +127,14 @@ def scrape_article(response):
     #log.msg("page: "+str(mainpage_domain))
     if not extractor.contains_producer_with_url(mainpage_domain):
         # Construct a response object and send to scrape_meta
-        mainpage_body = urllib2.urlopen(mainpage_domain).read()
-        mainpage_response = TextResponse(url=mainpage_domain,body=unicode_to_str(mainpage_body, 'utf-8'),encoding='utf-8')
-        yield scrape_meta(mainpage_response)
-    
+        try:
+            mainpage_body = urllib2.urlopen(mainpage_domain).read()
+            mainpage_response = to_scrapy_response(mainpage_domain, mainpage_body)
+            yield scrape_meta(mainpage_response)
+        except Exception as e:
+            log.msg("Exception "+unicode(e)+" encountered in scrape_article, aborting.")
+            return
+        return
     for field in ArticleItem.fields.iterkeys():
         #log.msg("field: " + field)
         for xpath in meta.get_article_xpaths(field, domain):
