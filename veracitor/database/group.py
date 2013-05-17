@@ -33,25 +33,14 @@ class Group(Document):
     tag = ReferenceField('Tag', required=True)
     producers = DictField()
     time_created = DateTimeField(required=True)
-    """
+    
     def save(self):
-        
-        Overrides save() inherhited from Document.
-        Only does something if this group is not previously saved
-        to the database. Appends self to owner's group list and
-        calls save() on owner.
-        
-
-        first_time = False
         try:
-            extractor.get_group(self.owner.name, self.name)
-        except NotInDatabase:
-            first_time = True
-        super(Group, self).save()
-        if(first_time):
-            self.owner.groups.append(self)
-            self.owner.save()
-    """
+            super(Group, self).save()
+        except TypeError:
+            print "Catched in group override"
+        
+    
 
     def delete(self):
         # Delete owner's group rating
