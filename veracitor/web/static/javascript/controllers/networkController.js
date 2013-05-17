@@ -58,9 +58,9 @@ var NetworkController = function (controller) {
                     'group_name': group_name,
                     'producer': selected_producer.name
                 }, function(data) {
-                    $('#network-add-group .feedback').html('Producer added.').fadeOut(1000);
+                    $('#network-add-group .feedback').html('Producer added.').show().fadeOut(1000);
                 }).fail(function (data) {
-                    $('#network-add-group .feedback').html('Server error.').fadeOut(1000);
+                    $('#network-add-group .feedback').html('Server error.').show().fadeOut(1000);
                 });
             }
         });
