@@ -176,7 +176,7 @@ def _fix_tags(article):
     tag_map["Crime"] += ["brott", "överfall", "mord", "rån", "säkerhet"]
     tag_map["Culture"] = ["music", "art", "painting", "culture", "concert", "movie", "tv", "radio", "food", "wine", "drink", "beer"]
     tag_map["Culture"] = ["musik", "konst", "målning", "kultur", "koncert", "film", "mat", "vin", "dryck", "öl"]
-    tag_map["Politics"] = ["court", "jury", "health", "supreme", "reform", "ruling", "politic", "committee", "diplom", "party", "vote", "election"]
+    tag_map["Politics"] = ["court", "attourney", "jury", "health", "supreme", "reform", "ruling", "politic", "committee", "diplom", "party", "vote", "election"]
     tag_map["Politics"] = ["domstol", "häls", "parti", "komitte", "parti", "röst", "val"]
     tag_map["Sports"] = ["ball", "match", "tournament", "champion", "sport", "win"]
     tag_map["Sports"] = ["boll", "turnering", "mästar", "vinna"]
