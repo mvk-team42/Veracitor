@@ -4,7 +4,7 @@
     text-align: justify;
 }
 
-#login_view > .content > .description{
+#login_view > .content > .description {
     position: absolute;
     left: 650px;
     top: 40px;
@@ -14,8 +14,8 @@
     padding: 5px 20px;
 }
 
-p {
-    width: 600px;
+#login_view > .content > .description p {
+    width: 400px;
     font-size: 11pt;
 }
 
