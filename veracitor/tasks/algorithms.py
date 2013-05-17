@@ -29,7 +29,7 @@ def sunnycalc(source, sink, tag):
     logger.info(source +"/"+sink+"/"+tag)
     #source, sink, tag = _to_unicode((source, sink, tag))
     
-    network = nm.get_global_network()
+    network = nm.build_network_from_db()
     
     try:
         trust = sunny_algo.sunny(network, source, sink, tag=tag)
@@ -49,7 +49,7 @@ def tidaltrust(source, sink, tag):
     tag = unicode(tag)
 
     # Get global network
-    network = nm.get_global_network()
+    network = nm.build_network_from_db()
 
     # Calc trust
     try:
