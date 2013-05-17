@@ -41,16 +41,7 @@ var SearchController = function (controller) {
     this.on_tab_active = function () {
         // set focus to the database search field
         $("#database-search-field").focus();
-
-        return auto_update_crawler_results();
     };
-
-    function auto_update_crawler_results(){
-        update_crawler_results();
-
-        display_crawler_results();
-//        setTimeout(auto_update_crawler_results, 5000);
-    }
 
     /**
        Initialize the time period slider.
@@ -175,7 +166,7 @@ var SearchController = function (controller) {
         set_active_tab(0);
         set_active_search_type(active_search_type);
 
-        // Start crawl click event
+        // start crawl
         $("#crawler-search-button").click(function (evt) {
             var url = $("#crawler-search-field").val();
             var extra_info = $('#add-entity-content form input[type=checkbox]').is(':checked');
@@ -189,6 +180,12 @@ var SearchController = function (controller) {
         // crawler tip-text
         $('.information .question-mark').click(function(){
             $('.information .tip-text').toggle();
+        });
+
+        // update crawler results
+        $('#update-crawler-results').click(function(){
+            update_crawls_producers();
+            display_crawler_results();
         });
 
     }
@@ -316,8 +313,8 @@ var SearchController = function (controller) {
     */
     function request_article_crawl(url) {
         $.post("/jobs/crawler/scrape_article", {"url":url}, function(data) {
-            $("#crawler-result table").append($("<thead>").html("Fetching crawls..."));
-            update_crawler_results();
+            add_crawler_result(data);
+            display_crawler_results();
         }).fail(function(){
             display_crawler_error("Unable to start crawler.");
         });
@@ -328,8 +325,9 @@ var SearchController = function (controller) {
     */
     function request_add_newspaper_crawl(url) {
         $.post("/jobs/crawler/add_newspaper", {"url":url}, function(data) {
-            $("#crawler-result table").append($("<thead>").html("Fetching crawls..."));
-            update_crawler_results();
+            console.log(data);
+            add_crawler_result(data);
+            display_crawler_results();
         }).fail(function(){
             display_crawler_error("Unable to start crawler.");
         });
@@ -343,62 +341,60 @@ var SearchController = function (controller) {
     */
     function request_source_crawl(url) {
         $.post("/jobs/crawler/request_scrape", {"url":url}, function(data) {
-            $("#crawler-result table").append($("<thead>").html("Fetching crawls..."));
-            update_crawler_results();
+            console.log(data);
+            add_crawler_result(data);
+            update_crawls_producers();
+            display_crawler_results();
         }).fail(function(){
             display_crawler_error("Unable to start crawler.");
         });
     }
 
     /**
-       Sends a request for getting the users crawler jobs and updates
-       the ui accordingly.
+       Adds the crawler result to crawls_displayed.
     */
-    function update_crawler_results() {
-        var i = 0;
-        $.post("/jobs/crawler/crawls", function(data) {
-            for (id in data) {
-                if(is_in_crawls(id)) {
-                    continue;
-                }
-                data[id].id = id;
-                crawls_displayed.push(data[id]);
-            }
-            update_crawls_producers();
-        }).fail(function(){
-            display_crawler_error("Unable to update crawls.");
-        });
-    }
-
-    function is_in_crawls(id) {
-        var i = 0;
-        for (; i< crawls_displayed.length; i++) {
-            if (crawls_displayed[i].id == id) {
-                return true;
-            }
+    function add_crawler_result(crawl) {
+        if (typeof crawl !== "undefined") {
+            console.log("Crawl added!");
+            crawls_displayed.push(crawl);
         }
-        return false;
     }
 
+    /**
+       Updates the crawls producers if possible.
+    */
     function update_crawls_producers() {
         var i = 0;
         for (;i<crawls_displayed.length;i++) {
             var crawl = crawls_displayed[i];
-            $.post('/jobs/job_result',{"job_id":crawl.id}, function(d){
-                if (typeof(d['result']) !== "undefined") {
-                    crawl["producer_name"] = d["result"]["producer_name"];
-                }
-            }).fail(function(data){
-                // Do nothing since job wasn't done.
-            });
+            if (typeof crawl['producer_name'] === "undefined") {
+                $.post('/jobs/job_result',{"job_id":crawl.job_id}, function(d){
+                    console.log(d);
+                    if (typeof(d['result']) !== "undefined") {
+                        console.log("updated crawl:"+ crawl.url+" with producer: "+d["result"]["producer_name"])
+                        crawl["producer_name"] = d["result"]["producer_name"];
+                    }
+                }).fail(function(data){
+                    // Do nothing since job wasn't done.
+                });
+            }
         }
     }
 
+
+    /**
+       Updates the DOM to display the crawls made.
+    */
     function display_crawler_results() {
         var i, thead= $("<thead>").append($("<tr>")
                                           .append($("<td>").html("Type"))
                                           .append($("<td>").html("URL"))
                                           .append($("<td>").html("Ready to visualize?")));
+        if (crawls_displayed.length < 1) {
+            thead = $("<thead>").append("<p>").html("No crawls to display.");
+            $("#crawler-result table").html(thead);
+            return;
+        }
 
         crawls_displayed.sort(function(a,b){
             return parseDate(a['start_time']) < parseDate(b['start_time']);
@@ -409,8 +405,7 @@ var SearchController = function (controller) {
             // Add button to visualize producer in network
             var prod_td = $("<td>").html("No");
             var producer_name = crawls_displayed[i]["producer_name"];
-            console.log(producer_name);
-            if (typeof(producer_name) !== "undefined") {
+            if ( typeof producer_name !== "undefined") {
                 prod_td = $("<td>")
                     .append($("<button>")
                             .html("Show in network")
