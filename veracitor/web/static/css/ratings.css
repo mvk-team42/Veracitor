@@ -93,3 +93,7 @@
     -moz-border-radius: 15px;
     border-radius: 15px;
 }
+
+#ratings_view span.warning {
+    color: red;
+}

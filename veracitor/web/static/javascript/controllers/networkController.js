@@ -51,11 +51,13 @@ var NetworkController = function (controller) {
 
         $('#add-to-group').click(function (evt) {
             var group_name = $('#group_name').val();
-
+	    console.log("selected producer: " + selected_producer);
+	    console.log("group name: " + group_name);
             if (typeof group_name !== 'undefined' && selected_producer !== null) {
                 $.post('/jobs/network/add_to_group', {
+		    'user_name' : vera.user_name,
                     'group_name': group_name,
-                    'producer': selected_producer
+                    'producer': selected_producer.name
                 }, function(data) {
                     // TODO: display success/fail
                     console.log(data);
