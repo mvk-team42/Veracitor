@@ -161,7 +161,9 @@ def get_neighbors():
     # TODO fix the global network...
     gn = nm.build_network_from_db()
 
+    log("Ding dong! Is there a tag???????")
     if tag:
+        log("Yup! It's a tag! And it's: "+tag)
         gn = _filter_network_by_tag(gn, tag)
 
     neighbors = []

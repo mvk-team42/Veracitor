@@ -31,4 +31,4 @@ class ArticleSpider(BaseSpider):
         self.start_urls = [kwargs.get('start_url')]
 
     def parse(self, response):
-        return scrape_article_and_links(response)
+        return scrape_article(response)
