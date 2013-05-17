@@ -151,7 +151,8 @@
                 },
                 'network': {
                     'no_information': 'No information objects.',
-                    'no_ratings': 'No ratings.'
+                    'no_ratings': 'No ratings.',
+                    'server_error': 'Server error.'
                 },
 
                 // Save the array of existing tags

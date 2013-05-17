@@ -141,6 +141,12 @@ var NetworkController = function (controller) {
             visualizer.show_ratings(bool);
         });
 
+        $('#network-toolbox-findpath').click(function (evt) {
+            if (selected_producer !== null) {
+                network_controller.visualize_producer_in_network(selected_producer.name);
+            }
+        });
+
         $('#selected-tag').html("None");
 
     };
@@ -255,6 +261,8 @@ var NetworkController = function (controller) {
         entire network will be visualized).
      */
     this.visualize_producer_in_network = function (prod) {
+        hide_network_information();
+
         var loader = controller.new_loader($('#network-graph'), {
             'margin': '5px'
         });
@@ -267,13 +275,12 @@ var NetworkController = function (controller) {
             network_controller.display_producer_information(data.path.target);
 
             if (typeof data.path.nodes[data.path.source.name] !== 'undefined') {
-                hide_network_information();
-
                 selected_producer = data.path.target;
 
                 visualizer.visualize_path_in_network(data.path.source.name,
                                                      data.path.target.name,
                                                      data.path.nodes,
+                                                     data.path.edges,
                                                      data.path.ghosts,
                                                      data.path.tag,
                                                      function () {
@@ -285,7 +292,7 @@ var NetworkController = function (controller) {
                 display_network_information('No path found');
             }
         }).fail(function (data) {
-            // TODO: display fail
+            network_controller.display_network_information(vera.const.network.server_error);
         });
     };
 
