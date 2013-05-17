@@ -54,6 +54,6 @@ class Tag(Document):
             _str += "\n"
             for string in self.valid_strings:
                 _str += "               * " + string + "\n"
-        _str += "##############"
+        _str += "##############\n"
         
         return _str
