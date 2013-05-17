@@ -44,9 +44,12 @@ def scrape_article():
         url (str): A URL to the article which should be scraped.
 
     Returns:
-        Upon success, returns an object with the job_id, ex::
+        Upon success, returns an object with crawler data, ex::
 
-        {"job_id": "ff92-23ad-232a-2334s-23"}
+        {"type":"Newspaper scrape",
+         "url":"http://www.dn.se",
+         "starttime":"1999-04-04 12:23:34",
+         "job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
         Object with the created producers name.
@@ -64,22 +67,10 @@ def scrape_article():
         abort(400)
 
 
-    crawls =  session.get('crawls')
-    if crawls == None:
-        crawls = {}
-
     res = crawler.scrape_article.delay(url)
-
-    crawl = {}
-    crawl['type'] = "Article scrape"
-    crawl['url'] = url
-    crawl['start_time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    crawls[res.id] = crawl
-
     store_job_result(res)
-
-    session['crawls'] = crawls
-    return jsonify(job_id=res.id)
+    crawl = create_crawl_dict("Article scrape", url, res.id)
+    return jsonify(crawl)
 
 
 @app.route('/jobs/crawler/add_newspaper', methods=['GET', 'POST'])
@@ -95,9 +86,14 @@ def add_newspaper():
     Parameters:
         url (str): A URL to the newspaper which should be crawled.
 
+
     Returns:
-        Upon success, returns an object with the job_id, ex::
-        {"job_id": "ff92-23ad-232a-2334s-23"}
+        Upon success, returns an object with crawler data, ex::
+
+        {"type":"Newspaper scrape",
+         "url":"http://www.dn.se",
+         "starttime":"1999-04-04 12:23:34",
+         "job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
         Object with the created producers name.
@@ -114,21 +110,9 @@ def add_newspaper():
     except KeyError, AttributeError:
         abort(400)
     res = crawler.add_newspaper.delay(url)
-
-    crawls =  session.get('crawls')
-    if crawls == None:
-        crawls = {}
-
-    crawl = {}
-    crawl['type'] = "Newspaper scrape"
-    crawl['url'] = url
-    crawl['start_time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    crawls[res.id] = crawl
-
     store_job_result(res)
-    session['crawls'] = crawls
-
-    return jsonify(job_id=res.id)
+    crawl = create_crawl_dict("Newspaper scrape", url, res.id)
+    return jsonify(crawl)
 
 
 @app.route('/jobs/crawler/request_scrape', methods=['GET', 'POST'])
@@ -144,8 +128,12 @@ def request_scrape():
        url
 
     Returns:
-        Upon success, returns an object with the job_id, ex::
-        {"job_id": "ff92-23ad-232a-2334s-23"}
+        Upon success, returns an object with crawler data, ex::
+
+        {"type":"Newspaper scrape",
+         "url":"http://www.dn.se",
+         "starttime":"1999-04-04 12:23:34",
+         "job_id": "ff92-23ad-232a-2334s-23"}
 
     Result when finished:
         Object with the created producers name.
@@ -162,47 +150,20 @@ def request_scrape():
     except KeyError, AttributeError:
         abort(400)
     res = crawler.request_scrape.delay(url)
+    store_job_result(res)
+    crawl = create_crawl_dict("Newspaper scrape (slower)", url, res.id)
+    return jsonify(crawl)
 
-    crawls =  session.get('crawls')
-    if crawls == None:
-        crawls = {}
+# @app.route('/jobs/crawler/get_crawl_producername', methods=['GET', 'POST'])
+# def get_crawl_producername():
+#     pass
 
+
+def create_crawl_dict(crawl_type, url, job_id):
     crawl = {}
-    crawl['type'] = "Newspaper scrape (slower)"
+    crawl['type'] = crawl_type
     crawl['url'] = url
     crawl['start_time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    crawls[res.id] = crawl
+    crawl['job_id'] = job_id
 
-    store_job_result(res)
-    session['crawls'] = crawls
-    return jsonify(job_id=res.id)
-
-
-@app.route("/jobs/crawler/crawls", methods=["POST"])
-def get_crawls():
-    """Returns data of the users currently running crawler jobs.
-
-    URL Structure: /jobs/crawler/crawls
-
-    Method:
-       POST
-
-    Parameters:
-       None
-
-    Returns:
-       An object with information of the crawls.
-
-    Errors::
-       204 - No Content, no crawls started
-       405 - Method not allowed
-
-    """
-    if not request.method == 'POST':
-        abort(405)
-
-    crawls =  session.get('crawls')
-    if crawls == None:
-        return make_response('', 204)
-    else:
-        return jsonify(crawls)
+    return crawl

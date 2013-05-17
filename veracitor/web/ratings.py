@@ -156,6 +156,7 @@ def create_group():
     except Exception, e:
         log(e)        
         abort(400)
+        return "Fail"
 
     # TODO: Render json
 
@@ -180,14 +181,12 @@ def rate_group():
         abort(405)
     try:
         user = extractor.get_user(session['user_name'])
-        if len(extractor.get_group(user.name,request.form['name']).producers.keys()) > 0:
-            user.rate_group(str(request.form['name']), int(request.form['rating']))
-            user.save()
-        else:
-            abort(400)
-
+        user.rate_group(str(request.form['name']), int(request.form['rating']))
+        user.save()
+    
         return request.form['rating']
-    except:
+    except Exception, e:
+        log(e)
         return "Fail"
         abort(400)
 

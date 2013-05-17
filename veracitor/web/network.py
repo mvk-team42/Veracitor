@@ -305,14 +305,14 @@ def add_to_group():
     if not request.method == 'POST':
         abort(405)
     try:
-        user = extractor.get_user(session['user_name'])
+        user = extractor.get_user(request.form['user_name'])
         producer = extractor.get_producer(request.form['producer'])
         user.add_to_group(request.form['group_name'], producer)
         return "Success"
     except Exception, e:
         log(e)
         abort(400)
-
+        
     return ''
 
 @app.route('/jobs/network/paths_from_producer_lists', methods=['GET','POST'])

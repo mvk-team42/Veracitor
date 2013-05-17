@@ -138,4 +138,8 @@ def get_job_result():
     except:
         pass
 
-    return jsonify(result=res.result)
+    try:
+        json_res = jsonify(result=res.result)
+        return json_res
+    except:
+        abort(404)

@@ -309,10 +309,10 @@ class Producer(Document):
                 if found:
                     return True
         return False
-
+    """
     def __str__(self):
         return str(extractor.entity_to_dict(self))
-
+    """
 
 
     def __safe_string(self, url):

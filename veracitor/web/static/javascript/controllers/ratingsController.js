@@ -64,7 +64,7 @@ var RatingsController = function (controller) {
 
         $(".left #prod-tags").change(function() {
             var selectedValue = $(this).find(":selected").val().replace(/(\s|\.|#|\|)/g, "_");
-            active_tag = selectedValue;
+            active_tag = "." + selectedValue;
             $('#producer-list .group_active').not('.' + selectedValue).hide()
             $('#producer-list > div.group_active.' + selectedValue).show();
         });
@@ -89,6 +89,7 @@ var RatingsController = function (controller) {
          */
         $(".left #groups").change(function() {
             var selectedValue = $(this).find(":selected").val();
+	    console.log("selected group: " + selectedValue);
             if( selectedValue != 'all' ) {
                 $("#rate-group").removeAttr("disabled");
                 group_selector = '.left .group-members#' + selectedValue.replace(/(\s|\.|#|\|)/g, "_") + ' input';
@@ -98,8 +99,8 @@ var RatingsController = function (controller) {
                 $(group_selector).each(function() {
                     $('div#producer-list div#' + $(this).val().replace(/(\s|\.|#|\|)/g, "_")).addClass('group_active').removeClass('group_inactive');
                 });
-                $('div#producer-list div.group_inactive.' + active_tag).hide();
-                $('div#producer-list div.group_active.' + active_tag).show();
+                $('div#producer-list div.group_inactive' + active_tag).hide();
+                $('div#producer-list div.group_active' + active_tag).show();
                 producer_selector = 'div#producer-list div#' + $(this).val();
 
 
@@ -109,7 +110,7 @@ var RatingsController = function (controller) {
                 $('div#producer-list').children().addClass("group_active");
                 $('div#producer-list').children().removeClass("group_inactive");
 
-                $('div#producer-list div.group_active.'+ active_tag).show();
+                $('div#producer-list div.group_active'+ active_tag).show();
             }
         });
 
@@ -139,7 +140,6 @@ var RatingsController = function (controller) {
             $.post('/jobs/ratings/rate_group',
                    {
                        'name' : $('#groups').find(':selected').val(),
-                       'tag' : $('#rate-group-tag').find(':selected').val(),
                        'rating' : $('#rate-group-rating').find(':selected').val()
                    }, done_rating_group)
         });
@@ -148,19 +148,31 @@ var RatingsController = function (controller) {
 
 
     function done_rating_group(data) {
-        $('div#producer-list > :visible div.rating').html(data)
-        var grouptext = $('#groups').find(':selected').text();
-        grouptext = grouptext.slice(0,-1) + data
-        $('#groups').find(':selected').text(grouptext)
+	if (data == "Fail") {
+	    $('#ratings_view span#warning').fadeIn();
+	    $('#ratings_view span#warning').text("Failed to rate group. Make sure the group is not empty.");
+	    $('#ratings_view span#warning').fadeOut(3000);
+	}
         hide_rate_group_form();
     }
 
     function add_group(data) {
+	if (data == "Fail") {
+	    $('#ratings_view span#warning').fadeIn();
+	    $('#ratings_view span#warning').text("Failed to add new group.");
+	    $('#ratings_view span#warning').fadeOut(3000);
+	}
+	else {
+            $('#ratings_view #groups')
+		.append($("<option></option>")
+			.attr("value",data.replace(/\s/g, "_"))
+			.text(data));
+	    $('#group_name')
+		.append($("<option></option>")
+			.attr("value",data.replace(/\s/g,"_"))
+			.text(data));
+	}
         hide_new_group_form();
-        $('#groups')
-            .append($("<option></option>")
-                    .attr("value",data)
-                    .text(data));
     }
 
     function show_rate_group_form() {
