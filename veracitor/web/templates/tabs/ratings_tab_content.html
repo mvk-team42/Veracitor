@@ -1,5 +1,7 @@
 {% block content %}
 
+<span class="warning" id="warning"></span>
+
 <div class="table">
   <div class="left">
     <div display="none">
@@ -37,7 +39,7 @@
 		 <span class="rating">5
 		 </span>
 		 -->
-	    <input type="button" value="Rate group" id="rate-group"/>
+	    <input type="button" value="Rate group" id="rate-group" disabled="disabled"/>
 	    <div id="rate-group-form-div" style="display:none;">
 	      <form id="rate-group-form">
 		<label for='rate-group-rating' id='rating_label'>Rating:</label>

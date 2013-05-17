@@ -220,13 +220,14 @@ var Visualizer = function (super_controller, network_controller) {
         the source node in order to be part of the visualization (that is the
         entire network will be visualized).
      */
-    this.visualize_path_in_network = function (source, target, path, ghosts, tag, callback) {
+    this.visualize_path_in_network = function (source, target, nodes, edges, ghosts, tag, callback) {
         // Remove all elements in the graph
         cy.elements().remove();
 
         var cyelems = get_cytoscape_elements_from_path(source,
                                                        target,
-                                                       path,
+                                                       nodes,
+                                                       edges,
                                                        ghosts,
                                                        tag);
         cy.add(cyelems.nodes);
@@ -248,6 +249,7 @@ var Visualizer = function (super_controller, network_controller) {
             var cyelems = get_cytoscape_elements_from_path(paths[i].source,
                                                            paths[i].target,
                                                            paths[i].nodes,
+                                                           paths[i].edges,
                                                            paths[i].ghosts,
                                                            tag);
             cy.add(cyelems.nodes);
@@ -262,12 +264,12 @@ var Visualizer = function (super_controller, network_controller) {
         visualizer.recalculate_layout(callback);
     };
 
-    var get_cytoscape_elements_from_path = function (source, target, path, ghosts, tag) {
+    var get_cytoscape_elements_from_path = function (source, target, path_nodes, path_edges, ghosts, tag) {
         var safe_src, safe_trg;
         var nodes = [];
         var edges = [];
 
-        for (var node in path) {
+        for (var node in path_nodes) {
             safe_src = safe(node);
 
             nodes.push({
@@ -275,25 +277,25 @@ var Visualizer = function (super_controller, network_controller) {
                 'data': {
                     'id': safe_src,
                     'name': node,
-                    'data': path[node]
+                    'data': path_nodes[node]
                 },
                 'position': get_initial_position(),
-                'classes': path[node].type_of + ' ' + 'path'
+                'classes': path_nodes[node].type_of
             });
 
-            for (var key in path[node].source_ratings) {
+            for (var key in path_nodes[node].source_ratings) {
                 safe_trg = safe(key);
 
-                if (typeof path[key] !== 'undefined') {
+                if (typeof path_nodes[key] !== 'undefined') {
                     edges.push({
                         'group': 'edges',
                         'data': {
                             'id': safe_src + '-' + safe_trg,
                             'source': safe_src,
                             'target': safe_trg,
-                            'rating': path[node].source_ratings[key][tag] || ''
+                            'rating': path_nodes[node].source_ratings[key][tag] || ''
                         },
-                        'classes': 'path'
+                        'classes': path_edges[node] === key ? 'path' : ''
                     });
                 }
             }
@@ -495,7 +497,7 @@ var Visualizer = function (super_controller, network_controller) {
             });
         }
 
-        // Highlight the path nodes and edges
+        // Highlight the path_nodes nodes and edges
         cy.nodes('.path').css({
             'background-color': color.node.highlight.background,
             'border-color': color.node.highlight.border,

@@ -156,6 +156,7 @@ def create_group():
     except Exception, e:
         log(e)        
         abort(400)
+        return "Fail"
 
     # TODO: Render json
 

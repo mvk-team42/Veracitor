@@ -7,12 +7,11 @@ from veracitor.logger import logger
 
 networkModel.build_network_from_db()
 
+tags = ["General","Crime","Culture","Politics","Sports","Finances"]
+for tag in tags:
+    extractor.get_tag_create_if_needed(tag)
+
 #print "string is " + str(information.Information.objects(url='http://www.dn.se/sport/ishockey/detroit-tillbaka-pa-slutspelsplats-1'))
-
-def a(item, id):
-    print "   id: " + str(id)
-    print item.values()
-
 
 #logger.log("testing",logger.Level.debug,logger.Area.crawler)
 
@@ -29,7 +28,7 @@ ci.init_interface()
 #ci.add_newspaper("www.dailynews.com")
 #ci.add_newspaper("www.latimes.com")
 
-ci.request_scrape("www.latimes.com")
+#ci.request_scrape("www.latimes.com")
 
 #ci.test_rss("http://penguin-news.com/index.php?format=feed&type=rss")
 #ci.start_continuous_scrape()

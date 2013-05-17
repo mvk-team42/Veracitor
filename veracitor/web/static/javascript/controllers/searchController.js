@@ -226,14 +226,13 @@ var SearchController = function (controller) {
             'type' : type
         }, function(data) {
             insert_database_search_results(data, "producers");
-        })
-            .fail(function (data) {
-                display_search_error(vera.const.search.server_error);
-            });
+        }).fail(function (data) {
+            display_search_error(vera.const.search.server_error);
+        });
     };
 
     var request_database_info_search = function (search_text, tags, start_date, end_date) {
-        $("#search-result").html("Searching...")
+        $("#search-result").html("Searching...");
 
         var paramObject = {
             'title_part' : search_text,
@@ -316,7 +315,7 @@ var SearchController = function (controller) {
             add_crawler_result(data);
             display_crawler_results();
         }).fail(function(){
-            display_crawler_error("Unable to start crawler.");
+            display_crawler_error(vera.const.search.crawler_start);
         });
     }
 
@@ -329,7 +328,7 @@ var SearchController = function (controller) {
             add_crawler_result(data);
             display_crawler_results();
         }).fail(function(){
-            display_crawler_error("Unable to start crawler.");
+            display_crawler_error(vera.const.search.crawler_start);
         });
     }
 
@@ -346,7 +345,7 @@ var SearchController = function (controller) {
             update_crawls_producers();
             display_crawler_results();
         }).fail(function(){
-            display_crawler_error("Unable to start crawler.");
+            display_crawler_error(vera.const.search.crawler_start);
         });
     }
 
