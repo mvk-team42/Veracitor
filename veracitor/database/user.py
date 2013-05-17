@@ -101,10 +101,9 @@ class User(producer.Producer):
         self.groups.append(new_group)
         self.save()
         new_group.owner = self
-        try:
-            new_group.save()
-        except TypeError:
-            print "!!!!!!"
+
+        new_group.save()
+
         return True
         
     
@@ -161,7 +160,9 @@ class User(producer.Producer):
             if group.name == req_group_name:
                 group.producers[self.__safe_string(producer_to_be_added.name)]\
                                 = producer_to_be_added
+
                 group.save()
+
                 group_rtng = self.get_group_rating(req_group_name)
                 if(group_rtng != -1):
                     self.rate_source(producer_to_be_added, 
