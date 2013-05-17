@@ -72,7 +72,7 @@ var NetworkController = function (controller) {
             }
         });
 
-        $('#compute-trust').click( function(evt){
+        $('#compute-trust').click(function ( evt ) {
             var tag = $('#compute-trust-tag > option:selected').val();
             var algorithm = $('#compute-trust-algorithm > option:selected').val();
 
@@ -200,7 +200,8 @@ var NetworkController = function (controller) {
                     $('#network-compute-trust .feedback.win #trust-result-threshold')
                         .html(data.result.threshold);
                     $('#network-compute-trust .feedback.win #trust-result-button')
-                        .click((function (paths) {
+                        .off('click')
+                        .on('click', (function (paths) {
                             return function (evt) {
                                 visualize_paths_in_network(paths);
                             }
