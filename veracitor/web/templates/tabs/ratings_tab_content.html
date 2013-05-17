@@ -29,9 +29,9 @@
 	      <option value="all">-</option>
 	      {% for group in renderDict.groups  %}
 	      {% if group.name in renderDict.group_ratings %}
-	      <option value="{{ group.name }}">{{ group.name }} - {{ renderDict.group_ratings[group.name] }}</option>
+	      <option value="{{ group.name }}">{{ group.name }} - {{ group.tag }} - {{ renderDict.group_ratings[group.name] }}</option>
 	      {% else  %}
-	      <option value="{{ group.name }}">{{ group.name }}</option>
+	      <option value="{{ group.name }}">{{ group.name }} - {{ group.tag }}</option>
 	      {% endif  %}
 	      {% endfor %}
 	    </select>
