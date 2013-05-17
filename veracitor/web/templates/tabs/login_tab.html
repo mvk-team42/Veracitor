@@ -1,11 +1,18 @@
 {% extends "tabs/veracitor_tab.html" %}
 
 {% block content %}
-<h1>Login to Veracitor</h1>
+<h1>Welcome to Veracitor</h1>
 
+<div class="description">
+  <p> <span class="icon question-mark"></span>
+    Veracitor is a web intelligence service enabling you to evaluate the trust you can put in publishers on the Internet.</p>
+  <p>Using an interactive network of newspapers, blogs (the network can be made to contain all sorts of publishers) and other users of Veracitor, you can request a trust estimation of the entities contained in this explorable network. It is also expandable by you using Internet-crawling, and automatically updated.</p>
+</div>
 {% if session.error %}
     <p class="error">{{ session.error }}</p>
 {% endif %}
+
+<h2>Login</h2>
 <form id="login" action="/login" method="post">
     <label for="username">Username:</label>
     <input name="username" type="text" />
@@ -16,4 +23,6 @@
 
 <h2>Not a user?</h2>
 <input id="join_veracitor" type="button" value="Join Veracitor!" />
+
+
 {% endblock %}

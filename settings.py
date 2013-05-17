@@ -13,4 +13,4 @@ PASSWORD = 'default'
 
 
 # # Sets the port which the webserver should listen on
-VERACITOR_PORT = 6006
+VERACITOR_PORT = 5001

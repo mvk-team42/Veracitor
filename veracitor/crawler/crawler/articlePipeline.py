@@ -43,6 +43,11 @@ def process_article(article, spider):
             An ArticleItem.
     """
     #log.msg("tags type: "+unicode(type(article["tags"]))+" tags: "+unicode(article["tags"]))
+
+    # FULHACK
+    if "publishers" in article:
+        article["publishers"] = article["publishers"][:1]
+        
     _fix_fields(article)
     article["time_published"] = _parse_datetime(article)
     _add_to_database(article)
@@ -171,7 +176,7 @@ def _fix_tags(article):
     tag_map["Crime"] += ["brott", "överfall", "mord", "rån", "säkerhet"]
     tag_map["Culture"] = ["music", "art", "painting", "culture", "concert", "movie", "tv", "radio", "food", "wine", "drink", "beer"]
     tag_map["Culture"] = ["musik", "konst", "målning", "kultur", "koncert", "film", "mat", "vin", "dryck", "öl"]
-    tag_map["Politics"] = ["court", "health", "supreme", "reform", "ruling", "politic", "committee", "diplom", "party", "vote", "election"]
+    tag_map["Politics"] = ["court", "jury", "health", "supreme", "reform", "ruling", "politic", "committee", "diplom", "party", "vote", "election"]
     tag_map["Politics"] = ["domstol", "häls", "parti", "komitte", "parti", "röst", "val"]
     tag_map["Sports"] = ["ball", "match", "tournament", "champion", "sport", "win"]
     tag_map["Sports"] = ["boll", "turnering", "mästar", "vinna"]
@@ -205,7 +210,7 @@ def _remove_words_from_publishers(article):
     pattern = re.compile("\S+:|av|by", re.IGNORECASE)
     for index, publisher_string in enumerate(article["publishers"]):
         article["publishers"][index] = pattern.sub("", publisher_string)
-        
+
             
 def _fix_time_published(article):
     if "time_published" in article:
