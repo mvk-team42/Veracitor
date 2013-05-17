@@ -38,7 +38,7 @@ def get_producer(requested_name):
     __checkIfEmpty(extr_producer)
 
     prod = extr_producer[0]
-    
+
     # Convert "|" in ratings to "."
     prod.prepare_ratings_for_using()
     # Does any ratings need to be removed?
@@ -73,7 +73,7 @@ def get_producer_with_url(url):
 
 def producer_create_if_needed(requested_name, type_if_new):
     """
-    Returns a producer with requested_name. If no producer 
+    Returns a producer with requested_name. If no producer
     with requested_name exists, a new one will be created
     with type set as type_if_new.
 
@@ -85,11 +85,11 @@ def producer_create_if_needed(requested_name, type_if_new):
         this will be the type of the new one.
 
     Returns: The requested producer.
-    
+
     """
     try:
         return get_producer(requested_name)
-    except NotInDatabase:   
+    except NotInDatabase:
 		new_producer = producer.Producer(
 		            name = requested_name,
 		            type_of = type_if_new)
@@ -170,7 +170,7 @@ def get_tag(requested_name):
         The requested tag object.
 
     Raises:
-        :class:`veracitor.database.dbExceptions.NotInDatabase`: 
+        :class:`veracitor.database.dbExceptions.NotInDatabase`:
         No such tag could be found in the database.
 
     """
@@ -180,7 +180,7 @@ def get_tag(requested_name):
 
 def get_tag_create_if_needed(requested_name):
     """
-    Returns a tag with requested_name. If no tag 
+    Returns a tag with requested_name. If no tag
     with requested_name exists, a new one will be created.
 
     Args:
@@ -188,7 +188,7 @@ def get_tag_create_if_needed(requested_name):
         to be returned.
 
     Returns: The requested tag.
-    
+
     """
     try:
 		return get_tag(requested_name)
@@ -238,7 +238,7 @@ def search_producers(possible_prod, type_of):
     """
     #(?i) - regex for case insensitive
     if type_of:
-        return producer.Producer.objects(name=re.compile('(?i)'+possible_prod), 
+        return producer.Producer.objects(name=re.compile('(?i)'+possible_prod),
                                          type_of=type_of)
     else:
         return producer.Producer.objects(name=re.compile('(?i)'+possible_prod))
@@ -374,11 +374,11 @@ def entity_to_dict( o ):
                 'description': o.description,
                 'url': o.url,
                 'infos': [ entity_to_dict(i) for i in o.infos ],
-                'source_ratings': unpipeify(o.source_ratings),
-                'info_ratings': unpipeify(o.info_ratings),
+                'source_ratings': o.source_ratings,
+                'info_ratings': o.info_ratings,
                 'type_of': o.type_of }
         if isinstance(o, user.User):
-            data['group_ratings'] = unpipeify(o.group_ratings)
+            data['group_ratings'] = o.group_ratings
             data['groups'] = [ entity_to_dict(g) for g in o.groups ]
             data['email'] = o.email
             if o.time_joined:
@@ -408,28 +408,14 @@ def entity_to_dict( o ):
     if isinstance(o, group.Group):
         data = {'name': o.name,
                 'description': o.description,
-                'owner': o.owner.name,
                 'tag': entity_to_dict(o.tag),
                 # TODO 'producers': o.producers
                 }
+        if o.owner:
+            data['owner'] = o.owner.name
         if o.time_created:
             data['time_created'] = {'year': o.time_created.year,
                                     'month': o.time_created.month,
                                     'day': o.time_created.day,
                                     'time': o.time_created.isoformat() }
         return data
-
-"""
-Converts pipelines to dots.
-"""
-def unpipeify( o ):
-    if isinstance(o, str):
-        return o.replace('|', '.')
-    if isinstance(o, dict):
-        data = {}
-        for k, v in o.items():
-            data[unpipeify(k)] = unpipeify(v)
-        return data
-    if isinstance(o, list):
-        return [ unpipeify(i) for i in o ]
-    return o
