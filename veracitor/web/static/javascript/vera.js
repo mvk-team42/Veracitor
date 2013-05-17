@@ -147,7 +147,8 @@
                 'search': {
                     'searching': 'Searching...',
                     'no_producers': 'No producers found.',
-                    'no_information': 'No information found.'
+                    'no_information': 'No information found.',
+                    'crawler_start': 'Unable to start crawler.'
                 },
                 'network': {
                     'no_information': 'No information objects.',

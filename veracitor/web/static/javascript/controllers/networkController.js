@@ -57,8 +57,7 @@ var NetworkController = function (controller) {
                     'group_name': group_name,
                     'producer': selected_producer
                 }, function(data) {
-                    // TODO: display success/fail
-                    console.log(data);
+                    network_controller.display_network_information(vera.const.network.server_error);
                 });
             }
         });
@@ -226,7 +225,7 @@ var NetworkController = function (controller) {
             });
         })
         .fail(function () {
-            $('#search-result').html('<h2>Server error.</h2>');
+            network_controller.display_network_information(vera.const.network.server_error);
         });
     }
 
@@ -246,7 +245,7 @@ var NetworkController = function (controller) {
                 loader.delete();
             });
         }).fail(function (data) {
-            // TODO: Handle server error
+            network_controller.display_network_information(vera.const.network.server_error);
         });
     };
 
@@ -395,7 +394,7 @@ var NetworkController = function (controller) {
 
             network_controller.visualize_producer_in_network(data.target.name);
         }).fail(function ( data ) {
-            // TODO
+            network_controller.display_network_information(vera.const.network.server_error);
         });
     };
 
@@ -411,8 +410,7 @@ var NetworkController = function (controller) {
 
             network_controller.display_producer_information(data.info_prod);
         }).fail(function (data) {
-            console.log(data);
-            // TODO: display fail
+            network_controller.display_network_information(vera.const.network.server_error);
         });
     };
 
