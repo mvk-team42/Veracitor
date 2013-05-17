@@ -96,7 +96,7 @@ def _save_act_in_gtd_object(act,gtd_producer):
         None
     """
     act_url = _GTD_INCIDENT_URL + act["id"]
-    act_tag = _safe_get_tag(act["attacktype"])
+    #act_tag = _safe_get_tag(act["attacktype"])
     source_strings = [ _strip_source(src) for src in [act["source1"], act["source2"], act["source3"]] if src != None]
     sources = []
 
@@ -123,7 +123,7 @@ def _save_act_in_gtd_object(act,gtd_producer):
             title = "GTD Entry",
             summary = act["summary"],
             time_published = _get_datetime(act),
-            tags = [terrorism_tag, act_tag],
+            tags = [general_tag, crime_tag],#terrorism_tag, act_tag],
             publishers = [gtd_producer] + sources,
             references =  [])
         information_object.save()
@@ -252,8 +252,12 @@ def parse():
     Returns:
         None
     """
-    global terrorism_tag
-    terrorism_tag = _safe_get_tag("Terrorism")
+    #global terrorism_tag
+    #terrorism_tag = _safe_get_tag("Terrorism")
+    global general_tag, crime_tag
+    general_tag = _safe_get_tag("General")
+    crime_tag = _safe_get_tag("Crime")
+
     add_GTD_to_database()
 
     current_dir = dirname(realpath(__file__))
