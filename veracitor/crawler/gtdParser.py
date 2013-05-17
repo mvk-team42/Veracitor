@@ -95,8 +95,9 @@ def _save_act_in_gtd_object(act,gtd_producer):
     Returns:
         None
     """
-    act_url = _GTD_INCIDENT_URL + act["id"]
-    act_tag = _safe_get_tag(act["attacktype"])
+    act_url = _GTD_INCIDENT_URL + unicode(int(float(act["id"])+0.5))
+
+    #act_tag = _safe_get_tag(act["attacktype"])
     source_strings = [ _strip_source(src) for src in [act["source1"], act["source2"], act["source3"]] if src != None]
     sources = []
 
@@ -115,15 +116,15 @@ def _save_act_in_gtd_object(act,gtd_producer):
         else:
             source = extractor.get_producer(source_string)
             
-        gtd_producer.rate_source(source, terrorism_tag, 5)
-        gtd_producer.rate_source(source, act_tag, 5)
+        gtd_producer.rate_source(source, general_tag, 5)
+        gtd_producer.rate_source(source, crime_tag, 5)
 
     if not extractor.contains_information(act_url):
         information_object = information.Information(url = act_url,
             title = "GTD Entry",
             summary = act["summary"],
             time_published = _get_datetime(act),
-            tags = [terrorism_tag, act_tag],
+            tags = [general_tag, crime_tag],#terrorism_tag, act_tag],
             publishers = [gtd_producer] + sources,
             references =  [])
         information_object.save()
@@ -225,7 +226,7 @@ def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
                 if cell.internal_value == None:
                     act[_column_names[cell.column]] = None
                 else:
-                    act[_column_names[cell.column]] = unicode(cell.internal_value)
+		    act[_column_names[cell.column]] = unicode(cell.internal_value)
         yield act
         if print_acts:
             print act
@@ -252,8 +253,12 @@ def parse():
     Returns:
         None
     """
-    global terrorism_tag
-    terrorism_tag = _safe_get_tag("Terrorism")
+    #global terrorism_tag
+    #terrorism_tag = _safe_get_tag("Terrorism")
+    global general_tag, crime_tag
+    general_tag = _safe_get_tag("General")
+    crime_tag = _safe_get_tag("Crime")
+
     add_GTD_to_database()
 
     current_dir = dirname(realpath(__file__))
