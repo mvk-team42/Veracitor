@@ -147,11 +147,13 @@
                 'search': {
                     'searching': 'Searching...',
                     'no_producers': 'No producers found.',
-                    'no_information': 'No information found.'
+                    'no_information': 'No information found.',
+                    'crawler_start': 'Unable to start crawler.'
                 },
                 'network': {
                     'no_information': 'No information objects.',
-                    'no_ratings': 'No ratings.'
+                    'no_ratings': 'No ratings.',
+                    'server_error': 'Server error.'
                 },
 
                 // Save the array of existing tags

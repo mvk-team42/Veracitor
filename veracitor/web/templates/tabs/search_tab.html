@@ -52,10 +52,10 @@
             <input type="button" id="database-search-button" value="Search" />
         </div>
         <div id="add-entity-content" class="content">
-          <p>Starts a web crawl of given article/source URL.<br/>Adds
+          <p>Starts a web crawl of given newspaper/source URL.<br/>Adds
           any relevant information found to the database.</p>
           <form>
-              <label for="search-text">URL:
+              <label for="search-text">Newspaper URL:
                   <input type="text" id="crawler-search-field" name="search-text" />
               </label>
               <br/>
@@ -81,6 +81,7 @@
 <div id="crawl-result-content" class="search-column">
     <div class="body">
         <h1>Crawls</h1>
+        <button id="update-crawler-results">Update crawler results</button>
         <div id="crawler-result">
           <table></table>
         </div>
