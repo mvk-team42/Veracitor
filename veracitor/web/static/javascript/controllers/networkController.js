@@ -57,7 +57,7 @@ var NetworkController = function (controller) {
                     'group_name': group_name,
                     'producer': selected_producer
                 }, function(data) {
-                    network_controller.display_network_information(vera.const.network.server_error);
+                    display_network_information(vera.const.network.server_error);
                 });
             }
         });
@@ -225,7 +225,7 @@ var NetworkController = function (controller) {
             });
         })
         .fail(function () {
-            network_controller.display_network_information(vera.const.network.server_error);
+            display_network_information(vera.const.network.server_error);
         });
     }
 
@@ -245,7 +245,7 @@ var NetworkController = function (controller) {
                 loader.delete();
             });
         }).fail(function (data) {
-            network_controller.display_network_information(vera.const.network.server_error);
+            display_network_information(vera.const.network.server_error);
         });
     };
 
@@ -291,7 +291,7 @@ var NetworkController = function (controller) {
                 display_network_information('No path found');
             }
         }).fail(function (data) {
-            network_controller.display_network_information(vera.const.network.server_error);
+            display_network_information(vera.const.network.server_error);
         });
     };
 
@@ -394,7 +394,7 @@ var NetworkController = function (controller) {
 
             network_controller.visualize_producer_in_network(data.target.name);
         }).fail(function ( data ) {
-            network_controller.display_network_information(vera.const.network.server_error);
+            display_network_information(vera.const.network.server_error);
         });
     };
 
@@ -410,7 +410,7 @@ var NetworkController = function (controller) {
 
             network_controller.display_producer_information(data.info_prod);
         }).fail(function (data) {
-            network_controller.display_network_information(vera.const.network.server_error);
+            display_network_information(vera.const.network.server_error);
         });
     };
 

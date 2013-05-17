@@ -230,6 +230,7 @@ var Visualizer = function (super_controller, network_controller) {
                                                        edges,
                                                        ghosts,
                                                        tag);
+        console.log(cyelems);
         cy.add(cyelems.nodes);
         cy.add(cyelems.edges);
 
