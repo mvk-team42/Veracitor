@@ -1,6 +1,7 @@
 from database import *
 networkModel.build_network_from_db()
-tag = extractor.get_tag("General")
+tag = tag.Tag(name="General")
+tag.save()
 
 user1 = user.User(name="Daniel", password="1234")
 user2 = user.User(name="John", password="1234")
