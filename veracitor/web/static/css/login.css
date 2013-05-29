@@ -1,5 +1,24 @@
 /* LOGIN VIEW */
 
+#login_view > .content {
+    text-align: justify;
+}
+
+#login_view > .content > .description {
+    position: absolute;
+    left: 600px;
+    top: 40px;
+
+    border-radius:20px;
+    background:#fff;
+    padding: 5px 20px;
+}
+
+#login_view > .content > .description p {
+    width: 400px;
+    font-size: 11pt;
+}
+
 #login_view > .content .error {
     color: red;
 }

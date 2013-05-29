@@ -166,8 +166,7 @@ var SearchController = function (controller) {
         set_active_tab(0);
         set_active_search_type(active_search_type);
 
-        // start crawl
-        $("#crawler-search-button").click(function (evt) {
+        var crawl_search = function () {
             var url = $("#crawler-search-field").val();
             var extra_info = $('#add-entity-content form input[type=checkbox]').is(':checked');
             if (extra_info) {
@@ -175,6 +174,11 @@ var SearchController = function (controller) {
             } else {
                 request_add_newspaper_crawl(url);
             }
+        };
+
+        // start crawl
+        $("#crawler-search-button").click(function (evt) {
+            crawl_search();
         });
 
         // crawler tip-text
@@ -188,6 +192,13 @@ var SearchController = function (controller) {
             display_crawler_results();
         });
 
+        $('#crawler-search-field').keypress(function(evt){
+            if (evt.which == 13) {
+                evt.preventDefault();
+                crawl_search();
+                $(this).val("");
+            }
+        });
     }
 
     /**
@@ -363,6 +374,7 @@ var SearchController = function (controller) {
        Updates the crawls producers if possible.
     */
     function update_crawls_producers() {
+        var _this = this;
         var i = 0;
         for (;i<crawls_displayed.length;i++) {
             var crawl = crawls_displayed[i];
@@ -402,7 +414,7 @@ var SearchController = function (controller) {
         for (i=0; i<crawls_displayed.length; i++) {
 
             // Add button to visualize producer in network
-            var prod_td = $("<td>").html("No");
+            var prod_td = $("<td>").html("Maybe... ;)");
             var producer_name = crawls_displayed[i]["producer_name"];
             if ( typeof producer_name !== "undefined") {
                 prod_td = $("<td>")

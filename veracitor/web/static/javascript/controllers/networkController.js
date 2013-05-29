@@ -58,9 +58,9 @@ var NetworkController = function (controller) {
                     'group_name': group_name,
                     'producer': selected_producer.name
                 }, function(data) {
-                    // TODO: Show success
+                    $('#network-add-group .feedback').html('Producer added.').show().fadeOut(1000);
                 }).fail(function (data) {
-                    display_network_information(vera.const.network.server_error);
+                    $('#network-add-group .feedback').html('Server error.').show().fadeOut(1000);
                 });
             }
         });
