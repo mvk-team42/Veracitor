@@ -135,7 +135,6 @@ def scrape_article(response):
         except Exception as e:
             log.msg("Exception "+unicode(e)+" encountered in scrape_article, aborting.")
             return
-        return
     for field in ArticleItem.fields.iterkeys():
         #log.msg("field: " + field)
         for xpath in meta.get_article_xpaths(field, domain):
