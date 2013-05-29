@@ -129,6 +129,8 @@ def tidal_trust(source, sink, graph, tag):
     
     if (source, sink) in cached_trust:
         results["trust"] = round(cached_trust[(source, sink)],1)
+        if threshold == sys.maxint:
+            results["threshold"] = results["trust"]
 
     return results        
     
