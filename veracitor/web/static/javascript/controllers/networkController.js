@@ -276,30 +276,28 @@ var NetworkController = function (controller) {
         }, function (data) {
             console.log(data);
 
-            if (data.result.path) {
-                var path = data.result.path;
+            var path = data.result.path;
 
-                network_controller.display_producer_information(path.target);
+            network_controller.display_producer_information(path.target);
 
-                if (typeof path.nodes[path.source.name] !== 'undefined') {
-                    selected_producer = path.target;
+            if (typeof path.nodes[path.source.name] !== 'undefined') {
+                selected_producer = path.target;
 
-                    visualizer.visualize_path_in_network(path.source.name,
-                                                         path.target.name,
-                                                         path.nodes,
-                                                         path.edges,
-                                                         path.ghosts,
-                                                         path.tag,
-                                                         function () {
-                                                             loader.delete();
-                                                         });
-                } else {
-                    loader.delete();
+                visualizer.visualize_path_in_network(path.source.name,
+                                                     path.target.name,
+                                                     path.nodes,
+                                                     path.edges,
+                                                     path.ghosts,
+                                                     path.tag,
+                                                     function () {
+                                                         loader.delete();
+                                                     });
+            } else {
+                loader.delete();
 
-                    display_network_information('No path found');
-                }
+                display_network_information('No path found');
             }
-        }, function (data) {
+        }, function () {
             display_network_information(vera.const.network.server_error);
         });
     };
@@ -388,6 +386,7 @@ var NetworkController = function (controller) {
 
     var rate_producer = function ( source, target, tag, rating ) {
         var loader = controller.new_loader($('#network_rate_producer'), {'width':'16px', 'height':'16px'});
+
         $.post('/jobs/network/rate/producer', {
             'source': source,
             'target': target,
@@ -403,11 +402,14 @@ var NetworkController = function (controller) {
 
             network_controller.visualize_producer_in_network(data.target.name);
         }).fail(function ( data ) {
+            loader.delete();
             display_network_information(vera.const.network.server_error);
         });
     };
 
     var rate_information = function ( info_prod, url, rating ) {
+        var loader = controller.new_loader($('#network_rate_producer'), {'width':'16px', 'height':'16px'});
+
         $.post('/jobs/network/rate/information', {
             'source_prod': vera.user_name,
             'info_prod': info_prod,
@@ -417,8 +419,11 @@ var NetworkController = function (controller) {
             // Update the user object
             user = data.source_prod;
 
+            loader.delete();
+
             network_controller.display_producer_information(data.info_prod);
         }).fail(function (data) {
+            loader.delete();
             display_network_information(vera.const.network.server_error);
         });
     };

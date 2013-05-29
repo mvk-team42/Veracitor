@@ -95,6 +95,37 @@ def get_neighbors( name, tag, depth ):
     return { 'neighbors': data }
 
 
+def rate_information( source_prod, info_prod, url, rating ):
+    try:
+        p = db.extractor.get_producer(source_prod)
+        ip = db.extractor.get_producer(info_prod)
+        i = db.extractor.get_information(url)
+    except:
+        return None
+
+    p.rate_information(i, rating)
+
+    return {'source_prod': db.extractor.entity_to_dict(p),
+            'info_prod': db.extractor.entity_to_dict(ip),
+            'info': db.extractor.entity_to_dict(i),
+            'rating': rating}
+
+def rate_producer( source, target, tag, rating ):
+    try:
+        ps = db.extractor.get_producer(source)
+        pt = db.extractor.get_producer(target)
+        t = db.extractor.get_tag(tag)
+    except:
+        return None
+
+    ps.rate_source(pt, t, rating)
+
+    return {'source': db.extractor.entity_to_dict(ps),
+            'target': db.extractor.entity_to_dict(pt),
+            'tag': db.extractor.entity_to_dict(t),
+            'rating': rating}
+
+
 def _filter_network_by_tag(network, tag):
     """
     Creates a graph from input network containing only the edges in network

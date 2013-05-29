@@ -136,27 +136,20 @@ def network_rate_information():
         abort(405)
 
     try:
-        log(request.form)
-        prod = request.form['source_prod']
+        source_prod = request.form['source_prod']
         info_prod = request.form['info_prod']
         url = request.form['url']
         rating = int(request.form['rating'])
     except:
         abort(400)
 
-    try:
-        p = extractor.get_producer(prod)
-        ip = extractor.get_producer(info_prod)
-        i = extractor.get_information(url)
-    except:
+    res = network.rate_information(source_prod, info_prod, url, rating)
+
+    if not res:
         abort(404)
 
-    p.rate_information(i, rating)
+    return jsonify(res)
 
-    return jsonify({'source_prod': extractor.entity_to_dict(p),
-                    'info_prod': extractor.entity_to_dict(ip),
-                    'info': extractor.entity_to_dict(i),
-                    'rating': rating})
 
 @app.route('/jobs/network/rate/producer', methods=['GET','POST'])
 def network_rate_producer():
@@ -186,7 +179,6 @@ def network_rate_producer():
     if not request.method == 'POST':
         abort(405)
     try:
-        log(request.form)
         source = request.form['source']
         target = request.form['target']
         tag = request.form['tag']
@@ -194,19 +186,13 @@ def network_rate_producer():
     except:
         abort(400)
 
-    try:
-        ps = extractor.get_producer(source)
-        pt = extractor.get_producer(target)
-        t = extractor.get_tag(tag)
-    except:
+    res = network.rate_producer(source, target, tag, rating)
+
+    if not res:
         abort(404)
 
-    ps.rate_source(pt, t, rating)
+    return jsonify(res)
 
-    return jsonify({'source': extractor.entity_to_dict(ps),
-                    'target': extractor.entity_to_dict(pt),
-                    'tag': extractor.entity_to_dict(t),
-                    'rating': rating})
 
 @app.route('/jobs/network/add_to_group', methods=['GET','POST'])
 def add_to_group():
