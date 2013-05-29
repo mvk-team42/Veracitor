@@ -9,6 +9,8 @@ import networkx as nx
 import time
 
 from veracitor.web import app
+from veracitor.web.utils import store_job_result
+import veracitor.tasks.network as network
 
 from ..database import extractor, networkModel as nm
 from ..algorithms.tidaltrust import compute_trust
@@ -41,12 +43,10 @@ def get_shortest_path():
         405 - Method not allowed
 
     """
-    t = time.time()
 
     if not request.method == 'POST':
         abort(405)
     try:
-        log(request.form)
         source = request.form['source']
         target = request.form['target']
         try:
@@ -54,74 +54,11 @@ def get_shortest_path():
         except:
             tag = ''
     except Exception as e:
-        log("Exception: "+str(e)+"\nMsg: "+e.message+"\n");
         abort(400)
 
-    # TODO fix the global network...
-    gn = nm.build_network_from_db()
-
-    data = {
-        'source': extractor.entity_to_dict(extractor.get_producer(source)),
-        'target': extractor.entity_to_dict(extractor.get_producer(target)),
-        'nodes': {},
-        'edges': {},
-        'ghosts': {},
-        'tag': tag,
-        'gn_time': round((time.time() - t) * 1000)
-    }
-
-    if tag:
-        gn = _filter_network_by_tag(gn, tag)
-
-    try:
-        log(gn.edges())
-        nodes = nx.shortest_path(gn, source, target)
-    except:
-        nodes = []
-
-    for i, node in enumerate(nodes):
-        prod = extractor.get_producer(node)
-
-        neighbors = gn.successors(node) + gn.predecessors(node)
-        for n in neighbors:
-            if n not in nodes:
-                data['ghosts'][n] = node
-
-        data['nodes'][node] = extractor.entity_to_dict(prod)
-
-        if i < len(nodes) - 1:
-            data['edges'][node] = nodes[i + 1]
-
-    data['total_time'] = round((time.time() - t) * 1000)
-
-    return jsonify(path=data)
-
-def _filter_network_by_tag(network, tag):
-    """
-    Creates a graph from input network containing only the edges in network
-    that have a weight/rating under the specified tag.
-
-    """
-    Gtagged = nx.DiGraph()
-
-#    info=""+tag
-
-    for n in network.nodes():
-        #    info += "\n"+n
-        for nn in network[n]:
-            #       info += "\n\t"+str(network[n][nn])
-            try:
-                Gtagged.add_edge(n, nn, {tag:network[n][nn][tag]})
-            except:
-                pass
-    # except:
-    #     log(info)
-    #     return network
-
-#    log(info)
-#   log(nx.to_dict_of_dicts(Gtagged))
-
-    return Gtagged
+    res = network.get_shortest_path.delay(source, target, tag)
+    store_job_result(res)
+    return jsonify(job_id=res.id)
 
 
 @app.route('/jobs/network/neighbors', methods=['GET','POST'])

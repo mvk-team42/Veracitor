@@ -274,27 +274,33 @@ var NetworkController = function (controller) {
             'target': prod,
             'tag': global_tag || ''
         }, function (data) {
-            console.log(data);
+            controller.set_job_callback(data['job_id'], function (data) {
+                console.log(data);
 
-            network_controller.display_producer_information(data.path.target);
+                if (data.result.path) {
+                    var path = data.result.path;
 
-            if (typeof data.path.nodes[data.path.source.name] !== 'undefined') {
-                selected_producer = data.path.target;
+                    network_controller.display_producer_information(path.target);
 
-                visualizer.visualize_path_in_network(data.path.source.name,
-                                                     data.path.target.name,
-                                                     data.path.nodes,
-                                                     data.path.edges,
-                                                     data.path.ghosts,
-                                                     data.path.tag,
-                                                     function () {
-                                                         loader.delete();
-                                                     });
-            } else {
-                loader.delete();
+                    if (typeof path.nodes[path.source.name] !== 'undefined') {
+                        selected_producer = path.target;
 
-                display_network_information('No path found');
-            }
+                        visualizer.visualize_path_in_network(path.source.name,
+                                                             path.target.name,
+                                                             path.nodes,
+                                                             path.edges,
+                                                             path.ghosts,
+                                                             path.tag,
+                                                             function () {
+                                                                 loader.delete();
+                                                             });
+                    } else {
+                        loader.delete();
+
+                        display_network_information('No path found');
+                    }
+                }
+            });
         }).fail(function (data) {
             display_network_information(vera.const.network.server_error);
         });
