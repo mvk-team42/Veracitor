@@ -41,7 +41,7 @@ class RssSpider(CrawlSpider):
         super(RssSpider, self).__init__()
         
     def parse(self, response):
-		scrape_rss(response)
+        return scrape_rss(response)
 
             
             
