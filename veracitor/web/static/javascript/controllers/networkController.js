@@ -274,6 +274,8 @@ var NetworkController = function (controller) {
             'target': prod,
             'tag': global_tag || ''
         }, function (data) {
+            console.log(data);
+
             network_controller.display_producer_information(data.path.target);
 
             if (typeof data.path.nodes[data.path.source.name] !== 'undefined') {

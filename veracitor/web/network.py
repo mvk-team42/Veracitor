@@ -6,6 +6,8 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 import json
 import networkx as nx
 
+import time
+
 from veracitor.web import app
 
 from ..database import extractor, networkModel as nm
@@ -39,6 +41,8 @@ def get_shortest_path():
         405 - Method not allowed
 
     """
+    t = time.time()
+
     if not request.method == 'POST':
         abort(405)
     try:
@@ -56,6 +60,16 @@ def get_shortest_path():
     # TODO fix the global network...
     gn = nm.build_network_from_db()
 
+    data = {
+        'source': extractor.entity_to_dict(extractor.get_producer(source)),
+        'target': extractor.entity_to_dict(extractor.get_producer(target)),
+        'nodes': {},
+        'edges': {},
+        'ghosts': {},
+        'tag': tag,
+        'gn_time': round((time.time() - t) * 1000)
+    }
+
     if tag:
         gn = _filter_network_by_tag(gn, tag)
 
@@ -64,15 +78,6 @@ def get_shortest_path():
         nodes = nx.shortest_path(gn, source, target)
     except:
         nodes = []
-
-    data = {
-        'source': extractor.entity_to_dict(extractor.get_producer(source)),
-        'target': extractor.entity_to_dict(extractor.get_producer(target)),
-        'nodes': {},
-        'edges': {},
-        'ghosts': {},
-        'tag': tag
-    }
 
     for i, node in enumerate(nodes):
         prod = extractor.get_producer(node)
@@ -86,6 +91,8 @@ def get_shortest_path():
 
         if i < len(nodes) - 1:
             data['edges'][node] = nodes[i + 1]
+
+    data['total_time'] = round((time.time() - t) * 1000)
 
     return jsonify(path=data)
 
@@ -314,7 +321,7 @@ def add_to_group():
     except Exception, e:
         log(e)
         abort(400)
-        
+
     return ''
 
 @app.route('/jobs/network/paths_from_producer_lists', methods=['GET','POST'])
