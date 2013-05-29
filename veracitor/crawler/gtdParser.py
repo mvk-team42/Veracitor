@@ -19,6 +19,7 @@ from ..database import *
 _GTD_INCIDENT_URL = "http://www.start.umd.edu/gtd/search/IncidentSummary.aspx?gtdid="
 _GTD_PRODUCER_NAME = "GTD"
 
+#Maps excel column names to something more readable
 _column_names = {
     "A":"id",
     "B":"year",
@@ -199,13 +200,10 @@ def _get_datetime(act):
     return datetime.fromtimestamp(mktime(strptime(unicode(year)+"-"+unicode(month)+"-"+unicode(day),"%Y-%m-%d")))
 
 
-""" 
-    Receives a openpyxl.reader.iter_worksheet, parses it and returns a list of 
-    terrorist-acts where every act is represented as a dict of attributes
-"""
 def _parse_sheet(sheet, limit_number_rows = 0, print_acts = False):
     """
-    Parses the excel file and yields a generator for all the acts found within.
+    Receives a openpyxl.reader.iter_worksheet, parses it and returns a generator of 
+    terrorist-acts where every act is represented as a dict of attributes
 
     Args:
         *sheet*: An initialized opnepyxl workbook sheet.
