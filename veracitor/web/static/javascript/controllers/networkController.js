@@ -269,14 +269,14 @@ var NetworkController = function (controller) {
             'margin': '5px'
         });
 
-        controller.post('/jobs/network/path', {
+        $.post('/jobs/network/path', {
             'source': vera.user_name,
             'target': prod,
             'tag': global_tag || ''
         }, function (data) {
             console.log(data);
 
-            var path = data.result.path;
+            var path = data.path;
 
             network_controller.display_producer_information(path.target);
 
@@ -297,7 +297,8 @@ var NetworkController = function (controller) {
 
                 display_network_information('No path found');
             }
-        }, function () {
+        }).fail(function () {
+            loader.delete();
             display_network_information(vera.const.network.server_error);
         });
     };

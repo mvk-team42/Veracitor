@@ -8,7 +8,7 @@ def generate_test_data():
 
     nm = networkModel.get_global_network()
 
-    trust = extractor.tag_create_if_needed("General")
+    trust = extractor.get_tag_create_if_needed("General")
 
     try:
         john = extractor.get_producer('john')

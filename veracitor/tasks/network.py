@@ -30,17 +30,17 @@ def get_shortest_path( source, target, tag ):
 
     try:
         if tag:
-            dgn = _filter_network_by_tag(gn, tag)
-            nodes = nx.shortest_path(dgn, source, target)
+            ngn = _filter_network_by_tag(gn, tag)
         else:
-            nodes = nx.shortest_path(gn, source, target)
+            ngn = gn
+        nodes = nx.shortest_path(ngn, source, target)
     except:
         nodes = []
 
     for i, node in enumerate(nodes):
         prod = db.extractor.get_producer(node)
 
-        neighbors = gn.successors(node) + gn.predecessors(node)
+        neighbors = ngn.successors(node) + ngn.predecessors(node)
         for n in neighbors:
             if n not in nodes:
                 data['ghosts'][n] = node

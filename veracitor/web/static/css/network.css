@@ -52,6 +52,8 @@
     z-index: 10;
     background: #eee;
     border-bottom: 1px solid #aaa;
+
+    overflow: hidden;
 }
 
 #fixed-title > .title {

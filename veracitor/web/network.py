@@ -56,9 +56,40 @@ def get_shortest_path():
     except Exception as e:
         abort(400)
 
-    res = network.get_shortest_path.delay(source, target, tag)
-    store_job_result(res)
-    return jsonify(job_id=res.id)
+    # TODO
+    gn = nm.build_network_from_db()
+
+    data = {
+        'source': extractor.entity_to_dict(extractor.get_producer(source)),
+        'target': extractor.entity_to_dict(extractor.get_producer(target)),
+        'nodes': {},
+        'edges': {},
+        'ghosts': {},
+        'tag': tag
+    }
+
+    try:
+        if tag:
+            gn = _filter_network_by_tag(gn, tag)
+
+        nodes = nx.shortest_path(gn, source, target)
+    except:
+        nodes = []
+
+    for i, node in enumerate(nodes):
+        prod = extractor.get_producer(node)
+
+        neighbors = gn.successors(node) + gn.predecessors(node)
+        for n in neighbors:
+            if n not in nodes:
+                data['ghosts'][n] = node
+
+        data['nodes'][node] = extractor.entity_to_dict(prod)
+
+        if i < len(nodes) - 1:
+            data['edges'][node] = nodes[i + 1]
+
+    return jsonify(path=data)
 
 
 @app.route('/jobs/network/neighbors', methods=['GET','POST'])
@@ -102,9 +133,45 @@ def get_neighbors():
     except:
         abort(400)
 
-    res = network.get_neighbors.delay(name, tag, depth)
-    store_job_result(res)
-    return jsonify(job_id=res.id)
+    # TODO
+    gn = nm.build_network_from_db()
+
+    if tag:
+        gn = _filter_network_by_tag(gn, tag)
+
+    neighbors = []
+
+    depth = int(depth)
+
+    # Fetch neighbors
+    if depth < 0:
+        layer = [name]
+        while layer:
+            neighbor_queue = []
+            for node in layer:
+                if node not in neighbors:
+                    neighbors.append(node)
+                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
+            layer = neighbor_queue
+    else:
+        layer = [name]
+        for i in range(0, depth + 1):
+            neighbor_queue = []
+            for node in layer:
+                if node not in neighbors:
+                    neighbors.append(node)
+                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
+                    # exponential growth :(
+            layer = neighbor_queue
+
+    data = {}
+
+    for node in neighbors:
+        prod = extractor.get_producer(node)
+
+        data[node] = extractor.entity_to_dict(prod)
+
+    return jsonify(neighbors=data)
 
 
 @app.route('/jobs/network/rate/information', methods=['GET','POST'])
@@ -143,13 +210,19 @@ def network_rate_information():
     except:
         abort(400)
 
-    res = network.rate_information(source_prod, info_prod, url, rating)
-
-    if not res:
+    try:
+        p = extractor.get_producer(source_prod)
+        ip = extractor.get_producer(info_prod)
+        i = extractor.get_information(url)
+    except:
         abort(404)
 
-    return jsonify(res)
+    p.rate_information(i, rating)
 
+    return jsonify({'source_prod': extractor.entity_to_dict(p),
+                    'info_prod': extractor.entity_to_dict(ip),
+                    'info': extractor.entity_to_dict(i),
+                    'rating': rating})
 
 @app.route('/jobs/network/rate/producer', methods=['GET','POST'])
 def network_rate_producer():
@@ -186,12 +259,19 @@ def network_rate_producer():
     except:
         abort(400)
 
-    res = network.rate_producer(source, target, tag, rating)
-
-    if not res:
+    try:
+        ps = extractor.get_producer(source)
+        pt = extractor.get_producer(target)
+        t = extractor.get_tag(tag)
+    except:
         abort(404)
 
-    return jsonify(res)
+    ps.rate_source(pt, t, rating)
+
+    return jsonify({'source': extractor.entity_to_dict(ps),
+                    'target': extractor.entity_to_dict(pt),
+                    'tag': extractor.entity_to_dict(t),
+                    'rating': rating})
 
 
 @app.route('/jobs/network/add_to_group', methods=['GET','POST'])

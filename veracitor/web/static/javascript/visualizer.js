@@ -373,11 +373,11 @@ var Visualizer = function (super_controller, network_controller) {
         var id = safe(name);
         var source_node = cy.nodes('#' + id);
 
-        super_controller.post('/jobs/network/neighbors', {
+        $.post('/jobs/network/neighbors', {
             'name': name,
             'depth': depth
         }, function (data) {
-            var neighbors = data.result.neighbors;
+            var neighbors = data.neighbors;
             var safe_src, safe_trg;
             var edge_id, elem;
             var ghost_edges = {};
@@ -498,7 +498,7 @@ var Visualizer = function (super_controller, network_controller) {
             network_controller.display_producer_information(source_node.data().data);
 
             visualizer.recalculate_layout(callback);
-        }, function (data) {
+        }).fail(function (data) {
             if (callback) {
                 callback();
             }
@@ -513,6 +513,7 @@ var Visualizer = function (super_controller, network_controller) {
             'background-color': color.node.unselect.background,
             'border-color': color.node.unselect.border,
             'border-width': 3,
+            'text-opacity': 1,
             'content': 'data(name)'
         });
 
@@ -546,7 +547,8 @@ var Visualizer = function (super_controller, network_controller) {
         cy.nodes('.ghost').css({
             'background-color': color.node.ghost.background,
             'border-color': color.node.ghost.border,
-            'border-width': 1
+            'border-width': 1,
+            'text-opacity': 0.3
         });
         cy.edges('.ghost').css({
             'line-color': color.edge.ghost.line,
@@ -571,6 +573,12 @@ var Visualizer = function (super_controller, network_controller) {
 
         // Style the selected node
         cy.nodes('.selected').css({
+            'background-color': color.node.select.background,
+            'border-color': color.node.select.border
+        });
+
+        // Style the cytoscape selected nodes
+        cy.nodes(':selected').css({
             'background-color': color.node.select.background,
             'border-color': color.node.select.border
         });
@@ -603,11 +611,12 @@ var Visualizer = function (super_controller, network_controller) {
 
     /**
        Returns a safe string for selectors with key characters
-         \s # . |
+         \s # . | " '
        replaced by underscores.
      */
     var safe = function ( s ) {
-        return s.replace(/(\s|#|\.|\|)/g, '_');
+        //return s.replace(/(\s|#|\.|\||"|')/g, '_');
+        return s.replace(/[^A-Za-z0-9]/g, '_');
     };
 
     var node_click_event = function (evt) {
