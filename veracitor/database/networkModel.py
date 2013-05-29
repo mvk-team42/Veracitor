@@ -56,12 +56,25 @@ def build_network_from_db():
     Returns: the global network (type NetworkX DiGraph)
 
     """
-
+    
     global graph
     # Users not included in graph.
     producers = Producer.objects()
     graph = DiGraph()
-   
+    tmp = []
+    for p1 in producers:    
+        try:
+            tmp.append(extractor.get_producer(p1.name))
+        except Exception:
+            pass
+
+    for p2 in tmp:
+        for k,v in p2.source_ratings.iteritems():
+            graph.add_edge(p2.name, k, v)  
+    
+    return graph
+    
+    """
     # Add all producers in the database as nodes.
     for p1 in producers:
         p1.prepare_ratings_for_using()
@@ -84,7 +97,7 @@ def build_network_from_db():
             
     
     return graph
-
+    """
 def get_dictionary_graph():
     """
     Returns a dictionary representation of the graph using
