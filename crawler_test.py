@@ -47,7 +47,7 @@ ci.init_interface()
 #ci.scrape_article("http://www.guardian.co.uk/uk/2013/may/07/jimmy-tarbuck-arrested-allegation-assault-teenage-boy")
 #ci.scrape_article("http://www.svd.se/nyheter/inrikes/utbrett-fiskfusk-avslojat_8046058.svd")
 #ci.scrape_article("http://www.dn.se/nyheter/sverige/barn-som-sett-vald-utan-ersattning")
-#ci.scrape_article("http://www.nytimes.com/2013/05/10/us/disease-threatens-floridas-citrus-industry.html?hp&_r=0")
+ci.scrape_article("http://www.nytimes.com/2013/05/10/us/disease-threatens-floridas-citrus-industry.html?hp&_r=0")
 #ci.scrape_article("http://www.washingtonpost.com/politics/irs-targeted-groups-critical-of-government-documents-from-agency-probe-show/2013/05/12/bb38e5bc-bb24-11e2-97d4-a479289a31f9_story.html")
 #ci.scrape_article("http://www.washingtonpost.com/world/middle_east/sectarianism-in-iraq-stoked-by-syrian-war/2013/05/16/b74161da-bc98-11e2-9b09-1638acc3942e_story.html?hpid=z1")
 #ci.scrape_article("http://www.washingtonpost.com/politics/fbi-seeks-source-of-prostitution-corruption-allegations-against-sen-robert-menendez/2013/05/16/72ad79a0-bbda-11e2-89c9-3be8095fe767_story.html?hpid=z1") # ok!
@@ -66,7 +66,7 @@ ci.init_interface()
 
 
 #ci._test_rss("http://penguin-news.com/index.php?format=feed&type=rss")
-ci._test_rss("http://www.dn.se/nyheter/m/rss/senaste-nytt")
+#ci._test_rss("http://www.dn.se/nyheter/m/rss/senaste-nytt")
 #ci.start_continuous_scrape()
 
 #ci.create_newspaper_bank()

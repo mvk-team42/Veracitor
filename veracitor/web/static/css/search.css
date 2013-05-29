@@ -145,6 +145,7 @@
 
 #search-result > table {
     width: 100%;
+    font-size:10pt;
 }
 
 #search-result > table td p {
@@ -213,6 +214,10 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    max-width: 100px;
+    overflow-wrap: break-word;
+
 }
 
 #search-result table td.rating {

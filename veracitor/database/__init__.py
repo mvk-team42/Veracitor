@@ -21,3 +21,5 @@ information.Information.register_delete_rule(producer.Producer, 'infos', PULL)
 # When deleting an information, references made to it by other informations
 # should also be removed.
 information.Information.register_delete_rule(information.Information, 'references', PULL)
+
+producer.Producer.register_delete_rule(information.Information, 'publishers', PULL)
