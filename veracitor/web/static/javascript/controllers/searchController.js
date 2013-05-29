@@ -280,7 +280,7 @@ var SearchController = function (controller) {
 
                 $('#search-result').html(data.result.html);
 
-                if (type == 'nformation') {
+                if (type == 'information') {
 
                     // Shorten urls if necessary and make them into links.
                     $('#search-result tr td .url').each(function (i) {
