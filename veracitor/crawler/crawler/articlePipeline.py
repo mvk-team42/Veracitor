@@ -207,7 +207,7 @@ def _fix_references(article):
         article["references"] = []
 
 def _remove_words_from_publishers(article):
-    pattern = re.compile("\S+:|av|by|\sin\s.*", re.IGNORECASE)
+    pattern = re.compile("\S+:|av|by|\sin\s.*|\sin$", re.IGNORECASE)
     for index, publisher_string in enumerate(article["publishers"]):
         article["publishers"][index] = pattern.sub("", publisher_string)
 
