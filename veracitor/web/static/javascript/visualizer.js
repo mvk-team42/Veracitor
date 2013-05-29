@@ -576,12 +576,6 @@ var Visualizer = function (super_controller, network_controller) {
             'background-color': color.node.select.background,
             'border-color': color.node.select.border
         });
-
-        // Style the cytoscape selected nodes
-        cy.nodes(':selected').css({
-            'background-color': color.node.select.background,
-            'border-color': color.node.select.border
-        });
     };
 
     var get_initial_position = function () {
