@@ -234,7 +234,8 @@ function SuperController(vera) {
         var _self = this;
 
         var tag = $('<img>').attr({
-            'src': 'static/images/loading2.gif',
+            //'src': 'static/images/loading2.gif',
+            'src': 'static/images/trump.gif',
             'alt': 'Loading'
         });
 
