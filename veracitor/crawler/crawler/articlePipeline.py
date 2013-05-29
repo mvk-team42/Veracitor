@@ -106,7 +106,7 @@ def _get_publisher_objects(article):
                 # If not found, split on whitespace and try again
                 spaced_publishers = split_publisher.split()
                 not_found = []
-                for spaced_publisher in spaced_publishers:
+                for index, spaced_publisher in enumerate(spaced_publishers):
                     if extractor.contains_producer_with_name(spaced_publisher):
                         publishers.append(extractor.get_producer(spaced_publisher))
                     else:
@@ -207,7 +207,7 @@ def _fix_references(article):
         article["references"] = []
 
 def _remove_words_from_publishers(article):
-    pattern = re.compile("\S+:|av|by", re.IGNORECASE)
+    pattern = re.compile("\S+:|av|by|\sin\s.*", re.IGNORECASE)
     for index, publisher_string in enumerate(article["publishers"]):
         article["publishers"][index] = pattern.sub("", publisher_string)
 
