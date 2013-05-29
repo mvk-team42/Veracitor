@@ -128,7 +128,7 @@ def tidal_trust(source, sink, graph, tag):
         
     
     if (source, sink) in cached_trust:
-        results["trust"] = cached_trust[(source, sink)]
+        results["trust"] = round(cached_trust[(source, sink)],4)
 
     return results        
     

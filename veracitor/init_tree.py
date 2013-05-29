@@ -1,3 +1,7 @@
+# Test data for TidalTrust.
+# The source should rate Daniel and Martin and then request
+# a trust calculation for Alfred
+
 from database import *
 networkModel.build_network_from_db()
 tag = tag.Tag(name="General")

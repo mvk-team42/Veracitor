@@ -34,30 +34,6 @@ class ArticleItem(Item):
     url = Field()             # String
     tags = Field()            # [String]
     references = Field()      # [String]
-    
-    """
-    def __str__(self):
-        return unicode(self).encode('utf-8')
-    
-    def __unicode__(self):           
-        return (self.safe_str("title") + " (" + self.safe_str("publishers") + ", " + self.safe_str("time_published") + ")\nURL: " + self.safe_str("url") + "\nSUMMARY: " + self.safe_str("summary"))
-        
-    def long_string(self):
-        return ("---------------------------------\n"+
-                self.__unicode__() +
-                "\n---------------------------------"
-               );
-
-    def short_string(self):
-        return self["title"]
-        
-       
-    def safe_str(self, field):
-        if field in self:
-            return unicode(self[field])
-        else:
-            return "safe_string_unknown"
-    """
 
 
 class ArticleLoader(XPathItemLoader):

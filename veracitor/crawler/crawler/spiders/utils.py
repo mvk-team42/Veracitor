@@ -11,11 +11,12 @@ from os.path import realpath, dirname
 from urlparse import urlparse
 import urllib2 
 
-from scrapy.selector import HtmlXPathSelector
+from scrapy.selector import XmlXPathSelector, HtmlXPathSelector
 from scrapy.http.response.text import *
 from scrapy.utils.python import unicode_to_str
 from scrapy.contrib.loader import ItemLoader, XPathItemLoader
 from scrapy.contrib.loader.processor import TakeFirst
+from scrapy.http import Request
 from scrapy import log
 
 from ..webpageMeta import WebpageMeta
@@ -143,6 +144,43 @@ def scrape_article(response):
     loader.add_value("url", response.url)
             
     yield loader.load_item()
+    
+    
+
+
+def scrape_rss(response):
+    log.msg("inside scrape rss")
+    xxs = XmlXPathSelector(response)
+    items = []
+    requests = []
+    for item_tag in xxs.select('//item'):
+        items.append(ArticleItem())
+        if len(item_tag.select("title")) > 0:
+            items[-1]["title"] = item_tag.select("title/text()")[0].extract()  
+        if len(item_tag.select("pubDate")) > 0:
+            items[-1]["time_published"] =  [item_tag.select("pubDate/text()")[0].extract()]
+        if len(item_tag.select("link")) > 0:
+            items[-1]["url"] = item_tag.select("link/text()")[0].extract()
+        if len(item_tag.select("description")) > 0:
+            items[-1]["summary"] = item_tag.select("description/text()")[0].extract()   
+        
+        request = Request(items[-1]["url"], callback=extract_author_from_link)
+        request.meta["item"] = items[-1]
+        yield request
+
+def extract_author_from_link(response):
+        current_dir = dirname(realpath(__file__))
+        meta = WebpageMeta(current_dir + '/../webpageMeta.xml')
+        domain = urlparse(response.url)[1]
+        hxs = HtmlXPathSelector(response)
+        for xpath in meta.get_article_xpaths("publishers", domain):
+            author = hxs.select(xpath).extract()
+            if len(author) > 0 and author[0].strip() != "":
+                response.meta["item"]["publishers"] = [author[0]]
+                return response.meta["item"]   
+        return response.meta["item"]
+    
+    
 
 def scrape_meta(response):
     """
