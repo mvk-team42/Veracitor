@@ -145,6 +145,7 @@
 
 #search-result > table {
     width: 100%;
+    font-size:10pt;
 }
 
 #search-result > table td p {
@@ -216,7 +217,7 @@
 
     max-width: 100px;
     overflow-wrap: break-word;
-    font-size:10pt;
+
 }
 
 #search-result table td.rating {
