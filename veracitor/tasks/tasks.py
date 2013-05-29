@@ -12,10 +12,16 @@ from celery import Celery
 
 from ..crawler import crawlInterface as ci
 
+import veracitor.database as database
+
+db = database
+gn = None
+
 taskmgr = Celery(main='veracitor.tasks.tasks.taskmgr',
                  include=['veracitor.tasks.crawler',
                           'veracitor.tasks.algorithms',
                           'veracitor.tasks.search',
+                          'veracitor.tasks.network',
                           'veracitor.tasks.test',
                           'veracitor.tasks.login'])
 
@@ -32,9 +38,7 @@ ci.init_interface()
 
 
 try:
-    from veracitor.database import  *
-
-    nm = networkModel.build_network_from_db()
+    gn = db.networkModel.build_network_from_db()
 except:
     import sys
     print "Unable to build networkModel"
