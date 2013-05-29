@@ -273,8 +273,8 @@ var NetworkController = function (controller) {
             'source': vera.user_name,
             'target': prod,
             'tag': global_tag || ''
-        }, function (data) {
-            controller.set_job_callback(data['job_id'], function (data) {
+        }, function (job_data) {
+            controller.set_job_callback(job_data['job_id'], function (data) {
                 console.log(data);
 
                 if (data.result.path) {

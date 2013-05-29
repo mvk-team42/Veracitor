@@ -159,12 +159,28 @@ function SuperController(vera) {
     }
 
     /**
-
-       @param f The function checking the callback.
-       @param id An id related to the job started on the server.
+       @param job_id An id related to the job started on the server.
+       @param callback The function checking the callback.
      */
     this.set_job_callback = function (job_id, callback) {
         watch_job(job_id, callback);
+    }
+
+    /**
+       @param path A URL path defining the concerned job.
+       @param obj An object to be sent with the post request.
+       @param callback The function checking the callback.
+     */
+    this.post = function (path, obj, callback) {
+        $.post(path, obj, function (job_data) {
+            this.set_job_callback(job_data['job_id'], callback);
+        }).fail(function (data) {
+            if (callback) {
+                callback({
+                    'result': {}
+                });
+            }
+        });
     }
 
     /**

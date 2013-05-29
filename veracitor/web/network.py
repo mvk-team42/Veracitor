@@ -102,47 +102,10 @@ def get_neighbors():
     except:
         abort(400)
 
-    # TODO fix the global network...
-    gn = nm.build_network_from_db()
+    res = network.get_neighbors.delay(name, tag, depth)
+    store_job_result(res)
+    return jsonify(job_id=res.id)
 
-    log("Ding dong! Is there a tag???????")
-    if tag:
-        log("Yup! It's a tag! And it's: "+tag)
-        gn = _filter_network_by_tag(gn, tag)
-
-    neighbors = []
-
-    depth = int(depth)
-
-    # Fetch neighbors
-    if depth < 0:
-        layer = [name]
-        while layer:
-            neighbor_queue = []
-            for node in layer:
-                if node not in neighbors:
-                    neighbors.append(node)
-                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
-            layer = neighbor_queue
-    else:
-        layer = [name]
-        for i in range(0, depth + 1):
-            neighbor_queue = []
-            for node in layer:
-                if node not in neighbors:
-                    neighbors.append(node)
-                    neighbor_queue += gn.successors(node) + gn.predecessors(node)
-                    # exponential growth :(
-            layer = neighbor_queue
-
-    data = {}
-
-    for node in neighbors:
-        prod = extractor.get_producer(node)
-
-        data[node] = extractor.entity_to_dict(prod)
-
-    return jsonify(neighbors=data)
 
 @app.route('/jobs/network/rate/information', methods=['GET','POST'])
 def network_rate_information():

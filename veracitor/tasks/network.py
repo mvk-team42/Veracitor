@@ -17,7 +17,7 @@ import networkx as nx
 logger = get_task_logger(__name__)
 
 @taskmgr.task
-def get_shortest_path(source, target, tag):
+def get_shortest_path( source, target, tag ):
 
     data = {
         'source': db.extractor.entity_to_dict(db.extractor.get_producer(source)),
@@ -53,50 +53,11 @@ def get_shortest_path(source, target, tag):
     return { 'path': data }
 
 
-def get_neighbors():
-    """Returns the neighbors to the given source producer at
-    the given depth.
-
-    URL Structure:
-        /jobs/network/neighbors
-
-    Method:
-        POST
-
-    Parameters:
-        name (str): The name of the source producer.
-
-        depth (int): The neighbour depth.
-
-    Optional parameters:
-        tag (str): If specified, only edges with this tag will be considered.
-
-    Returns:
-        An object with the found neighbours.
-
-    Errors:
-        400 - Bad syntax/No name/type in request
-        405 - Method not allowed
-
-    """
-    if not request.method == 'POST':
-        abort(405)
-    try:
-        log(request.form)
-        name = request.form['name']
-        depth = request.form['depth']
-
-        try:
-            tag = request.form['tag']
-        except:
-            tag = None
-    except:
-        abort(400)
-
+def get_neighbors( name, tag, depth ):
     if tag:
         ngn = _filter_network_by_tag(gn, tag)
     else:
-        ngn = nx.DiGraph(ng)
+        ngn = nx.DiGraph(gn)
 
     neighbors = []
 

@@ -376,7 +376,9 @@ var Visualizer = function (super_controller, network_controller) {
         $.post('/jobs/network/neighbors', {
             'name': name,
             'depth': depth
-        }, function (data) {
+        }, function (job_data) {
+            // TODO
+
             var safe_src, safe_trg;
             var edge_id, elem;
             var ghost_edges = {};
