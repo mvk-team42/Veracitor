@@ -373,12 +373,11 @@ var Visualizer = function (super_controller, network_controller) {
         var id = safe(name);
         var source_node = cy.nodes('#' + id);
 
-        $.post('/jobs/network/neighbors', {
+        super_controller.post('/jobs/network/neighbors', {
             'name': name,
             'depth': depth
-        }, function (job_data) {
-            // TODO
-
+        }, function (data) {
+            var neighbors = data.result.neighbors;
             var safe_src, safe_trg;
             var edge_id, elem;
             var ghost_edges = {};
@@ -387,7 +386,7 @@ var Visualizer = function (super_controller, network_controller) {
 
             source_node.removeClass('ghost');
 
-            for (var node in data.neighbors) {
+            for (var node in neighbors) {
                 safe_src = safe(node);
                 elem = cy.nodes('#' + safe_src);
 
@@ -397,15 +396,15 @@ var Visualizer = function (super_controller, network_controller) {
                         'data': {
                             'id': safe_src,
                             'name': node,
-                            'data': data.neighbors[node]
+                            'data': neighbors[node]
                         },
                         'position': get_initial_position(),
                         'classes': 'ghost'
                     });
                 }
 
-                for (var key in data.neighbors[node].source_ratings) {
-                    if (typeof data.neighbors[key] !== 'undefined') {
+                for (var key in neighbors[node].source_ratings) {
+                    if (typeof neighbors[key] !== 'undefined') {
                         safe_trg = safe(key);
                         edge_id = safe_src + '-' + safe_trg;
                         elem = cy.edges('#' + edge_id);
@@ -451,7 +450,7 @@ var Visualizer = function (super_controller, network_controller) {
                                         'id': edge_id,
                                         'source': safe_src,
                                         'target': safe_trg,
-                                        'rating': data.neighbors[node].source_ratings[key][tag] || ''
+                                        'rating': neighbors[node].source_ratings[key][tag] || ''
                                     }
                                 });
 
@@ -470,7 +469,7 @@ var Visualizer = function (super_controller, network_controller) {
                                 !elem.parallelEdges('.ghost').empty()) {
 
                                 // Update the rating
-                                elem.data('rating', data.neighbors[node].source_ratings[key][tag] || '');
+                                elem.data('rating', neighbors[node].source_ratings[key][tag] || '');
 
                                 elem.parallelEdges().removeClass('ghost');
                             }
@@ -490,8 +489,8 @@ var Visualizer = function (super_controller, network_controller) {
             }
 
             // Update source node
-            source_node.data('data', data.neighbors[source_node.data().name]);
-            source_node.addClass(data.neighbors[source_node.data().name].type_of);
+            source_node.data('data', neighbors[source_node.data().name]);
+            source_node.addClass(neighbors[source_node.data().name].type_of);
 
             style_elements();
 
@@ -499,10 +498,7 @@ var Visualizer = function (super_controller, network_controller) {
             network_controller.display_producer_information(source_node.data().data);
 
             visualizer.recalculate_layout(callback);
-        }).fail(function (data) {
-            // TODO: Handle request fail
-            console.log(data);
-
+        }, function (data) {
             if (callback) {
                 callback();
             }

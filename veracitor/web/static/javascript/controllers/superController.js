@@ -171,14 +171,12 @@ function SuperController(vera) {
        @param obj An object to be sent with the post request.
        @param callback The function checking the callback.
      */
-    this.post = function (path, obj, callback) {
+    this.post = function (path, obj, callback, fail) {
         $.post(path, obj, function (job_data) {
-            this.set_job_callback(job_data['job_id'], callback);
-        }).fail(function (data) {
-            if (callback) {
-                callback({
-                    'result': {}
-                });
+            controller.set_job_callback(job_data['job_id'], callback);
+        }).fail(function () {
+            if (fail) {
+                fail();
             }
         });
     }
@@ -250,8 +248,7 @@ function SuperController(vera) {
         var _self = this;
 
         var tag = $('<img>').attr({
-            //'src': 'static/images/loading2.gif',
-            'src': 'static/images/trump.gif',
+            'src': 'static/images/loading2.gif',
             'alt': 'Loading'
         });
 

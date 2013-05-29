@@ -53,11 +53,12 @@ def get_shortest_path( source, target, tag ):
     return { 'path': data }
 
 
+@taskmgr.task
 def get_neighbors( name, tag, depth ):
     if tag:
         ngn = _filter_network_by_tag(gn, tag)
     else:
-        ngn = nx.DiGraph(gn)
+        ngn = gn
 
     neighbors = []
 

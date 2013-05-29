@@ -269,39 +269,37 @@ var NetworkController = function (controller) {
             'margin': '5px'
         });
 
-        $.post('/jobs/network/path', {
+        controller.post('/jobs/network/path', {
             'source': vera.user_name,
             'target': prod,
             'tag': global_tag || ''
-        }, function (job_data) {
-            controller.set_job_callback(job_data['job_id'], function (data) {
-                console.log(data);
+        }, function (data) {
+            console.log(data);
 
-                if (data.result.path) {
-                    var path = data.result.path;
+            if (data.result.path) {
+                var path = data.result.path;
 
-                    network_controller.display_producer_information(path.target);
+                network_controller.display_producer_information(path.target);
 
-                    if (typeof path.nodes[path.source.name] !== 'undefined') {
-                        selected_producer = path.target;
+                if (typeof path.nodes[path.source.name] !== 'undefined') {
+                    selected_producer = path.target;
 
-                        visualizer.visualize_path_in_network(path.source.name,
-                                                             path.target.name,
-                                                             path.nodes,
-                                                             path.edges,
-                                                             path.ghosts,
-                                                             path.tag,
-                                                             function () {
-                                                                 loader.delete();
-                                                             });
-                    } else {
-                        loader.delete();
+                    visualizer.visualize_path_in_network(path.source.name,
+                                                         path.target.name,
+                                                         path.nodes,
+                                                         path.edges,
+                                                         path.ghosts,
+                                                         path.tag,
+                                                         function () {
+                                                             loader.delete();
+                                                         });
+                } else {
+                    loader.delete();
 
-                        display_network_information('No path found');
-                    }
+                    display_network_information('No path found');
                 }
-            });
-        }).fail(function (data) {
+            }
+        }, function (data) {
             display_network_information(vera.const.network.server_error);
         });
     };
