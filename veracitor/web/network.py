@@ -92,6 +92,24 @@ def get_shortest_path():
     return jsonify(path=data)
 
 
+def _filter_network_by_tag(network, tag):
+    """
+    Creates a graph from input network containing only the edges in network
+    that have a weight/rating under the specified tag.
+
+    """
+    Gtagged = nx.DiGraph()
+
+    for n in network.nodes():
+        for nn in network[n]:
+            try:
+                Gtagged.add_edge(n, nn, {tag:network[n][nn][tag]})
+            except:
+                pass
+
+    return Gtagged
+
+
 @app.route('/jobs/network/neighbors', methods=['GET','POST'])
 def get_neighbors():
     """Returns the neighbors to the given source producer at
