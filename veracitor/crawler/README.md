@@ -7,10 +7,30 @@ The crawlInterface module
 -------------------------
 The main way of using the crawler package is by utilizing the crawlInterface module.
 
-Methods: ....
+The module exposes the following methods:
 
 #####add_newspaper(url)
-etc....
+Scrapes the given url and tries to gather metadata about the site, such as a title, description and any rss-feeds it might have.
+The data is then added to the database as a producer object.
+
+#####scrape_article(url)
+Scrapes the given url as an article (information object) and tries to extract relevant data such as title, a summary, date published, author etc.
+The data is then added to the database as an information object.
+As a side-effect the domain is added to the database as a producer if it did not exist already in the same way as if `add_newspaper(url)` had been invoked on the domains base-url.
+
+#####request_scrape(url)
+Crawls the given url, following any links found on the page within the same domain and trying to scrape the pages as articles in the same way as `scrape_article(url)`.
+It only follows links to depth 1 since the increase in data is practically exponential.
+Also adds the url as a producer in the same way as `add_newspaper(url)` would if it did not already exist.
+
+#####create_newspaper_bank(url)
+Crawls [listofnewspapers.com](www.listofnewspapers.com) for newspapers located in the United Kingdom, North America and Sweden, since only english and swedish is supported in the parsing stage.
+The newspapers are added to the database in the same way as `add_newspaper(url)` would have.
+
+#####scrape_all_in_bank(url)
+Iterates through the webpages listed in the WebpageMeta.xml file.
+If the webpage has an rss-feed the feed is scraped and information objects are added.
+If no rss-feed has been found for that producer, a `request_scrape(url)` is performed for that url.
 
 Internal structure
 ------------------
