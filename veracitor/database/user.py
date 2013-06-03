@@ -199,6 +199,9 @@ class User(producer.Producer):
     def __safe_string(self, url):
         return url.replace(".", "|")
     
+    #def __str__(self):
+    #    return super(producer.Producer, self).__str__()
+    
     
 def testing():
     p2 = extractor.get_producer("Prod2")

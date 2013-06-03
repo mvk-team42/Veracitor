@@ -52,6 +52,34 @@ class Group(Document):
             
         super(Group, self).delete()
 
+    def __str__(self):
+        _str = "##Group-Entity##\n"
+        _str += self.__print_help("Name", self.name)
+        _str += self.__print_help("Description", self.description)
+        _str += self.__print_help("Owner", self.owner.name)
+        _str += self.__print_help("Tag", self.tag.name)
+        _str += self.__print_help("Time created", str(self.time_created))
+
+        _str += "Members: "
+        if(len(self.producers) == 0):
+            _str += "None\n"
+        else:
+            _str += "\n"
+            for prod in self.producers.keys():
+                _str += "               * " + prod + "\n"
+        
+        _str += "##############\n"
+        return _str
+        
+
+    def __print_help(self, attr_to_print, attr):
+        _str = attr_to_print + ": "
+        if(attr == None):
+            _str += "not set\n"
+        else:
+            _str += attr + "\n"
+        return _str
+        
 
 def testing():
     networkModel.build_network_from_db()
