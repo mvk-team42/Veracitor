@@ -24,7 +24,7 @@ It only follows links to depth 1 since the increase in data is practically expon
 Also adds the url as a producer in the same way as `add_newspaper(url)` would if it did not already exist.
 
 #####create_newspaper_bank(url)
-Crawls [listofnewspapers.com](www.listofnewspapers.com) for newspapers located in the United Kingdom, North America and Sweden, since only english and swedish is supported in the parsing stage.
+Crawls [listofnewspapers.com](http://www.listofnewspapers.com) for newspapers located in the United Kingdom, North America and Sweden, since only english and swedish is supported in the parsing stage.
 The newspapers are added to the database in the same way as `add_newspaper(url)` would have.
 
 #####scrape_all_in_bank(url)
