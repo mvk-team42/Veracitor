@@ -45,7 +45,7 @@ Dependencies
 * ...
 
 ####External####
-To properly be able to test the package via the crawlInterface module the Veracitor database package is needed.
+To properly be able to test the package via the crawlInterface module the Veracitor database package is needed and all its dependencies has to be fullfilled.
 
 To parse the GTD database, download the excel-file and put it in the crawler package directory. Make sure there are no negative values for date (this was encountered and produces an error).
 
@@ -83,5 +83,3 @@ When the tests are set up, simply run the crawler_test.py file as a python scrip
 
 * Identify dependencies
 * Outline the internal structure of the package
-* Outline the crawlInterface module
-* Describe the testing procedure
