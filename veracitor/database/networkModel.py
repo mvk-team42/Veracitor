@@ -74,30 +74,6 @@ def build_network_from_db():
     
     return graph
     
-    """
-    # Add all producers in the database as nodes.
-    for p1 in producers:
-        p1.prepare_ratings_for_using()
-        graph.add_node(p1.name)
-    
-    # Add all producers' source ratings to the database as edges,
-    # where the actual rating and corresponding tag is set as an
-    # edge attribute.
-    consistency_checks = []
-    for p2 in producers:
-        p2.prepare_ratings_for_using()
-        for k,v in p2.source_ratings.iteritems():
-            try:
-                extractor.get_producer(k) #Test if producer exists in the database
-                graph.add_edge(p2.name, k, v) 
-            except NotInDatabase:
-                consistency_checks.append(p2)
-    for prod in consistency_checks:
-        prod.check_rating_consistencies()
-            
-    
-    return graph
-    """
 def get_dictionary_graph():
     """
     Returns a dictionary representation of the graph using
@@ -314,7 +290,7 @@ def get_extreme_info_ratings(producer_name, tag_names):
     #For each information rated by the producer
     for k,v in producer.info_ratings.iteritems():
         #For each tag given to the current information object
-        for tag in extractor.get_information(k.replace("|", ".")).tags:
+        for tag in extractor.get_information(k).tags:
             #If the name of the tag is specified in tag_names
             if tag.name in tag_names:
                 relevant_info_ratings[k] = v #Store the information title and
@@ -340,7 +316,7 @@ def get_extreme_info_ratings(producer_name, tag_names):
         diff = math.fabs(v - mean) #Absolute difference
         if diff > std: #If the difference exceeds one standard deviation
                        #then v will be considered as an extreme rating.
-            extremes[k.replace("|", ".")] = v
+            extremes[k] = v
 
     return extremes
     
