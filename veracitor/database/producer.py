@@ -313,8 +313,58 @@ class Producer(Document):
     def __str__(self):
         return str(extractor.entity_to_dict(self)["name"])
 
+    def __str__(self):
+        _str = "##Producer-Entity##\n";
+        _str += ("(Identifying) Name: ") + self.name + "\n"
+        
+        _str += "Type: " + self.type_of + "\n"
+        _str += self.__print_help("First name", self.first_name)
+        _str += self.__print_help("Last name", self.last_name)
+        _str += self.__print_help("URL", self.url)
+
+        _str += "Infos: "
+        if(len(self.infos) == 0):
+            _str += "None\n"
+        else:
+            _str += "\n"
+            for info in self.infos:
+                _str += "               * " + info.title + "\n"
+
+        _str += "Source ratings: "
+        if(len(self.source_ratings) == 0):
+            _str += "None\n"
+        else:
+            _str += "\n"
+            for k,v in self.source_ratings.items():
+                _str += "               * " + k + "\n"
+                for a,b in v.items():
+                    _str += "               |   # " + a + " - " + str(b) + "\n"
+        
+        _str += "Information ratings: "
+        if(len(self.info_ratings) == 0):
+            _str += "None\n"
+        else:
+            _str += "\n"
+            for k,v in self.info_ratings.items():
+                _str += "               * " + k + " - " + str(v) + "\n"
+
+        _str += "##############\n"
+        return _str
+        
+        
+
+
+    def __print_help(self, attr_to_print, attr):
+        _str = attr_to_print + ": "
+        if(attr == None):
+            _str += "No " + attr_to_print + " set\n"
+        else:
+            _str += attr + "\n"
+        return _str
+
 
     def __safe_string(self, url):
         return url.replace(".", "|")
     def __unsafe_string(self, _str):
         return _str.replace("|", ".")
+

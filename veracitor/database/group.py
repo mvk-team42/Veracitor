@@ -38,7 +38,8 @@ class Group(Document):
         try:
             super(Group, self).save()
         except TypeError:
-            print "Catched in group override"
+            print "This should only show up when there is incompatible data in \n"
+            print "the database. In the past caused by unknown error in MongoEngine."
         
     
 
