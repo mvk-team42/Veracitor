@@ -12,11 +12,15 @@ The module exposes the following methods:
 #####add_newspaper(url)
 Scrapes the given url and tries to gather metadata about the site, such as a title, description and any rss-feeds it might have.
 The data is then added to the database as a producer object.
+It is expected (and not checked) that the url points to an actual news site.
 
 #####scrape_article(url)
 Scrapes the given url as an article (information object) and tries to extract relevant data such as title, a summary, date published, author etc.
-The data is then added to the database as an information object.
+Only if the webpage is deemed to contain a news article, will it be scraped.
+This decision is made using the article-qualification xpaths defined in webpageMeta.xml.
+If data is scraped, it is then added to the database as an information object.
 As a side-effect the domain is added to the database as a producer if it did not exist already in the same way as if `add_newspaper(url)` had been invoked on the domains base-url.
+
 
 #####request_scrape(url)
 Crawls the given url, following any links found on the page within the same domain and trying to scrape the pages as articles in the same way as `scrape_article(url)`.
