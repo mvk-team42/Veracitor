@@ -38,7 +38,8 @@ class Group(Document):
         try:
             super(Group, self).save()
         except TypeError:
-            print "Catched in group override"
+            print "This should only show up when there is incompatible data in \n"
+            print "the database. In the past caused by unknown error in MongoEngine."
         
     
 
@@ -50,18 +51,36 @@ class Group(Document):
             pass
             
         super(Group, self).delete()
-    """
-    def __str__:
-        _str = "##Group-Entity##\n";
-        _str += ("Name:          ") + self.name + "\n"
-        _str += ("Description: ")
-        if(self.description == None):
-            _str += "  No description set\n"
+
+    def __str__(self):
+        _str = "##Group-Entity##\n"
+        _str += self.__print_help("Name", self.name)
+        _str += self.__print_help("Description", self.description)
+        _str += self.__print_help("Owner", self.owner.name)
+        _str += self.__print_help("Tag", self.tag.name)
+        _str += self.__print_help("Time created", str(self.time_created))
+
+        _str += "Members: "
+        if(len(self.producers) == 0):
+            _str += "None\n"
         else:
-             _str += "  " + self.description + "\n"
-        _str += "Owner: " 
+            _str += "\n"
+            for prod in self.producers.keys():
+                _str += "               * " + prod + "\n"
+        
         _str += "##############\n"
-    """
+        return _str
+        
+
+    def __print_help(self, attr_to_print, attr):
+        _str = attr_to_print + ": "
+        if(attr == None):
+            _str += "not set\n"
+        else:
+            _str += attr + "\n"
+        return _str
+        
+
 def testing():
     networkModel.build_network_from_db()
     u1 = User(name="donkey", password="123")

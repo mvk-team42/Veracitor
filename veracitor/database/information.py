@@ -32,4 +32,43 @@ class Information(Document):
     references = ListField(ReferenceField('self'))
     
     def __str__(self):
-        return str(extractor.entity_to_dict(self))
+        _str = "##Information-Entity##\n"
+        _str += self.__print_help("Title", self.title)
+        _str += self.__print_help("URL", self.url)
+        _str += self.__print_help("Summary", self.summary)
+        _str += self.__print_help("Time published", self.time_published)
+        
+        _str += "Tags: "
+        if(len(self.tags) == 0):
+            _str += "None\n"
+        else:
+            _str += "\n"
+            for tag in self.tags:
+                _str += "               * " + tag.name + "\n"
+
+        _str += "Publishers: "
+        if(len(self.publishers) == 0):
+            _str += "None\n"
+        else:
+            _str += "\n"
+            for prod in self.publishers:
+                _str += "               * " + prod.name + "\n"
+
+        _str += "References: "
+        if(len(self.references) == 0):
+            _str += "None\n"
+        else:
+            _str += "\n"
+            for ref in self.references:
+                _str += "               * " + ref.url + "\n"
+
+        _str += "##############\n"
+        return _str
+        
+    def __print_help(self, attr_to_print, attr):
+        _str = attr_to_print + ": "
+        if(attr == None):
+            _str += "not set\n"
+        else:
+            _str += attr + "\n"
+        return _str

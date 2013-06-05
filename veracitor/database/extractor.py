@@ -367,6 +367,11 @@ def search_informations(possible_info, tags, startD=None, endD=None):
         return infos
 
 def entity_to_dict( o ):
+    """
+    Accepts an object assumed to be one of the database entities.
+    Returns a dictionary representation of that object, 
+    similar to __str__ methods.
+    """
     if isinstance(o, producer.Producer):
         data = {'name': o.name,
                 'first_name': o.first_name,
