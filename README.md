@@ -96,4 +96,4 @@ SSH has been used to tunnel the web traffic like this:
 
     ssh user@dev.server.ip.or.dns.com -L [local_port]:localhost:[web_server_port]
 
-Which makes the website visible by surfing to http://localhost:localport/ .
+Which makes the website visible by surfing to http://localhost:local_port/ .
