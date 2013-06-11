@@ -21,8 +21,7 @@ log = app.logger.debug
 
 @app.route("/login", methods=["GET","POST"])
 def login_user():
-    """
-    
+    """Logs the user in if needed.
     """
 
     if "user_name" in session:
@@ -33,7 +32,7 @@ def login_user():
     if session.get('error') != None:
         session.pop('error', None)
 
-    
+
     if request.method == "POST":
         if not request.form['username']:
             error = "No username defined."
@@ -45,7 +44,7 @@ def login_user():
             except:
                 print "Can't extract user from db."
                 pass
-        
+
         if not user:
             error = "No user with that username."
         elif not user.password == request.form['password']:
@@ -55,7 +54,7 @@ def login_user():
             session['error'] = error
         else:
             session['user_name'] = user.name
-            
+
     return redirect(url_for("index"))
 
 
@@ -66,12 +65,12 @@ def logout():
     session.pop("error", None)
     session.pop("crawls", None)
     return redirect(url_for("index"))
-    
+
 
 
 @app.route("/register", methods=['POST', 'GET'])
 def register_user():
-    """Scrapes an article from a URL and adds it to the database.
+    """Registers a new user.
 
     URL Structure:
         ``/register``
@@ -90,7 +89,7 @@ def register_user():
     Result when finished:
         *user_created (boolean)* : [True | False]
         *error (str)* : A string containing the error if any.
-    
+
     Errors:
        * **405** -- Method not allowed
 

@@ -59,6 +59,10 @@ Ubuntu Linux - append this to `~/.bashrc` :
 
     export VERACITOR_SETTINGS="/path/to/Veracitor/settings.py"
 
+Don't forget to also activate your settings ex. :
+
+    source ~/.bashrc
+
 
 ### Step five
 
@@ -84,3 +88,12 @@ This collection may need to be cleared after a while, see Issue #23
 
 Use `python start_webserver.py` to start the dev webserver from the
 Veracitor folder.
+
+##### Misc
+
+This prototype has been developed at a dev-server. For convenience,
+SSH has been used to tunnel the web traffic like this:
+
+   ssh user@dev.server.ip.or.dns.com -L [local_port]:localhost:[web_server_port]
+
+Which makes the website visible by surfing to http://localhost:localport/ .

@@ -4,10 +4,12 @@
 
 try:
     from veracitor.tasks.tasks import taskmgr
-except:    
+except:
     from tasks import taskmgr
 
 from veracitor.database import *
+
+
 
 @taskmgr.task
 def register(username, password):
@@ -36,4 +38,3 @@ def register(username, password):
     usr.save()
 
     return {"user_created": True}
-
